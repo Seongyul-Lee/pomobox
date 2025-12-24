@@ -296,7 +296,7 @@ export function PomodoroTimer() {
       <div className="flex flex-col items-center gap-4">
         <div className="flex items-center gap-3">
           {status === 'running' ? (
-            <Button size="lg" onClick={handlePause} variant="secondary" className="gap-2 px-8">
+            <Button size="lg" onClick={handlePause} variant="secondary" className="gap-2 px-8 border-2 border-slate-400 dark:border-transparent">
               <Pause className="h-5 w-5" />
               Pause
             </Button>

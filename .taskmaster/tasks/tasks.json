@@ -40,13 +40,23 @@
         "tags": ["docs", "workflow"],
         "createdAt": "2025-12-25T06:00:00Z",
         "updatedAt": "2025-12-25T06:30:00Z"
+      },
+      {
+        "id": "16",
+        "title": "Sound Type 버그 수정 및 UI 개선",
+        "description": "Sound Type 10개 모두 기본 사운드로 재생되던 버그 수정. Web Audio API로 각 사운드의 고유 주파수/길이/파형 생성. Notifications/Sound 문구에 Bell/Volume2 아이콘 추가",
+        "status": "done",
+        "priority": "high",
+        "tags": ["bugfix", "ui"],
+        "createdAt": "2025-12-25T07:00:00Z",
+        "updatedAt": "2025-12-25T07:30:00Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-25T06:30:00Z",
-      "taskCount": 4,
-      "completedCount": 4,
+      "lastModified": "2025-12-25T07:30:00Z",
+      "taskCount": 5,
+      "completedCount": 5,
       "tags": [
         "master"
       ],

@@ -77,6 +77,54 @@ export function PomodoroTimer() {
     }
   }, [])
 
+  // Load timer state (rehydrate)
+  useEffect(() => {
+    const savedTimerState = localStorage.getItem("pomodoro-timer-state")
+    if (!savedTimerState) return
+
+    try {
+      const parsed = JSON.parse(savedTimerState)
+
+      // Validate required fields
+      if (
+        typeof parsed.version !== 'number' ||
+        !parsed.phase ||
+        !parsed.status ||
+        typeof parsed.remainingSeconds !== 'number'
+      ) {
+        console.warn('Invalid timer state data, skipping rehydration')
+        return
+      }
+
+      // Check if state is recent (within 24 hours)
+      const MAX_AGE_MS = 24 * 60 * 60 * 1000
+      const age = Date.now() - (parsed.lastUpdatedAtMs || 0)
+      if (age > MAX_AGE_MS) {
+        console.log('Timer state too old, skipping rehydration')
+        return
+      }
+
+      // Rehydrate state
+      setPhase(parsed.phase)
+      setCompletedSessions(parsed.completedSessions || 0)
+
+      // If status was 'running', calculate elapsed time and pause
+      if (parsed.status === 'running' && parsed.targetEndAtMs) {
+        const remainingMs = parsed.targetEndAtMs - Date.now()
+        const adjustedRemaining = Math.max(0, Math.ceil(remainingMs / 1000))
+        setTimeLeft(adjustedRemaining)
+        setStatus('paused') // Pause instead of auto-resuming
+      } else {
+        // Restore paused or idle state as-is
+        setStatus(parsed.status)
+        setTimeLeft(parsed.remainingSeconds)
+      }
+    } catch (error) {
+      console.error('Failed to parse timer state:', error)
+      // Fallback: use default initialization
+    }
+  }, [])
+
   // Save sessions
   useEffect(() => {
     localStorage.setItem("pomodoro-sessions", sessions.toString())
@@ -298,9 +346,19 @@ export function PomodoroTimer() {
         <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
           {getTypeLabel()}
         </p>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground mb-2">
           {getTypeDescription()}
         </p>
+        <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full transition-opacity duration-200 ${
+          status === 'paused'
+            ? 'bg-yellow-100 dark:bg-yellow-900/30 opacity-100 visible'
+            : 'opacity-0 invisible'
+        }`}>
+          <Pause className="h-3 w-3 text-yellow-700 dark:text-yellow-500" />
+          <span className="text-xs font-medium text-yellow-700 dark:text-yellow-500 uppercase tracking-wide">
+            Paused
+          </span>
+        </div>
       </div>
 
       <div className="relative flex items-center justify-center">
@@ -317,7 +375,13 @@ export function PomodoroTimer() {
             strokeDasharray={TIMER_CIRCUMFERENCE}
             strokeDashoffset={TIMER_CIRCUMFERENCE - (progress / 100) * TIMER_CIRCUMFERENCE}
             className={`transition-all duration-1000 ease-linear ${
-              phase === 'focus' ? 'text-primary' : phase === 'longBreak' ? 'text-blue-500' : 'text-green-500'
+              status === 'paused'
+                ? 'text-yellow-500 dark:text-yellow-600'
+                : phase === 'focus'
+                ? 'text-primary'
+                : phase === 'longBreak'
+                ? 'text-blue-500'
+                : 'text-green-500'
             }`}
           />
         </svg>
@@ -346,7 +410,7 @@ export function PomodoroTimer() {
               Start
             </Button>
           )}
-          <Button size="lg" variant="outline" onClick={handleReset}>
+          <Button size="lg" variant="outline" onClick={handleReset} aria-label="Reset timer">
             <RotateCcw className="h-5 w-5" />
           </Button>
         </div>

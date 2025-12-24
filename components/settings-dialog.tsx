@@ -5,14 +5,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Switch } from "@/components/ui/switch"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Settings, Check } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { SOUND_OPTIONS, getSoundAudio } from "@/lib/sounds"
 
 export interface TimerSettings {
   focusDuration: number
   breakDuration: number
   notificationsEnabled: boolean
   soundEnabled: boolean
+  soundType: string
   volume: number
 }
 
@@ -77,13 +80,16 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
 
   // 사운드 테스트
   const handleVolumeTest = () => {
-    const audio = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhELTKXh8bllHAU2jdXyz3YnBSp+zPDajzsIEViy6OyrWBUIQ5zd8sFuJAUwhM/x1YU5CBZnvezno1QTCkml4PG6aB4EOIzU8dF0KAYAAAA=")
+    const audioData = getSoundAudio(localSettings.soundType)
+    const audio = new Audio(audioData)
     audio.volume = localSettings.volume / 100
     audio.play()
-    
+
+    const selectedSound = SOUND_OPTIONS.find(s => s.value === localSettings.soundType)
+    const soundLabel = selectedSound?.label || "Bell (Default)"
     toast({
       title: "Sound test",
-      description: `Volume: ${localSettings.volume}%`,
+      description: `${soundLabel} - Volume: ${localSettings.volume}%`,
       duration: 1000,
     })
   }
@@ -128,10 +134,33 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                 aria-label="Toggle sound"
               />
             </div>
-            
-            {/* Volume Slider */}
+
+            {/* Sound Type & Volume */}
             {localSettings.soundEnabled && (
               <div className="space-y-3 pl-1">
+                {/* Sound Type Selection */}
+                <div className="space-y-2">
+                  <span className="text-sm text-muted-foreground">Sound Type</span>
+                  <Select
+                    value={localSettings.soundType}
+                    onValueChange={(value) =>
+                      setLocalSettings({ ...localSettings, soundType: value })
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a sound" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SOUND_OPTIONS.map((sound) => (
+                        <SelectItem key={sound.value} value={sound.value}>
+                          {sound.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Volume Slider */}
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Volume</span>
                   <span className="text-sm font-medium">{localSettings.volume}%</span>

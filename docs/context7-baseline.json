@@ -28,5 +28,34 @@
       "app/manifest.ts",
       "app/opengraph-image.tsx"
     ]
+  },
+  {
+    "topicName": "radix-ui-select",
+    "context7CompatibleLibraryID": "/websites/radix-ui-primitives",
+    "topic": "Select component",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "Select.Root with value/onValueChange",
+      "Select.Trigger for button",
+      "Select.Content with position prop (item-aligned or popper)",
+      "Select.Item with required value prop",
+      "Select.Value with placeholder prop",
+      "Select.Portal for content rendering",
+      "Select.Group and Select.Label for grouping"
+    ],
+    "constraints": [
+      "Select.Item requires value prop (required)",
+      "position='popper' enables side/sideOffset/align props",
+      "Use CSS variables like --radix-select-trigger-width for sizing",
+      "data-state attribute for styling (open/closed)",
+      "Select.Value should not be styled for correct positioning",
+      "Use Select.ItemIndicator to show selected state",
+      "disabled items have data-disabled attribute"
+    ],
+    "appliesToFiles": [
+      "components/settings-dialog.tsx",
+      "components/ui/select.tsx"
+    ]
   }
 ]

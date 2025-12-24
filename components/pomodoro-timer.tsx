@@ -346,17 +346,19 @@ export function PomodoroTimer() {
         <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
           {getTypeLabel()}
         </p>
-        {status === 'paused' && (
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-yellow-100 dark:bg-yellow-900/30 mb-2">
-            <Pause className="h-3 w-3 text-yellow-700 dark:text-yellow-500" />
-            <span className="text-xs font-medium text-yellow-700 dark:text-yellow-500 uppercase tracking-wide">
-              Paused
-            </span>
-          </div>
-        )}
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground mb-2">
           {getTypeDescription()}
         </p>
+        <div className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full transition-opacity duration-200 ${
+          status === 'paused'
+            ? 'bg-yellow-100 dark:bg-yellow-900/30 opacity-100 visible'
+            : 'opacity-0 invisible'
+        }`}>
+          <Pause className="h-3 w-3 text-yellow-700 dark:text-yellow-500" />
+          <span className="text-xs font-medium text-yellow-700 dark:text-yellow-500 uppercase tracking-wide">
+            Paused
+          </span>
+        </div>
       </div>
 
       <div className="relative flex items-center justify-center">

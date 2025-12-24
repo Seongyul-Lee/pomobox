@@ -54,9 +54,35 @@
 - `--research` 옵션은 사용하지 않는다(Research는 사실상 OFF).
 - 기본 운영:
   - PRD/태스크 생성은 `.taskmaster/docs/`에서 관리
-  - 태스크 실행은 “next → 구현 → quality gates → 커밋” 순서로 진행
+  - 태스크 실행은 "next → 구현 → quality gates → 커밋" 순서로 진행
 - 상태 확인(진행/완료/우선순위)은 task-master list/show/next 등 Task Master 출력만 SSOT로 신뢰한다.
 - docs/prd.txt의 체크박스는 참고용이며, 불일치 시 항상 Task Master 상태를 우선한다.
+
+#### Task Master 크기 제한 규칙 (토큰 초과 방지)
+**문제**: tasks.json 파일이 커지면 MCP 응답이 25,000 토큰 제한 초과
+**해결**: 파일 크기 관리 + 조회 최적화
+
+**Task/Subtask 생성 규칙**:
+- `details`: 3줄 이내로 간결하게 (상세 내용은 `.taskmaster/docs/` 문서로 분리)
+- `description`: 1-2문장 요약만
+- `testStrategy`: 검증 방법 1줄
+- `expansionPrompt`: 생략 (불필요)
+- Subtask 개수: 최대 5개 (필요시 task 분리)
+
+**Task 조회 규칙**:
+- `get_tasks`는 **반드시 status 필터 사용**
+  - 예: `status="pending,in-progress"` (전체 조회 금지)
+- 특정 task만 조회: `get_task(id="11")`
+
+**아카이브 정책**:
+- Phase/Milestone 완료 시 완료된 task를 `archived-tasks.json`으로 이동
+- 아카이브 스크립트: `.taskmaster/scripts/archive-tasks.sh`
+- tasks.json은 현재 작업 중인 task만 유지 (최대 10-15개 권장)
+
+**Task 추가 방법**:
+- Task Master MCP에는 task 추가 함수 없음
+- 방법 1: `tasks.json` 직접 편집 (간결한 템플릿 사용)
+- 방법 2: PRD 업데이트 후 `parse_prd` 재실행
 
 ### 4.2 Context7 (Free 200/day 적극 활용) — 자동 조회 정책
 - **작업 시작 시 자동으로 Context7을 조회한다** (할당량 200/day 적극 활용)

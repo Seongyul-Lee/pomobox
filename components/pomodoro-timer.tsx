@@ -77,6 +77,54 @@ export function PomodoroTimer() {
     }
   }, [])
 
+  // Load timer state (rehydrate)
+  useEffect(() => {
+    const savedTimerState = localStorage.getItem("pomodoro-timer-state")
+    if (!savedTimerState) return
+
+    try {
+      const parsed = JSON.parse(savedTimerState)
+
+      // Validate required fields
+      if (
+        typeof parsed.version !== 'number' ||
+        !parsed.phase ||
+        !parsed.status ||
+        typeof parsed.remainingSeconds !== 'number'
+      ) {
+        console.warn('Invalid timer state data, skipping rehydration')
+        return
+      }
+
+      // Check if state is recent (within 24 hours)
+      const MAX_AGE_MS = 24 * 60 * 60 * 1000
+      const age = Date.now() - (parsed.lastUpdatedAtMs || 0)
+      if (age > MAX_AGE_MS) {
+        console.log('Timer state too old, skipping rehydration')
+        return
+      }
+
+      // Rehydrate state
+      setPhase(parsed.phase)
+      setCompletedSessions(parsed.completedSessions || 0)
+
+      // If status was 'running', calculate elapsed time and pause
+      if (parsed.status === 'running' && parsed.targetEndAtMs) {
+        const remainingMs = parsed.targetEndAtMs - Date.now()
+        const adjustedRemaining = Math.max(0, Math.ceil(remainingMs / 1000))
+        setTimeLeft(adjustedRemaining)
+        setStatus('paused') // Pause instead of auto-resuming
+      } else {
+        // Restore paused or idle state as-is
+        setStatus(parsed.status)
+        setTimeLeft(parsed.remainingSeconds)
+      }
+    } catch (error) {
+      console.error('Failed to parse timer state:', error)
+      // Fallback: use default initialization
+    }
+  }, [])
+
   // Save sessions
   useEffect(() => {
     localStorage.setItem("pomodoro-sessions", sessions.toString())

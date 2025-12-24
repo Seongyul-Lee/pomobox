@@ -108,5 +108,37 @@
       "app/providers.tsx",
       "components/theme-toggle.tsx"
     ]
+  },
+  {
+    "topicName": "tailwindcss-dark-mode-backgrounds-2025",
+    "context7CompatibleLibraryID": "/websites/v3_tailwindcss",
+    "topic": "dark mode background colors best practices",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "dark: variant prefix for dark mode styles",
+      "bg-white dark:bg-slate-800 (recommended background)",
+      "bg-white dark:bg-slate-900 (darker variant)",
+      "text-slate-900 dark:text-white (heading text)",
+      "text-slate-500 dark:text-slate-400 (muted text)",
+      "shadow-{color}-500/40 for colored shadows",
+      "prose dark:prose-invert for typography",
+      "darkMode: 'selector' in tailwind.config.js"
+    ],
+    "constraints": [
+      "Prefer slate-800 or slate-900 over pure black (#000) for dark backgrounds",
+      "Use solid colors instead of gradients for modern dark mode",
+      "Colored shadows (shadow-indigo-500/40) appear more natural than default shadows",
+      "Apply dark: modifier to both background and text for proper contrast",
+      "Use localStorage.theme to persist user preference",
+      "Add dark class to html element to enable dark mode",
+      "Avoid FOUC by adding theme script inline in document head"
+    ],
+    "appliesToFiles": [
+      "app/page.tsx",
+      "app/globals.css",
+      "components/pomodoro-timer.tsx",
+      "components/settings-dialog.tsx"
+    ]
   }
 ]

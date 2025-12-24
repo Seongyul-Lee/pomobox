@@ -18,6 +18,8 @@ Non-goals
 - 전면 UI 리디자인/테마 개편은 범위 밖(필요 최소한의 버튼/다이얼로그 개선만).
 - 알림(Notification)·사운드 기능 확장(옵션 추가, 새 이벤트)은 범위 밖(단, Pause 상태 도입으로 기존 동작이 깨지지 않게 유지).
 
+Note: 2025-12-25 이후 정책 변경 - localStorage 기반 상태 복구는 제거됨 (stateless 앱: 새로고침/재방문 시 초기 설정으로 리셋)
+
 3) 용어/정의 (통계 정책은 “정의문”으로 명시)
 - Focus 세션: 집중(work) 구간. “완료”는 타이머가 00:00에 정상 도달한 경우를 의미한다.
 - Break(Short): 짧은 휴식 구간.
@@ -47,10 +49,11 @@ Non-goals
 - 사용자는 Break를 Skip하여 다음 Focus로 즉시 전환한다.
 - 사용자는 Focus 진행 중 Reset을 눌러 초기 Focus로 돌아간다(통계 불변).
 
-시나리오 C: 새로고침 복구
-- 사용자는 Focus 진행 중(또는 Pause 중) 페이지를 새로고침한다.
-- 앱 재로드 후 이전 phase(Focus/Break/LongBreak), 남은 시간, Pause 여부가 복구되어야 한다.
-- 복구 시점에 이미 targetEnd가 지났다면(사용자 부재 중 시간 경과), 해당 세션을 “완료 처리/전이”하여 다음 상태로 복원한다.
+시나리오 C: 새로고침 복구 [DEPRECATED - 2025-12-25 정책 변경으로 미지원]
+- ~~사용자는 Focus 진행 중(또는 Pause 중) 페이지를 새로고침한다.~~
+- ~~앱 재로드 후 이전 phase(Focus/Break/LongBreak), 남은 시간, Pause 여부가 복구되어야 한다.~~
+- ~~복구 시점에 이미 targetEnd가 지났다면(사용자 부재 중 시간 경과), 해당 세션을 "완료 처리/전이"하여 다음 상태로 복원한다.~~
+- **현재 정책**: Stateless 앱으로 운영. 새로고침/재방문 시 항상 초기 설정으로 리셋. localStorage 미사용.
 
 시나리오 D: 설정 다이얼로그 키보드 접근
 - 사용자는 키보드(Tab/Enter)로 Settings 버튼을 활성화해 다이얼로그를 연다.
@@ -153,8 +156,17 @@ Skip/Reset
 - MUST: 타이머 루프는 setInterval/RAF/worker 중 어떤 방식이든 가능하나, “timestamp delta(현재시각 기반)”로 드리프트를 최소화해야 한다.
 - MUST: 탭 비활성/활성 전환 시 보정(VISIBILITY_RESUME)을 수행해 오차 누적을 방지해야 한다.
 
-7) 데이터/저장/복구 정책 (localStorage 키/필드/마이그레이션 필요 여부)
-기존 저장(현행 유지)
+7) 데이터/저장/복구 정책 [DEPRECATED - 2025-12-25 정책 변경]
+
+**현재 정책 (2025-12-25 이후)**:
+- **Stateless 앱**: localStorage 완전 제거 (109줄 삭제, commit 643597c)
+- 새로고침/재방문 시 항상 초기 설정으로 리셋
+- 타이머 상태, 통계, 설정 모두 브라우저 세션에만 유지
+- 향후 Supabase 백엔드 도입 시 영구 저장 고려 가능
+
+**[아래 localStorage 스키마는 미사용 - 참고용으로만 유지]**
+
+기존 저장(미사용)
 - pomodoro-settings: JSON(string). focusDuration, breakDuration, notificationsEnabled, soundEnabled, volume 등.
 - pomodoro-date: string. 일일 통계 기준 날짜.
 - pomodoro-sessions: string(number). 일일 완료 Focus 세션 수(sessions).
@@ -311,3 +323,36 @@ A11y E2E(필수)
 - pnpm build
 - pnpm test (존재 시)
 - pnpm e2e (존재 시)
+
+13) 완료된 작업 (2025-12-25 UI/UX 개선)
+다음 작업들은 PRD의 핵심 요구사항(Pause/Resume, 통계, 접근성)과는 별개로 2025-12-25에 완료되었습니다:
+
+UI/UX 현대화
+- [x] 다크 모드 배경색을 zinc-950 (near-black neutral gray)로 변경하여 모던하고 깔끔한 느낌 구현
+- [x] 라이트 모드 배경색을 gray-50으로 변경하여 대비/가독성 개선
+- [x] Settings 다이얼로그 외곽선 강조 (light: slate-400, dark: zinc-800)
+- [x] 타이머 원(progress circle) 배경색을 테마별로 조정 (light: zinc-300, dark: zinc-700)
+- [x] Pause 상태 색상을 amber 계열로 변경 (yellow 대체)
+- [x] 타이머 상태 텍스트("Focus Session", "Break Time") 강조 (text-lg font-bold)
+- [x] 라이트 모드 Pause 버튼 외곽선 강조 (border-2 border-slate-400)
+- [x] 테마 토글 버튼을 fixed 우측 하단으로 이동, 배경/그림자 추가하여 가시성 개선
+
+기본 설정 최적화
+- [x] Sound 기본값을 enabled=true, volume=50으로 변경 (사용자 경험 개선)
+- [x] Settings 저장 후 "Saved!" 표시 시간을 2초에서 1초로 단축
+
+상태 관리 정책 변경
+- [x] localStorage 완전 제거 (109줄 삭제)
+- [x] Stateless 앱으로 전환: 새로고침/재방문 시 항상 초기 설정으로 리셋
+- [x] 설정값, 세션 통계, 타이머 상태 모두 브라우저 세션에만 유지
+
+Context7 Baseline 추가
+- [x] Tailwind CSS dark mode best practices 2025 문서 조회 및 baseline 등록
+
+커밋 기록
+- c961254: 라이트 모드 Pause 버튼 외곽선 강조
+- 643597c: 새로고침/재방문 시 초기 설정으로 리셋 (localStorage 제거)
+- 508730f: UI/UX 개선 및 기본 설정 최적화
+- 77a6df4: 다크 테마를 zinc-950으로 더 어둡게 변경
+- 63c3a59: 다크 테마 배경색을 zinc 계열로 변경
+- 0f941ea: 다크/라이트 모드 UI 개선

@@ -30,13 +30,23 @@
         "tags": ["feature", "ui"],
         "createdAt": "2025-12-25T05:00:00Z",
         "updatedAt": "2025-12-25T05:30:00Z"
+      },
+      {
+        "id": "15",
+        "title": "워크플로우 강제 규칙 추가: /docs 필수 + \"다음 단계\" task-master next",
+        "description": "/plan 이후 /docs 필수 실행, \"다음 단계\" 요청 시 task-master next 자동 실행. pomobox 및 Claude-template CLAUDE.md 동시 업데이트",
+        "status": "done",
+        "priority": "high",
+        "tags": ["docs", "workflow"],
+        "createdAt": "2025-12-25T06:00:00Z",
+        "updatedAt": "2025-12-25T06:30:00Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-25T05:30:00Z",
-      "taskCount": 3,
-      "completedCount": 3,
+      "lastModified": "2025-12-25T06:30:00Z",
+      "taskCount": 4,
+      "completedCount": 4,
       "tags": [
         "master"
       ],

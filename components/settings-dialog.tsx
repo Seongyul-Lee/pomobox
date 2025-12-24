@@ -6,9 +6,9 @@ import { Switch } from "@/components/ui/switch"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Settings, Check } from "lucide-react"
+import { Settings, Check, Bell, Volume2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { SOUND_OPTIONS, getSoundAudio } from "@/lib/sounds"
+import { SOUND_OPTIONS, playSound } from "@/lib/sounds"
 
 export interface TimerSettings {
   focusDuration: number
@@ -80,10 +80,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
 
   // 사운드 테스트
   const handleVolumeTest = () => {
-    const audioData = getSoundAudio(localSettings.soundType)
-    const audio = new Audio(audioData)
-    audio.volume = localSettings.volume / 100
-    audio.play()
+    playSound(localSettings.soundType, localSettings.volume / 100)
 
     const selectedSound = SOUND_OPTIONS.find(s => s.value === localSettings.soundType)
     const soundLabel = selectedSound?.label || "Bell (Default)"
@@ -108,9 +105,12 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
         <div className="space-y-6 py-4">
           {/* Notifications */}
           <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Notifications</p>
-              <p className="text-sm text-muted-foreground">Get notified when timer ends</p>
+            <div className="flex items-center gap-2">
+              <Bell className="h-4 w-4 text-muted-foreground" />
+              <div>
+                <p className="font-medium">Notifications</p>
+                <p className="text-sm text-muted-foreground">Get notified when timer ends</p>
+              </div>
             </div>
             <Switch
               checked={localSettings.notificationsEnabled}
@@ -124,9 +124,12 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
           {/* Sound */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Sound</p>
-                <p className="text-sm text-muted-foreground">Play sound when timer ends</p>
+              <div className="flex items-center gap-2">
+                <Volume2 className="h-4 w-4 text-muted-foreground" />
+                <div>
+                  <p className="font-medium">Sound</p>
+                  <p className="text-sm text-muted-foreground">Play sound when timer ends</p>
+                </div>
               </div>
               <Switch
                 checked={localSettings.soundEnabled}

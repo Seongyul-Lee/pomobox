@@ -111,6 +111,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
               onCheckedChange={(checked) =>
                 setLocalSettings({ ...localSettings, notificationsEnabled: checked })
               }
+              aria-label="Toggle notifications"
             />
           </div>
 
@@ -124,6 +125,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
               <Switch
                 checked={localSettings.soundEnabled}
                 onCheckedChange={handleSoundToggle}
+                aria-label="Toggle sound"
               />
             </div>
             

@@ -1,0 +1,8 @@
+{
+  "archived": [],
+  "metadata": {
+    "lastArchived": "2025-12-25T03:56:00Z",
+    "totalArchived": 0,
+    "note": "완료된 task는 여기로 아카이브됩니다. tasks.json 경량화를 위해 Phase/Milestone 완료 시 자동 이동."
+  }
+}

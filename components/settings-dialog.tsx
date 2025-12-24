@@ -91,7 +91,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="lg" className="absolute top-4 right-4 h-12 w-12">
+        <Button variant="ghost" size="lg" className="absolute top-4 right-4 h-12 w-12" aria-label="Settings">
           <Settings className="h-6 w-6" />
         </Button>
       </DialogTrigger>
@@ -111,6 +111,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
               onCheckedChange={(checked) =>
                 setLocalSettings({ ...localSettings, notificationsEnabled: checked })
               }
+              aria-label="Toggle notifications"
             />
           </div>
 
@@ -124,6 +125,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
               <Switch
                 checked={localSettings.soundEnabled}
                 onCheckedChange={handleSoundToggle}
+                aria-label="Toggle sound"
               />
             </div>
             

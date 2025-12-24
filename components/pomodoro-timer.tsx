@@ -27,6 +27,7 @@ export function PomodoroTimer() {
   const [sessions, setSessions] = useState(0)
   const [completedSessions, setCompletedSessions] = useState(0)
   const [totalFocusMinutes, setTotalFocusMinutes] = useState(0)
+  const [longBreakCount, setLongBreakCount] = useState(0)
   const [targetEndAtMs, setTargetEndAtMs] = useState<number | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
 
@@ -64,16 +65,19 @@ export function PomodoroTimer() {
   useEffect(() => {
     const savedSessions = localStorage.getItem("pomodoro-sessions")
     const savedMinutes = localStorage.getItem("pomodoro-total-minutes")
+    const savedLongBreakCount = localStorage.getItem("pomodoro-long-break-count")
     const savedDate = localStorage.getItem("pomodoro-date")
     const today = new Date().toDateString()
 
     if (savedDate === today) {
       if (savedSessions) setSessions(parseInt(savedSessions))
       if (savedMinutes) setTotalFocusMinutes(parseInt(savedMinutes))
+      if (savedLongBreakCount) setLongBreakCount(parseInt(savedLongBreakCount))
     } else {
       localStorage.setItem("pomodoro-date", today)
       localStorage.setItem("pomodoro-sessions", "0")
       localStorage.setItem("pomodoro-total-minutes", "0")
+      localStorage.setItem("pomodoro-long-break-count", "0")
     }
   }, [])
 
@@ -135,6 +139,11 @@ export function PomodoroTimer() {
     localStorage.setItem("pomodoro-total-minutes", totalFocusMinutes.toString())
   }, [totalFocusMinutes])
 
+  // Save long break count
+  useEffect(() => {
+    localStorage.setItem("pomodoro-long-break-count", longBreakCount.toString())
+  }, [longBreakCount])
+
   // Save timer state (Phase 1: save only, Phase 3: load & rehydrate)
   useEffect(() => {
     const timerState = {
@@ -144,11 +153,11 @@ export function PomodoroTimer() {
       remainingSeconds: timeLeft,
       targetEndAtMs,
       completedSessions,
-      longBreakCount: 0, // TODO: track in future
+      longBreakCount,
       lastUpdatedAtMs: Date.now()
     }
     localStorage.setItem("pomodoro-timer-state", JSON.stringify(timerState))
-  }, [phase, status, timeLeft, targetEndAtMs, completedSessions])
+  }, [phase, status, timeLeft, targetEndAtMs, completedSessions, longBreakCount])
 
   // Request notification permission
   useEffect(() => {
@@ -229,9 +238,10 @@ export function PomodoroTimer() {
       setTotalFocusMinutes(newTotal)
 
       // Long Break every 4 completed sessions (not skipped)
-      if (newSessions % 4 === 0) {
+      if (newCompleted % 4 === 0) {
         setPhase('longBreak')
         setTimeLeft(15 * 60)
+        setLongBreakCount(prev => prev + 1)
       } else {
         setPhase('break')
         setTimeLeft(settings.breakDuration * 60)

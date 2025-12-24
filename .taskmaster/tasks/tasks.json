@@ -105,13 +105,29 @@
         "updatedAt": "2025-12-24T17:33:26.654Z",
         "dependencies": [],
         "subtasks": []
+      },
+      {
+        "id": "19",
+        "title": "다크/라이트모드 토글 구현",
+        "description": "next-themes로 테마 전환 시스템 구현. ThemeProvider 추가, Sun/Moon 아이콘 토글 버튼, 기본값 dark. 화면 오른쪽 상단 배치",
+        "status": "done",
+        "priority": "medium",
+        "tags": [
+          "feature",
+          "ui",
+          "theme"
+        ],
+        "createdAt": "2025-12-25T10:00:00Z",
+        "updatedAt": "2025-12-24T17:44:56.299Z",
+        "dependencies": [],
+        "subtasks": []
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-24T17:33:26.655Z",
-      "taskCount": 7,
-      "completedCount": 7,
+      "lastModified": "2025-12-24T17:44:56.299Z",
+      "taskCount": 8,
+      "completedCount": 8,
       "tags": [
         "master"
       ]

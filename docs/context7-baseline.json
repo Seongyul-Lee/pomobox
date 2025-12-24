@@ -81,5 +81,32 @@
     "appliesToFiles": [
       "app/globals.css"
     ]
+  },
+  {
+    "topicName": "next-themes-dark-mode",
+    "context7CompatibleLibraryID": "/pacocoursey/next-themes",
+    "topic": "ThemeProvider setup usage dark mode",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-25T00:00:00Z",
+    "keyAPIs": [
+      "ThemeProvider component with attribute='class'",
+      "useTheme hook: { theme, setTheme, resolvedTheme }",
+      "defaultTheme prop for initial theme",
+      "enableSystem prop for OS preference",
+      "suppressHydrationWarning on html tag"
+    ],
+    "constraints": [
+      "ThemeProvider must be Client Component in Next.js App Router",
+      "Add suppressHydrationWarning to html tag to prevent SSR mismatch",
+      "useTheme hook requires 'use client' directive",
+      "attribute='class' for Tailwind CSS dark mode",
+      "resolvedTheme returns actual theme (handles 'system')",
+      "Wrap in separate providers.tsx for App Router"
+    ],
+    "appliesToFiles": [
+      "app/layout.tsx",
+      "app/providers.tsx",
+      "components/theme-toggle.tsx"
+    ]
   }
 ]

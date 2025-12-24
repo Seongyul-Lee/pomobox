@@ -1,11 +1,52 @@
 {
   "master": {
-    "tasks": [],
+    "tasks": [
+      {
+        "id": "12",
+        "title": "하이브리드 워크플로우 + Task Master 필수 정책 확립",
+        "description": "CLAUDE.md에 하이브리드 운영 가이드, task-master set-status 필수 규칙, 세션 재시작 컨텍스트 복구 절차 추가",
+        "status": "done",
+        "priority": "high",
+        "tags": ["docs", "workflow"],
+        "createdAt": "2025-12-25T04:30:00Z",
+        "updatedAt": "2025-12-25T04:35:00Z"
+      },
+      {
+        "id": "13",
+        "title": "Claude-template에 하이브리드 워크플로우 적용",
+        "description": "pomobox의 하이브리드 워크플로우 정책을 Claude-template CLAUDE.md에 적용하여 템플릿 업데이트",
+        "status": "done",
+        "priority": "high",
+        "tags": ["docs", "template"],
+        "createdAt": "2025-12-25T04:40:00Z",
+        "updatedAt": "2025-12-25T04:50:00Z"
+      },
+      {
+        "id": "14",
+        "title": "Notifications Sound 10개 옵션 추가",
+        "description": "Settings에서 10가지 Sound 타입 선택 가능하도록 구현. Radix UI Select 컴포넌트 추가, lib/sounds.ts 생성, settings-dialog 및 pomodoro-timer 업데이트",
+        "status": "done",
+        "priority": "medium",
+        "tags": ["feature", "ui"],
+        "createdAt": "2025-12-25T05:00:00Z",
+        "updatedAt": "2025-12-25T05:30:00Z"
+      },
+      {
+        "id": "15",
+        "title": "워크플로우 강제 규칙 추가: /docs 필수 + \"다음 단계\" task-master next",
+        "description": "/plan 이후 /docs 필수 실행, \"다음 단계\" 요청 시 task-master next 자동 실행. pomobox 및 Claude-template CLAUDE.md 동시 업데이트",
+        "status": "done",
+        "priority": "high",
+        "tags": ["docs", "workflow"],
+        "createdAt": "2025-12-25T06:00:00Z",
+        "updatedAt": "2025-12-25T06:30:00Z"
+      }
+    ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-25T03:56:00Z",
-      "taskCount": 0,
-      "completedCount": 0,
+      "lastModified": "2025-12-25T06:30:00Z",
+      "taskCount": 4,
+      "completedCount": 4,
       "tags": [
         "master"
       ],

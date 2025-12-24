@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
 import { SettingsDialog, TimerSettings } from "./settings-dialog"
+import { playSound } from "@/lib/sounds"
 
 type TimerPhase = 'focus' | 'break' | 'longBreak'
 type TimerStatus = 'idle' | 'running' | 'paused'
@@ -16,6 +17,7 @@ const DEFAULT_SETTINGS: TimerSettings = {
   breakDuration: 5,
   notificationsEnabled: false,
   soundEnabled: false,
+  soundType: 'bell',
   volume: 0,
 }
 
@@ -221,9 +223,7 @@ export function PomodoroTimer() {
     }
 
     if (settings.soundEnabled) {
-      const audio = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhELTKXh8bllHAU2jdXyz3YnBSp+zPDajzsIEViy6OyrWBUIQ5zd8sFuJAUwhM/x1YU5CBZnvezno1QTCkml4PG6aB4EOIzU8dF0KAYAAAA=")
-      audio.volume = settings.volume / 100
-      audio.play()
+      playSound(settings.soundType, settings.volume / 100)
     }
 
     if (phase === 'focus') {

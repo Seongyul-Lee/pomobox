@@ -35,6 +35,15 @@ function formatTime(minutes: number): string {
   return `${h}h ${m}m`
 }
 
+// 시간 포맷팅 (Hour/Minute 구조)
+function formatTimeHourMin(minutes: number, tTime: (key: string) => string): string {
+  const h = Math.floor(minutes / 60)
+  const m = minutes % 60
+  if (h === 0) return `${m} ${tTime("minute")}`
+  if (m === 0) return `${h} ${tTime("hour")}`
+  return `${h} ${tTime("hour")} ${m} ${tTime("minute")}`
+}
+
 // 차트 커스텀 툴팁
 function CustomTooltip({
   active,
@@ -102,6 +111,7 @@ function TodayCard({
 function WeeklyCard({ data }: { data: DayRecord[] }) {
   const t = useTranslations("Dashboard")
   const tDays = useTranslations("Days")
+  const tTime = useTranslations("Time")
 
   // 총 시간 및 세션
   const totalMinutes = data.reduce((sum, d) => sum + d.totalMinutes, 0)
@@ -134,7 +144,7 @@ function WeeklyCard({ data }: { data: DayRecord[] }) {
         </div>
         <div className="flex justify-between text-sm text-muted-foreground mt-1.5">
           <span>{t("totalSessions")}: {totalSessions}</span>
-          <span>{t("dailyAvg")}: {formatTime(avgMinutes)}</span>
+          <span>{t("dailyAvg")}: {formatTimeHourMin(avgMinutes, tTime)}</span>
         </div>
       </CardHeader>
       <CardContent>

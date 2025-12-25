@@ -169,5 +169,9 @@
     "thu": "T",
     "fri": "F",
     "sat": "S"
+  },
+  "Time": {
+    "hour": "Hour",
+    "minute": "Min"
   }
 }

@@ -135,7 +135,18 @@
     "checkedIn": "今日の出席完了！",
     "checkInPrompt": "今日の出席をしてください",
     "monthlyAttendance": "今月の出席",
-    "attendanceOnly": "出席のみ"
+    "attendanceOnly": "出席のみ",
+    "dailyGoal": "日目標",
+    "goalReached": "目標達成！",
+    "minute": "分",
+    "vsLastMonth": "先月比",
+    "currentStreak": "現在",
+    "bestStreak": "最高",
+    "weeklyRate": "週間",
+    "weeklyComparison": "今週 vs 先週",
+    "thisWeekLabel": "今週",
+    "lastWeekLabel": "先週",
+    "vsLastWeek": "先週比"
   },
   "Bgm": {
     "title": "BGM",
@@ -168,7 +179,14 @@
     "wed": "水",
     "thu": "木",
     "fri": "金",
-    "sat": "土"
+    "sat": "土",
+    "sunday": "日曜日",
+    "monday": "月曜日",
+    "tuesday": "火曜日",
+    "wednesday": "水曜日",
+    "thursday": "木曜日",
+    "friday": "金曜日",
+    "saturday": "土曜日"
   },
   "Time": {
     "hour": "時間",

@@ -41,7 +41,7 @@ export default function Home() {
           </aside>
 
           {/* Center: Timer */}
-          <section className="flex flex-col items-center justify-center">
+          <section className="flex flex-col items-center justify-start pt-8 xl:pt-12">
             <div className="text-center mb-4 md:mb-8 px-4">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
                 {t("title")}

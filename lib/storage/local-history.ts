@@ -116,6 +116,61 @@ export function getCurrentMonthData(): DayRecord[] {
 }
 
 /**
+ * 지난주 데이터 조회 (7일 전 ~ 14일 전)
+ */
+export function getLastWeekData(): DayRecord[] {
+  const history = getLocalHistory()
+  const result: DayRecord[] = []
+  const today = new Date()
+
+  for (let i = 7; i <= 13; i++) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+    const dateStr = date.toISOString().split("T")[0]
+
+    const existing = history.find((r) => r.date === dateStr)
+    result.push(
+      existing || {
+        date: dateStr,
+        totalMinutes: 0,
+        totalSessions: 0,
+      }
+    )
+  }
+
+  return result
+}
+
+/**
+ * 전월 데이터 조회
+ */
+export function getPreviousMonthData(): DayRecord[] {
+  const history = getLocalHistory()
+  const now = new Date()
+  const year = now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear()
+  const month = now.getMonth() === 0 ? 11 : now.getMonth() - 1
+
+  // 전월 1일부터 말일까지
+  const firstDay = new Date(year, month, 1)
+  const lastDay = new Date(year, month + 1, 0) // 해당 월의 마지막 날
+  const result: DayRecord[] = []
+
+  for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
+    const dateStr = d.toISOString().split("T")[0]
+    const existing = history.find((r) => r.date === dateStr)
+    result.push(
+      existing || {
+        date: dateStr,
+        totalMinutes: 0,
+        totalSessions: 0,
+      }
+    )
+  }
+
+  return result
+}
+
+/**
  * 전체 통계 요약
  */
 export function getTotalStats(): {

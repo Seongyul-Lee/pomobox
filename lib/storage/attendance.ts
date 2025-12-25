@@ -1,4 +1,5 @@
 const ATTENDANCE_KEY = "pomobox_attendance"
+const BEST_STREAK_KEY = "pomobox_best_streak"
 
 /**
  * 출석 기록 조회 (날짜 배열)
@@ -93,4 +94,74 @@ export function getMonthlyAttendance(year: number, month: number): number {
     const d = new Date(date)
     return d.getFullYear() === year && d.getMonth() === month
   }).length
+}
+
+/**
+ * 최고 연속 출석 일수 조회
+ */
+export function getBestStreak(): number {
+  if (typeof window === "undefined") return 0
+
+  try {
+    const stored = localStorage.getItem(BEST_STREAK_KEY)
+    if (!stored) return 0
+    return parseInt(stored, 10)
+  } catch {
+    return 0
+  }
+}
+
+/**
+ * 최고 연속 출석 일수 업데이트
+ */
+function updateBestStreak(currentStreak: number): void {
+  if (typeof window === "undefined") return
+
+  const bestStreak = getBestStreak()
+  if (currentStreak > bestStreak) {
+    try {
+      localStorage.setItem(BEST_STREAK_KEY, String(currentStreak))
+    } catch (error) {
+      console.error("Failed to save best streak:", error)
+    }
+  }
+}
+
+/**
+ * 현재 스트릭과 베스트 스트릭을 함께 반환
+ */
+export function getStreakStats(): { current: number; best: number } {
+  const current = getStreakDays()
+  const best = Math.max(getBestStreak(), current)
+
+  // 현재 스트릭이 베스트보다 높으면 업데이트
+  if (current > getBestStreak()) {
+    updateBestStreak(current)
+  }
+
+  return { current, best }
+}
+
+/**
+ * 최근 7일 출석률 계산
+ */
+export function getWeeklyAttendanceRate(): { attended: number; total: number; rate: number } {
+  const attendance = getAttendance()
+  const today = new Date()
+  let attended = 0
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+    const dateStr = date.toISOString().split("T")[0]
+    if (attendance.includes(dateStr)) {
+      attended++
+    }
+  }
+
+  return {
+    attended,
+    total: 7,
+    rate: Math.round((attended / 7) * 100)
+  }
 }

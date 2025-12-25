@@ -10,6 +10,7 @@ import { playSound } from "@/lib/sounds"
 import { useUser } from "@/hooks/use-user"
 import { recordSessionComplete } from "@/lib/supabase/stats"
 import { getLocalTodayStats, recordLocalSession } from "@/lib/storage/local-stats"
+import { getLocalSettings, saveLocalSettings, DEFAULT_SETTINGS } from "@/lib/storage/local-settings"
 import { GoalProgress } from "./goal-progress"
 import confetti from "canvas-confetti"
 
@@ -18,17 +19,6 @@ type TimerStatus = 'idle' | 'running' | 'paused'
 
 const TIMER_RADIUS = 140
 const TIMER_CIRCUMFERENCE = 2 * Math.PI * TIMER_RADIUS
-
-const DEFAULT_SETTINGS: TimerSettings = {
-  focusDuration: 25,
-  breakDuration: 5,
-  dailyGoal: 120,
-  notificationsEnabled: false,
-  soundEnabled: true,
-  soundCategory: 'melody',
-  soundType: 'achievement',
-  volume: 50,
-}
 
 export function PomodoroTimer() {
   const t = useTranslations("Timer")
@@ -51,8 +41,12 @@ export function PomodoroTimer() {
   const [targetEndAtMs, setTargetEndAtMs] = useState<number | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
 
-  // localStorage에서 오늘 통계 복원
+  // localStorage에서 설정 및 오늘 통계 복원
   useEffect(() => {
+    const savedSettings = getLocalSettings()
+    setSettings(savedSettings)
+    setTimeLeft(savedSettings.focusDuration * 60)
+
     const localStats = getLocalTodayStats()
     setTotalFocusMinutes(localStats.totalMinutes)
     setSessions(localStats.totalSessions)
@@ -283,6 +277,7 @@ export function PomodoroTimer() {
 
   const handleSettingsChange = (newSettings: TimerSettings) => {
     setSettings(newSettings)
+    saveLocalSettings(newSettings)
 
     if (status !== 'running') {
       if (phase === 'focus') {
@@ -340,7 +335,7 @@ export function PomodoroTimer() {
 
       <div className="relative flex items-center justify-center">
         <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90" viewBox="0 0 300 300">
-          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-zinc-300 dark:text-white/10" />
+          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted dark:text-white/10" />
           <circle
             cx="150"
             cy="150"
@@ -372,7 +367,7 @@ export function PomodoroTimer() {
       <div className="flex flex-col items-center gap-4">
         <div className="flex items-center gap-3">
           {status === 'running' ? (
-            <Button size="lg" onClick={handlePause} variant="secondary" className="gap-2 px-8 border-2 border-slate-400 dark:border-transparent">
+            <Button size="lg" onClick={handlePause} variant="secondary" className="gap-2 px-8 border-2 border-border dark:border-transparent">
               <Pause className="h-5 w-5" />
               {t('pause')}
             </Button>

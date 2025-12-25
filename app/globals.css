@@ -97,9 +97,9 @@
   --accent: #7c3aed;
   --accent-foreground: #f8fafc;
   --destructive: #f87171;
-  --border: rgb(148 163 184 / 10%);
-  --input: rgb(148 163 184 / 15%);
-  --ring: #7c3aed;
+  --border: rgb(148 163 184 / 15%);
+  --input: rgb(148 163 184 / 20%);
+  --ring: #a78bfa;
   --chart-1: #a78bfa;
   --chart-2: #22c55e;
   --chart-3: #f87171;
@@ -199,4 +199,15 @@
 @theme inline {
   --animate-collapsible-down: collapsible-down 200ms ease-out;
   --animate-collapsible-up: collapsible-up 200ms ease-out;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

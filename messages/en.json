@@ -135,7 +135,18 @@
     "checkedIn": "Checked in today!",
     "checkInPrompt": "Check in today",
     "monthlyAttendance": "This month",
-    "attendanceOnly": "Attendance"
+    "attendanceOnly": "Attendance",
+    "dailyGoal": "Daily Goal",
+    "goalReached": "Goal reached!",
+    "minute": "min",
+    "vsLastMonth": "vs last month",
+    "currentStreak": "Current",
+    "bestStreak": "Best",
+    "weeklyRate": "Weekly",
+    "weeklyComparison": "This Week vs Last Week",
+    "thisWeekLabel": "This Week",
+    "lastWeekLabel": "Last Week",
+    "vsLastWeek": "vs last week"
   },
   "Bgm": {
     "title": "Background Music",
@@ -162,13 +173,20 @@
     "pause": "Pause"
   },
   "Days": {
-    "sun": "S",
-    "mon": "M",
-    "tue": "T",
-    "wed": "W",
-    "thu": "T",
-    "fri": "F",
-    "sat": "S"
+    "sun": "SUN",
+    "mon": "MON",
+    "tue": "TUE",
+    "wed": "WED",
+    "thu": "THU",
+    "fri": "FRI",
+    "sat": "SAT",
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
   },
   "Time": {
     "hour": "Hour",

@@ -398,5 +398,29 @@
       "components/keyboard-shortcuts.tsx",
       "app/globals.css"
     ]
+  },
+  {
+    "topicName": "recharts-barchart-styling",
+    "context7CompatibleLibraryID": "/recharts/recharts",
+    "topic": "CartesianGrid BarChart Tooltip hover styling customization",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-26T00:00:00Z",
+    "keyAPIs": [
+      "CartesianGrid - strokeDasharray='3 3' for dashed grid lines",
+      "CartesianGrid - vertical={false} to hide vertical lines",
+      "Tooltip - content={<CustomTooltip />} for custom rendering",
+      "Tooltip - cursor={{ fill, radius }} for hover background",
+      "Bar - activeBar={{ fill, stroke, strokeWidth, filter }} for hover state",
+      "Bar - radius={[topLeft, topRight, bottomRight, bottomLeft]} for rounded corners"
+    ],
+    "constraints": [
+      "CartesianGrid stroke color should use CSS variables for theme support",
+      "Custom Tooltip receives active, payload, label props",
+      "activeBar filter: 'brightness(1.2)' for hover glow effect",
+      "Tooltip cursor fill with low opacity for subtle highlight"
+    ],
+    "appliesToFiles": [
+      "components/dashboard-left.tsx"
+    ]
   }
 ]

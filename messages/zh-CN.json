@@ -135,7 +135,18 @@
     "checkedIn": "今日已签到！",
     "checkInPrompt": "今日签到",
     "monthlyAttendance": "本月签到",
-    "attendanceOnly": "仅签到"
+    "attendanceOnly": "仅签到",
+    "dailyGoal": "每日目标",
+    "goalReached": "目标达成！",
+    "minute": "分钟",
+    "vsLastMonth": "与上月相比",
+    "currentStreak": "当前",
+    "bestStreak": "最高",
+    "weeklyRate": "周",
+    "weeklyComparison": "本周 vs 上周",
+    "thisWeekLabel": "本周",
+    "lastWeekLabel": "上周",
+    "vsLastWeek": "与上周相比"
   },
   "Bgm": {
     "title": "背景音乐",
@@ -168,7 +179,14 @@
     "wed": "三",
     "thu": "四",
     "fri": "五",
-    "sat": "六"
+    "sat": "六",
+    "sunday": "星期日",
+    "monday": "星期一",
+    "tuesday": "星期二",
+    "wednesday": "星期三",
+    "thursday": "星期四",
+    "friday": "星期五",
+    "saturday": "星期六"
   },
   "Time": {
     "hour": "小时",

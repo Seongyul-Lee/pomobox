@@ -135,7 +135,18 @@
     "checkedIn": "오늘 출석 완료!",
     "checkInPrompt": "오늘 출석 체크하세요",
     "monthlyAttendance": "이번 달 출석",
-    "attendanceOnly": "출석만"
+    "attendanceOnly": "출석만",
+    "dailyGoal": "일일 목표",
+    "goalReached": "목표 달성!",
+    "minute": "분",
+    "vsLastMonth": "전월 대비",
+    "currentStreak": "현재",
+    "bestStreak": "최고",
+    "weeklyRate": "주간",
+    "weeklyComparison": "이번 주 vs 지난 주",
+    "thisWeekLabel": "이번 주",
+    "lastWeekLabel": "지난 주",
+    "vsLastWeek": "지난주 대비"
   },
   "Bgm": {
     "title": "배경 음악",
@@ -168,7 +179,14 @@
     "wed": "수",
     "thu": "목",
     "fri": "금",
-    "sat": "토"
+    "sat": "토",
+    "sunday": "일요일",
+    "monday": "월요일",
+    "tuesday": "화요일",
+    "wednesday": "수요일",
+    "thursday": "목요일",
+    "friday": "금요일",
+    "saturday": "토요일"
   },
   "Time": {
     "hour": "시간",

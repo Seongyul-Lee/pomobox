@@ -197,7 +197,7 @@ export function BgmPanel() {
 
   return (
     <Card className="w-full glass-card border-0">
-      <CardContent className="p-3 space-y-2.5">
+      <CardContent className="pt-0.5 pb-3 px-3 space-y-2.5">
         {/* Track Info */}
         <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-lg bg-primary/10">

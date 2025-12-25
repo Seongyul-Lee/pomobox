@@ -13,7 +13,10 @@
     "skipToBreak": "休憩にスキップ",
     "backToFocus": "集中に戻る",
     "today": "今日: {sessions}回 ({minutes}分)",
-    "privacyPolicy": "プライバシーポリシー"
+    "privacyPolicy": "プライバシーポリシー",
+    "dailyGoal": "日目標",
+    "min": "分",
+    "goalReached": "目標達成！お疲れ様でした！"
   },
   "Settings": {
     "title": "設定",
@@ -38,7 +41,9 @@
     "stopTimerWarning": "時間を変更するにはタイマーを停止してください。",
     "settingsSaved": "設定が保存されました！",
     "settingsUpdated": "設定が更新されました。",
-    "language": "言語"
+    "language": "言語",
+    "dailyGoal": "日目標（分）",
+    "dailyGoalDescription": "1日の集中時間目標を設定"
   },
   "Home": {
     "title": "ポモドーロタイマー",
@@ -72,5 +77,70 @@
     "ko": "韓国語",
     "ja": "日本語",
     "zh-CN": "中国語（簡体字）"
+  },
+  "Auth": {
+    "loginTitle": "おかえりなさい",
+    "loginDescription": "ログインして集中セッションを同期",
+    "signupTitle": "アカウント作成",
+    "signupDescription": "生産性の追跡を始めましょう",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "login": "ログイン",
+    "signup": "新規登録",
+    "logout": "ログアウト",
+    "or": "または",
+    "continueWithGoogle": "Googleで続ける",
+    "noAccount": "アカウントをお持ちでないですか？",
+    "haveAccount": "すでにアカウントをお持ちですか？",
+    "backToTimer": "タイマーに戻る",
+    "checkEmail": "メールを確認してください",
+    "confirmationSent": "確認リンクを送信しました。",
+    "error": "エラー",
+    "unknownError": "予期しないエラーが発生しました"
+  },
+  "Dashboard": {
+    "title": "ダッシュボード",
+    "description": "集中時間と生産性を追跡",
+    "backToTimer": "タイマーに戻る",
+    "weeklyChart": "週間概要",
+    "noData": "まだデータがありません。集中セッションを完了すると統計が表示されます！",
+    "focusMinutes": "集中時間（分）",
+    "sessions": "セッション",
+    "totalFocusTime": "合計集中時間",
+    "totalSessions": "合計セッション",
+    "dailyAverage": "日平均",
+    "activeDays": "アクティブ日数",
+    "thisWeek": "今週",
+    "completed": "完了",
+    "perDay": "1日あたり",
+    "daysThisWeek": "今週の活動日",
+    "loginRequired": "詳細な統計を見るにはログインしてください",
+    "loginToView": "ログインして表示"
+  },
+  "Bgm": {
+    "title": "BGM",
+    "selectTrack": "トラックを選択",
+    "play": "再生",
+    "pause": "一時停止",
+    "nowPlaying": "再生中",
+    "categoryLofi": "Lo-fi / チル",
+    "categoryNature": "自然",
+    "categoryNoise": "ホワイトノイズ",
+    "lofiChill": "Lo-fi チル",
+    "lofiJazz": "Lo-fi ジャズ",
+    "lofiPiano": "Lo-fi ピアノ",
+    "rain": "雨音",
+    "forest": "森",
+    "ocean": "波の音",
+    "fireplace": "暖炉",
+    "whitenoise": "ホワイトノイズ",
+    "brownnoise": "ブラウンノイズ",
+    "pinknoise": "ピンクノイズ"
+  },
+  "Shortcuts": {
+    "title": "キーボードショートカット",
+    "startPause": "開始 / 一時停止",
+    "reset": "リセット",
+    "pause": "一時停止"
   }
 }

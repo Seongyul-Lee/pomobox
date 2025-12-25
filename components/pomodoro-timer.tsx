@@ -9,6 +9,11 @@ import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
 import { SettingsDialog, TimerSettings } from "./settings-dialog"
 import { AdBanner } from "./ad-banner"
 import { playSound } from "@/lib/sounds"
+import { useUser } from "@/hooks/use-user"
+import { recordSessionComplete } from "@/lib/supabase/stats"
+import { getLocalTodayStats, recordLocalSession } from "@/lib/storage/local-stats"
+import { GoalProgress } from "./goal-progress"
+import confetti from "canvas-confetti"
 
 type TimerPhase = 'focus' | 'break' | 'longBreak'
 type TimerStatus = 'idle' | 'running' | 'paused'
@@ -19,6 +24,7 @@ const TIMER_CIRCUMFERENCE = 2 * Math.PI * TIMER_RADIUS
 const DEFAULT_SETTINGS: TimerSettings = {
   focusDuration: 25,
   breakDuration: 5,
+  dailyGoal: 120,
   notificationsEnabled: false,
   soundEnabled: true,
   soundCategory: 'melody',
@@ -29,6 +35,7 @@ const DEFAULT_SETTINGS: TimerSettings = {
 export function PomodoroTimer() {
   const t = useTranslations("Timer")
   const searchParams = useSearchParams()
+  const { user } = useUser()
 
   // Test-only: ?testDuration=10 sets focus duration to 10 seconds
   const testDurationSec = searchParams.get('testDuration')
@@ -45,6 +52,13 @@ export function PomodoroTimer() {
   const [longBreakCount, setLongBreakCount] = useState(0)
   const [targetEndAtMs, setTargetEndAtMs] = useState<number | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
+
+  // localStorage에서 오늘 통계 복원
+  useEffect(() => {
+    const localStats = getLocalTodayStats()
+    setTotalFocusMinutes(localStats.totalMinutes)
+    setSessions(localStats.totalSessions)
+  }, [])
 
   const getDuration = () => {
     if (phase === 'focus') {
@@ -155,6 +169,23 @@ export function PomodoroTimer() {
       const newTotal = totalFocusMinutes + settings.focusDuration
       setTotalFocusMinutes(newTotal)
 
+      // localStorage에 세션 기록 (모든 사용자)
+      recordLocalSession(settings.focusDuration)
+
+      // 목표 달성 시 confetti 애니메이션
+      if (totalFocusMinutes < settings.dailyGoal && newTotal >= settings.dailyGoal) {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        })
+      }
+
+      // 로그인 사용자: Supabase에 세션 저장
+      if (user) {
+        recordSessionComplete(user.id, settings.focusDuration)
+      }
+
       // Long Break every 4 completed sessions (not skipped)
       if (newCompleted % 4 === 0) {
         setPhase('longBreak')
@@ -173,7 +204,7 @@ export function PomodoroTimer() {
     }
 
     setIsTransitioning(false) // Reset flag after transition
-  }, [timeLeft, status, phase, settings, completedSessions, totalFocusMinutes, sessions, isTransitioning, testDurationSec])
+  }, [timeLeft, status, phase, settings, completedSessions, totalFocusMinutes, sessions, isTransitioning, testDurationSec, user])
 
   const handleStart = useCallback(() => {
     if (isTransitioning) return
@@ -281,11 +312,13 @@ export function PomodoroTimer() {
 
   return (
     <div className="relative flex flex-col items-center gap-8">
-      <SettingsDialog
-        settings={settings}
-        isRunning={status === 'running'}
-        onSettingsChange={handleSettingsChange}
-      />
+      <div className="absolute top-4 right-4">
+        <SettingsDialog
+          settings={settings}
+          isRunning={status === 'running'}
+          onSettingsChange={handleSettingsChange}
+        />
+      </div>
 
       <div className="text-center">
         <p className="text-lg font-bold text-foreground uppercase tracking-wider mb-1">
@@ -373,6 +406,11 @@ export function PomodoroTimer() {
       <div className="text-muted-foreground text-sm font-medium">
         <span className="text-foreground">{t('today', { sessions, minutes: totalFocusMinutes })}</span>
       </div>
+
+      <GoalProgress
+        currentMinutes={totalFocusMinutes}
+        goalMinutes={settings.dailyGoal}
+      />
 
       {/* Ad Banner - Hidden until AdSense approval */}
       {/* <div className="w-full max-w-md mt-6">

@@ -4,7 +4,24 @@
       "mcp__context7__resolve-library-id",
       "mcp__context7__get-library-docs",
       "Bash(mkdir:*)",
-      "Bash(pnpm:*)"
+      "Bash(pnpm:*)",
+      "mcp__task-master-ai__next_task",
+      "mcp__task-master-ai__set_task_status",
+      "Skill(plan)",
+      "Skill(docs)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/enforce-docs.js"
+          }
+        ]
+      }
     ]
   }
 }

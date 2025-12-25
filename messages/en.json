@@ -13,7 +13,10 @@
     "skipToBreak": "Skip to Break",
     "backToFocus": "Back to Focus",
     "today": "Today: {sessions} sessions ({minutes} min)",
-    "privacyPolicy": "Privacy Policy"
+    "privacyPolicy": "Privacy Policy",
+    "dailyGoal": "Daily Goal",
+    "min": "min",
+    "goalReached": "Goal reached! Great job!"
   },
   "Settings": {
     "title": "Settings",
@@ -38,7 +41,9 @@
     "stopTimerWarning": "Stop the timer to change durations.",
     "settingsSaved": "Settings saved!",
     "settingsUpdated": "Your preferences have been updated.",
-    "language": "Language"
+    "language": "Language",
+    "dailyGoal": "Daily Goal (min)",
+    "dailyGoalDescription": "Set your daily focus time target"
   },
   "Home": {
     "title": "Pomodoro Timer",
@@ -72,5 +77,70 @@
     "ko": "Korean",
     "ja": "Japanese",
     "zh-CN": "Chinese (Simplified)"
+  },
+  "Auth": {
+    "loginTitle": "Welcome back",
+    "loginDescription": "Sign in to sync your focus sessions",
+    "signupTitle": "Create account",
+    "signupDescription": "Start tracking your productivity",
+    "email": "Email",
+    "password": "Password",
+    "login": "Sign in",
+    "signup": "Sign up",
+    "logout": "Sign out",
+    "or": "or",
+    "continueWithGoogle": "Continue with Google",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "backToTimer": "Back to Timer",
+    "checkEmail": "Check your email",
+    "confirmationSent": "We've sent you a confirmation link.",
+    "error": "Error",
+    "unknownError": "An unexpected error occurred"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "description": "Track your focus time and productivity",
+    "backToTimer": "Back to Timer",
+    "weeklyChart": "Weekly Overview",
+    "noData": "No data yet. Complete a focus session to see your stats!",
+    "focusMinutes": "Focus (min)",
+    "sessions": "Sessions",
+    "totalFocusTime": "Total Focus Time",
+    "totalSessions": "Total Sessions",
+    "dailyAverage": "Daily Average",
+    "activeDays": "Active Days",
+    "thisWeek": "This week",
+    "completed": "Completed",
+    "perDay": "Per day",
+    "daysThisWeek": "Days this week",
+    "loginRequired": "Sign in to view your detailed statistics",
+    "loginToView": "Sign in to view"
+  },
+  "Bgm": {
+    "title": "Background Music",
+    "selectTrack": "Select a track",
+    "play": "Play",
+    "pause": "Pause",
+    "nowPlaying": "Now playing",
+    "categoryLofi": "Lo-fi / Chill",
+    "categoryNature": "Nature",
+    "categoryNoise": "White Noise",
+    "lofiChill": "Lo-fi Chill",
+    "lofiJazz": "Lo-fi Jazz",
+    "lofiPiano": "Lo-fi Piano",
+    "rain": "Rain",
+    "forest": "Forest",
+    "ocean": "Ocean Waves",
+    "fireplace": "Fireplace",
+    "whitenoise": "White Noise",
+    "brownnoise": "Brown Noise",
+    "pinknoise": "Pink Noise"
+  },
+  "Shortcuts": {
+    "title": "Keyboard Shortcuts",
+    "startPause": "Start / Pause",
+    "reset": "Reset",
+    "pause": "Pause"
   }
 }

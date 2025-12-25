@@ -16,6 +16,7 @@ import { routing } from "@/i18n/routing"
 export interface TimerSettings {
   focusDuration: number
   breakDuration: number
+  dailyGoal: number
   notificationsEnabled: boolean
   soundEnabled: boolean
   soundCategory: SoundCategory
@@ -35,6 +36,14 @@ const BREAK_OPTIONS = [
   { label: "10 min", value: 10 },
   { label: "15 min", value: 15 },
   { label: "30 min", value: 30 },
+]
+
+const GOAL_OPTIONS = [
+  { label: "60 min", value: 60 },
+  { label: "90 min", value: 90 },
+  { label: "120 min", value: 120 },
+  { label: "180 min", value: 180 },
+  { label: "240 min", value: 240 },
 ]
 
 interface SettingsDialogProps {
@@ -125,7 +134,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="lg" className="absolute top-4 right-4 h-12 w-12" aria-label="Settings">
+        <Button variant="ghost" size="lg" className="h-12 w-12" aria-label="Settings">
           <Settings className="h-6 w-6" />
         </Button>
       </DialogTrigger>
@@ -306,6 +315,24 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
                 </Button>
               ))}
             </div>
+          </div>
+
+          {/* Daily Goal */}
+          <div>
+            <p className="font-medium mb-3">{t("dailyGoal")}</p>
+            <div className="grid grid-cols-5 gap-2">
+              {GOAL_OPTIONS.map((option) => (
+                <Button
+                  key={option.value}
+                  variant={localSettings.dailyGoal === option.value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setLocalSettings({ ...localSettings, dailyGoal: option.value })}
+                >
+                  {option.value}
+                </Button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">{t("dailyGoalDescription")}</p>
           </div>
 
           <Button

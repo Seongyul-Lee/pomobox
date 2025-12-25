@@ -13,7 +13,10 @@
     "skipToBreak": "跳到休息",
     "backToFocus": "返回专注",
     "today": "今天: {sessions}次 ({minutes}分钟)",
-    "privacyPolicy": "隐私政策"
+    "privacyPolicy": "隐私政策",
+    "dailyGoal": "每日目标",
+    "min": "分钟",
+    "goalReached": "目标达成！做得好！"
   },
   "Settings": {
     "title": "设置",
@@ -38,7 +41,9 @@
     "stopTimerWarning": "请停止计时器以更改时长。",
     "settingsSaved": "设置已保存！",
     "settingsUpdated": "您的偏好已更新。",
-    "language": "语言"
+    "language": "语言",
+    "dailyGoal": "每日目标（分钟）",
+    "dailyGoalDescription": "设置每日专注时间目标"
   },
   "Home": {
     "title": "番茄钟",
@@ -72,5 +77,70 @@
     "ko": "韩语",
     "ja": "日语",
     "zh-CN": "中文（简体）"
+  },
+  "Auth": {
+    "loginTitle": "欢迎回来",
+    "loginDescription": "登录以同步您的专注时段",
+    "signupTitle": "创建账户",
+    "signupDescription": "开始追踪您的效率",
+    "email": "邮箱",
+    "password": "密码",
+    "login": "登录",
+    "signup": "注册",
+    "logout": "退出登录",
+    "or": "或",
+    "continueWithGoogle": "使用 Google 继续",
+    "noAccount": "还没有账户？",
+    "haveAccount": "已有账户？",
+    "backToTimer": "返回计时器",
+    "checkEmail": "请查收邮件",
+    "confirmationSent": "我们已向您发送确认链接。",
+    "error": "错误",
+    "unknownError": "发生意外错误"
+  },
+  "Dashboard": {
+    "title": "仪表板",
+    "description": "追踪您的专注时间和效率",
+    "backToTimer": "返回计时器",
+    "weeklyChart": "周概览",
+    "noData": "暂无数据。完成专注时段后即可查看统计！",
+    "focusMinutes": "专注时间（分钟）",
+    "sessions": "时段",
+    "totalFocusTime": "总专注时间",
+    "totalSessions": "总时段数",
+    "dailyAverage": "日均",
+    "activeDays": "活跃天数",
+    "thisWeek": "本周",
+    "completed": "已完成",
+    "perDay": "每天",
+    "daysThisWeek": "本周活跃",
+    "loginRequired": "登录后查看详细统计",
+    "loginToView": "登录查看"
+  },
+  "Bgm": {
+    "title": "背景音乐",
+    "selectTrack": "选择曲目",
+    "play": "播放",
+    "pause": "暂停",
+    "nowPlaying": "正在播放",
+    "categoryLofi": "Lo-fi / 放松",
+    "categoryNature": "自然",
+    "categoryNoise": "白噪音",
+    "lofiChill": "Lo-fi 放松",
+    "lofiJazz": "Lo-fi 爵士",
+    "lofiPiano": "Lo-fi 钢琴",
+    "rain": "雨声",
+    "forest": "森林",
+    "ocean": "海浪声",
+    "fireplace": "壁炉",
+    "whitenoise": "白噪音",
+    "brownnoise": "棕噪音",
+    "pinknoise": "粉红噪音"
+  },
+  "Shortcuts": {
+    "title": "键盘快捷键",
+    "startPause": "开始 / 暂停",
+    "reset": "重置",
+    "pause": "暂停"
   }
 }

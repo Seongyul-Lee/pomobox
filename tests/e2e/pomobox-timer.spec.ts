@@ -223,8 +223,8 @@ test.describe('Statistics Regression Tests', () => {
     // Get current stats
     const initialStats = await page.locator('text=/Today:.*sessions/').textContent();
 
-    // Skip Break
-    await page.getByRole('button', { name: /skip break/i }).click();
+    // Skip Break (button text is "Back to Focus" in Break phase)
+    await page.getByRole('button', { name: /back to focus/i }).click();
 
     // Verify we're back to Focus
     await expect(page.locator('text=/Focus Session/i')).toBeVisible();
@@ -291,9 +291,9 @@ test.describe('Statistics Regression Tests', () => {
     await page.waitForTimeout(500);
     await page.getByRole('button', { name: /skip to break/i }).click();
 
-    // Skip break to return to Focus
+    // Skip break to return to Focus (button text is "Back to Focus" in Break phase)
     await page.waitForTimeout(500);
-    await page.getByRole('button', { name: /skip break/i }).click();
+    await page.getByRole('button', { name: /back to focus/i }).click();
 
     // Get current stats
     const initialStats = await page.locator('text=/Today:.*sessions/').textContent();

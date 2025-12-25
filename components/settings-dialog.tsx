@@ -259,7 +259,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange }: Settin
               </div>
             </div>
             <Select value={selectedLocale} onValueChange={setSelectedLocale}>
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-[140px]" aria-label="Select language">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

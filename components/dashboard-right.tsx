@@ -105,7 +105,7 @@ export function DashboardRight() {
             {t("activityCalendar")}
           </CardTitle>
           <span className="text-base text-muted-foreground">
-            {year}.{month + 1}
+            {year}.{month + 1}.{today}
           </span>
         </div>
       </CardHeader>

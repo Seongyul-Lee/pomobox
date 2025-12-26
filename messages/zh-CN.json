@@ -147,7 +147,8 @@
     "weeklyComparison": "本周 vs 上周",
     "thisWeekLabel": "本周",
     "lastWeekLabel": "上周",
-    "vsLastWeek": "与上周相比"
+    "vsLastWeek": "与上周相比",
+    "loginRequired": "登录后查看"
   },
   "Bgm": {
     "title": "背景音乐",

@@ -147,7 +147,8 @@
     "weeklyComparison": "This Week vs Last Week",
     "thisWeekLabel": "This Week",
     "lastWeekLabel": "Last Week",
-    "vsLastWeek": "vs last week"
+    "vsLastWeek": "vs last week",
+    "loginRequired": "Sign in to view"
   },
   "Bgm": {
     "title": "Background Music",

@@ -577,13 +577,25 @@
         ],
         "status": "pending",
         "subtasks": []
+      },
+      {
+        "id": "54",
+        "title": "대시보드 Supabase 연동",
+        "description": "로그인 사용자의 대시보드 데이터를 Supabase에서 조회하도록 연동",
+        "details": "DashboardLeft/Right 컴포넌트에서 useUser로 로그인 확인 후 Supabase 함수 호출. 비로그인 시 localStorage 폴백. lib/supabase/stats.ts에 조회 함수 추가, lib/supabase/attendance.ts 신규 생성",
+        "testStrategy": "",
+        "status": "done",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": [],
+        "updatedAt": "2025-12-25T21:22:02.593Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-25T15:13:35.121Z",
-      "taskCount": 42,
-      "completedCount": 37,
+      "lastModified": "2025-12-25T21:22:02.594Z",
+      "taskCount": 43,
+      "completedCount": 38,
       "tags": [
         "master"
       ]

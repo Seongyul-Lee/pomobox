@@ -147,7 +147,8 @@
     "weeklyComparison": "今週 vs 先週",
     "thisWeekLabel": "今週",
     "lastWeekLabel": "先週",
-    "vsLastWeek": "先週比"
+    "vsLastWeek": "先週比",
+    "loginRequired": "ログインで確認"
   },
   "Bgm": {
     "title": "BGM",

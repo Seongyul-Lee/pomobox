@@ -4,6 +4,8 @@ import { createClient } from "./client"
  * 출석 체크 (attendance 테이블에 기록)
  */
 export async function checkInToDB(userId: string): Promise<boolean> {
+  if (!userId) return false
+
   const supabase = createClient()
   const today = new Date().toISOString().split("T")[0]
 
@@ -35,6 +37,8 @@ export async function checkInToDB(userId: string): Promise<boolean> {
  * 오늘 출석 여부 확인
  */
 export async function isCheckedInTodayDB(userId: string): Promise<boolean> {
+  if (!userId) return false
+
   const supabase = createClient()
   const today = new Date().toISOString().split("T")[0]
 
@@ -52,6 +56,11 @@ export async function isCheckedInTodayDB(userId: string): Promise<boolean> {
  * 출석 기록 조회 (날짜 배열)
  */
 export async function getAttendanceFromDB(userId: string): Promise<string[]> {
+  // userId가 없으면 빈 배열 반환
+  if (!userId) {
+    return []
+  }
+
   const supabase = createClient()
 
   const { data, error } = await supabase
@@ -61,7 +70,10 @@ export async function getAttendanceFromDB(userId: string): Promise<string[]> {
     .order("date", { ascending: true })
 
   if (error) {
-    console.error("Failed to get attendance:", error)
+    // 의미있는 에러만 로그 출력 (message나 code가 있는 경우)
+    if (error.message || error.code) {
+      console.error("Failed to get attendance:", error)
+    }
     return []
   }
 
@@ -72,6 +84,8 @@ export async function getAttendanceFromDB(userId: string): Promise<string[]> {
  * 연속 출석 일수 계산
  */
 export async function getStreakDaysFromDB(userId: string): Promise<number> {
+  if (!userId) return 0
+
   const attendance = await getAttendanceFromDB(userId)
   if (attendance.length === 0) return 0
 
@@ -98,6 +112,8 @@ export async function getStreakDaysFromDB(userId: string): Promise<number> {
  * 최고 연속 출석 일수 조회
  */
 export async function getBestStreakFromDB(userId: string): Promise<number> {
+  if (!userId) return 0
+
   const supabase = createClient()
 
   const { data } = await supabase
@@ -113,6 +129,8 @@ export async function getBestStreakFromDB(userId: string): Promise<number> {
  * 최고 연속 출석 일수 업데이트
  */
 export async function updateBestStreakDB(userId: string, currentStreak: number): Promise<void> {
+  if (!userId) return
+
   const supabase = createClient()
   const bestStreak = await getBestStreakFromDB(userId)
 
@@ -131,6 +149,8 @@ export async function updateBestStreakDB(userId: string, currentStreak: number):
  * 스트릭 통계 (현재 + 베스트)
  */
 export async function getStreakStatsFromDB(userId: string): Promise<{ current: number; best: number }> {
+  if (!userId) return { current: 0, best: 0 }
+
   const current = await getStreakDaysFromDB(userId)
   const best = Math.max(await getBestStreakFromDB(userId), current)
 
@@ -150,6 +170,8 @@ export async function getWeeklyAttendanceRateFromDB(userId: string): Promise<{
   total: number
   rate: number
 }> {
+  if (!userId) return { attended: 0, total: 7, rate: 0 }
+
   const attendance = await getAttendanceFromDB(userId)
   const attendanceSet = new Set(attendance)
   const today = new Date()
@@ -179,6 +201,8 @@ export async function getMonthlyAttendanceFromDB(
   year: number,
   month: number
 ): Promise<number> {
+  if (!userId) return 0
+
   const attendance = await getAttendanceFromDB(userId)
   return attendance.filter((date) => {
     const d = new Date(date)

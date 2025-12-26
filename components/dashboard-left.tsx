@@ -9,7 +9,9 @@ import {
   TrendingUp,
   Calendar,
   Flame,
+  Lock,
 } from "lucide-react"
+import { useRealtimeFocusMinutes } from "@/hooks/use-realtime-focus"
 import {
   BarChart,
   Bar,
@@ -56,6 +58,20 @@ function formatTimeHourMin(minutes: number, tTime: (key: string) => string): str
   if (h === 0) return `${m} ${tTime("minute")}`
   if (m === 0) return `${h} ${tTime("hour")}`
   return `${h} ${tTime("hour")} ${m} ${tTime("minute")}`
+}
+
+// 로그인 필요 오버레이
+function LoginRequiredOverlay() {
+  const t = useTranslations("Dashboard")
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-[2px] rounded-xl">
+      <div className="flex flex-col items-center gap-2 text-muted-foreground">
+        <Lock className="h-6 w-6" />
+        <span className="text-sm font-medium">{t("loginRequired")}</span>
+      </div>
+    </div>
+  )
 }
 
 // 차트 커스텀 툴팁
@@ -105,16 +121,20 @@ function TodayCard({
   todaySessions,
   streakDays,
   goalMinutes,
+  realtimeMinutes,
 }: {
   todayMinutes: number
   todaySessions: number
   streakDays: number
   goalMinutes: number
+  realtimeMinutes: number
 }) {
   const t = useTranslations("Dashboard")
 
-  const progress = Math.min((todayMinutes / goalMinutes) * 100, 100)
-  const isGoalReached = todayMinutes >= goalMinutes
+  // 저장된 시간 + 실시간 경과 시간
+  const displayMinutes = todayMinutes + realtimeMinutes
+  const progress = Math.min((displayMinutes / goalMinutes) * 100, 100)
+  const isGoalReached = displayMinutes >= goalMinutes
 
   return (
     <Card className="glass-card border-0">
@@ -128,7 +148,7 @@ function TodayCard({
         <div className="grid grid-cols-3 gap-3">
           <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10">
             <Clock className="h-5 w-5 text-primary mb-1.5" />
-            <p className="text-sm font-semibold">{formatTime(todayMinutes)}</p>
+            <p className="text-sm font-semibold">{formatTime(displayMinutes)}</p>
             <p className="text-xs text-muted-foreground">{t("todayFocus")}</p>
           </div>
           <div className="flex flex-col items-center p-3 rounded-xl bg-green-500/10">
@@ -148,7 +168,7 @@ function TodayCard({
           <div className="flex items-center justify-between text-sm mb-2">
             <span className="text-muted-foreground">{t("dailyGoal")}</span>
             <span className={isGoalReached ? "text-green-500 font-medium" : "text-foreground"}>
-              {Math.round(progress)}% ({todayMinutes}/{goalMinutes}{t("minute")})
+              {Math.round(progress)}% ({displayMinutes}/{goalMinutes}{t("minute")})
             </span>
           </div>
           <div className="h-2.5 bg-muted/30 rounded-full overflow-hidden">
@@ -171,13 +191,14 @@ function TodayCard({
 }
 
 // 주간 현황 카드
-function WeeklyCard({ data }: { data: DayRecord[] }) {
+function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; isLoggedIn: boolean; realtimeMinutes: number }) {
   const t = useTranslations("Dashboard")
   const tDays = useTranslations("Days")
   const tTime = useTranslations("Time")
 
-  // 총 시간 및 세션
-  const totalMinutes = data.reduce((sum, d) => sum + d.totalMinutes, 0)
+  // 총 시간 및 세션 (실시간 시간 포함)
+  const storedMinutes = data.reduce((sum, d) => sum + d.totalMinutes, 0)
+  const totalMinutes = storedMinutes + realtimeMinutes
   const totalSessions = data.reduce((sum, d) => sum + d.totalSessions, 0)
   const avgMinutes = Math.round(totalMinutes / 7)
 
@@ -211,47 +232,50 @@ function WeeklyCard({ data }: { data: DayRecord[] }) {
             {t("weeklyStats")}
           </CardTitle>
         </div>
-        <div className="flex justify-between text-sm text-muted-foreground mt-1.5">
-          <span>{t("totalSessions")}: {totalSessions}</span>
-          <span>{t("dailyAvg")}: {formatTimeHourMin(avgMinutes, tTime)}</span>
-        </div>
       </CardHeader>
-      <CardContent>
-        <div className="h-36">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} barSize={28}>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke="hsl(var(--border))"
-                strokeOpacity={0.5}
-              />
-              <XAxis
-                dataKey="day"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 13, fontWeight: 600, fill: "rgba(248, 250, 252, 0.8)" }}
-              />
-              <YAxis hide />
-              <Tooltip
-                content={<CustomTooltip t={t} />}
-                cursor={{ fill: "hsl(var(--primary) / 0.1)", radius: 4 }}
-              />
-              <Bar
-                dataKey="minutes"
-                fill="hsl(var(--chart-2))"
-                radius={[6, 6, 0, 0]}
-                activeBar={{
-                  fill: "hsl(var(--chart-2))",
-                  fillOpacity: 1,
-                  stroke: "hsl(var(--chart-2))",
-                  strokeWidth: 2,
-                  filter: "brightness(1.2)",
-                }}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+      <CardContent className="relative">
+        <div className={!isLoggedIn ? "blur-sm pointer-events-none select-none" : ""}>
+          <div className="flex justify-between text-sm text-muted-foreground mb-2">
+            <span>{t("totalSessions")}: {totalSessions}</span>
+            <span>{t("dailyAvg")}: {formatTimeHourMin(avgMinutes, tTime)}</span>
+          </div>
+          <div className="h-36">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} barSize={28}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="hsl(var(--border))"
+                  strokeOpacity={0.5}
+                />
+                <XAxis
+                  dataKey="day"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 13, fontWeight: 600, fill: "rgba(248, 250, 252, 0.8)" }}
+                />
+                <YAxis hide />
+                <Tooltip
+                  content={<CustomTooltip t={t} />}
+                  cursor={{ fill: "hsl(var(--primary) / 0.1)", radius: 4 }}
+                />
+                <Bar
+                  dataKey="minutes"
+                  fill="hsl(var(--chart-2))"
+                  radius={[6, 6, 0, 0]}
+                  activeBar={{
+                    fill: "hsl(var(--chart-2))",
+                    fillOpacity: 1,
+                    stroke: "hsl(var(--chart-2))",
+                    strokeWidth: 2,
+                    filter: "brightness(1.2)",
+                  }}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
+        {!isLoggedIn && <LoginRequiredOverlay />}
       </CardContent>
     </Card>
   )
@@ -276,12 +300,13 @@ function TrendIndicator({ current, previous, label }: { current: number; previou
 }
 
 // 주간 비교 카드
-function WeeklyComparisonCard({ thisWeekData, lastWeekData }: { thisWeekData: DayRecord[]; lastWeekData: DayRecord[] }) {
+function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtimeMinutes }: { thisWeekData: DayRecord[]; lastWeekData: DayRecord[]; isLoggedIn: boolean; realtimeMinutes: number }) {
   const t = useTranslations("Dashboard")
   const tTime = useTranslations("Time")
 
-  // 이번 주 통계
-  const thisWeekMinutes = thisWeekData.reduce((sum, d) => sum + d.totalMinutes, 0)
+  // 이번 주 통계 (실시간 시간 포함)
+  const storedThisWeekMinutes = thisWeekData.reduce((sum, d) => sum + d.totalMinutes, 0)
+  const thisWeekMinutes = storedThisWeekMinutes + realtimeMinutes
   const thisWeekSessions = thisWeekData.reduce((sum, d) => sum + d.totalSessions, 0)
 
   // 지난 주 통계
@@ -302,53 +327,57 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData }: { thisWeekData: Da
           {t("weeklyComparison")}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 gap-4">
-          {/* 시간 비교 */}
-          <div className="space-y-3">
-            <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10">
-              <p className="text-xs text-muted-foreground mb-1">{t("thisWeekLabel")}</p>
-              <p className="text-lg font-bold text-primary">{formatTimeHourMin(thisWeekMinutes, tTime)}</p>
-            </div>
-            <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20">
-              <p className="text-xs text-muted-foreground mb-1">{t("lastWeekLabel")}</p>
-              <p className="text-lg font-semibold">{formatTimeHourMin(lastWeekMinutes, tTime)}</p>
-            </div>
-            {lastWeekMinutes > 0 && (
-              <div className={`text-center text-sm font-medium ${minutesDiff >= 0 ? "text-green-400" : "text-rose-400"}`}>
-                {minutesDiff >= 0 ? "+" : ""}{minutesPercent}%
+      <CardContent className="relative">
+        <div className={!isLoggedIn ? "blur-sm pointer-events-none select-none" : ""}>
+          <div className="grid grid-cols-2 gap-4">
+            {/* 시간 비교 */}
+            <div className="space-y-3">
+              <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10">
+                <p className="text-xs text-muted-foreground mb-1">{t("thisWeekLabel")}</p>
+                <p className="text-lg font-bold text-primary">{formatTimeHourMin(thisWeekMinutes, tTime)}</p>
               </div>
-            )}
-          </div>
+              <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20">
+                <p className="text-xs text-muted-foreground mb-1">{t("lastWeekLabel")}</p>
+                <p className="text-lg font-semibold">{formatTimeHourMin(lastWeekMinutes, tTime)}</p>
+              </div>
+              {lastWeekMinutes > 0 && (
+                <div className={`text-center text-sm font-medium ${minutesDiff >= 0 ? "text-green-400" : "text-rose-400"}`}>
+                  {minutesDiff >= 0 ? "+" : ""}{minutesPercent}%
+                </div>
+              )}
+            </div>
 
-          {/* 세션 비교 */}
-          <div className="space-y-3">
-            <div className="flex flex-col items-center p-3 rounded-xl bg-green-500/10">
-              <p className="text-xs text-muted-foreground mb-1">{t("thisWeekLabel")}</p>
-              <p className="text-lg font-bold text-green-400">{thisWeekSessions} {t("sessions")}</p>
-            </div>
-            <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20">
-              <p className="text-xs text-muted-foreground mb-1">{t("lastWeekLabel")}</p>
-              <p className="text-lg font-semibold">{lastWeekSessions} {t("sessions")}</p>
-            </div>
-            {lastWeekSessions > 0 && (
-              <div className={`text-center text-sm font-medium ${sessionsDiff >= 0 ? "text-green-400" : "text-rose-400"}`}>
-                {sessionsDiff >= 0 ? "+" : ""}{sessionsPercent}%
+            {/* 세션 비교 */}
+            <div className="space-y-3">
+              <div className="flex flex-col items-center p-3 rounded-xl bg-green-500/10">
+                <p className="text-xs text-muted-foreground mb-1">{t("thisWeekLabel")}</p>
+                <p className="text-lg font-bold text-green-400">{thisWeekSessions} {t("sessions")}</p>
               </div>
-            )}
+              <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20">
+                <p className="text-xs text-muted-foreground mb-1">{t("lastWeekLabel")}</p>
+                <p className="text-lg font-semibold">{lastWeekSessions} {t("sessions")}</p>
+              </div>
+              {lastWeekSessions > 0 && (
+                <div className={`text-center text-sm font-medium ${sessionsDiff >= 0 ? "text-green-400" : "text-rose-400"}`}>
+                  {sessionsDiff >= 0 ? "+" : ""}{sessionsPercent}%
+                </div>
+              )}
+            </div>
           </div>
         </div>
+        {!isLoggedIn && <LoginRequiredOverlay />}
       </CardContent>
     </Card>
   )
 }
 
 // 월간 현황 카드 (핵심 지표 4개 + 전월 대비)
-function MonthlyCard({ data, prevData }: { data: DayRecord[]; prevData: DayRecord[] }) {
+function MonthlyCard({ data, prevData, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; prevData: DayRecord[]; isLoggedIn: boolean; realtimeMinutes: number }) {
   const t = useTranslations("Dashboard")
 
-  // 이번 달 핵심 지표 계산
-  const totalMinutes = data.reduce((sum, d) => sum + d.totalMinutes, 0)
+  // 이번 달 핵심 지표 계산 (실시간 시간 포함)
+  const storedMinutes = data.reduce((sum, d) => sum + d.totalMinutes, 0)
+  const totalMinutes = storedMinutes + realtimeMinutes
   const totalSessions = data.reduce((sum, d) => sum + d.totalSessions, 0)
   const activeDays = data.filter((d) => d.totalMinutes > 0).length
   const daysElapsed = new Date().getDate() // 이번 달 경과 일수
@@ -369,33 +398,36 @@ function MonthlyCard({ data, prevData }: { data: DayRecord[]; prevData: DayRecor
           {t("monthlyStats")}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col items-center p-4 rounded-xl bg-primary/10">
-            <Clock className="h-5 w-5 text-primary mb-1.5" />
-            <p className="text-base font-semibold">{formatTime(totalMinutes)}</p>
-            <p className="text-xs text-muted-foreground">{t("totalFocusTime")}</p>
-            <TrendIndicator current={totalMinutes} previous={prevTotalMinutes} label={t("vsLastMonth")} />
-          </div>
-          <div className="flex flex-col items-center p-4 rounded-xl bg-green-500/10">
-            <Target className="h-5 w-5 text-green-400 mb-1.5" />
-            <p className="text-base font-semibold">{totalSessions}</p>
-            <p className="text-xs text-muted-foreground">{t("totalSessions")}</p>
-            <TrendIndicator current={totalSessions} previous={prevTotalSessions} label={t("vsLastMonth")} />
-          </div>
-          <div className="flex flex-col items-center p-4 rounded-xl bg-sky-500/10">
-            <Calendar className="h-5 w-5 text-sky-400 mb-1.5" />
-            <p className="text-base font-semibold">{formatTime(avgMinutes)}</p>
-            <p className="text-xs text-muted-foreground">{t("dailyAvg")}</p>
-            <TrendIndicator current={avgMinutes} previous={prevAvgMinutes} label={t("vsLastMonth")} />
-          </div>
-          <div className="flex flex-col items-center p-4 rounded-xl bg-amber-500/10">
-            <Flame className="h-5 w-5 text-amber-400 mb-1.5" />
-            <p className="text-base font-semibold">{activeDays}{t("days")}</p>
-            <p className="text-xs text-muted-foreground">{t("activeDays")}</p>
-            <TrendIndicator current={activeDays} previous={prevActiveDays} label={t("vsLastMonth")} />
+      <CardContent className="relative">
+        <div className={!isLoggedIn ? "blur-sm pointer-events-none select-none" : ""}>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col items-center p-4 rounded-xl bg-primary/10">
+              <Clock className="h-5 w-5 text-primary mb-1.5" />
+              <p className="text-base font-semibold">{formatTime(totalMinutes)}</p>
+              <p className="text-xs text-muted-foreground">{t("totalFocusTime")}</p>
+              <TrendIndicator current={totalMinutes} previous={prevTotalMinutes} label={t("vsLastMonth")} />
+            </div>
+            <div className="flex flex-col items-center p-4 rounded-xl bg-green-500/10">
+              <Target className="h-5 w-5 text-green-400 mb-1.5" />
+              <p className="text-base font-semibold">{totalSessions}</p>
+              <p className="text-xs text-muted-foreground">{t("totalSessions")}</p>
+              <TrendIndicator current={totalSessions} previous={prevTotalSessions} label={t("vsLastMonth")} />
+            </div>
+            <div className="flex flex-col items-center p-4 rounded-xl bg-sky-500/10">
+              <Calendar className="h-5 w-5 text-sky-400 mb-1.5" />
+              <p className="text-base font-semibold">{formatTime(avgMinutes)}</p>
+              <p className="text-xs text-muted-foreground">{t("dailyAvg")}</p>
+              <TrendIndicator current={avgMinutes} previous={prevAvgMinutes} label={t("vsLastMonth")} />
+            </div>
+            <div className="flex flex-col items-center p-4 rounded-xl bg-amber-500/10">
+              <Flame className="h-5 w-5 text-amber-400 mb-1.5" />
+              <p className="text-base font-semibold">{activeDays}{t("days")}</p>
+              <p className="text-xs text-muted-foreground">{t("activeDays")}</p>
+              <TrendIndicator current={activeDays} previous={prevActiveDays} label={t("vsLastMonth")} />
+            </div>
           </div>
         </div>
+        {!isLoggedIn && <LoginRequiredOverlay />}
       </CardContent>
     </Card>
   )
@@ -403,6 +435,7 @@ function MonthlyCard({ data, prevData }: { data: DayRecord[]; prevData: DayRecor
 
 export function DashboardLeft() {
   const { user } = useUser()
+  const realtimeMinutes = useRealtimeFocusMinutes()
   const [weeklyData, setWeeklyData] = useState<DayRecord[]>([])
   const [lastWeekData, setLastWeekData] = useState<DayRecord[]>([])
   const [monthlyData, setMonthlyData] = useState<DayRecord[]>([])
@@ -460,7 +493,17 @@ export function DashboardLeft() {
     })
   }, [])
 
+  // user 변경 시 (로그인/로그아웃) 상태 초기화 후 데이터 로드
   useEffect(() => {
+    // 상태 초기화
+    setWeeklyData([])
+    setLastWeekData([])
+    setMonthlyData([])
+    setPrevMonthData([])
+    setTotalStats({ streakDays: 0 })
+    setTodayStats({ totalMinutes: 0, totalSessions: 0 })
+
+    // 새 데이터 로드
     loadData()
   }, [loadData])
 
@@ -472,16 +515,17 @@ export function DashboardLeft() {
         todaySessions={todayStats.totalSessions}
         streakDays={totalStats.streakDays}
         goalMinutes={goalMinutes}
+        realtimeMinutes={realtimeMinutes}
       />
 
       {/* 주간 현황 */}
-      <WeeklyCard data={weeklyData} />
+      <WeeklyCard data={weeklyData} isLoggedIn={!!user} realtimeMinutes={realtimeMinutes} />
 
       {/* 주간 비교 */}
-      <WeeklyComparisonCard thisWeekData={weeklyData} lastWeekData={lastWeekData} />
+      <WeeklyComparisonCard thisWeekData={weeklyData} lastWeekData={lastWeekData} isLoggedIn={!!user} realtimeMinutes={realtimeMinutes} />
 
       {/* 월간 현황 */}
-      <MonthlyCard data={monthlyData} prevData={prevMonthData} />
+      <MonthlyCard data={monthlyData} prevData={prevMonthData} isLoggedIn={!!user} realtimeMinutes={realtimeMinutes} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
@@ -12,6 +12,7 @@ import { recordSessionComplete } from "@/lib/supabase/stats"
 import { getLocalTodayStats, recordLocalSession } from "@/lib/storage/local-stats"
 import { getLocalSettings, saveLocalSettings, DEFAULT_SETTINGS } from "@/lib/storage/local-settings"
 import { GoalProgress } from "./goal-progress"
+import { useTimerContext } from "@/contexts/timer-context"
 import confetti from "canvas-confetti"
 
 type TimerPhase = 'focus' | 'break' | 'longBreak'
@@ -24,6 +25,7 @@ export function PomodoroTimer() {
   const t = useTranslations("Timer")
   const searchParams = useSearchParams()
   const { user } = useUser()
+  const timerContext = useTimerContext()
 
   // Test-only: ?testDuration=10 sets focus duration to 10 seconds
   const testDurationSec = searchParams.get('testDuration')
@@ -40,6 +42,9 @@ export function PomodoroTimer() {
   const [longBreakCount, setLongBreakCount] = useState(0)
   const [targetEndAtMs, setTargetEndAtMs] = useState<number | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
+
+  // Focus 세션 시작 시간 (경과 시간 계산용)
+  const focusSessionStartRef = useRef<number | null>(null)
 
   // localStorage에서 설정 및 오늘 통계 복원
   useEffect(() => {
@@ -178,6 +183,11 @@ export function PomodoroTimer() {
         recordSessionComplete(user.id, settings.focusDuration)
       }
 
+      // Context 업데이트: Focus 완료 → 휴식으로 전환
+      timerContext.stopSession()
+      focusSessionStartRef.current = null
+      timerContext.setFocusPhase(false)
+
       // Long Break every 4 completed sessions (not skipped)
       if (newCompleted % 4 === 0) {
         setPhase('longBreak')
@@ -188,7 +198,10 @@ export function PomodoroTimer() {
         setTimeLeft(settings.breakDuration * 60)
       }
     } else {
+      // 휴식 완료 → Focus로 전환
       setPhase('focus')
+      timerContext.setFocusPhase(true)
+
       const focusDuration = testDurationSec !== null && testDurationSec > 0
         ? testDurationSec
         : settings.focusDuration * 60
@@ -196,34 +209,77 @@ export function PomodoroTimer() {
     }
 
     setIsTransitioning(false) // Reset flag after transition
-  }, [timeLeft, status, phase, settings, completedSessions, totalFocusMinutes, sessions, isTransitioning, testDurationSec, user])
+  }, [timeLeft, status, phase, settings, completedSessions, totalFocusMinutes, sessions, isTransitioning, testDurationSec, user, timerContext])
 
   const handleStart = useCallback(() => {
     if (isTransitioning) return
     setStatus('running')
-  }, [isTransitioning])
+
+    // Focus 세션 시작 시 Context 및 시작 시간 설정
+    if (phase === 'focus') {
+      focusSessionStartRef.current = Date.now()
+      timerContext.startFocusSession()
+    }
+  }, [isTransitioning, phase, timerContext])
 
   const handlePause = useCallback(() => {
     if (isTransitioning) return
     setStatus('paused')
     setTargetEndAtMs(null)
-  }, [isTransitioning])
+
+    // Context 업데이트 (일시정지)
+    if (phase === 'focus') {
+      timerContext.pauseSession()
+    }
+  }, [isTransitioning, phase, timerContext])
 
   const handleResume = useCallback(() => {
     if (isTransitioning) return
     setStatus('running')
-  }, [isTransitioning])
+
+    // Context 업데이트 (재개)
+    if (phase === 'focus') {
+      timerContext.resumeSession()
+    }
+  }, [isTransitioning, phase, timerContext])
 
   const handleReset = useCallback(() => {
     if (isTransitioning) return
+
+    // Focus 세션 중 Reset 시 경과 시간 저장
+    if (phase === 'focus' && focusSessionStartRef.current !== null) {
+      const elapsedMs = Date.now() - focusSessionStartRef.current
+      const elapsedMinutes = Math.floor(elapsedMs / 60000)
+
+      // 1분 이상 경과한 경우에만 저장
+      if (elapsedMinutes >= 1) {
+        // 로컬 통계 업데이트
+        setTotalFocusMinutes((prev) => prev + elapsedMinutes)
+
+        // localStorage에 저장 (모든 사용자)
+        recordLocalSession(elapsedMinutes)
+
+        // 로그인 사용자: Supabase에도 저장
+        if (user) {
+          recordSessionComplete(user.id, elapsedMinutes)
+        }
+      }
+    }
+
+    // Context 및 ref 초기화
+    timerContext.stopSession()
+    focusSessionStartRef.current = null
+
     setStatus('idle')
     setTargetEndAtMs(null)
     setPhase('focus')
+    timerContext.setFocusPhase(true)
+
     const focusDuration = testDurationSec !== null && testDurationSec > 0
       ? testDurationSec
       : settings.focusDuration * 60
     setTimeLeft(focusDuration)
-  }, [settings.focusDuration, isTransitioning, testDurationSec])
+  }, [settings.focusDuration, isTransitioning, testDurationSec, phase, user, timerContext])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -258,22 +314,47 @@ export function PomodoroTimer() {
 
   const handleSkip = useCallback(() => {
     if (isTransitioning) return
+
+    // Focus 세션 스킵 시 경과 시간 저장
+    if (phase === 'focus' && focusSessionStartRef.current !== null) {
+      const elapsedMs = Date.now() - focusSessionStartRef.current
+      const elapsedMinutes = Math.floor(elapsedMs / 60000)
+
+      // 1분 이상 경과한 경우에만 저장
+      if (elapsedMinutes >= 1) {
+        setTotalFocusMinutes((prev) => prev + elapsedMinutes)
+        recordLocalSession(elapsedMinutes)
+
+        if (user) {
+          recordSessionComplete(user.id, elapsedMinutes)
+        }
+      }
+    }
+
     setStatus('idle')
     setTargetEndAtMs(null)
+
     if (phase === 'focus') {
       // Skip increments completedSessions but NOT sessions
       // Long Break is triggered only by completed Focus (not skipped)
       const newCompleted = completedSessions + 1
       setCompletedSessions(newCompleted)
 
+      // Context 업데이트: Focus → 휴식
+      timerContext.stopSession()
+      focusSessionStartRef.current = null
+      timerContext.setFocusPhase(false)
+
       // Always go to Short Break when skipping Focus
       setPhase('break')
       setTimeLeft(settings.breakDuration * 60)
     } else {
+      // 휴식 → Focus로 전환
+      timerContext.setFocusPhase(true)
       setPhase('focus')
       setTimeLeft(settings.focusDuration * 60)
     }
-  }, [phase, settings, completedSessions, isTransitioning])
+  }, [phase, settings, completedSessions, isTransitioning, user, timerContext])
 
   const handleSettingsChange = (newSettings: TimerSettings) => {
     setSettings(newSettings)

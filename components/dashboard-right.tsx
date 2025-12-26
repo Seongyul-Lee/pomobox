@@ -99,7 +99,17 @@ export function DashboardRight() {
     setWeeklyRate(getWeeklyAttendanceRate())
   }, [])
 
+  // user 변경 시 (로그인/로그아웃) 상태 초기화 후 데이터 로드
   useEffect(() => {
+    // 상태 초기화
+    setAttendance([])
+    setIsCheckedIn(false)
+    setStreakStats({ current: 0, best: 0 })
+    setWeeklyRate({ attended: 0, total: 7, rate: 0 })
+    setMonthlyData([])
+    setSelectedDay(null)
+
+    // 새 데이터 로드
     loadData()
   }, [loadData])
 

@@ -147,7 +147,8 @@
     "weeklyComparison": "이번 주 vs 지난 주",
     "thisWeekLabel": "이번 주",
     "lastWeekLabel": "지난 주",
-    "vsLastWeek": "지난주 대비"
+    "vsLastWeek": "지난주 대비",
+    "loginRequired": "로그인하면 볼 수 있어요"
   },
   "Bgm": {
     "title": "배경 음악",

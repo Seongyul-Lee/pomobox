@@ -65,8 +65,8 @@ export default function PrivacyPage() {
   return (
     <main className="min-h-screen text-foreground">
       {/* Dark mode gradient background */}
-      <div className="fixed inset-0 -z-10 bg-background dark:bg-[#0a0a12]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(124,58,237,0.15),transparent),radial-gradient(ellipse_60%_40%_at_100%_100%,rgba(59,130,246,0.1),transparent),radial-gradient(ellipse_50%_30%_at_0%_100%,rgba(168,85,247,0.1),transparent)]" />
+      <div className="fixed inset-0 -z-10 bg-background dark:bg-[oklch(4.7%_0.025_284)]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(48.3%_0.3375_293/0.15),transparent),radial-gradient(ellipse_60%_40%_at_100%_100%,oklch(59.1%_0.2625_255/0.1),transparent),radial-gradient(ellipse_50%_30%_at_0%_100%,oklch(62.3%_0.325_293/0.1),transparent)]" />
       </div>
 
       <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6">

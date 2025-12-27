@@ -89,6 +89,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/ui": "^4.0.16",
+    "culori": "^4.0.2",
     "eslint": "^8.57.1",
     "eslint-config-next": "^16.1.1",
     "png-to-ico": "^3.0.1",

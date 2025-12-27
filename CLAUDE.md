@@ -106,3 +106,43 @@
 ## 11) Dependencies
 - 의존성 추가 최소화 (Plan에 이유/대안 기록)
 - 외부 문서: Context7 baseline 통해서만
+
+---
+
+## 12) UI/UX 반응형 작업 가이드
+
+### 12.1 기준 해상도
+- **개발 기준**: QHD (2560x1440)
+- 모든 UI/UX 작업은 QHD 해상도에서 먼저 완성
+- 기본 CSS 스타일 = QHD 최적화
+
+### 12.2 다른 해상도 대응 (미디어 쿼리 방식)
+**원칙**: 기본 스타일은 QHD, 다른 해상도는 미디어 쿼리로 "조정"
+
+```css
+/* 기본 스타일 = QHD (2560x1440) 기준 */
+:root { font-size: 125%; }
+.side-ad { display: flex; }
+
+/* FHD (1920x1080) 이하: 축소 조정 */
+@media (max-width: 1920px) {
+  :root { font-size: 90%; }
+  .dashboard-grid {
+    grid-template-columns: 380px minmax(360px, 1fr) 380px;
+    max-width: 1350px;
+  }
+  .side-ad { display: none; }
+}
+```
+
+### 12.3 조정 항목
+| 항목 | QHD 기준 (기본) | FHD 조정 (미디어쿼리) |
+|------|----------------|----------------------|
+| font-size | 125% | 90% |
+| 사이드 패널 너비 | 570px | 380px |
+| max-width | 1800px | 1350px |
+| 사이드 광고 | 표시 | 숨김 |
+
+### 12.4 확인 방법
+- Playwright MCP로 해상도별 스크린샷 확인
+- `browser_resize` → `browser_navigate` → `browser_take_screenshot`

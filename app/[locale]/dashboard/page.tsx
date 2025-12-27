@@ -42,7 +42,7 @@ export default function DashboardPage() {
 
   if (userLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-950">
+      <div className="min-h-screen flex items-center justify-center bg-[oklch(98.5%_0.0025_247.8)] dark:bg-[oklch(14.5%_0.00625_285.8)]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
@@ -59,7 +59,7 @@ export default function DashboardPage() {
   const averagePerDay = daysActive > 0 ? Math.round(totalMinutes / daysActive) : 0
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-zinc-950 text-slate-900 dark:text-white p-4 md:p-8">
+    <main className="min-h-screen bg-[oklch(98.5%_0.0025_247.8)] dark:bg-[oklch(14.5%_0.00625_285.8)] text-[oklch(21.7%_0.026_264.4)] dark:text-[oklch(100%_0_0)] p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex items-center justify-between">
           <div>

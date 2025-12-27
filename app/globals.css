@@ -81,38 +81,390 @@
 }
 
 .dark {
-  /* Task Automate inspired dark theme */
-  --background: #0a0a12;
-  --foreground: #f8fafc;
-  --card: rgb(30 30 45 / 80%);
-  --card-foreground: #f8fafc;
-  --popover: rgb(30 30 45 / 95%);
-  --popover-foreground: #f8fafc;
-  --primary: #a78bfa;
-  --primary-foreground: #0f0f1a;
-  --secondary: rgb(45 45 65 / 80%);
-  --secondary-foreground: #f8fafc;
-  --muted: rgb(45 45 65 / 60%);
-  --muted-foreground: #94a3b8;
-  --accent: #7c3aed;
-  --accent-foreground: #f8fafc;
-  --destructive: #f87171;
-  --border: rgb(148 163 184 / 15%);
-  --input: rgb(148 163 184 / 20%);
-  --ring: #a78bfa;
-  --chart-1: #a78bfa;
-  --chart-2: #22c55e;
-  --chart-3: #f87171;
-  --chart-4: #38bdf8;
-  --chart-5: #fbbf24;
-  --sidebar: rgb(20 20 30 / 80%);
-  --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #a78bfa;
-  --sidebar-primary-foreground: #f8fafc;
-  --sidebar-accent: rgb(124 58 237 / 20%);
-  --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: rgb(148 163 184 / 10%);
-  --sidebar-ring: #7c3aed;
+  /* Task Automate inspired dark theme - OKLCH (vivid) */
+  --background: oklch(14.9% 0.022 284.1);
+  --foreground: oklch(98.4% 0.003 247.9);
+  --card: oklch(24.2% 0.035 284.1 / 80%);
+  --card-foreground: oklch(98.4% 0.003 247.9);
+  --popover: oklch(24.2% 0.035 284.1 / 95%);
+  --popover-foreground: oklch(98.4% 0.003 247.9);
+  --primary: oklch(72% 0.20 293.5);
+  --primary-foreground: oklch(17.4% 0.028 283.8);
+  --secondary: oklch(30.6% 0.045 284.1 / 80%);
+  --secondary-foreground: oklch(98.4% 0.003 247.9);
+  --muted: oklch(30.6% 0.045 284.1 / 60%);
+  --muted-foreground: oklch(71.1% 0.044 256.8);
+  --accent: oklch(56% 0.30 293.0);
+  --accent-foreground: oklch(98.4% 0.003 247.9);
+  --destructive: oklch(68% 0.22 22.2);
+  --border: oklch(71.1% 0.044 256.8 / 15%);
+  --input: oklch(71.1% 0.044 256.8 / 20%);
+  --ring: oklch(72% 0.20 293.5);
+  --chart-1: oklch(72% 0.20 293.5);
+  --chart-2: oklch(72% 0.24 149.6);
+  --chart-3: oklch(68% 0.22 22.2);
+  --chart-4: oklch(75% 0.18 232.7);
+  --chart-5: oklch(84% 0.21 84.4);
+  --sidebar: oklch(19.6% 0.025 284.4 / 80%);
+  --sidebar-foreground: oklch(98.4% 0.003 247.9);
+  --sidebar-primary: oklch(72% 0.20 293.5);
+  --sidebar-primary-foreground: oklch(98.4% 0.003 247.9);
+  --sidebar-accent: oklch(56% 0.30 293.0 / 20%);
+  --sidebar-accent-foreground: oklch(98.4% 0.003 247.9);
+  --sidebar-border: oklch(71.1% 0.044 256.8 / 10%);
+  --sidebar-ring: oklch(56% 0.30 293.0);
+}
+
+/* ===== daisyUI Inspired Themes ===== */
+
+/* 1. Synthwave - 80년대 네온 레트로 */
+.synthwave {
+  --background: oklch(15% 0.05 280);
+  --foreground: oklch(95% 0.02 320);
+  --card: oklch(20% 0.06 280 / 90%);
+  --card-foreground: oklch(95% 0.02 320);
+  --popover: oklch(20% 0.06 280 / 95%);
+  --popover-foreground: oklch(95% 0.02 320);
+  --primary: oklch(70% 0.25 330);
+  --primary-foreground: oklch(15% 0.02 280);
+  --secondary: oklch(60% 0.20 200);
+  --secondary-foreground: oklch(95% 0.01 200);
+  --muted: oklch(25% 0.04 280 / 60%);
+  --muted-foreground: oklch(70% 0.03 280);
+  --accent: oklch(75% 0.22 60);
+  --accent-foreground: oklch(15% 0.02 60);
+  --destructive: oklch(60% 0.25 25);
+  --border: oklch(70% 0.25 330 / 20%);
+  --input: oklch(70% 0.25 330 / 25%);
+  --ring: oklch(70% 0.25 330);
+  --chart-1: oklch(70% 0.25 330);
+  --chart-2: oklch(60% 0.20 200);
+  --chart-3: oklch(75% 0.22 60);
+  --chart-4: oklch(65% 0.20 280);
+  --chart-5: oklch(80% 0.15 180);
+  --sidebar: oklch(18% 0.05 280 / 80%);
+  --sidebar-foreground: oklch(95% 0.02 320);
+  --sidebar-primary: oklch(70% 0.25 330);
+  --sidebar-primary-foreground: oklch(95% 0.02 320);
+  --sidebar-accent: oklch(70% 0.25 330 / 20%);
+  --sidebar-accent-foreground: oklch(95% 0.02 320);
+  --sidebar-border: oklch(70% 0.25 330 / 10%);
+  --sidebar-ring: oklch(70% 0.25 330);
+}
+
+/* 2. Cyberpunk - 사이버펑크 미래지향 */
+.cyberpunk {
+  --background: oklch(12% 0.04 80);
+  --foreground: oklch(95% 0.03 60);
+  --card: oklch(18% 0.05 80 / 90%);
+  --card-foreground: oklch(95% 0.03 60);
+  --popover: oklch(18% 0.05 80 / 95%);
+  --popover-foreground: oklch(95% 0.03 60);
+  --primary: oklch(85% 0.25 85);
+  --primary-foreground: oklch(12% 0.04 80);
+  --secondary: oklch(65% 0.25 330);
+  --secondary-foreground: oklch(95% 0.01 330);
+  --muted: oklch(22% 0.04 80 / 60%);
+  --muted-foreground: oklch(70% 0.03 80);
+  --accent: oklch(70% 0.22 200);
+  --accent-foreground: oklch(12% 0.02 200);
+  --destructive: oklch(60% 0.25 25);
+  --border: oklch(85% 0.25 85 / 20%);
+  --input: oklch(85% 0.25 85 / 25%);
+  --ring: oklch(85% 0.25 85);
+  --chart-1: oklch(85% 0.25 85);
+  --chart-2: oklch(65% 0.25 330);
+  --chart-3: oklch(70% 0.22 200);
+  --chart-4: oklch(75% 0.18 60);
+  --chart-5: oklch(60% 0.20 280);
+  --sidebar: oklch(15% 0.04 80 / 80%);
+  --sidebar-foreground: oklch(95% 0.03 60);
+  --sidebar-primary: oklch(85% 0.25 85);
+  --sidebar-primary-foreground: oklch(95% 0.03 60);
+  --sidebar-accent: oklch(85% 0.25 85 / 20%);
+  --sidebar-accent-foreground: oklch(95% 0.03 60);
+  --sidebar-border: oklch(85% 0.25 85 / 10%);
+  --sidebar-ring: oklch(85% 0.25 85);
+}
+
+/* 3. Dracula - 유명 다크 테마 */
+.dracula {
+  --background: oklch(22% 0.04 280);
+  --foreground: oklch(95% 0.01 280);
+  --card: oklch(26% 0.05 280 / 90%);
+  --card-foreground: oklch(95% 0.01 280);
+  --popover: oklch(26% 0.05 280 / 95%);
+  --popover-foreground: oklch(95% 0.01 280);
+  --primary: oklch(75% 0.20 300);
+  --primary-foreground: oklch(22% 0.04 280);
+  --secondary: oklch(65% 0.18 170);
+  --secondary-foreground: oklch(22% 0.02 170);
+  --muted: oklch(30% 0.04 280 / 60%);
+  --muted-foreground: oklch(70% 0.02 280);
+  --accent: oklch(80% 0.20 330);
+  --accent-foreground: oklch(22% 0.02 330);
+  --destructive: oklch(65% 0.25 15);
+  --border: oklch(75% 0.20 300 / 20%);
+  --input: oklch(75% 0.20 300 / 25%);
+  --ring: oklch(75% 0.20 300);
+  --chart-1: oklch(75% 0.20 300);
+  --chart-2: oklch(65% 0.18 170);
+  --chart-3: oklch(80% 0.20 330);
+  --chart-4: oklch(70% 0.22 60);
+  --chart-5: oklch(65% 0.20 200);
+  --sidebar: oklch(24% 0.04 280 / 80%);
+  --sidebar-foreground: oklch(95% 0.01 280);
+  --sidebar-primary: oklch(75% 0.20 300);
+  --sidebar-primary-foreground: oklch(95% 0.01 280);
+  --sidebar-accent: oklch(75% 0.20 300 / 20%);
+  --sidebar-accent-foreground: oklch(95% 0.01 280);
+  --sidebar-border: oklch(75% 0.20 300 / 10%);
+  --sidebar-ring: oklch(75% 0.20 300);
+}
+
+/* 4. Coffee - 따뜻한 커피 브라운 */
+.coffee {
+  --background: oklch(18% 0.03 50);
+  --foreground: oklch(92% 0.02 60);
+  --card: oklch(24% 0.04 50 / 90%);
+  --card-foreground: oklch(92% 0.02 60);
+  --popover: oklch(24% 0.04 50 / 95%);
+  --popover-foreground: oklch(92% 0.02 60);
+  --primary: oklch(70% 0.12 60);
+  --primary-foreground: oklch(18% 0.03 50);
+  --secondary: oklch(55% 0.10 40);
+  --secondary-foreground: oklch(92% 0.01 40);
+  --muted: oklch(28% 0.03 50 / 60%);
+  --muted-foreground: oklch(65% 0.03 50);
+  --accent: oklch(75% 0.15 80);
+  --accent-foreground: oklch(18% 0.02 80);
+  --destructive: oklch(55% 0.20 25);
+  --border: oklch(70% 0.12 60 / 20%);
+  --input: oklch(70% 0.12 60 / 25%);
+  --ring: oklch(70% 0.12 60);
+  --chart-1: oklch(70% 0.12 60);
+  --chart-2: oklch(55% 0.10 40);
+  --chart-3: oklch(75% 0.15 80);
+  --chart-4: oklch(60% 0.08 30);
+  --chart-5: oklch(80% 0.10 90);
+  --sidebar: oklch(20% 0.03 50 / 80%);
+  --sidebar-foreground: oklch(92% 0.02 60);
+  --sidebar-primary: oklch(70% 0.12 60);
+  --sidebar-primary-foreground: oklch(92% 0.02 60);
+  --sidebar-accent: oklch(70% 0.12 60 / 20%);
+  --sidebar-accent-foreground: oklch(92% 0.02 60);
+  --sidebar-border: oklch(70% 0.12 60 / 10%);
+  --sidebar-ring: oklch(70% 0.12 60);
+}
+
+/* 5. Nord - 북유럽 차분한 스타일 */
+.nord {
+  --background: oklch(25% 0.02 240);
+  --foreground: oklch(92% 0.01 220);
+  --card: oklch(30% 0.025 240 / 90%);
+  --card-foreground: oklch(92% 0.01 220);
+  --popover: oklch(30% 0.025 240 / 95%);
+  --popover-foreground: oklch(92% 0.01 220);
+  --primary: oklch(70% 0.12 220);
+  --primary-foreground: oklch(25% 0.02 240);
+  --secondary: oklch(55% 0.08 180);
+  --secondary-foreground: oklch(92% 0.01 180);
+  --muted: oklch(35% 0.02 240 / 60%);
+  --muted-foreground: oklch(65% 0.02 240);
+  --accent: oklch(72% 0.15 200);
+  --accent-foreground: oklch(25% 0.02 200);
+  --destructive: oklch(60% 0.18 20);
+  --border: oklch(70% 0.12 220 / 20%);
+  --input: oklch(70% 0.12 220 / 25%);
+  --ring: oklch(70% 0.12 220);
+  --chart-1: oklch(70% 0.12 220);
+  --chart-2: oklch(55% 0.08 180);
+  --chart-3: oklch(72% 0.15 200);
+  --chart-4: oklch(65% 0.10 280);
+  --chart-5: oklch(75% 0.12 140);
+  --sidebar: oklch(27% 0.02 240 / 80%);
+  --sidebar-foreground: oklch(92% 0.01 220);
+  --sidebar-primary: oklch(70% 0.12 220);
+  --sidebar-primary-foreground: oklch(92% 0.01 220);
+  --sidebar-accent: oklch(70% 0.12 220 / 20%);
+  --sidebar-accent-foreground: oklch(92% 0.01 220);
+  --sidebar-border: oklch(70% 0.12 220 / 10%);
+  --sidebar-ring: oklch(70% 0.12 220);
+}
+
+/* 6. Cupcake - 달콤한 파스텔 */
+.cupcake {
+  --background: oklch(97% 0.01 350);
+  --foreground: oklch(30% 0.03 350);
+  --card: oklch(99% 0.005 350);
+  --card-foreground: oklch(30% 0.03 350);
+  --popover: oklch(99% 0.005 350 / 98%);
+  --popover-foreground: oklch(30% 0.03 350);
+  --primary: oklch(70% 0.15 340);
+  --primary-foreground: oklch(98% 0.01 340);
+  --secondary: oklch(75% 0.12 200);
+  --secondary-foreground: oklch(25% 0.02 200);
+  --muted: oklch(92% 0.02 350 / 60%);
+  --muted-foreground: oklch(50% 0.02 350);
+  --accent: oklch(80% 0.15 80);
+  --accent-foreground: oklch(25% 0.02 80);
+  --destructive: oklch(60% 0.22 20);
+  --border: oklch(70% 0.15 340 / 25%);
+  --input: oklch(70% 0.15 340 / 20%);
+  --ring: oklch(70% 0.15 340);
+  --chart-1: oklch(70% 0.15 340);
+  --chart-2: oklch(75% 0.12 200);
+  --chart-3: oklch(80% 0.15 80);
+  --chart-4: oklch(72% 0.14 280);
+  --chart-5: oklch(78% 0.12 140);
+  --sidebar: oklch(96% 0.01 350 / 90%);
+  --sidebar-foreground: oklch(30% 0.03 350);
+  --sidebar-primary: oklch(70% 0.15 340);
+  --sidebar-primary-foreground: oklch(30% 0.03 350);
+  --sidebar-accent: oklch(70% 0.15 340 / 15%);
+  --sidebar-accent-foreground: oklch(30% 0.03 350);
+  --sidebar-border: oklch(70% 0.15 340 / 15%);
+  --sidebar-ring: oklch(70% 0.15 340);
+}
+
+/* 7. Valentine - 핑크빛 발렌타인 */
+.valentine {
+  --background: oklch(95% 0.02 350);
+  --foreground: oklch(30% 0.04 340);
+  --card: oklch(98% 0.015 350);
+  --card-foreground: oklch(30% 0.04 340);
+  --popover: oklch(98% 0.015 350 / 98%);
+  --popover-foreground: oklch(30% 0.04 340);
+  --primary: oklch(65% 0.22 350);
+  --primary-foreground: oklch(98% 0.01 350);
+  --secondary: oklch(75% 0.18 320);
+  --secondary-foreground: oklch(25% 0.02 320);
+  --muted: oklch(90% 0.03 350 / 60%);
+  --muted-foreground: oklch(50% 0.03 350);
+  --accent: oklch(80% 0.15 20);
+  --accent-foreground: oklch(25% 0.02 20);
+  --destructive: oklch(55% 0.25 15);
+  --border: oklch(65% 0.22 350 / 25%);
+  --input: oklch(65% 0.22 350 / 20%);
+  --ring: oklch(65% 0.22 350);
+  --chart-1: oklch(65% 0.22 350);
+  --chart-2: oklch(75% 0.18 320);
+  --chart-3: oklch(80% 0.15 20);
+  --chart-4: oklch(70% 0.20 280);
+  --chart-5: oklch(72% 0.16 60);
+  --sidebar: oklch(94% 0.02 350 / 90%);
+  --sidebar-foreground: oklch(30% 0.04 340);
+  --sidebar-primary: oklch(65% 0.22 350);
+  --sidebar-primary-foreground: oklch(30% 0.04 340);
+  --sidebar-accent: oklch(65% 0.22 350 / 15%);
+  --sidebar-accent-foreground: oklch(30% 0.04 340);
+  --sidebar-border: oklch(65% 0.22 350 / 15%);
+  --sidebar-ring: oklch(65% 0.22 350);
+}
+
+/* 8. Aqua - 바다/수중 블루 */
+.aqua {
+  --background: oklch(18% 0.04 220);
+  --foreground: oklch(95% 0.01 200);
+  --card: oklch(24% 0.05 220 / 90%);
+  --card-foreground: oklch(95% 0.01 200);
+  --popover: oklch(24% 0.05 220 / 95%);
+  --popover-foreground: oklch(95% 0.01 200);
+  --primary: oklch(75% 0.18 200);
+  --primary-foreground: oklch(18% 0.04 220);
+  --secondary: oklch(65% 0.15 180);
+  --secondary-foreground: oklch(18% 0.02 180);
+  --muted: oklch(28% 0.04 220 / 60%);
+  --muted-foreground: oklch(65% 0.03 220);
+  --accent: oklch(70% 0.20 160);
+  --accent-foreground: oklch(18% 0.02 160);
+  --destructive: oklch(60% 0.22 20);
+  --border: oklch(75% 0.18 200 / 20%);
+  --input: oklch(75% 0.18 200 / 25%);
+  --ring: oklch(75% 0.18 200);
+  --chart-1: oklch(75% 0.18 200);
+  --chart-2: oklch(65% 0.15 180);
+  --chart-3: oklch(70% 0.20 160);
+  --chart-4: oklch(72% 0.12 240);
+  --chart-5: oklch(78% 0.14 140);
+  --sidebar: oklch(20% 0.04 220 / 80%);
+  --sidebar-foreground: oklch(95% 0.01 200);
+  --sidebar-primary: oklch(75% 0.18 200);
+  --sidebar-primary-foreground: oklch(95% 0.01 200);
+  --sidebar-accent: oklch(75% 0.18 200 / 20%);
+  --sidebar-accent-foreground: oklch(95% 0.01 200);
+  --sidebar-border: oklch(75% 0.18 200 / 10%);
+  --sidebar-ring: oklch(75% 0.18 200);
+}
+
+/* 9. Forest - 숲 느낌 그린 */
+.forest {
+  --background: oklch(15% 0.03 150);
+  --foreground: oklch(92% 0.01 140);
+  --card: oklch(20% 0.04 150 / 90%);
+  --card-foreground: oklch(92% 0.01 140);
+  --popover: oklch(20% 0.04 150 / 95%);
+  --popover-foreground: oklch(92% 0.01 140);
+  --primary: oklch(65% 0.18 145);
+  --primary-foreground: oklch(15% 0.03 150);
+  --secondary: oklch(55% 0.12 120);
+  --secondary-foreground: oklch(92% 0.01 120);
+  --muted: oklch(25% 0.03 150 / 60%);
+  --muted-foreground: oklch(60% 0.03 150);
+  --accent: oklch(70% 0.15 90);
+  --accent-foreground: oklch(15% 0.02 90);
+  --destructive: oklch(55% 0.22 25);
+  --border: oklch(65% 0.18 145 / 20%);
+  --input: oklch(65% 0.18 145 / 25%);
+  --ring: oklch(65% 0.18 145);
+  --chart-1: oklch(65% 0.18 145);
+  --chart-2: oklch(55% 0.12 120);
+  --chart-3: oklch(70% 0.15 90);
+  --chart-4: oklch(60% 0.10 180);
+  --chart-5: oklch(72% 0.14 60);
+  --sidebar: oklch(17% 0.03 150 / 80%);
+  --sidebar-foreground: oklch(92% 0.01 140);
+  --sidebar-primary: oklch(65% 0.18 145);
+  --sidebar-primary-foreground: oklch(92% 0.01 140);
+  --sidebar-accent: oklch(65% 0.18 145 / 20%);
+  --sidebar-accent-foreground: oklch(92% 0.01 140);
+  --sidebar-border: oklch(65% 0.18 145 / 10%);
+  --sidebar-ring: oklch(65% 0.18 145);
+}
+
+/* 10. Halloween - 할로윈 오렌지/블랙 */
+.halloween {
+  --background: oklch(12% 0.02 50);
+  --foreground: oklch(95% 0.02 60);
+  --card: oklch(18% 0.03 50 / 90%);
+  --card-foreground: oklch(95% 0.02 60);
+  --popover: oklch(18% 0.03 50 / 95%);
+  --popover-foreground: oklch(95% 0.02 60);
+  --primary: oklch(75% 0.22 55);
+  --primary-foreground: oklch(12% 0.02 50);
+  --secondary: oklch(55% 0.18 300);
+  --secondary-foreground: oklch(95% 0.01 300);
+  --muted: oklch(22% 0.02 50 / 60%);
+  --muted-foreground: oklch(60% 0.02 50);
+  --accent: oklch(65% 0.20 140);
+  --accent-foreground: oklch(12% 0.02 140);
+  --destructive: oklch(55% 0.25 20);
+  --border: oklch(75% 0.22 55 / 20%);
+  --input: oklch(75% 0.22 55 / 25%);
+  --ring: oklch(75% 0.22 55);
+  --chart-1: oklch(75% 0.22 55);
+  --chart-2: oklch(55% 0.18 300);
+  --chart-3: oklch(65% 0.20 140);
+  --chart-4: oklch(70% 0.15 30);
+  --chart-5: oklch(60% 0.12 280);
+  --sidebar: oklch(14% 0.02 50 / 80%);
+  --sidebar-foreground: oklch(95% 0.02 60);
+  --sidebar-primary: oklch(75% 0.22 55);
+  --sidebar-primary-foreground: oklch(95% 0.02 60);
+  --sidebar-accent: oklch(75% 0.22 55 / 20%);
+  --sidebar-accent-foreground: oklch(95% 0.02 60);
+  --sidebar-border: oklch(75% 0.22 55 / 10%);
+  --sidebar-ring: oklch(75% 0.22 55);
 }
 
 @layer base {
@@ -166,6 +518,51 @@
       transform: translateX(-50%);
     }
   }
+
+  /* ===== Mobile (≤768px): 모바일 최적화 레이아웃 ===== */
+  @media (max-width: 768px) {
+    :root {
+      font-size: 87.5%;  /* 14px 기준 */
+    }
+
+    /* 사이드 광고 숨김 */
+    .side-ad {
+      display: none !important;
+    }
+
+    /* 컨텐츠 영역 패딩 축소 */
+    .content-area {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+
+    /* 대시보드 그리드: 단일 컬럼 */
+    .dashboard-grid {
+      grid-template-columns: 1fr !important;
+      max-width: 100% !important;
+      gap: 1rem !important;
+    }
+
+    /* 타이머 섹션 상단 패딩 축소 */
+    main section {
+      padding-top: 1rem !important;
+    }
+
+    /* 제목 크기 조정 */
+    main section h1 {
+      font-size: 1.5rem !important;
+    }
+
+    /* 부제목 크기 조정 */
+    main section > div.text-center:first-child > p {
+      font-size: 0.875rem !important;
+    }
+
+    /* 하단 광고 배너 축소 */
+    main > div:last-child > div > div:first-child {
+      height: 60px !important;
+    }
+  }
 }
 
 /* Writing mode for vertical text */
@@ -176,48 +573,80 @@
 
 /* Dark mode gradient background with glow effects */
 .dark body {
+  /* === 기존 (Original) ===
   background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgb(124 58 237 / 15%), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgb(59 130 246 / 10%), transparent),
-    radial-gradient(ellipse 50% 30% at 0% 100%, rgb(168 85 247 / 10%), transparent),
-    #0a0a12;
+    radial-gradient(ellipse 80% 50% at 50% -20%, oklch(56% 0.30 293.0 / 18%), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, oklch(62% 0.24 259.8 / 12%), transparent),
+    radial-gradient(ellipse 50% 30% at 0% 100%, oklch(63% 0.28 303.9 / 12%), transparent),
+    oklch(14.9% 0.022 284.1);
   background-attachment: fixed;
+  */
+
+  /* === 옵션 1: 도트 패턴 (미니멀 테크) ===
+  background:
+    radial-gradient(oklch(72% 0.20 293.5 / 8%) 1px, transparent 1px),
+    radial-gradient(ellipse 80% 50% at 50% -20%, oklch(56% 0.30 293.0 / 18%), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, oklch(62% 0.24 259.8 / 12%), transparent),
+    oklch(14.9% 0.022 284.1);
+  background-size: 24px 24px, 100% 100%, 100% 100%, 100% 100%;
+  background-attachment: fixed;
+  */
+
+  /* === 옵션 3: 그리드 라인 (모던 대시보드) ===
+  background:
+    linear-gradient(to right, oklch(72% 0.20 293.5 / 5%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(72% 0.20 293.5 / 5%) 1px, transparent 1px),
+    radial-gradient(ellipse 80% 50% at 50% -20%, oklch(56% 0.30 293.0 / 18%), transparent),
+    oklch(14.9% 0.022 284.1);
+  background-size: 48px 48px, 48px 48px, 100% 100%, 100% 100%;
+  background-attachment: fixed;
+  */
+
+  /* === 옵션 3: 그리드 라인 (모던 대시보드) === */
+  background:
+    linear-gradient(to right, oklch(72% 0.20 293.5 / 5%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(72% 0.20 293.5 / 5%) 1px, transparent 1px),
+    radial-gradient(ellipse 80% 50% at 50% -20%, oklch(56% 0.30 293.0 / 18%), transparent),
+    oklch(14.9% 0.022 284.1);
+  background-size: 48px 48px, 48px 48px, 100% 100%, 100% 100%;
+  background-attachment: fixed;
+
   min-height: 100vh;
 }
 
-/* Glassmorphism card style for dark mode */
+/* Glassmorphism card style for dark mode (채도 +25%) */
 .dark .glass-card {
-  background: rgb(30 30 45 / 60%);
+  background: oklch(24.2% 0.035 284.1 / 60%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgb(148 163 184 / 10%);
+  border: 1px solid oklch(71.1% 0.044 256.8 / 10%);
   box-shadow:
-    0 4px 6px -1px rgb(0 0 0 / 20%),
-    0 2px 4px -2px rgb(0 0 0 / 20%),
-    inset 0 1px 0 0 rgb(255 255 255 / 5%);
+    0 4px 6px -1px oklch(0% 0 0 / 20%),
+    0 2px 4px -2px oklch(0% 0 0 / 20%),
+    inset 0 1px 0 0 oklch(100% 0 0 / 5%);
 }
 
-/* Glassmorphism panel style */
+/* Glassmorphism panel style (채도 +25%) */
 .dark .glass-panel {
-  background: rgb(20 20 30 / 70%);
+  background: oklch(19.6% 0.025 284.4 / 70%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgb(148 163 184 / 8%);
+  border: 1px solid oklch(71.1% 0.044 256.8 / 8%);
 }
 
 /* Status color bars */
-.status-bar-focus { background: #a78bfa; }
-.status-bar-break { background: #22c55e; }
-.status-bar-longbreak { background: #38bdf8; }
-.status-bar-paused { background: #fbbf24; }
+.status-bar-focus { background: oklch(72% 0.20 293.5); }
+.status-bar-break { background: oklch(72% 0.24 149.6); }
+.status-bar-longbreak { background: oklch(75% 0.18 232.7); }
+.status-bar-paused { background: oklch(84% 0.21 84.4); }
 
 /* Glow effect for primary elements */
 .dark .glow-primary {
-  box-shadow: 0 0 20px rgb(124 58 237 / 30%);
+  box-shadow: 0 0 20px oklch(56% 0.30 293.0 / 35%);
 }
 
 .dark .glow-success {
-  box-shadow: 0 0 20px rgb(34 197 94 / 30%);
+  box-shadow: 0 0 20px oklch(72% 0.24 149.6 / 35%);
 }
 
 /* ===== Hover Effects (inspired by do-bit.com) ===== */
@@ -228,10 +657,10 @@
 }
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px oklch(0% 0 0 / 15%);
 }
 .dark .hover-lift:hover {
-  box-shadow: 0 8px 25px rgba(124, 58, 237, 0.15);
+  box-shadow: 0 8px 25px oklch(56% 0.30 293.0 / 18%);
 }
 
 /* Card scale effect - gentle scale up */
@@ -247,11 +676,11 @@
   transition: all 0.2s ease;
 }
 .hover-stat:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: oklch(100% 0 0 / 8%);
   transform: translateY(-1px);
 }
 .dark .hover-stat:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: oklch(100% 0 0 / 5%);
 }
 
 /* Button glow effect - enhanced on hover */
@@ -259,7 +688,7 @@
   transition: all 0.2s ease;
 }
 .hover-glow:hover {
-  box-shadow: 0 0 25px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 0 25px oklch(56% 0.30 293.0 / 45%);
   transform: scale(1.02);
 }
 
@@ -280,12 +709,12 @@
   transition: all 0.2s ease;
 }
 .dark .glass-card:hover {
-  background: rgb(35 35 55 / 70%);
-  border-color: rgb(148 163 184 / 15%);
+  background: oklch(26.6% 0.046 283.6 / 70%);
+  border-color: oklch(71.1% 0.044 256.8 / 15%);
   box-shadow:
-    0 8px 32px -4px rgb(0 0 0 / 30%),
-    0 4px 8px -2px rgb(0 0 0 / 20%),
-    inset 0 1px 0 0 rgb(255 255 255 / 8%);
+    0 8px 32px -4px oklch(0% 0 0 / 30%),
+    0 4px 8px -2px oklch(0% 0 0 / 20%),
+    inset 0 1px 0 0 oklch(100% 0 0 / 8%);
 }
 
 /* Navigation/Button shine effect */
@@ -303,7 +732,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.1),
+    oklch(100% 0 0 / 10%),
     transparent
   );
   transition: left 0.5s ease;
@@ -329,17 +758,11 @@
 }
 .hover-timer-display:hover {
   transform: scale(1.08);
-  color: #a78bfa;
+  color: oklch(56% 0.30 293.0);
 }
 .dark .hover-timer-display:hover {
-  text-shadow: 0 0 25px rgba(167, 139, 250, 0.6);
-}
-.hover-timer-display:hover {
-  color: #7c3aed;
-}
-.dark .hover-timer-display:hover {
-  color: #c4b5fd;
-  text-shadow: 0 0 25px rgba(167, 139, 250, 0.6);
+  color: oklch(82% 0.13 293.6);
+  text-shadow: 0 0 25px oklch(70.9% 0.159 293.5 / 60%);
 }
 
 /* Progress ring - glow effect */
@@ -359,7 +782,7 @@
   transform: translateY(-1px);
 }
 .dark .hover-phase-label:hover {
-  text-shadow: 0 0 15px rgba(167, 139, 250, 0.4);
+  text-shadow: 0 0 15px oklch(70.9% 0.159 293.5 / 40%);
 }
 
 /* Pomodoro Timer title - scale with outline and shadow */
@@ -369,11 +792,11 @@
 }
 .hover-title-outline:hover {
   transform: scale(1.05);
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+  text-shadow: 2px 2px 8px oklch(0% 0 0 / 15%);
 }
 .dark .hover-title-outline:hover {
-  text-shadow: 0 0 20px rgba(167, 139, 250, 0.5), 2px 2px 10px rgba(0, 0, 0, 0.3);
-  -webkit-text-stroke: 0.5px rgba(167, 139, 250, 0.3);
+  text-shadow: 0 0 20px oklch(70.9% 0.159 293.5 / 50%), 2px 2px 10px oklch(0% 0 0 / 30%);
+  -webkit-text-stroke: 0.5px oklch(70.9% 0.159 293.5 / 30%);
 }
 
 /* Daily Goal individual text hover */
@@ -382,11 +805,11 @@
   cursor: default;
 }
 .hover-goal-label:hover {
-  color: #7c3aed;
+  color: oklch(56% 0.30 293.0);
   transform: translateX(2px);
 }
 .dark .hover-goal-label:hover {
-  color: #a78bfa;
+  color: oklch(72% 0.20 293.5);
 }
 
 .hover-goal-value {
@@ -398,7 +821,7 @@
   font-weight: 600;
 }
 .dark .hover-goal-value:hover {
-  color: #c4b5fd;
+  color: oklch(82% 0.13 293.6);
 }
 
 /* Progress bar - purple outline only */
@@ -406,7 +829,7 @@
   transition: all 0.25s ease;
 }
 .hover-progress-bar:hover {
-  outline: 2px solid #a78bfa;
+  outline: 2px solid oklch(72% 0.20 293.5);
   outline-offset: 2px;
 }
 
@@ -419,7 +842,7 @@
   transform: scale(1.02);
 }
 .dark .hover-today-stats:hover {
-  color: #a78bfa;
+  color: oklch(72% 0.20 293.5);
 }
 
 /* Hint text fade in */
@@ -430,7 +853,7 @@
   opacity: 1 !important;
 }
 .dark .hover-hint-text:hover {
-  color: #a78bfa;
+  color: oklch(72% 0.20 293.5);
 }
 
 /* ===== Settings Dialog Hover Effects ===== */
@@ -440,7 +863,7 @@
   transition: all 0.2s ease;
 }
 .hover-section-label:hover {
-  color: #a78bfa;
+  color: oklch(72% 0.20 293.5);
 }
 .hover-section-label:hover svg {
   animation: icon-bounce 0.4s ease;
@@ -452,7 +875,7 @@
 }
 .hover-slider-track:hover {
   height: 10px;
-  box-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+  box-shadow: 0 0 10px oklch(70.9% 0.159 293.5 / 30%);
 }
 
 /* Slider thumb enhancement */
@@ -461,7 +884,7 @@
 }
 .hover-slider-thumb:hover {
   transform: scale(1.3);
-  box-shadow: 0 0 15px rgba(167, 139, 250, 0.5);
+  box-shadow: 0 0 15px oklch(70.9% 0.159 293.5 / 50%);
 }
 
 /* Close button rotation */
@@ -470,7 +893,7 @@
 }
 .hover-close-rotate:hover {
   transform: rotate(90deg);
-  color: #f87171;
+  color: oklch(68% 0.22 22.2);
 }
 
 /* Toggle switch glow */
@@ -478,7 +901,7 @@
   transition: box-shadow 0.2s ease;
 }
 .hover-toggle:hover {
-  box-shadow: 0 0 12px rgba(167, 139, 250, 0.4);
+  box-shadow: 0 0 12px oklch(70.9% 0.159 293.5 / 40%);
 }
 
 /* ===== Dashboard Hover Effects ===== */
@@ -489,12 +912,12 @@
   cursor: default;
 }
 .hover-dashboard-title:hover {
-  color: #7c3aed;
+  color: oklch(56% 0.30 293.0);
   transform: translateX(2px);
 }
 .dark .hover-dashboard-title:hover {
-  color: #a78bfa;
-  text-shadow: 0 0 12px rgba(167, 139, 250, 0.3);
+  color: oklch(72% 0.20 293.5);
+  text-shadow: 0 0 12px oklch(70.9% 0.159 293.5 / 30%);
 }
 
 /* Dashboard main icon hover */
@@ -515,7 +938,7 @@
 }
 .hover-music-icon:hover {
   transform: scale(1.1);
-  background-color: rgba(167, 139, 250, 0.2);
+  background-color: oklch(70.9% 0.159 293.5 / 20%);
 }
 .hover-music-icon:hover svg {
   animation: icon-bounce 0.4s ease;
@@ -527,11 +950,11 @@
   cursor: default;
 }
 .hover-song-title:hover {
-  color: #7c3aed;
+  color: oklch(56% 0.30 293.0);
 }
 .dark .hover-song-title:hover {
-  color: #a78bfa;
-  text-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+  color: oklch(72% 0.20 293.5);
+  text-shadow: 0 0 10px oklch(70.9% 0.159 293.5 / 30%);
 }
 
 /* Music progress bar hover - color change only */
@@ -539,10 +962,10 @@
   transition: all 0.2s ease;
 }
 .hover-music-bar:hover [data-slot="track"] {
-  background-color: rgba(167, 139, 250, 0.3);
+  background-color: oklch(70.9% 0.159 293.5 / 30%);
 }
 .hover-music-bar:hover [data-slot="range"] {
-  background-color: #a78bfa;
+  background-color: oklch(72% 0.20 293.5);
 }
 
 /* Collapsible animations (Radix UI pattern) */
@@ -570,6 +993,33 @@
 }
 
 /* ===== Mobile Responsive Layout ===== */
+
+/* 모바일 터치 친화적 버튼 + 하단 네비게이션 (768px 이하) */
+@media (max-width: 768px) {
+  /* 터치 친화적 버튼: 최소 44x44px (WCAG 2.5.5) */
+  button,
+  a[role="button"],
+  [role="button"] {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  /* Settings 버튼 터치 영역 확대 */
+  button[aria-label*="Settings"],
+  button[aria-label*="설정"] {
+    min-width: 48px !important;
+    min-height: 48px !important;
+  }
+
+  /* Settings 다이얼로그: 모바일 전체 화면 */
+  [role="dialog"][data-state="open"] {
+    max-width: 100vw !important;
+    max-height: 100dvh !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+  }
+}
 
 /* 모든 모바일 (너비 640px 이하): Sign in, 테마 토글 위치 */
 @media (max-width: 640px) {
@@ -639,7 +1089,7 @@
 /* Settings dialog scrollbar - thin and subtle */
 .settings-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgb(148 163 184 / 30%) transparent;
+  scrollbar-color: oklch(71.1% 0.035 256.8 / 30%) transparent;
 }
 
 .settings-scrollbar::-webkit-scrollbar {
@@ -652,26 +1102,26 @@
 }
 
 .settings-scrollbar::-webkit-scrollbar-thumb {
-  background: rgb(148 163 184 / 30%);
+  background: oklch(71.1% 0.035 256.8 / 30%);
   border-radius: 3px;
   transition: background 0.2s ease;
 }
 
 .settings-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgb(148 163 184 / 50%);
+  background: oklch(71.1% 0.035 256.8 / 50%);
 }
 
 /* Dark mode scrollbar */
 .dark .settings-scrollbar {
-  scrollbar-color: rgb(148 163 184 / 20%) transparent;
+  scrollbar-color: oklch(71.1% 0.035 256.8 / 20%) transparent;
 }
 
 .dark .settings-scrollbar::-webkit-scrollbar-thumb {
-  background: rgb(148 163 184 / 20%);
+  background: oklch(71.1% 0.035 256.8 / 20%);
 }
 
 .dark .settings-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgb(167 139 250 / 40%);
+  background: oklch(70.9% 0.159 293.5 / 40%);
 }
 
 /* Reduced motion for accessibility */

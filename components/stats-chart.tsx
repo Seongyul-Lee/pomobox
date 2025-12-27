@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import {
   ComposedChart,
   Bar,
@@ -25,6 +26,15 @@ interface StatsChartProps {
 
 export function StatsChart({ data }: StatsChartProps) {
   const t = useTranslations("Dashboard")
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    // 한 프레임 지연으로 컨테이너가 레이아웃된 후 차트 렌더링
+    const frame = requestAnimationFrame(() => {
+      setMounted(true)
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [])
 
   // 날짜를 짧은 형식으로 변환 (MM/DD)
   const chartData = data.map((item) => ({
@@ -34,6 +44,10 @@ export function StatsChart({ data }: StatsChartProps) {
       day: "numeric",
     }),
   }))
+
+  if (!mounted) {
+    return <div className="w-full h-[300px] sm:h-[400px]" />
+  }
 
   return (
     <div className="w-full h-[300px] sm:h-[400px]">

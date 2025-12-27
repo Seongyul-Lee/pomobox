@@ -273,17 +273,17 @@ export function DashboardRight() {
 
         {/* 스트릭 통계 */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="flex flex-col items-center p-3 rounded-xl bg-rose-500/10 hover-stat cursor-default">
+          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(64.5%_0.3075_16.4/0.1)] hover-stat cursor-default">
             <Flame className="h-5 w-5 text-rose-400 mb-1.5 hover-bounce" />
             <p className="text-base font-semibold">{streakStats.current}{t("days")}</p>
             <p className="text-xs text-muted-foreground">{t("currentStreak")}</p>
           </div>
-          <div className="flex flex-col items-center p-3 rounded-xl bg-amber-500/10 hover-stat cursor-default">
+          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(76.9%_0.235_70.1/0.1)] hover-stat cursor-default">
             <Flame className="h-5 w-5 text-amber-400 mb-1.5 hover-bounce" />
             <p className="text-base font-semibold">{streakStats.best}{t("days")}</p>
             <p className="text-xs text-muted-foreground">{t("bestStreak")}</p>
           </div>
-          <div className="flex flex-col items-center p-3 rounded-xl bg-sky-500/10 hover-stat cursor-default">
+          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(68.5%_0.211_237.3/0.1)] hover-stat cursor-default">
             <Target className="h-5 w-5 text-sky-400 mb-1.5 hover-bounce" />
             <p className="text-base font-semibold">{weeklyRate.rate}%</p>
             <p className="text-xs text-muted-foreground">{t("weeklyRate")}</p>
@@ -369,7 +369,7 @@ export function DashboardRight() {
 
         {/* 선택된 날짜 상세 정보 */}
         {selectedDayInfo && selectedDay && (
-          <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 animate-in fade-in duration-200">
+          <div className="p-4 rounded-xl bg-[oklch(76.9%_0.235_70.1/0.1)] border border-[oklch(76.9%_0.235_70.1/0.2)] animate-in fade-in duration-200">
             <div className="flex items-center justify-between mb-3">
               <p className="text-base font-medium">
                 {month + 1}/{selectedDay} ({fullDayLabels[selectedDayInfo.dayOfWeek]})

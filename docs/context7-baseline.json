@@ -63,7 +63,7 @@
     "context7CompatibleLibraryID": "/websites/tailwindcss",
     "topic": "responsive design media queries breakpoints",
     "pageRange": "1",
-    "retrievedAt": "2025-12-25T00:00:00Z",
+    "retrievedAt": "2025-12-27T00:00:00Z",
     "keyAPIs": [
       "Responsive utility variants: sm:, md:, lg:, xl:, 2xl:",
       "Default breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px), 2xl (1536px)",
@@ -421,6 +421,77 @@
     ],
     "appliesToFiles": [
       "components/dashboard-left.tsx"
+    ]
+  },
+  {
+    "topicName": "css-background-patterns-2025",
+    "context7CompatibleLibraryID": "/megh-bari/pattern-craft",
+    "topic": "background patterns gradients dark mode",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-28T00:00:00Z",
+    "keyAPIs": [
+      "radial-gradient(125% 125% at 50% 10%, #fff 40%, #6366f1 100%) - 상단 그라데이션",
+      "radial-gradient(125% 125% at 50% 90%, #fff 40%, #7c3aed 100%) - 하단 그라데이션",
+      "linear-gradient(to right, color 1px, transparent 1px) - 그리드 패턴",
+      "backgroundSize로 패턴 크기 조절",
+      "다중 레이어 backgroundImage 조합"
+    ],
+    "constraints": [
+      "다크 모드: id.startsWith('dark-') 또는 배경색 분석으로 감지",
+      "패턴 조합 시 backgroundSize도 함께 지정",
+      "absolute inset-0 z-0으로 패턴 레이어 분리",
+      "radial-gradient 위치로 glow 효과 위치 제어"
+    ],
+    "appliesToFiles": [
+      "app/globals.css"
+    ]
+  },
+  {
+    "topicName": "tailwind-dot-grid-backgrounds",
+    "context7CompatibleLibraryID": "/thenaubit/tailwind-dot-grid-backgrounds",
+    "topic": "dot grid background customization",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-28T00:00:00Z",
+    "keyAPIs": [
+      "bg-grid-<SIZE>-s-<STROKE>-<COLOR> - 그리드 패턴",
+      "bg-dot-<SIZE>-s-<DOT_SIZE>-<COLOR> - 도트 패턴",
+      "opacity 지원: bg-grid-8-s-2-neutral-950/40",
+      "반응형: md:bg-grid-16-s-2-blue-500/20",
+      "hover: hover:bg-dot-4-s-2-red-500/40"
+    ],
+    "constraints": [
+      "플러그인 설치: @nauverse/tailwind-dot-grid-backgrounds",
+      "tailwind.config.js plugins 배열에 추가",
+      "SIZE는 spacing 기준 (8 = 32px, 16 = 64px)",
+      "색상은 Tailwind 팔레트 사용"
+    ],
+    "appliesToFiles": [
+      "app/globals.css",
+      "tailwind.config.js"
+    ]
+  },
+  {
+    "topicName": "tailwind-modern-gradients",
+    "context7CompatibleLibraryID": "/websites/tailwindcss",
+    "topic": "background gradient radial conic mesh",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-28T00:00:00Z",
+    "keyAPIs": [
+      "bg-radial from-pink-400 to-fuchsia-700 - 방사형 그라데이션",
+      "bg-radial-[at_50%_75%] - 커스텀 위치",
+      "bg-conic from-blue-600 to-sky-400 - 원뿔형 그라데이션",
+      "bg-conic-180 - 시작 각도 지정",
+      "bg-linear-65 - 커스텀 각도",
+      "from-40% to-90% - 색상 정지점 위치"
+    ],
+    "constraints": [
+      "Tailwind CSS v4+ 필요",
+      "oklab 색공간 기본 사용 (더 부드러운 전환)",
+      "mask-conic/mask-radial로 마스크 효과 가능",
+      "via-로 중간 색상 추가"
+    ],
+    "appliesToFiles": [
+      "app/globals.css"
     ]
   }
 ]

@@ -479,8 +479,8 @@ export function PomodoroTimer() {
           role="status"
           aria-live="polite"
         >
-          <Pause className="h-3 w-3 text-white" />
-          <span className="text-xs font-medium text-white uppercase tracking-wide">
+          <Pause className="h-3 w-3 text-[oklch(100%_0_0)]" />
+          <span className="text-xs font-medium text-[oklch(100%_0_0)] uppercase tracking-wide">
             {status === 'paused' ? t('paused') : ''}
           </span>
         </div>
@@ -488,7 +488,7 @@ export function PomodoroTimer() {
 
       <div className="relative flex items-center justify-center group">
         <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90 hover-ring" viewBox="0 0 300 300">
-          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted dark:text-white/10 transition-all duration-300" />
+          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted dark:text-[oklch(100%_0_0/0.1)] transition-all duration-300" />
           <circle
             cx="150"
             cy="150"

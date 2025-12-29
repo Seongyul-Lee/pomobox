@@ -68,3 +68,6 @@ node_modules/
 # CI log files
 E2E.txt
 Run pnpm e2e.txt
+
+# Playwright auth state
+tests/e2e/.auth/

@@ -259,13 +259,25 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2025-12-29T12:00:00.000Z"
+      },
+      {
+        "id": "80",
+        "title": "Lighthouse 모바일 LCP 최적화 (4.4s → 3.0s)",
+        "description": "모바일 Lighthouse LCP를 4.4s에서 3.0s로 개선 (32% 감소)",
+        "details": "Lighthouse 모바일 성능 최적화:\n\n1. 폰트 로딩 최적화 (app/[locale]/layout.tsx):\n   - Geist, Geist_Mono에 display: 'swap', preload: true 추가\n   - FOIT(Flash of Invisible Text) 방지\n\n2. 페이지 서버 컴포넌트 전환 (app/[locale]/page.tsx):\n   - 'use client' 제거\n   - useTranslations → getTranslations 서버 함수로 변경\n   - h1 제목이 서버에서 렌더링되어 LCP 개선\n\n3. 타이머 초기값 SSR (app/[locale]/page.tsx):\n   - TimerFallback에 정적 '25:00' UI 포함\n   - 서버에서 타이머 스켈레톤 렌더링\n\n4. canvas-confetti 동적 import (components/pomodoro-timer.tsx):\n   - 목표 달성 시에만 동적 로드\n   - 초기 번들 크기 감소\n\n5. 패키지 최적화 (next.config.ts):\n   - optimizePackageImports 추가\n   - lucide-react, recharts, radix-ui 트리쉐이킹 개선\n\n결과:\n- Performance: 82점 → 95점 (+13점)\n- LCP: 4.4s → 3.0s (-1.4s, 32% 개선)\n- TBT: 80ms → 10ms (-70ms)\n- CLS: 0.09 → 0",
+        "testStrategy": "1. pnpm build && pnpm start 후 Lighthouse 모바일 테스트\n2. npx lighthouse http://localhost:3000/en --form-factor=mobile\n3. LCP < 3.5s 확인\n4. Performance 점수 > 90 확인\n5. 기존 기능 정상 동작 확인",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-30T03:35:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-29T17:05:40.448Z",
-      "taskCount": 16,
-      "completedCount": 7,
+      "lastModified": "2025-12-30T03:35:00.000Z",
+      "taskCount": 17,
+      "completedCount": 8,
       "tags": [
         "master"
       ]

@@ -34,14 +34,13 @@ import { getLocalTodayStats } from "@/lib/storage/local-stats"
 import { getDailyGoal } from "@/lib/storage/local-settings"
 import { useUser } from "@/hooks/use-user"
 import {
-  getRecentDaysStats,
-  getLastWeekStats,
-  getMonthlyStats,
-  getPreviousMonthStats,
-  getTotalStatsFromDB,
-  getTodayStats,
-  type DayRecord as SupabaseDayRecord,
-} from "@/lib/supabase/stats"
+  useRecentDaysStats,
+  useLastWeekStats,
+  useMonthlyStats,
+  usePreviousMonthStats,
+  useTotalStats,
+  useTodayStats,
+} from "@/lib/queries/stats-queries"
 
 // 시간 포맷팅 (0h 0m → 0m, 1h 0m → 1h, 1h 30m → 1h 30m)
 function formatTime(minutes: number): string {
@@ -207,13 +206,23 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
   const tDays = useTranslations("Days")
   const tTime = useTranslations("Time")
   const [chartMounted, setChartMounted] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // 한 프레임 지연으로 컨테이너가 레이아웃된 후 차트 렌더링
-    const frame = requestAnimationFrame(() => {
-      setChartMounted(true)
+    // ResizeObserver로 컨테이너의 실제 크기가 0보다 클 때만 차트 렌더링
+    const container = containerRef.current
+    if (!container) return
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (entry && entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+        setChartMounted(true)
+        observer.disconnect()
+      }
     })
-    return () => cancelAnimationFrame(frame)
+
+    observer.observe(container)
+    return () => observer.disconnect()
   }, [])
 
   // 총 시간 및 세션 (로그인 사용자만 실시간 시간 포함)
@@ -271,7 +280,7 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
             <span>{t("totalSessions")}: {totalSessions}</span>
             <span>{t("dailyAvg")}: {formatTimeHourMin(avgMinutes, tTime)}</span>
           </div>
-          <div className="h-36">
+          <div ref={containerRef} className="h-36">
             {chartMounted ? (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} barSize={28}>
@@ -501,86 +510,77 @@ function MonthlyCard({ data, prevData, isLoggedIn, realtimeMinutes }: { data: Da
 export function DashboardLeft() {
   const { user } = useUser()
   const realtimeMinutes = useRealtimeFocusMinutes()
-  const [weeklyData, setWeeklyData] = useState<DayRecord[]>([])
-  const [lastWeekData, setLastWeekData] = useState<DayRecord[]>([])
-  const [monthlyData, setMonthlyData] = useState<DayRecord[]>([])
-  const [prevMonthData, setPrevMonthData] = useState<DayRecord[]>([])
-  const [totalStats, setTotalStats] = useState({ streakDays: 0 })
-  const [todayStats, setTodayStats] = useState({ totalMinutes: 0, totalSessions: 0 })
   const [goalMinutes, setGoalMinutes] = useState(120)
 
-  const loadData = useCallback(async () => {
-    setGoalMinutes(getDailyGoal())
+  // 비로그인 사용자용 로컬 상태
+  const [localWeeklyData, setLocalWeeklyData] = useState<DayRecord[]>([])
+  const [localLastWeekData, setLocalLastWeekData] = useState<DayRecord[]>([])
+  const [localMonthlyData, setLocalMonthlyData] = useState<DayRecord[]>([])
+  const [localPrevMonthData, setLocalPrevMonthData] = useState<DayRecord[]>([])
+  const [localTotalStats, setLocalTotalStats] = useState({ streakDays: 0 })
+  const [localTodayStats, setLocalTodayStats] = useState({ totalMinutes: 0, totalSessions: 0 })
 
-    if (user) {
-      // 로그인 사용자: Supabase에서 데이터 조회
-      try {
-        const [weekly, lastWeek, monthly, prevMonth, total, today] = await Promise.all([
-          getRecentDaysStats(user.id, 7),
-          getLastWeekStats(user.id),
-          getMonthlyStats(user.id),
-          getPreviousMonthStats(user.id),
-          getTotalStatsFromDB(user.id),
-          getTodayStats(user.id),
-        ])
+  // React Query: 로그인 사용자용 서버 데이터 조회
+  const { data: weeklyQuery } = useRecentDaysStats(user?.id ?? null, 7)
+  const { data: lastWeekQuery } = useLastWeekStats(user?.id ?? null)
+  const { data: monthlyQuery } = useMonthlyStats(user?.id ?? null)
+  const { data: prevMonthQuery } = usePreviousMonthStats(user?.id ?? null)
+  const { data: totalQuery } = useTotalStats(user?.id ?? null)
+  const { data: todayQuery } = useTodayStats(user?.id ?? null)
 
-        setWeeklyData(weekly)
-        setLastWeekData(lastWeek)
-        setMonthlyData(monthly)
-        setPrevMonthData(prevMonth)
-        setTotalStats({ streakDays: total.streakDays })
-        setTodayStats({
-          totalMinutes: today?.total_minutes || 0,
-          totalSessions: today?.total_sessions || 0,
-        })
-      } catch (error) {
-        console.error("Failed to load data from Supabase:", error)
-        // 에러 시 로컬 데이터로 폴백
-        loadLocalData()
+  // 최종 데이터: 로그인 시 서버 데이터, 비로그인 시 로컬 데이터
+  const weeklyData = user ? (weeklyQuery ?? []) : localWeeklyData
+  const lastWeekData = user ? (lastWeekQuery ?? []) : localLastWeekData
+  const monthlyData = user ? (monthlyQuery ?? []) : localMonthlyData
+  const prevMonthData = user ? (prevMonthQuery ?? []) : localPrevMonthData
+  const totalStats = user
+    ? { streakDays: totalQuery?.streakDays ?? 0 }
+    : localTotalStats
+  const todayStats = user
+    ? {
+        totalMinutes: todayQuery?.total_minutes ?? 0,
+        totalSessions: todayQuery?.total_sessions ?? 0,
       }
-    } else {
-      // 비로그인 사용자: localStorage에서 데이터 조회
-      loadLocalData()
-    }
-  }, [user])
+    : localTodayStats
 
+  // 비로그인 사용자: 로컬 데이터 로드
   const loadLocalData = useCallback(() => {
-    setWeeklyData(getRecentDays(7))
-    setLastWeekData(getLastWeekData())
-    setMonthlyData(getCurrentMonthData())
-    setPrevMonthData(getPreviousMonthData())
-    setTotalStats(getTotalStats())
+    setLocalWeeklyData(getRecentDays(7))
+    setLocalLastWeekData(getLastWeekData())
+    setLocalMonthlyData(getCurrentMonthData())
+    setLocalPrevMonthData(getPreviousMonthData())
+    setLocalTotalStats(getTotalStats())
 
     const today = getLocalTodayStats()
-    setTodayStats({
+    setLocalTodayStats({
       totalMinutes: today.totalMinutes,
       totalSessions: today.totalSessions,
     })
   }, [])
 
-  // user 변경 시 (로그인/로그아웃) 상태 초기화 후 데이터 로드
+  // 초기 로드 및 user 변경 시 데이터 로드
   useEffect(() => {
-    // 상태 초기화
-    setWeeklyData([])
-    setLastWeekData([])
-    setMonthlyData([])
-    setPrevMonthData([])
-    setTotalStats({ streakDays: 0 })
-    setTodayStats({ totalMinutes: 0, totalSessions: 0 })
+    setGoalMinutes(getDailyGoal())
 
-    // 새 데이터 로드
-    loadData()
-  }, [loadData])
+    if (!user) {
+      // 비로그인 사용자: 로컬 데이터 로드
+      loadLocalData()
+    }
+    // 로그인 사용자: React Query가 자동으로 데이터 조회
+  }, [user, loadLocalData])
 
-  // 세션 종료 시 (realtimeMinutes가 양수 → 0) 데이터 다시 로드
+  // 세션 종료 시 (realtimeMinutes가 양수 → 0) 로컬 데이터 다시 로드
   const prevRealtimeMinutes = useRef(realtimeMinutes)
   useEffect(() => {
     // realtimeMinutes가 0보다 큰 값에서 0으로 변경되면 세션 종료로 간주
     if (prevRealtimeMinutes.current > 0 && realtimeMinutes === 0) {
-      loadData()
+      if (!user) {
+        loadLocalData()
+      }
+      // 로그인 사용자: React Query가 invalidateQueries로 자동 갱신
     }
     prevRealtimeMinutes.current = realtimeMinutes
-  }, [realtimeMinutes, loadData])
+  }, [realtimeMinutes, user, loadLocalData])
 
   return (
     <div className="flex flex-col gap-4 flex-1">

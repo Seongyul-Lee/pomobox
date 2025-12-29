@@ -166,11 +166,11 @@ export function SettingsDialog({
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-md max-h-[85vh] flex flex-col">
+      <DialogContent className="sm:max-w-md max-h-[85vh] flex flex-col" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-6 py-4 overflow-y-auto flex-1 -mr-[23px] pr-[23px] settings-scrollbar">
+        <div className="space-y-6 py-4 overflow-y-auto flex-1 -mr-5.75 pr-5.75 settings-scrollbar">
           {/* Notifications */}
           <div className="flex items-center justify-between group">
             <div className="flex items-center gap-2 hover-section-label cursor-default">
@@ -298,7 +298,7 @@ export function SettingsDialog({
               </div>
             </div>
             <Select value={selectedLocale} onValueChange={setSelectedLocale}>
-              <SelectTrigger className="w-[140px]" aria-label="Select language">
+              <SelectTrigger className="w-35" aria-label="Select language">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

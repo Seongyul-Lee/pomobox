@@ -493,5 +493,85 @@
     "appliesToFiles": [
       "app/globals.css"
     ]
+  },
+  {
+    "topicName": "zustand-store-persist",
+    "context7CompatibleLibraryID": "/pmndrs/zustand",
+    "topic": "create store persist middleware typescript",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-29T00:00:00Z",
+    "keyAPIs": [
+      "create<State>()() - 타입 안전 store 생성",
+      "persist(config, options) - localStorage 영속성 미들웨어",
+      "createJSONStorage(() => storage) - 커스텀 스토리지",
+      "partialize: (state) => ({...}) - 특정 상태만 저장",
+      "set((state) => ({...})) - 상태 업데이트",
+      "get() - 현재 상태 조회"
+    ],
+    "constraints": [
+      "create<Type>()() 이중 괄호 필수 (미들웨어 사용 시)",
+      "persist name은 고유해야 함 (localStorage key)",
+      "partialize로 액션 제외, 상태만 저장",
+      "SSR 환경에서 hydration 주의 (skipHydration 옵션)"
+    ],
+    "appliesToFiles": [
+      "lib/store/timer-store.ts",
+      "lib/store/settings-store.ts"
+    ]
+  },
+  {
+    "topicName": "idb-indexeddb-wrapper",
+    "context7CompatibleLibraryID": "/jakearchibald/idb",
+    "topic": "openDB schema upgrade transactions",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-29T00:00:00Z",
+    "keyAPIs": [
+      "openDB<Schema>(name, version, { upgrade }) - DB 열기",
+      "DBSchema interface - 타입 정의 (key, value, indexes)",
+      "db.get(storeName, key) - 단일 값 조회",
+      "db.put(storeName, value, key) - 값 저장",
+      "db.getAll(storeName) - 전체 조회",
+      "tx.done - 트랜잭션 완료 대기",
+      "deleteDB(name) - DB 삭제"
+    ],
+    "constraints": [
+      "upgrade 콜백에서 createObjectStore/createIndex 호출",
+      "트랜잭션 중간에 await 외부 호출 금지 (트랜잭션 자동 종료)",
+      "SSR에서 typeof window !== 'undefined' 체크 필수",
+      "버전 업그레이드 시 oldVersion으로 마이그레이션 분기"
+    ],
+    "appliesToFiles": [
+      "lib/storage/idb.ts",
+      "lib/storage/local-stats.ts",
+      "lib/storage/local-history.ts",
+      "lib/storage/local-settings.ts",
+      "lib/storage/attendance.ts"
+    ]
+  },
+  {
+    "topicName": "tanstack-query-v5-setup",
+    "context7CompatibleLibraryID": "/websites/tanstack_query_v5",
+    "topic": "QueryClientProvider setup useQuery useMutation Next.js App Router",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-29T00:00:00Z",
+    "keyAPIs": [
+      "QueryClient, QueryClientProvider from @tanstack/react-query",
+      "useQuery({ queryKey, queryFn }) - 데이터 조회",
+      "useMutation({ mutationFn, onSuccess }) - 데이터 변경",
+      "useQueryClient() - 캐시 접근 및 invalidateQueries",
+      "isServer - SSR/CSR 분기 처리",
+      "HydrationBoundary, dehydrate - SSR prefetching"
+    ],
+    "constraints": [
+      "Next.js App Router에서 'use client' 필수 (QueryClientProvider)",
+      "isServer로 서버/브라우저 QueryClient 인스턴스 분리",
+      "SSR에서 staleTime > 0 설정 (즉시 refetch 방지)",
+      "invalidateQueries({ queryKey }) 로 캐시 무효화",
+      "browserQueryClient는 모듈 스코프에서 싱글톤으로 관리"
+    ],
+    "appliesToFiles": [
+      "app/providers.tsx",
+      "lib/queries/stats-queries.ts"
+    ]
   }
 ]

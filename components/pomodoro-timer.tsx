@@ -12,7 +12,6 @@ import { recordSessionComplete, incrementDailyMinutes } from "@/lib/supabase/sta
 import { getLocalTodayStats, incrementLocalMinutes, saveLocalTodayStats } from "@/lib/storage/local-stats"
 import { GoalProgress } from "./goal-progress"
 import { useTimerStore, useSettingsStore, type TimerSettings } from "@/lib/store"
-import confetti from "canvas-confetti"
 
 type TimerPhase = 'focus' | 'break' | 'longBreak'
 type TimerStatus = 'idle' | 'running' | 'paused'
@@ -225,13 +224,15 @@ export function PomodoroTimer() {
       const newTotal = updatedStats.totalMinutes
       setTotalFocusMinutes(newTotal)
 
-      // 목표 달성 시 confetti 애니메이션
+      // 목표 달성 시 confetti 애니메이션 (동적 import)
       const previousTotal = totalFocusMinutes
       if (previousTotal < settingsStore.dailyGoal && newTotal >= settingsStore.dailyGoal) {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
+        import("canvas-confetti").then(({ default: confetti }) => {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+          })
         })
       }
 

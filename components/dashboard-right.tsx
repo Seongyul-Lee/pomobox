@@ -53,6 +53,14 @@ export function DashboardRight() {
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
   const [streakStats, setStreakStats] = useState({ current: 0, best: 0 })
   const [weeklyRate, setWeeklyRate] = useState({ attended: 0, total: 7, rate: 0 })
+  // SSR 안전: 날짜 관련 상태 (클라이언트에서만 계산)
+  const [calendarInfo, setCalendarInfo] = useState({
+    year: 2025,
+    month: 0,
+    today: 1,
+    firstDayOfMonth: 0,
+    lastDayOfMonth: 31,
+  })
 
   // 요일 라벨 (다국어)
   const dayLabels = [
@@ -101,6 +109,20 @@ export function DashboardRight() {
     setWeeklyRate(getWeeklyAttendanceRate())
   }, [])
 
+  // 클라이언트에서만 날짜 정보 계산 (hydration 안전)
+  useEffect(() => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = now.getMonth()
+    setCalendarInfo({
+      year,
+      month,
+      today: now.getDate(),
+      firstDayOfMonth: new Date(year, month, 1).getDay(),
+      lastDayOfMonth: new Date(year, month + 1, 0).getDate(),
+    })
+  }, [])
+
   // user 변경 시 (로그인/로그아웃) 상태 초기화 후 데이터 로드
   useEffect(() => {
     // 상태 초기화 (isCheckedIn은 null로 설정하여 로딩 상태 표시)
@@ -147,16 +169,8 @@ export function DashboardRight() {
     setIsCheckedIn(true)
   }, [user])
 
-  const now = new Date()
-  const year = now.getFullYear()
-  const month = now.getMonth()
-
-  // 이번 달 1일의 요일
-  const firstDayOfMonth = new Date(year, month, 1).getDay()
-  // 이번 달 마지막 날
-  const lastDayOfMonth = new Date(year, month + 1, 0).getDate()
-  // 오늘 날짜
-  const today = now.getDate()
+  // calendarInfo에서 값 추출
+  const { year, month, today, firstDayOfMonth, lastDayOfMonth } = calendarInfo
 
   // 캘린더 그리드 생성
   const calendarDays: (number | null)[] = []

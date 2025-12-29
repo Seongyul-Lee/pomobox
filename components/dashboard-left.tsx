@@ -206,7 +206,13 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
   const tDays = useTranslations("Days")
   const tTime = useTranslations("Time")
   const [chartMounted, setChartMounted] = useState(false)
+  const [todayDayIndex, setTodayDayIndex] = useState<number | null>(null) // SSR 안전: 초기값 null
   const containerRef = useRef<HTMLDivElement>(null)
+
+  // 클라이언트에서만 오늘 요일 계산 (hydration 안전)
+  useEffect(() => {
+    setTodayDayIndex(new Date().getDay())
+  }, [])
 
   useEffect(() => {
     // ResizeObserver로 컨테이너의 실제 크기가 0보다 클 때만 차트 렌더링
@@ -241,14 +247,11 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
     tDays("thursday"), tDays("friday"), tDays("saturday")
   ]
 
-  // 오늘 요일 인덱스 (0=일, 6=토)
-  const todayDayIndex = new Date().getDay()
-
   // 7일 모두 표시 (데이터 없는 날도 placeholder로)
   const chartData = Array.from({ length: 7 }, (_, dayIndex) => {
     const dayData = data.find(d => new Date(d.date).getDay() === dayIndex)
     const storedMins = dayData?.totalMinutes || 0
-    const isToday = dayIndex === todayDayIndex
+    const isToday = todayDayIndex !== null && dayIndex === todayDayIndex
     // 오늘인 경우 실시간 시간 추가 (로그인 사용자만 - 비로그인은 블러 영역이므로 제외)
     const minutes = isToday && isLoggedIn ? storedMins + realtimeMinutes : storedMins
     return {
@@ -448,13 +451,18 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
 // 월간 현황 카드 (핵심 지표 4개 + 전월 대비)
 function MonthlyCard({ data, prevData, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; prevData: DayRecord[]; isLoggedIn: boolean; realtimeMinutes: number }) {
   const t = useTranslations("Dashboard")
+  const [daysElapsed, setDaysElapsed] = useState(1) // SSR 안전: 기본값 1
+
+  // 클라이언트에서만 경과 일수 계산 (hydration 안전)
+  useEffect(() => {
+    setDaysElapsed(new Date().getDate())
+  }, [])
 
   // 이번 달 핵심 지표 계산 (로그인 사용자만 실시간 시간 포함)
   const storedMinutes = data.reduce((sum, d) => sum + d.totalMinutes, 0)
   const totalMinutes = storedMinutes + (isLoggedIn ? realtimeMinutes : 0)
   const totalSessions = data.reduce((sum, d) => sum + d.totalSessions, 0)
   const activeDays = data.filter((d) => d.totalMinutes > 0).length
-  const daysElapsed = new Date().getDate() // 이번 달 경과 일수
   const avgMinutes = daysElapsed > 0 ? Math.round(totalMinutes / daysElapsed) : 0
 
   // 전월 지표 계산 (동일 기간 비교: 전월 1일~경과일수)

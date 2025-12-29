@@ -11,8 +11,18 @@ import { Providers } from "../providers"
 import { routing } from "@/i18n/routing"
 import "../globals.css"
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist" })
-const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" })
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist",
+  display: "swap",
+  preload: true,
+})
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
+  preload: true,
+})
 
 const siteUrl = "https://pomobox.app"
 

@@ -101,7 +101,7 @@
         "dependencies": [
           "70"
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -109,9 +109,10 @@
             "description": "QHD/FHD 외에 4K 해상도에서도 비율 유지하도록 미디어 쿼리 추가",
             "dependencies": [],
             "details": "app/globals.css에 4K 해상도용 미디어 쿼리 추가:\n\n1. 4K (3840x2160) 미디어 쿼리 추가:\n   - font-size: 187.5% (QHD 125% × 1.5)\n   - dashboard-grid: 855px minmax(600px, 1fr) 855px (570px × 1.5)\n\n2. 기존 미디어 쿼리 순서 조정:\n   - 모바일 기본 → FHD → QHD(기본) → 4K 순서로 정리\n   - min-width 기준으로 변경 (max-width 혼용 제거)\n\n3. 사이드레일 광고 여백 4K 대응:\n   - clamp(0px, 8vw, 264px) 추가 (176px × 1.5)\n\n참고: globals.css:126-152 영역 수정\n<info added on 2025-12-29T13:33:48.968Z>\n선행 작업 중 SideAd 컴포넌트 제거, 사이드레일 여백 구현, AdSense 스크립트 연결, QHD/FHD 대시보드 패널 구현이 이미 완료되어 있으므로, 이 subtask는 4K 해상도 대응에만 집중하면 됨. app/globals.css의 기존 미디어 쿼리 구조를 기반으로 4K용 미디어 쿼리를 추가하되, 기존 .siderail-margin 클래스의 4K 대응 여백(264px)을 함께 적용해야 함. 모바일 기본 → FHD → QHD → 4K 순서로 min-width 기준 미디어 쿼리를 정리하여 우선순위 충돌을 방지하고, 다음 subtask(71.2)에서 중복 제거 최적화를 진행할 예정이므로 이 단계에서는 4K 쿼리 추가에만 집중\n</info added on 2025-12-29T13:33:48.968Z>",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "1. DevTools에서 4K 해상도(3840×2160) 설정\n2. 대시보드 패널 너비 855px 확인 (Computed)\n3. FHD/QHD/4K 전환 시 비율 일관성 확인\n4. 사이드레일 여백이 264px 이하로 제한되는지 확인",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-12-29T17:00:12.041Z"
           },
           {
             "id": 2,
@@ -121,9 +122,10 @@
               1
             ],
             "details": "app/globals.css의 미디어 쿼리 구조 최적화:\n\n1. 현재 문제:\n   - FHD: @media (max-width: 1920px) → QHD에도 적용됨\n   - QHD 기본값(126-132줄)이 FHD 룰에 덮어씌워짐\n\n2. 해결 방안:\n   - FHD: @media (min-width: 1280px) and (max-width: 2559px)\n   - QHD: @media (min-width: 2560px) and (max-width: 3839px)\n   - 4K: @media (min-width: 3840px)\n\n3. 기본값을 FHD 기준으로 변경:\n   - :root { font-size: 94%; }\n   - .dashboard-grid { grid-template-columns: 428px ... }\n\n4. !important 플래그 제거 (명확한 우선순위로 대체)\n\n참고: globals.css:126-152, 특히 149-151줄 !important 제거",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "1. FHD(1920×1080)에서 428px 패널 확인\n2. QHD(2560×1440)에서 570px 패널 확인\n3. 4K(3840×2160)에서 855px 패널 확인\n4. 각 해상도 경계값(1280px, 2560px, 3840px)에서 전환 확인\n5. DevTools Computed에서 !important 플래그 없는지 확인",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-12-29T17:01:36.116Z"
           },
           {
             "id": 3,
@@ -133,9 +135,10 @@
               2
             ],
             "details": "app/globals.css에 CSS 변수 기반 반응형 시스템 구축:\n\n1. :root에 CSS 변수 정의:\n   ```css\n   :root {\n     --dashboard-panel-width: 428px;  /* FHD 기본 */\n     --siderail-ad-max: 176px;\n     --base-font-size: 94%;\n   }\n   ```\n\n2. 미디어 쿼리에서 변수 재정의:\n   ```css\n   @media (min-width: 2560px) {\n     :root {\n       --dashboard-panel-width: 570px;\n       --siderail-ad-max: 176px;\n       --base-font-size: 125%;\n     }\n   }\n   @media (min-width: 3840px) {\n     :root {\n       --dashboard-panel-width: 855px;\n       --siderail-ad-max: 264px;\n       --base-font-size: 187.5%;\n     }\n   }\n   ```\n\n3. 클래스에서 변수 사용:\n   - .dashboard-grid { grid-template-columns: var(--dashboard-panel-width) ... }\n   - padding-left: clamp(0px, 8vw, var(--siderail-ad-max))\n\n참고: PRD 제약사항 '이유없이 하드코딩 금지' 준수",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "1. DevTools Computed에서 CSS 변수값 확인\n2. 각 해상도에서 --dashboard-panel-width 값 확인\n3. `pnpm build` 성공 확인\n4. 하드코딩된 px 값이 모두 변수로 대체되었는지 globals.css 검토",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-12-29T17:03:13.005Z"
           },
           {
             "id": 4,
@@ -145,12 +148,13 @@
               3
             ],
             "details": "최종 통합 테스트 및 문서화:\n\n1. 주요 해상도 시각적 회귀 테스트:\n   - FHD (1920×1080): 패널 428px, 폰트 94%\n   - QHD (2560×1440): 패널 570px, 폰트 125%\n   - 4K (3840×2160): 패널 855px, 폰트 187.5%\n\n2. 경계값 테스트:\n   - 1279px (모바일 → FHD 전환점)\n   - 2559px (FHD → QHD 전환점)\n   - 3839px (QHD → 4K 전환점)\n\n3. CLAUDE.md 또는 app/CLAUDE.md 업데이트:\n   - 반응형 브레이크포인트 정책 명시\n   - CSS 변수 네이밍 컨벤션 추가\n   - 미디어 쿼리 추가 시 주의사항 기록\n\n4. Quality Gates:\n   - pnpm lint && pnpm build 성공\n   - 접근성 확인 (키보드 네비게이션 정상 동작)\n\n참고: CLAUDE.md의 'Quality Gates' 섹션 준수",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "1. FHD/QHD/4K DevTools 스크린샷 비교 (비율 일관성)\n2. 경계값에서 layout shift 없는지 확인\n3. pnpm lint 0 warnings\n4. pnpm build 성공\n5. CLAUDE.md에 반응형 정책 문서화 완료 확인",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2025-12-29T17:05:40.447Z"
           }
         ],
-        "updatedAt": "2025-12-29T13:33:55.020Z"
+        "updatedAt": "2025-12-29T17:05:40.447Z"
       },
       {
         "id": "72",
@@ -255,13 +259,25 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2025-12-29T12:00:00.000Z"
+      },
+      {
+        "id": "80",
+        "title": "Lighthouse 모바일 LCP 최적화 (4.4s → 3.0s)",
+        "description": "모바일 Lighthouse LCP를 4.4s에서 3.0s로 개선 (32% 감소)",
+        "details": "Lighthouse 모바일 성능 최적화:\n\n1. 폰트 로딩 최적화 (app/[locale]/layout.tsx):\n   - Geist, Geist_Mono에 display: 'swap', preload: true 추가\n   - FOIT(Flash of Invisible Text) 방지\n\n2. 페이지 서버 컴포넌트 전환 (app/[locale]/page.tsx):\n   - 'use client' 제거\n   - useTranslations → getTranslations 서버 함수로 변경\n   - h1 제목이 서버에서 렌더링되어 LCP 개선\n\n3. 타이머 초기값 SSR (app/[locale]/page.tsx):\n   - TimerFallback에 정적 '25:00' UI 포함\n   - 서버에서 타이머 스켈레톤 렌더링\n\n4. canvas-confetti 동적 import (components/pomodoro-timer.tsx):\n   - 목표 달성 시에만 동적 로드\n   - 초기 번들 크기 감소\n\n5. 패키지 최적화 (next.config.ts):\n   - optimizePackageImports 추가\n   - lucide-react, recharts, radix-ui 트리쉐이킹 개선\n\n결과:\n- Performance: 82점 → 95점 (+13점)\n- LCP: 4.4s → 3.0s (-1.4s, 32% 개선)\n- TBT: 80ms → 10ms (-70ms)\n- CLS: 0.09 → 0",
+        "testStrategy": "1. pnpm build && pnpm start 후 Lighthouse 모바일 테스트\n2. npx lighthouse http://localhost:3000/en --form-factor=mobile\n3. LCP < 3.5s 확인\n4. Performance 점수 > 90 확인\n5. 기존 기능 정상 동작 확인",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-30T03:35:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-29T13:33:55.020Z",
-      "taskCount": 16,
-      "completedCount": 6,
+      "lastModified": "2025-12-30T03:35:00.000Z",
+      "taskCount": 17,
+      "completedCount": 8,
       "tags": [
         "master"
       ]

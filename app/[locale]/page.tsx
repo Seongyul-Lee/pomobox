@@ -1,8 +1,6 @@
-"use client"
-
 import { Suspense } from "react"
 import Link from "next/link"
-import { useTranslations } from "next-intl"
+import { getTranslations } from "next-intl/server"
 import { PomodoroTimer } from "@/components/pomodoro-timer"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { UserMenu } from "@/components/user-menu"
@@ -10,17 +8,34 @@ import { DashboardLeft } from "@/components/dashboard-left"
 import { DashboardRight } from "@/components/dashboard-right"
 import { BgmPanel } from "@/components/bgm-panel"
 
+// Static timer skeleton for fast LCP - shows default 25:00
 function TimerFallback() {
-  const t = useTranslations("Home")
   return (
-    <div className="flex items-center justify-center w-64 h-64 sm:w-72 sm:h-72">
-      <div className="animate-pulse text-muted-foreground">{t("loading")}</div>
+    <div className="relative flex flex-col items-center gap-8">
+      <div className="text-center">
+        <p className="text-lg font-bold text-foreground uppercase tracking-wider mb-1">
+          Focus Session
+        </p>
+        <p className="text-xs text-muted-foreground mb-2">
+          Time to concentrate
+        </p>
+      </div>
+      <div className="relative flex items-center justify-center">
+        <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90" viewBox="0 0 300 300">
+          <circle cx="150" cy="150" r={140} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted dark:text-[oklch(100%_0_0/0.1)]" />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-6xl font-mono font-semibold tracking-tight text-foreground">
+            25:00
+          </span>
+        </div>
+      </div>
     </div>
   )
 }
 
-export default function Home() {
-  const t = useTranslations("Home")
+export default async function Home() {
+  const t = await getTranslations("Home")
 
   return (
       <main className="relative min-h-screen flex flex-col text-foreground">

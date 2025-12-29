@@ -1,16 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
-
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import path from 'path';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+
+const STORAGE_STATE = path.resolve(__dirname, 'tests/e2e/.auth/user.json');
+
 export default defineConfig({
   testDir: './tests/e2e',
   /* Run tests in files in parallel */
@@ -33,28 +29,47 @@ export default defineConfig({
   },
 
   /* Configure projects for major browsers */
-  /* CI: chromium only for speed, Local: all browsers */
-  projects: process.env.CI
-    ? [
-        {
-          name: 'chromium',
-          use: { ...devices['Desktop Chrome'] },
-        },
-      ]
-    : [
-        {
-          name: 'chromium',
-          use: { ...devices['Desktop Chrome'] },
-        },
-        {
-          name: 'firefox',
-          use: { ...devices['Desktop Firefox'] },
-        },
-        {
-          name: 'webkit',
-          use: { ...devices['Desktop Safari'] },
-        },
-      ],
+  projects: [
+    // Auth setup - 로그인하여 인증 상태 저장
+    {
+      name: 'setup',
+      testMatch: /auth\.setup\.ts/,
+    },
+
+    // 인증이 필요 없는 테스트 (기본)
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+      testIgnore: /auth\.setup\.ts/,
+    },
+
+    // 인증이 필요한 테스트 (로그인 상태 사용)
+    {
+      name: 'chromium-authenticated',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: STORAGE_STATE,
+      },
+      dependencies: ['setup'],
+      testMatch: /.*\.auth\.spec\.ts/,
+    },
+
+    // CI가 아닐 때만 다른 브라우저 테스트
+    ...(process.env.CI
+      ? []
+      : [
+          {
+            name: 'firefox',
+            use: { ...devices['Desktop Firefox'] },
+            testIgnore: [/auth\.setup\.ts/, /.*\.auth\.spec\.ts/],
+          },
+          {
+            name: 'webkit',
+            use: { ...devices['Desktop Safari'] },
+            testIgnore: [/auth\.setup\.ts/, /.*\.auth\.spec\.ts/],
+          },
+        ]),
+  ],
 
   /* Run your local dev server before starting the tests */
   /* CI: use production build for speed, Local: use dev server */

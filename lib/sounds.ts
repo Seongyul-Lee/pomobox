@@ -33,9 +33,6 @@ export const AMBIENT_SOUNDS: SoundOption[] = [
   { label: "Meditation Bell 🧘", value: "meditationbell" },
 ]
 
-// For backward compatibility
-export const SOUND_OPTIONS = MELODY_SOUNDS
-
 export function getSoundsByCategory(category: SoundCategory): SoundOption[] {
   return category === 'melody' ? MELODY_SOUNDS : AMBIENT_SOUNDS
 }
@@ -79,21 +76,6 @@ function createAudioContext(): AudioContext {
   }
   currentAudioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
   return currentAudioContext
-}
-
-// Export function to stop current sound
-export function stopCurrentSound(): void {
-  if (currentAudioContext) {
-    try {
-      if (currentAudioContext.state !== 'closed') {
-        currentAudioContext.close()
-      }
-    } catch {
-      // Ignore errors when closing already closed context
-    }
-    currentAudioContext = null
-    currentMasterGain = null
-  }
 }
 
 // Export function to set volume in real-time (0-1 range)
@@ -644,9 +626,4 @@ export function playSound(soundType: string, volume: number): void {
   } catch (error) {
     console.error('Failed to play sound:', error)
   }
-}
-
-// For backward compatibility
-export function getSoundAudio(): string {
-  return "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhELTKXh8bllHAU2jdXyz3YnBSp+zPDajzsIEViy6OyrWBUIQ5zd8sFuJAUwhM/x1YU5CBZnvezno1QTCkml4PG6aB4EOIzU8dF0KAYAAAA="
 }

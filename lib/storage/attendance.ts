@@ -1,35 +1,15 @@
-const ATTENDANCE_KEY = "pomobox_attendance"
-const BEST_STREAK_KEY = "pomobox_best_streak"
+import {
+  getAllAttendance,
+  getAttendanceByDate,
+  saveAttendanceRecord,
+  saveAllAttendance,
+  getSetting,
+  saveSetting,
+  type AttendanceRecord,
+} from "./idb"
 
-/**
- * 출석 기록 조회 (날짜 배열)
- */
-export function getAttendance(): string[] {
-  if (typeof window === "undefined") return []
-
-  try {
-    const stored = localStorage.getItem(ATTENDANCE_KEY)
-    if (!stored) return []
-    return JSON.parse(stored) as string[]
-  } catch {
-    return []
-  }
-}
-
-/**
- * 출석 기록 저장
- */
-function saveAttendance(dates: string[]): void {
-  if (typeof window === "undefined") return
-
-  try {
-    // 최근 365일만 유지
-    const trimmed = dates.slice(-365)
-    localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(trimmed))
-  } catch (error) {
-    console.error("Failed to save attendance:", error)
-  }
-}
+const LEGACY_ATTENDANCE_KEY = "pomobox_attendance"
+const LEGACY_BEST_STREAK_KEY = "pomobox_best_streak"
 
 /**
  * 로컬 시간 기준 날짜 (YYYY-MM-DD)
@@ -46,7 +26,80 @@ function getToday(): string {
 }
 
 /**
- * 오늘 출석 체크 여부 확인
+ * IndexedDB에서 출석 기록 조회 (async)
+ */
+export async function getAttendanceAsync(): Promise<string[]> {
+  if (typeof window === "undefined") return []
+
+  try {
+    const records = await getAllAttendance()
+    return records.map((r) => r.date)
+  } catch {
+    return []
+  }
+}
+
+/**
+ * 동기 버전 (하위 호환성) - localStorage 폴백
+ */
+export function getAttendance(): string[] {
+  if (typeof window === "undefined") return []
+
+  try {
+    const stored = localStorage.getItem(LEGACY_ATTENDANCE_KEY)
+    if (!stored) return []
+    return JSON.parse(stored) as string[]
+  } catch {
+    return []
+  }
+}
+
+/**
+ * IndexedDB에 출석 기록 저장 (async)
+ */
+async function saveAttendanceAsync(dates: string[]): Promise<void> {
+  if (typeof window === "undefined") return
+
+  try {
+    // 최근 365일만 유지
+    const trimmed = dates.slice(-365)
+    const records: AttendanceRecord[] = trimmed.map((date) => ({ date }))
+    await saveAllAttendance(records)
+    // localStorage도 함께 업데이트 (폴백용)
+    localStorage.setItem(LEGACY_ATTENDANCE_KEY, JSON.stringify(trimmed))
+  } catch (error) {
+    console.error("Failed to save attendance:", error)
+  }
+}
+
+/**
+ * 동기 버전 (하위 호환성)
+ */
+function saveAttendance(dates: string[]): void {
+  if (typeof window === "undefined") return
+
+  try {
+    // 최근 365일만 유지
+    const trimmed = dates.slice(-365)
+    localStorage.setItem(LEGACY_ATTENDANCE_KEY, JSON.stringify(trimmed))
+    // 백그라운드로 IndexedDB에도 저장
+    const records: AttendanceRecord[] = trimmed.map((date) => ({ date }))
+    saveAllAttendance(records).catch(console.error)
+  } catch (error) {
+    console.error("Failed to save attendance:", error)
+  }
+}
+
+/**
+ * 오늘 출석 체크 여부 확인 (async)
+ */
+export async function isCheckedInTodayAsync(): Promise<boolean> {
+  const record = await getAttendanceByDate(getToday())
+  return record !== null
+}
+
+/**
+ * 동기 버전 (하위 호환성)
  */
 export function isCheckedInToday(): boolean {
   const attendance = getAttendance()
@@ -55,7 +108,24 @@ export function isCheckedInToday(): boolean {
 }
 
 /**
- * 오늘 출석 체크
+ * 오늘 출석 체크 (async)
+ */
+export async function checkInTodayAsync(): Promise<boolean> {
+  const isChecked = await isCheckedInTodayAsync()
+  if (isChecked) return false // 이미 출석함
+
+  await saveAttendanceRecord({ date: getToday() })
+
+  // localStorage도 동기화
+  const attendance = getAttendance()
+  attendance.push(getToday())
+  saveAttendance(attendance)
+
+  return true
+}
+
+/**
+ * 동기 버전 (하위 호환성)
  */
 export function checkInToday(): boolean {
   if (isCheckedInToday()) return false // 이미 출석함
@@ -67,7 +137,33 @@ export function checkInToday(): boolean {
 }
 
 /**
- * 연속 출석 일수 계산
+ * 연속 출석 일수 계산 (async)
+ */
+export async function getStreakDaysAsync(): Promise<number> {
+  const attendance = await getAttendanceAsync()
+  if (attendance.length === 0) return 0
+
+  const today = new Date()
+  let streak = 0
+
+  for (let i = 0; i < 365; i++) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+    const dateStr = getLocalDate(date)
+
+    if (attendance.includes(dateStr)) {
+      streak++
+    } else if (i > 0) {
+      // 오늘이 아닌 날에 출석 기록이 없으면 streak 종료
+      break
+    }
+  }
+
+  return streak
+}
+
+/**
+ * 동기 버전 (하위 호환성)
  */
 export function getStreakDays(): number {
   const attendance = getAttendance()
@@ -104,13 +200,27 @@ export function getMonthlyAttendance(year: number, month: number): number {
 }
 
 /**
- * 최고 연속 출석 일수 조회
+ * 최고 연속 출석 일수 조회 (async)
+ */
+export async function getBestStreakAsync(): Promise<number> {
+  if (typeof window === "undefined") return 0
+
+  try {
+    const bestStreak = await getSetting<number>("bestStreak")
+    return bestStreak ?? 0
+  } catch {
+    return 0
+  }
+}
+
+/**
+ * 동기 버전 (하위 호환성)
  */
 export function getBestStreak(): number {
   if (typeof window === "undefined") return 0
 
   try {
-    const stored = localStorage.getItem(BEST_STREAK_KEY)
+    const stored = localStorage.getItem(LEGACY_BEST_STREAK_KEY)
     if (!stored) return 0
     return parseInt(stored, 10)
   } catch {
@@ -119,15 +229,16 @@ export function getBestStreak(): number {
 }
 
 /**
- * 최고 연속 출석 일수 업데이트
+ * 최고 연속 출석 일수 업데이트 (async)
  */
-function updateBestStreak(currentStreak: number): void {
+async function updateBestStreakAsync(currentStreak: number): Promise<void> {
   if (typeof window === "undefined") return
 
-  const bestStreak = getBestStreak()
+  const bestStreak = await getBestStreakAsync()
   if (currentStreak > bestStreak) {
     try {
-      localStorage.setItem(BEST_STREAK_KEY, String(currentStreak))
+      await saveSetting("bestStreak", currentStreak)
+      localStorage.setItem(LEGACY_BEST_STREAK_KEY, String(currentStreak))
     } catch (error) {
       console.error("Failed to save best streak:", error)
     }
@@ -135,7 +246,43 @@ function updateBestStreak(currentStreak: number): void {
 }
 
 /**
- * 현재 스트릭과 베스트 스트릭을 함께 반환
+ * 동기 버전 (하위 호환성)
+ */
+function updateBestStreak(currentStreak: number): void {
+  if (typeof window === "undefined") return
+
+  const bestStreak = getBestStreak()
+  if (currentStreak > bestStreak) {
+    try {
+      localStorage.setItem(LEGACY_BEST_STREAK_KEY, String(currentStreak))
+      saveSetting("bestStreak", currentStreak).catch(console.error)
+    } catch (error) {
+      console.error("Failed to save best streak:", error)
+    }
+  }
+}
+
+/**
+ * 현재 스트릭과 베스트 스트릭을 함께 반환 (async)
+ */
+export async function getStreakStatsAsync(): Promise<{
+  current: number
+  best: number
+}> {
+  const current = await getStreakDaysAsync()
+  const bestStored = await getBestStreakAsync()
+  const best = Math.max(bestStored, current)
+
+  // 현재 스트릭이 베스트보다 높으면 업데이트
+  if (current > bestStored) {
+    await updateBestStreakAsync(current)
+  }
+
+  return { current, best }
+}
+
+/**
+ * 동기 버전 (하위 호환성)
  */
 export function getStreakStats(): { current: number; best: number } {
   const current = getStreakDays()
@@ -152,7 +299,11 @@ export function getStreakStats(): { current: number; best: number } {
 /**
  * 최근 7일 출석률 계산
  */
-export function getWeeklyAttendanceRate(): { attended: number; total: number; rate: number } {
+export function getWeeklyAttendanceRate(): {
+  attended: number
+  total: number
+  rate: number
+} {
   const attendance = getAttendance()
   const today = new Date()
   let attended = 0
@@ -169,6 +320,34 @@ export function getWeeklyAttendanceRate(): { attended: number; total: number; ra
   return {
     attended,
     total: 7,
-    rate: Math.round((attended / 7) * 100)
+    rate: Math.round((attended / 7) * 100),
+  }
+}
+
+/**
+ * 최근 7일 출석률 계산 (async)
+ */
+export async function getWeeklyAttendanceRateAsync(): Promise<{
+  attended: number
+  total: number
+  rate: number
+}> {
+  const attendance = await getAttendanceAsync()
+  const today = new Date()
+  let attended = 0
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+    const dateStr = getLocalDate(date)
+    if (attendance.includes(dateStr)) {
+      attended++
+    }
+  }
+
+  return {
+    attended,
+    total: 7,
+    rate: Math.round((attended / 7) * 100),
   }
 }

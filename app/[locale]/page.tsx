@@ -9,7 +9,6 @@ import { UserMenu } from "@/components/user-menu"
 import { DashboardLeft } from "@/components/dashboard-left"
 import { DashboardRight } from "@/components/dashboard-right"
 import { BgmPanel } from "@/components/bgm-panel"
-import { TimerProvider } from "@/contexts/timer-context"
 
 function TimerFallback() {
   const t = useTranslations("Home")
@@ -20,24 +19,10 @@ function TimerFallback() {
   )
 }
 
-function SideAd({ position }: { position: "left" | "right" }) {
-  const positionClass = position === "left" ? "left-0" : "right-0"
-  return (
-    <div
-      className={`side-ad fixed top-[270px] ${positionClass} w-[160px] h-[600px] bg-muted/30 rounded-lg flex flex-col items-center justify-center border border-dashed border-muted-foreground/20 z-10`}
-      aria-label={`${position} advertisement`}
-    >
-      <span className="text-xs text-muted-foreground writing-vertical">Ad</span>
-      <span className="ad-size-label text-xs text-muted-foreground mt-1">160 x 600</span>
-    </div>
-  )
-}
-
 export default function Home() {
   const t = useTranslations("Home")
 
   return (
-    <TimerProvider>
       <main className="relative min-h-screen flex flex-col text-foreground">
         {/* Fixed Header Controls */}
         <ThemeToggle />
@@ -45,12 +30,9 @@ export default function Home() {
           <UserMenu />
         </div>
 
-        {/* Main Layout with Side Ads (QHD) */}
-        <div className="flex-1 pt-16 pb-6 content-area">
-          <div className="main-layout flex justify-center items-start gap-4">
-            {/* Left Side Ad (QHD only) */}
-            <SideAd position="left" />
-
+        {/* Main Layout */}
+        <div className="flex-1 pt-16 pb-6 siderail-margin">
+          <div className="main-layout flex justify-center items-start gap-4 px-4 xl:px-8">
             {/* 3-Column Content Grid */}
             <div className="dashboard-grid w-full grid grid-cols-1 xl:grid-cols-[570px_minmax(400px,1fr)_570px] gap-6 xl:gap-6 xl:items-stretch">
               {/* Left: Dashboard (오늘 요약, 주간, 월간) */}
@@ -81,9 +63,6 @@ export default function Home() {
                 </Suspense>
               </aside>
             </div>
-
-            {/* Right Side Ad (QHD only) */}
-            <SideAd position="right" />
           </div>
 
           {/* Mobile: Stacked panels below timer */}
@@ -98,25 +77,20 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Ad Banner + Footer */}
+        {/* Footer */}
         <div className="w-full px-4 xl:px-8 pb-3">
-          <div className="max-w-[1800px] mx-auto">
-            {/* Ad Banner Placeholder */}
-            <div className="w-full h-[90px] bg-muted/30 rounded-lg flex items-center justify-center border border-dashed border-muted-foreground/20 mb-2">
-              <span className="text-xs text-muted-foreground">Ad Space</span>
-            </div>
+          {/* 하단 광고 여백 */}
+          <div className="h-24 mb-2" />
 
-            {/* Minimal Footer */}
-            <div className="text-center text-xs text-muted-foreground py-1">
-              <span>© 2025 pomobox</span>
-              <span className="mx-2">·</span>
-              <Link href="/privacy" className="hover:text-foreground hover:underline">
-                Privacy Policy
-              </Link>
-            </div>
+          {/* Minimal Footer */}
+          <div className="text-center text-xs text-muted-foreground py-1">
+            <span>© 2025 pomobox</span>
+            <span className="mx-2">·</span>
+            <Link href="/privacy" className="hover:text-foreground hover:underline">
+              Privacy Policy
+            </Link>
           </div>
         </div>
       </main>
-    </TimerProvider>
   )
 }

@@ -1,12 +1,12 @@
 import type React from "react"
 import type { Metadata } from "next"
-import Script from "next/script"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { NextIntlClientProvider, hasLocale } from "next-intl"
 import { getMessages } from "next-intl/server"
 import { notFound } from "next/navigation"
 import { Toaster } from "@/components/ui/toaster"
+import { AdSenseScript } from "@/components/adsense-script"
 import { Providers } from "../providers"
 import { routing } from "@/i18n/routing"
 import "../globals.css"
@@ -129,11 +129,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         />
       </head>
       <body className={`${geist.variable} font-sans antialiased`}>
-        <Script
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7020101743498097"
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-        />
+        <AdSenseScript />
         <NextIntlClientProvider messages={messages}>
           <Providers>
             {children}

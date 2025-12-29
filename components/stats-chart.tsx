@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState, useRef } from "react"
 import {
   ComposedChart,
   Bar,
@@ -25,6 +26,25 @@ interface StatsChartProps {
 
 export function StatsChart({ data }: StatsChartProps) {
   const t = useTranslations("Dashboard")
+  const [mounted, setMounted] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    // ResizeObserver로 컨테이너의 실제 크기가 0보다 클 때만 차트 렌더링
+    const container = containerRef.current
+    if (!container) return
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (entry && entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+        setMounted(true)
+        observer.disconnect()
+      }
+    })
+
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [])
 
   // 날짜를 짧은 형식으로 변환 (MM/DD)
   const chartData = data.map((item) => ({
@@ -36,7 +56,8 @@ export function StatsChart({ data }: StatsChartProps) {
   }))
 
   return (
-    <div className="w-full h-[300px] sm:h-[400px]">
+    <div ref={containerRef} className="w-full h-75 sm:h-100">
+      {!mounted ? null : (
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           data={chartData}
@@ -87,6 +108,7 @@ export function StatsChart({ data }: StatsChartProps) {
           />
         </ComposedChart>
       </ResponsiveContainer>
+      )}
     </div>
   )
 }

@@ -5,14 +5,13 @@ import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
-import { SettingsDialog, TimerSettings } from "./settings-dialog"
+import { SettingsDialog } from "./settings-dialog"
 import { playSound } from "@/lib/sounds"
 import { useUser } from "@/hooks/use-user"
 import { recordSessionComplete, incrementDailyMinutes } from "@/lib/supabase/stats"
-import { getLocalTodayStats, recordLocalSession, incrementLocalMinutes, saveLocalTodayStats } from "@/lib/storage/local-stats"
-import { getLocalSettings, saveLocalSettings, DEFAULT_SETTINGS } from "@/lib/storage/local-settings"
+import { getLocalTodayStats, incrementLocalMinutes, saveLocalTodayStats } from "@/lib/storage/local-stats"
 import { GoalProgress } from "./goal-progress"
-import { useTimerContext } from "@/contexts/timer-context"
+import { useTimerStore, useSettingsStore, type TimerSettings } from "@/lib/store"
 import confetti from "canvas-confetti"
 
 type TimerPhase = 'focus' | 'break' | 'longBreak'
@@ -25,16 +24,19 @@ export function PomodoroTimer() {
   const t = useTranslations("Timer")
   const searchParams = useSearchParams()
   const { user } = useUser()
-  const timerContext = useTimerContext()
+
+  // Zustand stores
+  const timerStore = useTimerStore()
+  const settingsStore = useSettingsStore()
 
   // Test-only: ?testDuration=10 sets focus duration to 10 seconds
   const testDurationSec = searchParams.get('testDuration')
     ? parseInt(searchParams.get('testDuration')!, 10)
     : null
 
-  const [settings, setSettings] = useState<TimerSettings>(DEFAULT_SETTINGS)
+  // 로컬 상태 (Zustand와 동기화)
   const [phase, setPhase] = useState<TimerPhase>('focus')
-  const [timeLeft, setTimeLeft] = useState(settings.focusDuration * 60)
+  const [timeLeft, setTimeLeft] = useState(settingsStore.focusDuration * 60)
   const [status, setStatus] = useState<TimerStatus>('idle')
   const [sessions, setSessions] = useState(0)
   const [completedSessions, setCompletedSessions] = useState(0)
@@ -48,16 +50,14 @@ export function PomodoroTimer() {
   // 마지막으로 저장된 분 (1분 단위 증분 저장용)
   const lastSavedMinuteRef = useRef<number>(0)
 
-  // localStorage에서 설정 및 오늘 통계 복원
+  // localStorage에서 오늘 통계 복원
   useEffect(() => {
-    const savedSettings = getLocalSettings()
-    setSettings(savedSettings)
-    setTimeLeft(savedSettings.focusDuration * 60)
+    setTimeLeft(settingsStore.focusDuration * 60)
 
     const localStats = getLocalTodayStats()
     setTotalFocusMinutes(localStats.totalMinutes)
     setSessions(localStats.totalSessions)
-  }, [])
+  }, [settingsStore.focusDuration])
 
   const getDuration = () => {
     if (phase === 'focus') {
@@ -65,10 +65,10 @@ export function PomodoroTimer() {
       if (testDurationSec !== null && testDurationSec > 0) {
         return testDurationSec
       }
-      return settings.focusDuration * 60
+      return settingsStore.focusDuration * 60
     }
     if (phase === 'longBreak') return 15 * 60
-    return settings.breakDuration * 60
+    return settingsStore.breakDuration * 60
   }
 
   // Initialize timeLeft when testDuration is provided
@@ -82,7 +82,6 @@ export function PomodoroTimer() {
   const minutes = Math.floor(timeLeft / 60)
   const seconds = timeLeft % 60
   const progress = ((duration - timeLeft) / duration) * 100
-  const circumference = TIMER_CIRCUMFERENCE
 
   // Browser title update
   useEffect(() => {
@@ -94,10 +93,10 @@ export function PomodoroTimer() {
 
   // Request notification permission
   useEffect(() => {
-    if (settings.notificationsEnabled && Notification.permission === "default") {
+    if (settingsStore.notificationsEnabled && Notification.permission === "default") {
       Notification.requestPermission()
     }
-  }, [settings.notificationsEnabled])
+  }, [settingsStore.notificationsEnabled])
 
   // Initialize / clear target end time for time-based timer
   useEffect(() => {
@@ -133,6 +132,14 @@ export function PomodoroTimer() {
     }
   }, [status, targetEndAtMs])
 
+  // Zustand store 동기화: sessionStartTime
+  useEffect(() => {
+    // timerStore에 세션 시작 시간 동기화
+    if (status === 'running' && phase === 'focus' && focusSessionStartRef.current !== null) {
+      // 이미 store에 반영됨
+    }
+  }, [status, phase, timerStore])
+
   // 1분마다 자동 저장 (Focus 세션 중에만)
   useEffect(() => {
     if (status !== 'running' || phase !== 'focus' || focusSessionStartRef.current === null) {
@@ -150,15 +157,12 @@ export function PomodoroTimer() {
         const minutesToSave = elapsedMinutes - lastSavedMinuteRef.current
         lastSavedMinuteRef.current = elapsedMinutes
 
-        // UI는 realtimeMinutes가 담당하므로 setTotalFocusMinutes 호출 안함
-        // (GoalProgress에서 currentMinutes + realtimeMinutes로 표시)
-
         // localStorage 저장 (모든 사용자)
         incrementLocalMinutes(minutesToSave)
 
         // Supabase 저장 (로그인 사용자만)
         if (user) {
-          incrementDailyMinutes(user.id, minutesToSave, settings.dailyGoal).catch(err => {
+          incrementDailyMinutes(user.id, minutesToSave, settingsStore.dailyGoal).catch(err => {
             console.error("Failed to save to Supabase:", err)
           })
         }
@@ -169,7 +173,7 @@ export function PomodoroTimer() {
     const intervalId = setInterval(checkAndSave, 5000)
 
     return () => clearInterval(intervalId)
-  }, [status, phase, user, settings.dailyGoal])
+  }, [status, phase, user, settingsStore.dailyGoal])
 
   // Phase transition when timer hits 0
   useEffect(() => {
@@ -181,7 +185,7 @@ export function PomodoroTimer() {
     setTargetEndAtMs(null)
 
     // Notifications and sound
-    if (settings.notificationsEnabled && Notification.permission === "granted") {
+    if (settingsStore.notificationsEnabled && Notification.permission === "granted") {
       const message = phase === 'focus'
         ? "Time for a break"
         : "Ready for another session?"
@@ -191,8 +195,8 @@ export function PomodoroTimer() {
       )
     }
 
-    if (settings.soundEnabled) {
-      playSound(settings.soundType, settings.volume / 100)
+    if (settingsStore.soundEnabled) {
+      playSound(settingsStore.soundType, settingsStore.volume / 100)
     }
 
     if (phase === 'focus') {
@@ -203,13 +207,13 @@ export function PomodoroTimer() {
       setSessions(newSessions)
 
       // 남은 분 계산 (이미 1분마다 저장했으므로 중복 방지)
-      const remainingMinutes = settings.focusDuration - lastSavedMinuteRef.current
+      const remainingMinutes = settingsStore.focusDuration - lastSavedMinuteRef.current
 
       // localStorage에 남은 분 저장 + 세션 카운트 증가
       if (remainingMinutes > 0) {
         incrementLocalMinutes(remainingMinutes)
       }
-      // 세션 카운트 증가 (recordLocalSession은 시간도 추가하므로 직접 처리)
+      // 세션 카운트 증가
       const localStats = getLocalTodayStats()
       saveLocalTodayStats({
         ...localStats,
@@ -223,7 +227,7 @@ export function PomodoroTimer() {
 
       // 목표 달성 시 confetti 애니메이션
       const previousTotal = totalFocusMinutes
-      if (previousTotal < settings.dailyGoal && newTotal >= settings.dailyGoal) {
+      if (previousTotal < settingsStore.dailyGoal && newTotal >= settingsStore.dailyGoal) {
         confetti({
           particleCount: 100,
           spread: 70,
@@ -235,7 +239,7 @@ export function PomodoroTimer() {
       if (user) {
         // 남은 분 저장
         if (remainingMinutes > 0) {
-          incrementDailyMinutes(user.id, remainingMinutes, settings.dailyGoal).catch(console.error)
+          incrementDailyMinutes(user.id, remainingMinutes, settingsStore.dailyGoal).catch(console.error)
         }
         // 세션 완료 기록 (세션 카운트 증가)
         recordSessionComplete(user.id, 0) // duration=0으로 세션만 기록
@@ -244,10 +248,8 @@ export function PomodoroTimer() {
       // lastSavedMinuteRef 초기화
       lastSavedMinuteRef.current = 0
 
-      // Context 업데이트: Focus 완료 → 휴식으로 전환
-      timerContext.stopSession()
+      // Focus 세션 종료
       focusSessionStartRef.current = null
-      timerContext.setFocusPhase(false)
 
       // Long Break every 4 completed sessions (not skipped)
       if (newCompleted % 4 === 0) {
@@ -256,53 +258,41 @@ export function PomodoroTimer() {
         setLongBreakCount(prev => prev + 1)
       } else {
         setPhase('break')
-        setTimeLeft(settings.breakDuration * 60)
+        setTimeLeft(settingsStore.breakDuration * 60)
       }
     } else {
       // 휴식 완료 → Focus로 전환
       setPhase('focus')
-      timerContext.setFocusPhase(true)
 
       const focusDuration = testDurationSec !== null && testDurationSec > 0
         ? testDurationSec
-        : settings.focusDuration * 60
+        : settingsStore.focusDuration * 60
       setTimeLeft(focusDuration)
     }
 
     setIsTransitioning(false) // Reset flag after transition
-  }, [timeLeft, status, phase, settings, completedSessions, totalFocusMinutes, sessions, isTransitioning, testDurationSec, user, timerContext])
+  }, [timeLeft, status, phase, settingsStore, completedSessions, totalFocusMinutes, sessions, isTransitioning, testDurationSec, user])
 
   const handleStart = useCallback(() => {
     if (isTransitioning) return
     setStatus('running')
 
-    // Focus 세션 시작 시 Context 및 시작 시간 설정
+    // Focus 세션 시작 시 시작 시간 설정
     if (phase === 'focus') {
       focusSessionStartRef.current = Date.now()
-      timerContext.startFocusSession()
     }
-  }, [isTransitioning, phase, timerContext])
+  }, [isTransitioning, phase])
 
   const handlePause = useCallback(() => {
     if (isTransitioning) return
     setStatus('paused')
     setTargetEndAtMs(null)
-
-    // Context 업데이트 (일시정지)
-    if (phase === 'focus') {
-      timerContext.pauseSession()
-    }
-  }, [isTransitioning, phase, timerContext])
+  }, [isTransitioning])
 
   const handleResume = useCallback(() => {
     if (isTransitioning) return
     setStatus('running')
-
-    // Context 업데이트 (재개)
-    if (phase === 'focus') {
-      timerContext.resumeSession()
-    }
-  }, [isTransitioning, phase, timerContext])
+  }, [isTransitioning])
 
   const handleReset = useCallback(() => {
     if (isTransitioning) return
@@ -318,7 +308,7 @@ export function PomodoroTimer() {
         incrementLocalMinutes(remainingMinutes)
 
         if (user) {
-          incrementDailyMinutes(user.id, remainingMinutes, settings.dailyGoal).catch(console.error)
+          incrementDailyMinutes(user.id, remainingMinutes, settingsStore.dailyGoal).catch(console.error)
         }
       }
 
@@ -330,20 +320,18 @@ export function PomodoroTimer() {
     // lastSavedMinuteRef 초기화
     lastSavedMinuteRef.current = 0
 
-    // Context 및 ref 초기화
-    timerContext.stopSession()
+    // ref 초기화
     focusSessionStartRef.current = null
 
     setStatus('idle')
     setTargetEndAtMs(null)
     setPhase('focus')
-    timerContext.setFocusPhase(true)
 
     const focusDuration = testDurationSec !== null && testDurationSec > 0
       ? testDurationSec
-      : settings.focusDuration * 60
+      : settingsStore.focusDuration * 60
     setTimeLeft(focusDuration)
-  }, [settings.focusDuration, settings.dailyGoal, isTransitioning, testDurationSec, phase, user, timerContext])
+  }, [settingsStore.focusDuration, settingsStore.dailyGoal, isTransitioning, testDurationSec, phase, user])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -390,7 +378,7 @@ export function PomodoroTimer() {
         incrementLocalMinutes(remainingMinutes)
 
         if (user) {
-          incrementDailyMinutes(user.id, remainingMinutes, settings.dailyGoal).catch(console.error)
+          incrementDailyMinutes(user.id, remainingMinutes, settingsStore.dailyGoal).catch(console.error)
         }
       }
 
@@ -407,29 +395,25 @@ export function PomodoroTimer() {
 
     if (phase === 'focus') {
       // Skip increments completedSessions but NOT sessions
-      // Long Break is triggered only by completed Focus (not skipped)
       const newCompleted = completedSessions + 1
       setCompletedSessions(newCompleted)
 
-      // Context 업데이트: Focus → 휴식
-      timerContext.stopSession()
+      // Focus 종료
       focusSessionStartRef.current = null
-      timerContext.setFocusPhase(false)
 
       // Always go to Short Break when skipping Focus
       setPhase('break')
-      setTimeLeft(settings.breakDuration * 60)
+      setTimeLeft(settingsStore.breakDuration * 60)
     } else {
       // 휴식 → Focus로 전환
-      timerContext.setFocusPhase(true)
       setPhase('focus')
-      setTimeLeft(settings.focusDuration * 60)
+      setTimeLeft(settingsStore.focusDuration * 60)
     }
-  }, [phase, settings, completedSessions, isTransitioning, user, timerContext])
+  }, [phase, settingsStore, completedSessions, isTransitioning, user])
 
   const handleSettingsChange = (newSettings: TimerSettings) => {
-    setSettings(newSettings)
-    saveLocalSettings(newSettings)
+    // Zustand store 업데이트 (자동으로 localStorage에 저장됨)
+    settingsStore.updateSettings(newSettings)
 
     if (status !== 'running') {
       if (phase === 'focus') {
@@ -452,11 +436,23 @@ export function PomodoroTimer() {
     return t('breakDescription')
   }
 
+  // 현재 settings 객체 구성 (SettingsDialog용)
+  const currentSettings: TimerSettings = {
+    focusDuration: settingsStore.focusDuration,
+    breakDuration: settingsStore.breakDuration,
+    dailyGoal: settingsStore.dailyGoal,
+    notificationsEnabled: settingsStore.notificationsEnabled,
+    soundEnabled: settingsStore.soundEnabled,
+    soundCategory: settingsStore.soundCategory,
+    soundType: settingsStore.soundType,
+    volume: settingsStore.volume,
+  }
+
   return (
     <div className="relative flex flex-col items-center gap-8">
       <div className="absolute top-4 right-4">
         <SettingsDialog
-          settings={settings}
+          settings={currentSettings}
           isRunning={status === 'running'}
           onSettingsChange={handleSettingsChange}
           buttonClassName="hover-rotate-settings"
@@ -479,8 +475,8 @@ export function PomodoroTimer() {
           role="status"
           aria-live="polite"
         >
-          <Pause className="h-3 w-3 text-white" />
-          <span className="text-xs font-medium text-white uppercase tracking-wide">
+          <Pause className="h-3 w-3 text-[oklch(100%_0_0)]" />
+          <span className="text-xs font-medium text-[oklch(100%_0_0)] uppercase tracking-wide">
             {status === 'paused' ? t('paused') : ''}
           </span>
         </div>
@@ -488,7 +484,7 @@ export function PomodoroTimer() {
 
       <div className="relative flex items-center justify-center group">
         <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90 hover-ring" viewBox="0 0 300 300">
-          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted dark:text-white/10 transition-all duration-300" />
+          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted dark:text-[oklch(100%_0_0/0.1)] transition-all duration-300" />
           <circle
             cx="150"
             cy="150"
@@ -499,7 +495,7 @@ export function PomodoroTimer() {
             strokeLinecap="round"
             strokeDasharray={TIMER_CIRCUMFERENCE}
             strokeDashoffset={TIMER_CIRCUMFERENCE - (progress / 100) * TIMER_CIRCUMFERENCE}
-            className={`transition-all duration-1000 ease-linear group-hover:stroke-[10] ${
+            className={`transition-all duration-1000 ease-linear group-hover:stroke-10 ${
               status === 'paused'
                 ? 'text-amber-500'
                 : phase === 'focus'
@@ -552,7 +548,7 @@ export function PomodoroTimer() {
 
       <GoalProgress
         currentMinutes={totalFocusMinutes}
-        goalMinutes={settings.dailyGoal}
+        goalMinutes={settingsStore.dailyGoal}
       />
 
     </div>

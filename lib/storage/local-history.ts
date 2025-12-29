@@ -1,4 +1,12 @@
-const HISTORY_KEY = "pomobox_history"
+import {
+  getAllHistory,
+  getHistoryByDate,
+  saveHistoryRecord,
+  saveAllHistory,
+  type HistoryRecord,
+} from "./idb"
+
+const LEGACY_HISTORY_KEY = "pomobox_history"
 const MAX_DAYS = 365 // 최대 1년 데이터 보관
 
 /**
@@ -16,13 +24,27 @@ export interface DayRecord {
 }
 
 /**
- * 히스토리 데이터 전체 조회
+ * IndexedDB에서 히스토리 데이터 전체 조회 (async)
+ */
+export async function getLocalHistoryAsync(): Promise<DayRecord[]> {
+  if (typeof window === "undefined") return []
+
+  try {
+    const records = await getAllHistory()
+    return records as DayRecord[]
+  } catch {
+    return []
+  }
+}
+
+/**
+ * 동기 버전 (하위 호환성) - localStorage 폴백
  */
 export function getLocalHistory(): DayRecord[] {
   if (typeof window === "undefined") return []
 
   try {
-    const stored = localStorage.getItem(HISTORY_KEY)
+    const stored = localStorage.getItem(LEGACY_HISTORY_KEY)
     if (!stored) return []
     return JSON.parse(stored) as DayRecord[]
   } catch {
@@ -31,7 +53,25 @@ export function getLocalHistory(): DayRecord[] {
 }
 
 /**
- * 히스토리 데이터 저장
+ * IndexedDB에 히스토리 데이터 저장 (async)
+ */
+async function saveLocalHistoryAsync(history: DayRecord[]): Promise<void> {
+  if (typeof window === "undefined") return
+
+  // MAX_DAYS 초과 시 오래된 데이터 삭제
+  const trimmed = history.slice(-MAX_DAYS)
+
+  try {
+    await saveAllHistory(trimmed as HistoryRecord[])
+    // localStorage도 함께 업데이트 (폴백용)
+    localStorage.setItem(LEGACY_HISTORY_KEY, JSON.stringify(trimmed))
+  } catch (error) {
+    console.error("Failed to save history:", error)
+  }
+}
+
+/**
+ * 동기 버전 (하위 호환성)
  */
 function saveLocalHistory(history: DayRecord[]): void {
   if (typeof window === "undefined") return
@@ -40,14 +80,58 @@ function saveLocalHistory(history: DayRecord[]): void {
   const trimmed = history.slice(-MAX_DAYS)
 
   try {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed))
+    localStorage.setItem(LEGACY_HISTORY_KEY, JSON.stringify(trimmed))
+    // 백그라운드로 IndexedDB에도 저장
+    saveAllHistory(trimmed as HistoryRecord[]).catch(console.error)
   } catch (error) {
     console.error("Failed to save history:", error)
   }
 }
 
 /**
- * 오늘 기록 추가/업데이트
+ * 오늘 기록 추가/업데이트 (async)
+ */
+export async function recordToHistoryAsync(minutes: number): Promise<void> {
+  const today = getLocalDate()
+
+  try {
+    const existing = await getHistoryByDate(today)
+
+    if (existing) {
+      await saveHistoryRecord({
+        date: today,
+        totalMinutes: existing.totalMinutes + minutes,
+        totalSessions: existing.totalSessions + 1,
+      })
+    } else {
+      await saveHistoryRecord({
+        date: today,
+        totalMinutes: minutes,
+        totalSessions: 1,
+      })
+    }
+
+    // localStorage도 동기화
+    const history = getLocalHistory()
+    const existingIndex = history.findIndex((r) => r.date === today)
+    if (existingIndex >= 0) {
+      history[existingIndex].totalMinutes += minutes
+      history[existingIndex].totalSessions += 1
+    } else {
+      history.push({
+        date: today,
+        totalMinutes: minutes,
+        totalSessions: 1,
+      })
+    }
+    saveLocalHistory(history)
+  } catch (error) {
+    console.error("Failed to record to history:", error)
+  }
+}
+
+/**
+ * 동기 버전 (하위 호환성)
  */
 export function recordToHistory(minutes: number): void {
   const today = getLocalDate()
@@ -74,6 +158,32 @@ export function recordToHistory(minutes: number): void {
  */
 export function getRecentDays(days: number): DayRecord[] {
   const history = getLocalHistory()
+  const result: DayRecord[] = []
+  const today = new Date()
+
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+    const dateStr = getLocalDate(date)
+
+    const existing = history.find((r) => r.date === dateStr)
+    result.push(
+      existing || {
+        date: dateStr,
+        totalMinutes: 0,
+        totalSessions: 0,
+      }
+    )
+  }
+
+  return result
+}
+
+/**
+ * 최근 N일 데이터 조회 (async)
+ */
+export async function getRecentDaysAsync(days: number): Promise<DayRecord[]> {
+  const history = await getLocalHistoryAsync()
   const result: DayRecord[] = []
   const today = new Date()
 
@@ -207,6 +317,41 @@ export function getTotalStats(): {
       streakDays++
     } else if (i > 0) {
       // 오늘이 아닌 날에 기록이 없으면 streak 종료
+      break
+    }
+  }
+
+  return { totalMinutes, totalSessions, totalDays, streakDays }
+}
+
+/**
+ * 전체 통계 요약 (async)
+ */
+export async function getTotalStatsAsync(): Promise<{
+  totalMinutes: number
+  totalSessions: number
+  totalDays: number
+  streakDays: number
+}> {
+  const history = await getLocalHistoryAsync()
+
+  const totalMinutes = history.reduce((sum, r) => sum + r.totalMinutes, 0)
+  const totalSessions = history.reduce((sum, r) => sum + r.totalSessions, 0)
+  const totalDays = history.filter((r) => r.totalSessions > 0).length
+
+  // 연속 일수 계산 (오늘부터 거꾸로)
+  let streakDays = 0
+  const today = new Date()
+
+  for (let i = 0; i < 365; i++) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+    const dateStr = getLocalDate(date)
+    const record = history.find((r) => r.date === dateStr)
+
+    if (record && record.totalSessions > 0) {
+      streakDays++
+    } else if (i > 0) {
       break
     }
   }

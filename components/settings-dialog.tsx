@@ -47,13 +47,38 @@ const GOAL_OPTIONS = [
 ]
 
 interface SettingsDialogProps {
-  settings: TimerSettings
-  isRunning: boolean
-  onSettingsChange: (settings: TimerSettings) => void
+  settings?: TimerSettings
+  isRunning?: boolean
+  onSettingsChange?: (settings: TimerSettings) => void
   buttonClassName?: string
+  /** Controlled mode: external open state */
+  open?: boolean
+  /** Controlled mode: callback when open state changes */
+  onOpenChange?: (open: boolean) => void
+  /** Hide the trigger button (for external control) */
+  hideTrigger?: boolean
 }
 
-export function SettingsDialog({ settings, isRunning, onSettingsChange, buttonClassName }: SettingsDialogProps) {
+const DEFAULT_SETTINGS: TimerSettings = {
+  focusDuration: 25,
+  breakDuration: 5,
+  dailyGoal: 120,
+  notificationsEnabled: true,
+  soundEnabled: true,
+  soundCategory: "melody",
+  soundType: "achievement",
+  volume: 50,
+}
+
+export function SettingsDialog({
+  settings = DEFAULT_SETTINGS,
+  isRunning = false,
+  onSettingsChange,
+  buttonClassName,
+  open,
+  onOpenChange,
+  hideTrigger = false,
+}: SettingsDialogProps) {
   const t = useTranslations("Settings")
   const tLanguages = useTranslations("Languages")
   const locale = useLocale()
@@ -74,7 +99,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange, buttonCl
 
   const handleSave = () => {
     if (isRunning) return
-    onSettingsChange(localSettings)
+    onSettingsChange?.(localSettings)
     setIsSaved(true)
 
     toast({
@@ -133,17 +158,19 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange, buttonCl
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="lg" className={`h-12 w-12 ${buttonClassName || ''}`} aria-label="Settings">
-          <Settings className="h-6 w-6" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md max-h-[85vh] flex flex-col">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {!hideTrigger && (
+        <DialogTrigger asChild>
+          <Button variant="ghost" size="lg" className={`h-12 w-12 ${buttonClassName || ''}`} aria-label="Settings">
+            <Settings className="h-6 w-6" />
+          </Button>
+        </DialogTrigger>
+      )}
+      <DialogContent className="sm:max-w-md max-h-[85vh] flex flex-col" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-6 py-4 overflow-y-auto flex-1 -mr-[23px] pr-[23px] settings-scrollbar">
+        <div className="space-y-6 py-4 overflow-y-auto flex-1 -mr-5.75 pr-5.75 settings-scrollbar">
           {/* Notifications */}
           <div className="flex items-center justify-between group">
             <div className="flex items-center gap-2 hover-section-label cursor-default">
@@ -271,7 +298,7 @@ export function SettingsDialog({ settings, isRunning, onSettingsChange, buttonCl
               </div>
             </div>
             <Select value={selectedLocale} onValueChange={setSelectedLocale}>
-              <SelectTrigger className="w-[140px]" aria-label="Select language">
+              <SelectTrigger className="w-35" aria-label="Select language">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

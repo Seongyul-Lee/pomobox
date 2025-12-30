@@ -288,7 +288,7 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
           </div>
           <div ref={containerRef} className="h-36">
             {chartMounted ? (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
               <BarChart data={chartData} barSize={28}>
                 <CartesianGrid
                   strokeDasharray="3 3"

@@ -58,7 +58,7 @@ export function StatsChart({ data }: StatsChartProps) {
   return (
     <div ref={containerRef} className="w-full h-75 sm:h-100">
       {!mounted ? null : (
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
         <ComposedChart
           data={chartData}
           margin={{ top: 20, right: 20, bottom: 20, left: 0 }}

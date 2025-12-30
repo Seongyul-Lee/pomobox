@@ -290,9 +290,9 @@ export function BgmPanel() {
                 aria-label={isMuted || volume === 0 ? t('unmute') : t('mute')}
               >
                 {isMuted || volume === 0 ? (
-                  <VolumeX className="h-4 w-4" />
+                  <VolumeX className="h-4 w-4" strokeWidth={2.5} />
                 ) : (
-                  <Volume2 className="h-4 w-4" />
+                  <Volume2 className="h-4 w-4" strokeWidth={2.5} />
                 )}
               </Button>
             </PopoverTrigger>
@@ -355,7 +355,7 @@ export function BgmPanel() {
               aria-label={t('shuffle')}
               aria-pressed={isShuffled}
             >
-              <Shuffle className="h-4 w-4" />
+              <Shuffle className="h-4 w-4" strokeWidth={2.5} />
             </Button>
             <Button
               variant="ghost"
@@ -365,9 +365,9 @@ export function BgmPanel() {
               aria-label={t(repeatMode === 'off' ? 'repeatOff' : repeatMode === 'all' ? 'repeatAll' : 'repeatOne')}
             >
               {repeatMode === 'one' ? (
-                <Repeat1 className="h-4 w-4" />
+                <Repeat1 className="h-4 w-4" strokeWidth={2.5} />
               ) : (
-                <Repeat className="h-4 w-4" />
+                <Repeat className="h-4 w-4" strokeWidth={2.5} />
               )}
             </Button>
           </div>
@@ -381,7 +381,7 @@ export function BgmPanel() {
               onClick={handlePrevious}
               aria-label={t('previous')}
             >
-              <SkipBack className="h-4 w-4" />
+              <SkipBack className="h-4 w-4" strokeWidth={2.5} />
             </Button>
 
             <Button
@@ -391,9 +391,9 @@ export function BgmPanel() {
               aria-label={isPlaying ? t('pause') : t('play')}
             >
               {isPlaying ? (
-                <Pause className="h-4 w-4" />
+                <Pause className="h-4 w-4" strokeWidth={2.5} />
               ) : (
-                <Play className="h-4 w-4 ml-0.5" />
+                <Play className="h-4 w-4 ml-0.5" strokeWidth={2.5} />
               )}
             </Button>
 
@@ -404,7 +404,7 @@ export function BgmPanel() {
               onClick={handleNext}
               aria-label={t('next')}
             >
-              <SkipForward className="h-4 w-4" />
+              <SkipForward className="h-4 w-4" strokeWidth={2.5} />
             </Button>
           </div>
 
@@ -412,7 +412,7 @@ export function BgmPanel() {
           <Popover>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200" aria-label={t('playlist')}>
-                  <List className="h-4 w-4" />
+                  <List className="h-4 w-4" strokeWidth={2.5} />
                 </Button>
               </PopoverTrigger>
             <PopoverContent className="w-56 p-2" align="end">

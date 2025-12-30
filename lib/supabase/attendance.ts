@@ -22,7 +22,7 @@ export async function checkInToDB(userId: string): Promise<boolean> {
     .select("id")
     .eq("user_id", userId)
     .eq("date", today)
-    .single()
+    .maybeSingle()
 
   if (existing) {
     return false // 이미 출석함
@@ -54,7 +54,7 @@ export async function isCheckedInTodayDB(userId: string): Promise<boolean> {
     .select("id")
     .eq("user_id", userId)
     .eq("date", today)
-    .single()
+    .maybeSingle()
 
   return !!data
 }

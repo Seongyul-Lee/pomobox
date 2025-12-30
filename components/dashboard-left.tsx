@@ -42,22 +42,13 @@ import {
   useTodayStats,
 } from "@/lib/queries/stats-queries"
 
-// 시간 포맷팅 (0h 0m → 0m, 1h 0m → 1h, 1h 30m → 1h 30m)
-function formatTime(minutes: number): string {
+// 시간 포맷팅 (다국어 지원)
+function formatTimeWithLocale(minutes: number, tTime: (key: string) => string): string {
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
-  if (h === 0) return `${m}m`
-  if (m === 0) return `${h}h`
-  return `${h}h ${m}m`
-}
-
-// 시간 포맷팅 (Hour/Minute 구조)
-function formatTimeHourMin(minutes: number, tTime: (key: string) => string): string {
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  if (h === 0) return `${m} ${tTime("minute")}`
-  if (m === 0) return `${h} ${tTime("hour")}`
-  return `${h} ${tTime("hour")} ${m} ${tTime("minute")}`
+  if (h === 0) return `${m}${tTime("minute")}`
+  if (m === 0) return `${h}${tTime("hour")}`
+  return `${h}${tTime("hour")} ${m}${tTime("minute")}`
 }
 
 // 로그인 필요 오버레이
@@ -79,11 +70,13 @@ function CustomTooltip({
   active,
   payload,
   t,
+  tTime,
 }: {
   active?: boolean
   payload?: Array<{ value: number; payload: { fullDay: string; minutes: number; sessions: number } }>
   label?: string
   t: (key: string) => string
+  tTime: (key: string) => string
 }) {
   if (!active || !payload?.length) return null
 
@@ -101,10 +94,10 @@ function CustomTooltip({
         <>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-chart-2" />
-            <p className="text-lg font-bold text-foreground">{formatTime(minutes)}</p>
+            <p className="text-lg font-bold text-foreground">{formatTimeWithLocale(minutes, tTime)}</p>
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {sessions} {t("sessions")}
+            {sessions}{t("sessions")}
           </p>
         </>
       ) : (
@@ -131,6 +124,7 @@ function TodayCard({
   realtimeMinutes: number
 }) {
   const t = useTranslations("Dashboard")
+  const tTime = useTranslations("Time")
 
   // 저장된 시간 + 실시간 경과 시간
   const displayMinutes = todayMinutes + realtimeMinutes
@@ -149,12 +143,12 @@ function TodayCard({
         <div className="grid grid-cols-3 gap-3">
           <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10 hover-stat cursor-default">
             <Clock className="h-5 w-5 text-primary mb-1.5 hover-bounce" />
-            <p className="text-sm font-semibold">{formatTime(displayMinutes)}</p>
+            <p className="text-sm font-semibold">{formatTimeWithLocale(displayMinutes, tTime)}</p>
             <p className="text-xs text-muted-foreground">{t("todayFocus")}</p>
           </div>
           <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(72.3%_0.274_149.6/0.1)] hover-stat cursor-default">
             <Target className="h-5 w-5 text-green-400 mb-1.5 hover-bounce" />
-            <p className="text-sm font-semibold">{todaySessions}</p>
+            <p className="text-sm font-semibold">{todaySessions}{t("sessions")}</p>
             <p className="text-xs text-muted-foreground">{t("sessions")}</p>
           </div>
           <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(64.5%_0.3075_16.4/0.1)] hover-stat cursor-default">
@@ -169,7 +163,7 @@ function TodayCard({
           <div className="flex items-center justify-between text-sm mb-2">
             <span className="text-muted-foreground">{t("dailyGoal")}</span>
             <span className={isGoalReached ? "text-green-500 font-medium" : "text-foreground"}>
-              {Math.round(progress)}% ({displayMinutes}/{goalMinutes}{t("minute")})
+              {Math.round(progress)}% ({displayMinutes}/{goalMinutes}{tTime("minute")})
             </span>
           </div>
           <div className="h-2.5 bg-muted/30 rounded-full overflow-hidden">
@@ -283,12 +277,12 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
       <CardContent className="relative">
         <div className={!isLoggedIn ? "blur-sm pointer-events-none select-none" : ""}>
           <div className="flex justify-between text-sm text-muted-foreground mb-2">
-            <span>{t("totalSessions")}: {totalSessions}</span>
-            <span>{t("dailyAvg")}: {formatTimeHourMin(avgMinutes, tTime)}</span>
+            <span>{t("totalSessions")}: {totalSessions}{t("sessions")}</span>
+            <span>{t("dailyAvg")}: {formatTimeWithLocale(avgMinutes, tTime)}</span>
           </div>
           <div ref={containerRef} className="h-36">
             {chartMounted ? (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
               <BarChart data={chartData} barSize={28}>
                 <CartesianGrid
                   strokeDasharray="3 3"
@@ -319,7 +313,7 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
                 />
                 <YAxis hide />
                 <Tooltip
-                  content={<CustomTooltip t={t} />}
+                  content={<CustomTooltip t={t} tTime={tTime} />}
                   cursor={{ fill: "oklch(72% 0.25 293.5 / 0.12)", radius: 6 }}
                 />
                 <Bar
@@ -421,11 +415,11 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
             <div className="space-y-3">
               <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10 hover-stat cursor-default">
                 <p className="text-xs text-muted-foreground mb-1">{t("thisWeekLabel")}</p>
-                <p className="text-lg font-bold text-primary">{formatTimeHourMin(thisWeekMinutes, tTime)}</p>
+                <p className="text-lg font-bold text-primary">{formatTimeWithLocale(thisWeekMinutes, tTime)}</p>
               </div>
               <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20 hover-stat cursor-default">
                 <p className="text-xs text-muted-foreground mb-1">{t("lastWeekLabel")}</p>
-                <p className="text-lg font-semibold">{formatTimeHourMin(lastWeekMinutes, tTime)}</p>
+                <p className="text-lg font-semibold">{formatTimeWithLocale(lastWeekMinutes, tTime)}</p>
               </div>
               {lastWeekMinutes > 0 && (
                 <div className={`text-center text-sm font-medium ${minutesDiff >= 0 ? "text-green-400" : "text-rose-400"}`}>
@@ -438,11 +432,11 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
             <div className="space-y-3">
               <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(72.3%_0.274_149.6/0.1)] hover-stat cursor-default">
                 <p className="text-xs text-muted-foreground mb-1">{t("thisWeekLabel")}</p>
-                <p className="text-lg font-bold text-green-400">{thisWeekSessions} {t("sessions")}</p>
+                <p className="text-lg font-bold text-green-400">{thisWeekSessions}{t("sessions")}</p>
               </div>
               <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20 hover-stat cursor-default">
                 <p className="text-xs text-muted-foreground mb-1">{t("lastWeekLabel")}</p>
-                <p className="text-lg font-semibold">{lastWeekSessions} {t("sessions")}</p>
+                <p className="text-lg font-semibold">{lastWeekSessions}{t("sessions")}</p>
               </div>
               {lastWeekSessions > 0 && (
                 <div className={`text-center text-sm font-medium ${sessionsDiff >= 0 ? "text-green-400" : "text-rose-400"}`}>
@@ -461,6 +455,7 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
 // 월간 현황 카드 (핵심 지표 4개 + 전월 대비)
 function MonthlyCard({ data, prevData, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; prevData: DayRecord[]; isLoggedIn: boolean; realtimeMinutes: number }) {
   const t = useTranslations("Dashboard")
+  const tTime = useTranslations("Time")
   const [daysElapsed, setDaysElapsed] = useState(1) // SSR 안전: 기본값 1
 
   // 클라이언트에서만 경과 일수 계산 (hydration 안전)
@@ -495,19 +490,19 @@ function MonthlyCard({ data, prevData, isLoggedIn, realtimeMinutes }: { data: Da
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col items-center p-4 rounded-xl bg-primary/10 hover-stat cursor-default">
               <Clock className="h-5 w-5 text-primary mb-1.5 hover-bounce" />
-              <p className="text-base font-semibold">{formatTime(totalMinutes)}</p>
+              <p className="text-base font-semibold">{formatTimeWithLocale(totalMinutes, tTime)}</p>
               <p className="text-xs text-muted-foreground">{t("totalFocusTime")}</p>
               <TrendIndicator current={totalMinutes} previous={prevTotalMinutes} label={t("vsLastMonth")} />
             </div>
             <div className="flex flex-col items-center p-4 rounded-xl bg-[oklch(72.3%_0.274_149.6/0.1)] hover-stat cursor-default">
               <Target className="h-5 w-5 text-green-400 mb-1.5 hover-bounce" />
-              <p className="text-base font-semibold">{totalSessions}</p>
+              <p className="text-base font-semibold">{totalSessions}{t("sessions")}</p>
               <p className="text-xs text-muted-foreground">{t("totalSessions")}</p>
               <TrendIndicator current={totalSessions} previous={prevTotalSessions} label={t("vsLastMonth")} />
             </div>
             <div className="flex flex-col items-center p-4 rounded-xl bg-[oklch(68.5%_0.211_237.3/0.1)] hover-stat cursor-default">
               <Calendar className="h-5 w-5 text-sky-400 mb-1.5 hover-bounce" />
-              <p className="text-base font-semibold">{formatTime(avgMinutes)}</p>
+              <p className="text-base font-semibold">{formatTimeWithLocale(avgMinutes, tTime)}</p>
               <p className="text-xs text-muted-foreground">{t("dailyAvg")}</p>
               <TrendIndicator current={avgMinutes} previous={prevAvgMinutes} label={t("vsLastMonth")} />
             </div>

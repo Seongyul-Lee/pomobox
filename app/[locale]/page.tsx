@@ -38,7 +38,7 @@ export default async function Home() {
   const t = await getTranslations("Home")
 
   return (
-      <main className="relative min-h-screen flex flex-col text-foreground">
+      <main className="relative min-h-screen flex flex-col text-foreground pt-safe">
         {/* Fixed Header Controls */}
         <ThemeToggle />
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
@@ -59,7 +59,7 @@ export default async function Home() {
 
               {/* Center: Timer */}
               <section className="flex flex-col items-center justify-start pt-8 xl:pt-12">
-                <div className="text-center mb-4 md:mb-8 px-4">
+                <div className="hidden md:block text-center mb-4 md:mb-8 px-4">
                   <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 hover-title-outline inline-block">
                     {t("title")}
                   </h1>

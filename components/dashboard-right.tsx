@@ -33,13 +33,13 @@ import {
 } from "@/lib/supabase/attendance"
 import { useRealtimeFocusMinutes } from "@/hooks/use-realtime-focus"
 
-// 시간 포맷팅
-function formatTime(minutes: number): string {
+// 시간 포맷팅 (다국어 지원)
+function formatTimeWithLocale(minutes: number, tTime: (key: string) => string): string {
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
-  if (h === 0) return `${m}m`
-  if (m === 0) return `${h}h`
-  return `${h}h ${m}m`
+  if (h === 0) return `${m}${tTime("minute")}`
+  if (m === 0) return `${h}${tTime("hour")}`
+  return `${h}${tTime("hour")} ${m}${tTime("minute")}`
 }
 
 export function DashboardRight() {
@@ -47,6 +47,7 @@ export function DashboardRight() {
   const realtimeMinutes = useRealtimeFocusMinutes()
   const t = useTranslations("Dashboard")
   const tDays = useTranslations("Days")
+  const tTime = useTranslations("Time")
   const [monthlyData, setMonthlyData] = useState<DayRecord[]>([])
   const [attendance, setAttendance] = useState<string[]>([])
   const [isCheckedIn, setIsCheckedIn] = useState<boolean | null>(null) // null = loading
@@ -273,11 +274,11 @@ export function DashboardRight() {
             ) : (
               <Circle className="h-7 w-7 text-muted-foreground" />
             )}
-            <div>
-              <p className="text-base font-medium">
+            <div className="break-keep">
+              <p className="text-base font-medium whitespace-nowrap">
                 {isCheckedIn === null ? t("loading") : isCheckedIn ? t("checkedIn") : t("checkInPrompt")}
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground whitespace-nowrap">
                 {t("monthlyAttendance")}: {monthAttendanceCount}{t("days")}
               </p>
             </div>
@@ -294,20 +295,20 @@ export function DashboardRight() {
 
         {/* 스트릭 통계 */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(64.5%_0.3075_16.4/0.1)] hover-stat cursor-default">
-            <Flame className="h-5 w-5 text-rose-400 mb-1.5 hover-bounce" />
-            <p className="text-base font-semibold">{streakStats.current}{t("days")}</p>
-            <p className="text-xs text-muted-foreground">{t("currentStreak")}</p>
+          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(64.5%_0.3075_16.4/0.15)] dark:bg-[oklch(64.5%_0.3075_16.4/0.1)] hover-stat cursor-default">
+            <Flame className="h-5 w-5 text-rose-500 dark:text-rose-400 mb-1.5 hover-bounce" />
+            <p className="text-base font-semibold text-[oklch(0.25_0.03_265)] dark:text-foreground">{streakStats.current}{t("days")}</p>
+            <p className="text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">{t("currentStreak")}</p>
           </div>
-          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(76.9%_0.235_70.1/0.1)] hover-stat cursor-default">
-            <Flame className="h-5 w-5 text-amber-400 mb-1.5 hover-bounce" />
-            <p className="text-base font-semibold">{streakStats.best}{t("days")}</p>
-            <p className="text-xs text-muted-foreground">{t("bestStreak")}</p>
+          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(76.9%_0.235_70.1/0.15)] dark:bg-[oklch(76.9%_0.235_70.1/0.1)] hover-stat cursor-default">
+            <Flame className="h-5 w-5 text-amber-500 dark:text-amber-400 mb-1.5 hover-bounce" />
+            <p className="text-base font-semibold text-[oklch(0.25_0.03_265)] dark:text-foreground">{streakStats.best}{t("days")}</p>
+            <p className="text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">{t("bestStreak")}</p>
           </div>
-          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(68.5%_0.211_237.3/0.1)] hover-stat cursor-default">
-            <Target className="h-5 w-5 text-sky-400 mb-1.5 hover-bounce" />
-            <p className="text-base font-semibold">{weeklyRate.rate}%</p>
-            <p className="text-xs text-muted-foreground">{t("weeklyRate")}</p>
+          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(68.5%_0.211_237.3/0.15)] dark:bg-[oklch(68.5%_0.211_237.3/0.1)] hover-stat cursor-default">
+            <Target className="h-5 w-5 text-sky-500 dark:text-sky-400 mb-1.5 hover-bounce" />
+            <p className="text-base font-semibold text-[oklch(0.25_0.03_265)] dark:text-foreground">{weeklyRate.rate}%</p>
+            <p className="text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">{t("weeklyRate")}</p>
           </div>
         </div>
 
@@ -316,8 +317,8 @@ export function DashboardRight() {
           {dayLabels.map((day, i) => (
             <div
               key={i}
-              className={`text-sm text-center py-2 font-medium ${
-                i === 0 ? "text-rose-400" : i === 6 ? "text-blue-400" : "text-muted-foreground"
+              className={`text-sm text-center py-2 font-semibold ${
+                i === 0 ? "text-rose-500 dark:text-rose-400" : i === 6 ? "text-blue-500 dark:text-blue-400" : "text-[oklch(0.4_0.02_260)] dark:text-muted-foreground"
               }`}
             >
               {day}
@@ -347,13 +348,13 @@ export function DashboardRight() {
                     <button
                       type="button"
                       onClick={() => handleDayClick(day)}
-                      className={`aspect-square rounded-lg flex items-center justify-center text-base font-medium transition-all cursor-pointer hover:scale-105 hover:brightness-110 ${
+                      className={`aspect-square rounded-lg flex items-center justify-center text-base font-semibold transition-all cursor-pointer hover:scale-105 hover:brightness-110 text-[oklch(0.25_0.03_265)] dark:text-foreground ${
                         isSelected
                           ? `${getIntensityClass(day, isToday)} ring-2 ring-amber-400`
                           : isToday
-                            ? `${getIntensityClass(day, isToday)} ring-2 ring-primary font-bold`
+                            ? `bg-primary text-white dark:text-white ring-0 shadow-md`
                             : getIntensityClass(day, isToday)
-                      } ${dayOfWeek === 0 ? "text-rose-400" : ""} ${dayOfWeek === 6 ? "text-blue-400" : ""}`}
+                      } ${dayOfWeek === 0 ? "!text-rose-500 dark:!text-rose-400" : ""} ${dayOfWeek === 6 ? "!text-blue-500 dark:!text-blue-400" : ""}`}
                     >
                       {day}
                     </button>
@@ -368,11 +369,11 @@ export function DashboardRight() {
                     <div className="space-y-1.5 text-sm">
                       <div className="flex items-center gap-2">
                         <Clock className="h-3.5 w-3.5 text-primary" />
-                        <span>{formatTime(minutes)}</span>
+                        <span>{formatTimeWithLocale(minutes, tTime)}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Target className="h-3.5 w-3.5 text-green-400" />
-                        <span>{sessions} {t("sessions")}</span>
+                        <span>{sessions}{t("sessions")}</span>
                       </div>
                       {attended && (
                         <div className="flex items-center gap-2">
@@ -406,12 +407,12 @@ export function DashboardRight() {
             <div className="grid grid-cols-3 gap-3">
               <div className="flex flex-col items-center p-2 rounded-lg bg-background/50">
                 <Clock className="h-4 w-4 text-primary mb-1" />
-                <p className="text-sm font-semibold">{formatTime(selectedDayInfo.minutes)}</p>
+                <p className="text-sm font-semibold">{formatTimeWithLocale(selectedDayInfo.minutes, tTime)}</p>
                 <p className="text-xs text-muted-foreground">{t("todayFocus")}</p>
               </div>
               <div className="flex flex-col items-center p-2 rounded-lg bg-background/50">
                 <Target className="h-4 w-4 text-green-400 mb-1" />
-                <p className="text-sm font-semibold">{selectedDayInfo.sessions}</p>
+                <p className="text-sm font-semibold">{selectedDayInfo.sessions}{t("sessions")}</p>
                 <p className="text-xs text-muted-foreground">{t("sessions")}</p>
               </div>
               <div className="flex flex-col items-center p-2 rounded-lg bg-background/50">

@@ -70,7 +70,7 @@ export async function updateDailyStats(
     .select("*")
     .eq("user_id", userId)
     .eq("date", today)
-    .single()
+    .maybeSingle()
 
   const newTotalSessions = (existing?.total_sessions || 0) + 1
   const newTotalMinutes = (existing?.total_minutes || 0) + durationMinutes
@@ -113,10 +113,9 @@ export async function getTodayStats(userId: string): Promise<DailyStats | null> 
     .select("*")
     .eq("user_id", userId)
     .eq("date", today)
-    .single()
+    .maybeSingle()
 
-  if (error && error.code !== "PGRST116") {
-    // PGRST116 = no rows returned
+  if (error) {
     console.error("Failed to get today stats:", error)
     throw error
   }
@@ -166,7 +165,7 @@ export async function incrementDailyMinutes(
     .select("*")
     .eq("user_id", userId)
     .eq("date", today)
-    .single()
+    .maybeSingle()
 
   // 시간만 증가, 세션 카운트는 유지
   const newTotalMinutes = (existing?.total_minutes || 0) + minutes

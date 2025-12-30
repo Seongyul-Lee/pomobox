@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { ThemeProvider } from "next-themes"
+import { ThemeProvider, useTheme } from "next-themes"
 import {
   isServer,
   QueryClient,
@@ -55,6 +55,38 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+/**
+ * 모바일 기기에서 Light 테마를 강제하는 컴포넌트
+ * - 768px 미만 화면에서 자동으로 light 테마 적용
+ * - 화면 크기 변경 시 실시간 반영
+ */
+function MobileThemeEnforcer({ children }: { children: React.ReactNode }) {
+  const { setTheme } = useTheme()
+
+  useEffect(() => {
+    // 모바일 감지 함수
+    const checkMobile = () => {
+      const mobile = window.matchMedia("(max-width: 767px)").matches
+      if (mobile) {
+        setTheme("light")
+      }
+    }
+
+    // 초기 체크
+    checkMobile()
+
+    // 화면 크기 변경 감지
+    const mediaQuery = window.matchMedia("(max-width: 767px)")
+    mediaQuery.addEventListener("change", checkMobile)
+
+    return () => {
+      mediaQuery.removeEventListener("change", checkMobile)
+    }
+  }, [setTheme])
+
+  return <>{children}</>
+}
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient()
 
@@ -66,7 +98,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         themes={["light", "dark", "midnight"]}
         enableSystem={false}
       >
-        <AppInitializer>{children}</AppInitializer>
+        <MobileThemeEnforcer>
+          <AppInitializer>{children}</AppInitializer>
+        </MobileThemeEnforcer>
       </ThemeProvider>
     </QueryClientProvider>
   )

@@ -27,6 +27,13 @@ export default function SignupPage() {
             {t("backToTimer")}
           </Link>
         </p>
+
+        <p className="text-center text-xs text-muted-foreground">
+          {t("agreeToTerms")}{" "}
+          <Link href="/privacy" className="text-primary hover:underline">
+            {t("privacyPolicy")}
+          </Link>
+        </p>
       </div>
     </div>
   )

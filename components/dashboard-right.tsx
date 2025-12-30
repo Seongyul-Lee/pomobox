@@ -223,17 +223,24 @@ export function DashboardRight() {
     dayOfWeek: (firstDayOfMonth + selectedDay - 1) % 7
   } : null
 
-  // 강도에 따른 색상 클래스
-  const getIntensityClass = (day: number) => {
+  // 강도에 따른 색상 클래스 (글로우 효과 포함)
+  const getIntensityClass = (day: number, isToday: boolean) => {
     const minutes = getFocusMinutes(day)
     const attended = isAttended(day)
 
-    if (attended && minutes === 0) return "bg-blue-500/40 ring-1 ring-blue-400/50"
+    // 오늘 + 활동 있음: 보라색 글로우
+    if (isToday && minutes > 0) return "calendar-day-today"
+    // 오늘 (활동 없음): 보라색 링만
+    if (isToday) return "bg-primary/20"
+    // 출석 체크만 (활동 없음): 파란색 글로우
+    if (attended && minutes === 0) return "calendar-day-checked"
+    // 활동 없음
     if (minutes === 0) return "bg-muted/20"
-    if (minutes < 30) return "bg-green-500/30"
-    if (minutes < 60) return "bg-green-500/50"
-    if (minutes < 120) return "bg-green-500/70"
-    return "bg-green-500"
+    // 활동 있음: 녹색 글로우 (강도에 따라)
+    if (minutes < 30) return "bg-green-500/30 shadow-[0_0_6px_rgb(34_197_94/30%)]"
+    if (minutes < 60) return "bg-green-500/50 shadow-[0_0_8px_rgb(34_197_94/40%)]"
+    if (minutes < 120) return "bg-green-500/70 shadow-[0_0_10px_rgb(34_197_94/50%)]"
+    return "calendar-day-active"
   }
 
   // 이번 달 출석 일수
@@ -340,12 +347,12 @@ export function DashboardRight() {
                     <button
                       type="button"
                       onClick={() => handleDayClick(day)}
-                      className={`aspect-square rounded-lg flex items-center justify-center text-base font-medium transition-all cursor-pointer hover:scale-105 ${
+                      className={`aspect-square rounded-lg flex items-center justify-center text-base font-medium transition-all cursor-pointer hover:scale-105 hover:brightness-110 ${
                         isSelected
-                          ? `${getIntensityClass(day)} ring-2 ring-amber-400`
+                          ? `${getIntensityClass(day, isToday)} ring-2 ring-amber-400`
                           : isToday
-                            ? `${getIntensityClass(day)} ring-2 ring-primary font-bold`
-                            : getIntensityClass(day)
+                            ? `${getIntensityClass(day, isToday)} ring-2 ring-primary font-bold`
+                            : getIntensityClass(day, isToday)
                       } ${dayOfWeek === 0 ? "text-rose-400" : ""} ${dayOfWeek === 6 ? "text-blue-400" : ""}`}
                     >
                       {day}

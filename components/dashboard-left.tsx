@@ -198,6 +198,9 @@ const CHART_COLORS = {
   muted: "oklch(70.4% 0.021 256.8 / 0.2)",  // slate-400 계열 placeholder
   todayLabel: "oklch(72% 0.25 293.5)",      // 오늘 레이블 색상
   defaultLabel: "oklch(98.5% 0.0025 247.9 / 0.8)", // 기본 레이블 색상
+  // 글로우 효과용
+  todayGlow: "drop-shadow(0 0 12px oklch(72% 0.25 293.5 / 0.7))",
+  defaultGlow: "drop-shadow(0 0 10px oklch(72% 0.30 149.6 / 0.6))",
 }
 
 // 주간 현황 카드
@@ -331,18 +334,25 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
                 >
                   {chartData.map((entry, index) => {
                     // 데이터 없는 날: muted placeholder
-                    // 오늘: 보라색 (강조)
-                    // 기타: 녹색 (기본)
+                    // 오늘: 보라색 (강조) + 글로우
+                    // 기타: 녹색 (기본) + 글로우
                     const fill = !entry.hasData
                       ? CHART_COLORS.muted
                       : entry.isToday
                         ? CHART_COLORS.today
                         : CHART_COLORS.default
+                    // 글로우 효과 (데이터가 있는 날만)
+                    const glowFilter = !entry.hasData
+                      ? undefined
+                      : entry.isToday
+                        ? CHART_COLORS.todayGlow
+                        : CHART_COLORS.defaultGlow
                     return (
                       <Cell
                         key={`cell-${index}`}
                         fill={fill}
                         stroke={fill}
+                        style={{ filter: glowFilter }}
                       />
                     )
                   })}

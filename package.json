@@ -14,7 +14,8 @@
     "test:ui": "vitest --ui",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
-    "e2e:report": "playwright show-report"
+    "e2e:report": "playwright show-report",
+    "test:prod": "taskkill /F /IM node.exe 2>nul & if exist .next rmdir /s /q .next & pnpm build && pnpm start"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.4",

@@ -98,7 +98,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           value={password}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
           required
-          minLength={6}
+          minLength={8}
           disabled={loading}
         />
         <Button type="submit" className="w-full" disabled={loading}>

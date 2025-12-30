@@ -99,7 +99,9 @@
     "error": "오류",
     "unknownError": "알 수 없는 오류가 발생했습니다",
     "loading": "로딩 중",
-    "userMenu": "사용자 메뉴"
+    "userMenu": "사용자 메뉴",
+    "agreeToTerms": "가입하면 다음에 동의하는 것입니다:",
+    "privacyPolicy": "개인정보처리방침"
   },
   "Dashboard": {
     "title": "대시보드",
@@ -207,5 +209,11 @@
   "Time": {
     "hour": "시간",
     "minute": "분"
+  },
+  "Sync": {
+    "syncComplete": "데이터 동기화 완료",
+    "syncCompleteDescription": "{count}개의 기록을 동기화했습니다.",
+    "syncFailed": "동기화 실패",
+    "syncFailedDescription": "나중에 다시 시도해주세요."
   }
 }

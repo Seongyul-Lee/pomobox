@@ -81,37 +81,37 @@
 }
 
 .dark {
-  /* Task Automate inspired dark theme */
-  --background: #0a0a12;
-  --foreground: #f8fafc;
-  --card: rgb(30 30 45 / 80%);
-  --card-foreground: #f8fafc;
-  --popover: rgb(30 30 45 / 95%);
-  --popover-foreground: #f8fafc;
+  /* High-End Dark Mode Glassmorphism Theme */
+  --background: #030305;
+  --foreground: #ffffff;
+  --card: rgb(18 18 28 / 50%);
+  --card-foreground: #ffffff;
+  --popover: rgb(18 18 28 / 95%);
+  --popover-foreground: #ffffff;
   --primary: #a78bfa;
   --primary-foreground: #0f0f1a;
-  --secondary: rgb(45 45 65 / 80%);
+  --secondary: rgb(35 35 55 / 70%);
   --secondary-foreground: #f8fafc;
-  --muted: rgb(45 45 65 / 60%);
-  --muted-foreground: #94a3b8;
+  --muted: rgb(35 35 55 / 50%);
+  --muted-foreground: rgb(148 163 184 / 85%);
   --accent: #7c3aed;
   --accent-foreground: #f8fafc;
   --destructive: #f87171;
-  --border: rgb(148 163 184 / 15%);
-  --input: rgb(148 163 184 / 20%);
+  --border: rgb(255 255 255 / 10%);
+  --input: rgb(255 255 255 / 12%);
   --ring: #a78bfa;
   --chart-1: #a78bfa;
   --chart-2: #22c55e;
   --chart-3: #f87171;
   --chart-4: #38bdf8;
   --chart-5: #fbbf24;
-  --sidebar: rgb(20 20 30 / 80%);
+  --sidebar: rgb(12 12 18 / 90%);
   --sidebar-foreground: #f8fafc;
   --sidebar-primary: #a78bfa;
   --sidebar-primary-foreground: #f8fafc;
   --sidebar-accent: rgb(124 58 237 / 20%);
   --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: rgb(148 163 184 / 10%);
+  --sidebar-border: rgb(255 255 255 / 8%);
   --sidebar-ring: #7c3aed;
 }
 
@@ -152,35 +152,39 @@
   }
 }
 
-/* Dark mode gradient background with glow effects */
+/* Dark mode gradient background with glow effects - Deep Rich Black */
 .dark body {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgb(124 58 237 / 15%), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgb(59 130 246 / 10%), transparent),
-    radial-gradient(ellipse 50% 30% at 0% 100%, rgb(168 85 247 / 10%), transparent),
-    #0a0a12;
+    /* Central hero glow - large ambient lighting blob */
+    radial-gradient(ellipse 120% 60% at 50% -10%, rgb(124 58 237 / 25%), transparent 70%),
+    /* Secondary accent glow - bottom right */
+    radial-gradient(ellipse 80% 50% at 100% 100%, rgb(59 130 246 / 12%), transparent 60%),
+    /* Tertiary accent glow - bottom left */
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgb(168 85 247 / 12%), transparent 60%),
+    /* Deep rich black base */
+    #030305;
   background-attachment: fixed;
   min-height: 100vh;
 }
 
-/* Glassmorphism card style for dark mode */
+/* Glassmorphism card style for dark mode - Crystal Glass Effect */
 .dark .glass-card {
-  background: rgb(30 30 45 / 60%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgb(148 163 184 / 10%);
-  box-shadow:
-    0 4px 6px -1px rgb(0 0 0 / 20%),
-    0 2px 4px -2px rgb(0 0 0 / 20%),
-    inset 0 1px 0 0 rgb(255 255 255 / 5%);
-}
-
-/* Glassmorphism panel style */
-.dark .glass-panel {
-  background: rgb(20 20 30 / 70%);
+  background: rgb(15 15 25 / 45%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgb(148 163 184 / 8%);
+  border: 1px solid rgb(255 255 255 / 12%);
+  box-shadow:
+    0 8px 32px -4px rgb(0 0 0 / 50%),
+    0 4px 16px -2px rgb(0 0 0 / 40%),
+    inset 0 1px 0 0 rgb(255 255 255 / 10%);
+}
+
+/* Glassmorphism panel style - Crystal Glass Effect */
+.dark .glass-panel {
+  background: rgb(12 12 20 / 60%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgb(255 255 255 / 8%);
 }
 
 /* Status color bars */
@@ -189,13 +193,38 @@
 .status-bar-longbreak { background: #38bdf8; }
 .status-bar-paused { background: #fbbf24; }
 
-/* Glow effect for primary elements */
+/* Glow effect for primary elements - Enhanced */
 .dark .glow-primary {
-  box-shadow: 0 0 20px rgb(124 58 237 / 30%);
+  box-shadow: 0 0 30px rgb(124 58 237 / 40%);
 }
 
 .dark .glow-success {
-  box-shadow: 0 0 20px rgb(34 197 94 / 30%);
+  box-shadow: 0 0 30px rgb(34 197 94 / 40%);
+}
+
+/* Calendar day glow effects - "living data" feel */
+.dark .calendar-day-active {
+  box-shadow: 0 0 12px rgb(34 197 94 / 50%);
+  background: linear-gradient(135deg, rgb(34 197 94 / 50%) 0%, rgb(34 197 94 / 30%) 100%);
+}
+
+.dark .calendar-day-today {
+  box-shadow: 0 0 16px rgb(167 139 250 / 60%);
+  background: linear-gradient(135deg, rgb(167 139 250 / 40%) 0%, rgb(124 58 237 / 25%) 100%);
+}
+
+.dark .calendar-day-checked {
+  box-shadow: 0 0 12px rgb(59 130 246 / 50%);
+  background: linear-gradient(135deg, rgb(59 130 246 / 50%) 0%, rgb(59 130 246 / 30%) 100%);
+}
+
+/* Chart bar glow effect */
+.chart-bar-glow {
+  filter: drop-shadow(0 0 8px rgb(34 197 94 / 50%));
+}
+
+.chart-bar-today-glow {
+  filter: drop-shadow(0 0 10px rgb(167 139 250 / 60%));
 }
 
 /* ===== Hover Effects (inspired by do-bit.com) ===== */
@@ -253,17 +282,19 @@
   50% { transform: translateY(-3px); }
 }
 
-/* Glass card hover - enhanced glass effect */
+/* Glass card hover - enhanced crystal glass effect */
 .dark .glass-card {
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .dark .glass-card:hover {
-  background: rgb(35 35 55 / 70%);
-  border-color: rgb(148 163 184 / 15%);
+  background: rgb(22 22 38 / 60%);
+  border-color: rgb(255 255 255 / 30%);
   box-shadow:
-    0 8px 32px -4px rgb(0 0 0 / 30%),
-    0 4px 8px -2px rgb(0 0 0 / 20%),
-    inset 0 1px 0 0 rgb(255 255 255 / 8%);
+    0 16px 56px -8px rgb(0 0 0 / 65%),
+    0 8px 28px -4px rgb(0 0 0 / 55%),
+    0 0 0 1px rgb(255 255 255 / 8%),
+    inset 0 1px 0 0 rgb(255 255 255 / 15%);
+  transform: translateY(-2px);
 }
 
 /* Navigation/Button shine effect */

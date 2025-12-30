@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
@@ -25,7 +25,7 @@ export function PomodoroTimer() {
   const { user } = useUser()
 
   // Zustand stores
-  const timerStore = useTimerStore()
+  const syncSessionState = useTimerStore(state => state.syncSessionState)
   const settingsStore = useSettingsStore()
 
   // Test-only: ?testDuration=10 sets focus duration to 10 seconds
@@ -131,13 +131,19 @@ export function PomodoroTimer() {
     }
   }, [status, targetEndAtMs])
 
-  // Zustand store 동기화: sessionStartTime
+  // Zustand store와 세션 상태 동기화 (대시보드 실시간 업데이트용)
   useEffect(() => {
-    // timerStore에 세션 시작 시간 동기화
-    if (status === 'running' && phase === 'focus' && focusSessionStartRef.current !== null) {
-      // 이미 store에 반영됨
-    }
-  }, [status, phase, timerStore])
+    // running 상태이고 focus phase일 때만 sessionStartTime 전달
+    const sessionStartTime = status === 'running' && phase === 'focus'
+      ? focusSessionStartRef.current
+      : null
+
+    syncSessionState({
+      sessionStartTime,
+      isRunning: status === 'running',
+      isFocusPhase: phase === 'focus',
+    })
+  }, [status, phase, syncSessionState])
 
   // 1분마다 자동 저장 (Focus 세션 중에만)
   useEffect(() => {
@@ -276,12 +282,13 @@ export function PomodoroTimer() {
 
   const handleStart = useCallback(() => {
     if (isTransitioning) return
-    setStatus('running')
 
-    // Focus 세션 시작 시 시작 시간 설정
+    // Focus 세션 시작 시 시작 시간 설정 (상태 변경 전에 설정해야 useEffect에서 참조 가능)
     if (phase === 'focus') {
       focusSessionStartRef.current = Date.now()
     }
+
+    setStatus('running')
   }, [isTransitioning, phase])
 
   const handlePause = useCallback(() => {
@@ -437,8 +444,8 @@ export function PomodoroTimer() {
     return t('breakDescription')
   }
 
-  // 현재 settings 객체 구성 (SettingsDialog용)
-  const currentSettings: TimerSettings = {
+  // 현재 settings 객체 구성 (SettingsDialog용) - 메모이제이션으로 불필요한 리렌더링 방지
+  const currentSettings: TimerSettings = useMemo(() => ({
     focusDuration: settingsStore.focusDuration,
     breakDuration: settingsStore.breakDuration,
     dailyGoal: settingsStore.dailyGoal,
@@ -447,7 +454,16 @@ export function PomodoroTimer() {
     soundCategory: settingsStore.soundCategory,
     soundType: settingsStore.soundType,
     volume: settingsStore.volume,
-  }
+  }), [
+    settingsStore.focusDuration,
+    settingsStore.breakDuration,
+    settingsStore.dailyGoal,
+    settingsStore.notificationsEnabled,
+    settingsStore.soundEnabled,
+    settingsStore.soundCategory,
+    settingsStore.soundType,
+    settingsStore.volume,
+  ])
 
   return (
     <div className="relative flex flex-col items-center gap-8">
@@ -508,7 +524,7 @@ export function PomodoroTimer() {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-6xl font-mono font-semibold tracking-tight text-foreground hover-timer-display">
+          <span className="text-6xl font-mono font-semibold tracking-tight bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent hover-timer-display">
             {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
           </span>
         </div>

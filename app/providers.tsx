@@ -8,6 +8,7 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query"
 import { migrateFromLocalStorage } from "@/lib/storage/idb"
+import { useSyncLocalData } from "@/hooks/use-sync-local-data"
 
 // QueryClient 생성 함수
 function makeQueryClient() {
@@ -37,18 +38,30 @@ function getQueryClient() {
   }
 }
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  const queryClient = getQueryClient()
-
-  // 앱 초기화 시 localStorage → IndexedDB 마이그레이션
+/**
+ * 앱 초기화 작업을 수행하는 내부 컴포넌트
+ * - localStorage → IndexedDB 마이그레이션
+ * - 로그인 사용자의 로컬 → Supabase 마이그레이션
+ */
+function AppInitializer({ children }: { children: React.ReactNode }) {
+  // localStorage → IndexedDB 마이그레이션
   useEffect(() => {
     migrateFromLocalStorage()
   }, [])
 
+  // 로그인 사용자의 로컬 → Supabase 마이그레이션
+  useSyncLocalData()
+
+  return <>{children}</>
+}
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  const queryClient = getQueryClient()
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="dark">
-        {children}
+        <AppInitializer>{children}</AppInitializer>
       </ThemeProvider>
     </QueryClientProvider>
   )

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { ThemeProvider, useTheme } from "next-themes"
 import {
   isServer,
@@ -58,31 +58,47 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
 /**
  * 모바일 기기에서 Light 테마를 강제하는 컴포넌트
  * - 768px 미만 화면에서 자동으로 light 테마 적용
- * - 화면 크기 변경 시 실시간 반영
+ * - 데스크탑으로 돌아갈 때 원래 테마 복원
  */
 function MobileThemeEnforcer({ children }: { children: React.ReactNode }) {
-  const { setTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
+  const previousThemeRef = useRef<string | null>(null)
+  const isMobileRef = useRef<boolean>(false)
 
   useEffect(() => {
-    // 모바일 감지 함수
-    const checkMobile = () => {
-      const mobile = window.matchMedia("(max-width: 767px)").matches
-      if (mobile) {
+    const mediaQuery = window.matchMedia("(max-width: 767px)")
+
+    // 모바일/데스크탑 전환 감지 함수
+    const handleMediaChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      const isMobile = e.matches
+
+      if (isMobile && !isMobileRef.current) {
+        // 데스크탑 → 모바일: 현재 테마 저장 후 light로 변경
+        if (theme && theme !== "light") {
+          previousThemeRef.current = theme
+        }
+        isMobileRef.current = true
         setTheme("light")
+      } else if (!isMobile && isMobileRef.current) {
+        // 모바일 → 데스크탑: 저장된 테마 복원
+        isMobileRef.current = false
+        if (previousThemeRef.current) {
+          setTheme(previousThemeRef.current)
+          previousThemeRef.current = null
+        }
       }
     }
 
-    // 초기 체크
-    checkMobile()
+    // 초기 상태 체크
+    handleMediaChange(mediaQuery)
 
     // 화면 크기 변경 감지
-    const mediaQuery = window.matchMedia("(max-width: 767px)")
-    mediaQuery.addEventListener("change", checkMobile)
+    mediaQuery.addEventListener("change", handleMediaChange)
 
     return () => {
-      mediaQuery.removeEventListener("change", checkMobile)
+      mediaQuery.removeEventListener("change", handleMediaChange)
     }
-  }, [setTheme])
+  }, [theme, setTheme])
 
   return <>{children}</>
 }

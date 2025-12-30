@@ -27,7 +27,7 @@ export function GoalProgress({ currentMinutes, goalMinutes }: GoalProgressProps)
           <span>{t("dailyGoal")}</span>
         </div>
         <span className={`hover-goal-value ${isComplete ? "text-green-500 font-medium" : "text-muted-foreground"}`}>
-          {displayMinutes}/{goalMinutes} {t("min")}
+          {displayMinutes} / {goalMinutes}{t("min")}
         </span>
       </div>
       <div className="h-2 bg-[oklch(0.88_0.01_255)] dark:bg-muted rounded-full overflow-hidden hover-progress-bar">

@@ -28,6 +28,10 @@ interface TimerStoreState extends TimerState {
 
   // 일시정지 시 누적 시간
   pausedElapsedMs: number
+
+  // 실시간 대시보드용 플래그 (로컬 타이머 상태 반영, store의 status/phase와 분리)
+  dashboardIsRunning: boolean
+  dashboardIsFocusPhase: boolean
 }
 
 // 타이머 액션
@@ -58,6 +62,13 @@ interface TimerStoreActions {
 
   // 상태 초기화 (하루가 바뀔 때 등)
   resetDailyStats: () => void
+
+  // 세션 상태 동기화 (외부 컴포넌트에서 호출)
+  syncSessionState: (params: {
+    sessionStartTime: number | null
+    isRunning: boolean
+    isFocusPhase: boolean
+  }) => void
 }
 
 type TimerStore = TimerStoreState & TimerStoreActions
@@ -75,6 +86,8 @@ export const useTimerStore = create<TimerStore>()((set, get) => ({
   settings: DEFAULT_SETTINGS,
   sessionStartTime: null,
   pausedElapsedMs: 0,
+  dashboardIsRunning: false,
+  dashboardIsFocusPhase: true,
 
   // 이벤트 디스패치
   dispatch: (event: TimerEvent) => {
@@ -190,6 +203,16 @@ export const useTimerStore = create<TimerStore>()((set, get) => ({
       longBreakCount: 0,
     })
   },
+
+  // 세션 상태 동기화 (외부 컴포넌트에서 호출)
+  // 대시보드 전용 필드만 업데이트 (store의 status/phase는 변경하지 않음)
+  syncSessionState: ({ sessionStartTime, isRunning, isFocusPhase }) => {
+    set({
+      sessionStartTime,
+      dashboardIsRunning: isRunning,
+      dashboardIsFocusPhase: isFocusPhase,
+    })
+  },
 }))
 
 // 셀렉터 (성능 최적화용)
@@ -198,6 +221,6 @@ export const selectTimerPhase = (state: TimerStore) => state.phase
 export const selectTimeLeft = (state: TimerStore) => state.timeLeft
 export const selectSessions = (state: TimerStore) => state.sessions
 export const selectTotalFocusMinutes = (state: TimerStore) => state.totalFocusMinutes
-export const selectIsRunning = (state: TimerStore) => state.status === 'running'
-export const selectIsFocusPhase = (state: TimerStore) => state.phase === 'focus'
+export const selectIsRunning = (state: TimerStore) => state.dashboardIsRunning
+export const selectIsFocusPhase = (state: TimerStore) => state.dashboardIsFocusPhase
 export const selectSessionStartTime = (state: TimerStore) => state.sessionStartTime

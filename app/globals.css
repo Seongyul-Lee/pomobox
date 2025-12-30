@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark *, .midnight *));
 
 @theme inline {
   --color-background: var(--background);
@@ -47,18 +47,18 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --background: oklch(0.98 0.006 255);  /* #F7F9FC - 연한 쿨그레이 배경 */
+  --foreground: oklch(0.145 0.035 265);  /* #1A202C - 진한 네이비/블랙 */
+  --card: oklch(1 0 0);  /* 순수 흰색 카드 */
+  --card-foreground: oklch(0.145 0.035 265);  /* #1A202C */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
+  --popover-foreground: oklch(0.145 0.035 265);
+  --primary: oklch(0.45 0.18 270);  /* 더 선명한 보라색 */
+  --primary-foreground: oklch(0.98 0.003 247);
+  --secondary: oklch(0.96 0.007 247);
+  --secondary-foreground: oklch(0.22 0.042 265);
+  --muted: oklch(0.91 0.01 255);  /* #E2E8F0 - 프로그레스 바 트랙용 진한 회색 */
+  --muted-foreground: oklch(0.45 0.03 257);  /* #4A5568 - 보조 텍스트용 */
   --accent: oklch(0.968 0.007 247.896);
   --accent-foreground: oklch(0.208 0.042 265.755);
   --destructive: oklch(0.577 0.245 27.325);
@@ -115,6 +115,41 @@
   --sidebar-ring: #7c3aed;
 }
 
+.midnight {
+  /* Deep Purple Midnight Theme */
+  --background: oklch(0.10 0.03 280);
+  --foreground: oklch(0.95 0.02 280);
+  --card: oklch(0.14 0.04 280 / 60%);
+  --card-foreground: oklch(0.95 0.02 280);
+  --popover: oklch(0.12 0.035 280 / 95%);
+  --popover-foreground: oklch(0.95 0.02 280);
+  --primary: oklch(0.70 0.18 280);
+  --primary-foreground: oklch(0.10 0.03 280);
+  --secondary: oklch(0.20 0.05 280 / 70%);
+  --secondary-foreground: oklch(0.95 0.02 280);
+  --muted: oklch(0.20 0.04 280 / 50%);
+  --muted-foreground: oklch(0.70 0.03 280);
+  --accent: oklch(0.55 0.25 280);
+  --accent-foreground: oklch(0.95 0.02 280);
+  --destructive: oklch(0.65 0.20 25);
+  --border: oklch(0.95 0.02 280 / 12%);
+  --input: oklch(0.95 0.02 280 / 15%);
+  --ring: oklch(0.70 0.18 280);
+  --chart-1: oklch(0.70 0.18 280);
+  --chart-2: oklch(0.65 0.20 145);
+  --chart-3: oklch(0.65 0.20 25);
+  --chart-4: oklch(0.70 0.15 220);
+  --chart-5: oklch(0.75 0.15 85);
+  --sidebar: oklch(0.08 0.025 280 / 90%);
+  --sidebar-foreground: oklch(0.95 0.02 280);
+  --sidebar-primary: oklch(0.70 0.18 280);
+  --sidebar-primary-foreground: oklch(0.95 0.02 280);
+  --sidebar-accent: oklch(0.55 0.25 280 / 25%);
+  --sidebar-accent-foreground: oklch(0.95 0.02 280);
+  --sidebar-border: oklch(0.95 0.02 280 / 10%);
+  --sidebar-ring: oklch(0.55 0.25 280);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -152,18 +187,24 @@
   }
 }
 
-/* Dark mode gradient background with glow effects - Deep Rich Black */
+/* Light mode card style with shadow */
+.glass-card {
+  background: oklch(1 0 0);
+  border: 1px solid oklch(0.92 0.008 255);
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.glass-panel {
+  background: oklch(1 0 0);
+  border: 1px solid oklch(0.92 0.008 255);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* Dark mode solid background */
 .dark body {
-  background:
-    /* Central hero glow - large ambient lighting blob */
-    radial-gradient(ellipse 120% 60% at 50% -10%, rgb(124 58 237 / 25%), transparent 70%),
-    /* Secondary accent glow - bottom right */
-    radial-gradient(ellipse 80% 50% at 100% 100%, rgb(59 130 246 / 12%), transparent 60%),
-    /* Tertiary accent glow - bottom left */
-    radial-gradient(ellipse 60% 40% at 0% 100%, rgb(168 85 247 / 12%), transparent 60%),
-    /* Deep rich black base */
-    #030305;
-  background-attachment: fixed;
+  background: oklch(0.141 0.004 285.823);
   min-height: 100vh;
 }
 
@@ -185,6 +226,32 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgb(255 255 255 / 8%);
+}
+
+/* Midnight mode solid background */
+.midnight body {
+  background: oklch(0.10 0.03 280);
+  min-height: 100vh;
+}
+
+/* Glassmorphism card style for midnight mode - Deep Purple Glass */
+.midnight .glass-card {
+  background: oklch(0.14 0.05 280 / 50%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid oklch(0.70 0.18 280 / 15%);
+  box-shadow:
+    0 8px 32px -4px oklch(0.10 0.05 280 / 60%),
+    0 4px 16px -2px oklch(0.10 0.05 280 / 50%),
+    inset 0 1px 0 0 oklch(0.70 0.18 280 / 10%);
+}
+
+/* Glassmorphism panel style for midnight mode */
+.midnight .glass-panel {
+  background: oklch(0.12 0.04 280 / 60%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid oklch(0.70 0.18 280 / 10%);
 }
 
 /* Status color bars */

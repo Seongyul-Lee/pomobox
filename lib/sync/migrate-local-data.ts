@@ -104,16 +104,21 @@ async function withRetry<T>(
   throw lastError
 }
 
+interface MigrationBatchResult {
+  migratedCount: number
+  skippedBatches: number
+}
+
 /**
  * history → daily_stats 마이그레이션
  */
 async function migrateHistoryToStats(
   userId: string,
   history: HistoryRecord[]
-): Promise<number> {
+): Promise<MigrationBatchResult> {
   if (!history || history.length === 0) {
     console.log("[pomobox] No history data to migrate (empty array)")
-    return 0
+    return { migratedCount: 0, skippedBatches: 0 }
   }
 
   // 유효하지 않은 데이터 필터링
@@ -123,7 +128,7 @@ async function migrateHistoryToStats(
 
   if (validHistory.length === 0) {
     console.log("[pomobox] No valid history records to migrate after filtering")
-    return 0
+    return { migratedCount: 0, skippedBatches: 0 }
   }
 
   if (validHistory.length !== history.length) {
@@ -180,7 +185,7 @@ async function migrateHistoryToStats(
   }
 
   console.log(`[pomobox] Migrated ${migratedCount} history records to daily_stats`)
-  return migratedCount
+  return { migratedCount, skippedBatches }
 }
 
 /**
@@ -189,10 +194,10 @@ async function migrateHistoryToStats(
 async function migrateAttendance(
   userId: string,
   attendance: AttendanceRecord[]
-): Promise<number> {
+): Promise<MigrationBatchResult> {
   if (!attendance || attendance.length === 0) {
     console.log("[pomobox] No attendance data to migrate (empty array)")
-    return 0
+    return { migratedCount: 0, skippedBatches: 0 }
   }
 
   // 유효하지 않은 데이터 필터링
@@ -200,7 +205,7 @@ async function migrateAttendance(
 
   if (validAttendance.length === 0) {
     console.log("[pomobox] No valid attendance records to migrate after filtering")
-    return 0
+    return { migratedCount: 0, skippedBatches: 0 }
   }
 
   if (validAttendance.length !== attendance.length) {
@@ -254,7 +259,7 @@ async function migrateAttendance(
   }
 
   console.log(`[pomobox] Migrated ${migratedCount} attendance records`)
-  return migratedCount
+  return { migratedCount, skippedBatches }
 }
 
 /**
@@ -405,20 +410,31 @@ export async function migrateLocalToSupabase(userId: string): Promise<MigrationR
     }
 
     // 2. 재시도 로직과 함께 마이그레이션 실행
-    const [historyCount, attendanceCount, todayCount] = await withRetry(async () => {
-      const hc = await migrateHistoryToStats(userId, history)
-      const ac = await migrateAttendance(userId, attendance)
+    const [historyResult, attendanceResult, todayCount] = await withRetry(async () => {
+      const hr = await migrateHistoryToStats(userId, history)
+      const ar = await migrateAttendance(userId, attendance)
       const tc = await migrateTodayStats(userId)
       await migrateBestStreak(userId)
-      return [hc, ac, tc] as const
+      return [hr, ar, tc] as const
     })
 
-    const totalMigrated = historyCount + attendanceCount + todayCount
+    const totalMigrated = historyResult.migratedCount + attendanceResult.migratedCount + todayCount
+    const totalSkipped = historyResult.skippedBatches + attendanceResult.skippedBatches
 
-    // 3. 마이그레이션 성공 시 로컬 데이터 삭제
+    // 3. skipped batches가 있으면 실패로 처리 (로컬 데이터 보존)
+    if (totalSkipped > 0) {
+      console.error(`[pomobox] Migration failed: ${totalSkipped} batches were skipped due to errors`)
+      return {
+        success: false,
+        migratedRecords: totalMigrated,
+        error: `${totalSkipped} batches failed to migrate. Local data preserved for retry.`,
+      }
+    }
+
+    // 4. 마이그레이션 성공 시 로컬 데이터 삭제
     await clearLocalData()
 
-    // 4. 마이그레이션 완료 플래그 설정
+    // 5. 마이그레이션 완료 플래그 설정
     setSynced()
 
     console.log(`[pomobox] Migration completed: ${totalMigrated} records migrated`)

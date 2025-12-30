@@ -33,13 +33,13 @@ import {
 } from "@/lib/supabase/attendance"
 import { useRealtimeFocusMinutes } from "@/hooks/use-realtime-focus"
 
-// 시간 포맷팅
-function formatTime(minutes: number): string {
+// 시간 포맷팅 (다국어 지원)
+function formatTimeWithLocale(minutes: number, tTime: (key: string) => string): string {
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
-  if (h === 0) return `${m}m`
-  if (m === 0) return `${h}h`
-  return `${h}h ${m}m`
+  if (h === 0) return `${m}${tTime("minute")}`
+  if (m === 0) return `${h}${tTime("hour")}`
+  return `${h}${tTime("hour")} ${m}${tTime("minute")}`
 }
 
 export function DashboardRight() {
@@ -47,6 +47,7 @@ export function DashboardRight() {
   const realtimeMinutes = useRealtimeFocusMinutes()
   const t = useTranslations("Dashboard")
   const tDays = useTranslations("Days")
+  const tTime = useTranslations("Time")
   const [monthlyData, setMonthlyData] = useState<DayRecord[]>([])
   const [attendance, setAttendance] = useState<string[]>([])
   const [isCheckedIn, setIsCheckedIn] = useState<boolean | null>(null) // null = loading
@@ -273,11 +274,11 @@ export function DashboardRight() {
             ) : (
               <Circle className="h-7 w-7 text-muted-foreground" />
             )}
-            <div>
-              <p className="text-base font-medium">
+            <div className="break-keep">
+              <p className="text-base font-medium whitespace-nowrap">
                 {isCheckedIn === null ? t("loading") : isCheckedIn ? t("checkedIn") : t("checkInPrompt")}
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground whitespace-nowrap">
                 {t("monthlyAttendance")}: {monthAttendanceCount}{t("days")}
               </p>
             </div>
@@ -368,11 +369,11 @@ export function DashboardRight() {
                     <div className="space-y-1.5 text-sm">
                       <div className="flex items-center gap-2">
                         <Clock className="h-3.5 w-3.5 text-primary" />
-                        <span>{formatTime(minutes)}</span>
+                        <span>{formatTimeWithLocale(minutes, tTime)}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Target className="h-3.5 w-3.5 text-green-400" />
-                        <span>{sessions} {t("sessions")}</span>
+                        <span>{sessions}{t("sessions")}</span>
                       </div>
                       {attended && (
                         <div className="flex items-center gap-2">
@@ -406,12 +407,12 @@ export function DashboardRight() {
             <div className="grid grid-cols-3 gap-3">
               <div className="flex flex-col items-center p-2 rounded-lg bg-background/50">
                 <Clock className="h-4 w-4 text-primary mb-1" />
-                <p className="text-sm font-semibold">{formatTime(selectedDayInfo.minutes)}</p>
+                <p className="text-sm font-semibold">{formatTimeWithLocale(selectedDayInfo.minutes, tTime)}</p>
                 <p className="text-xs text-muted-foreground">{t("todayFocus")}</p>
               </div>
               <div className="flex flex-col items-center p-2 rounded-lg bg-background/50">
                 <Target className="h-4 w-4 text-green-400 mb-1" />
-                <p className="text-sm font-semibold">{selectedDayInfo.sessions}</p>
+                <p className="text-sm font-semibold">{selectedDayInfo.sessions}{t("sessions")}</p>
                 <p className="text-xs text-muted-foreground">{t("sessions")}</p>
               </div>
               <div className="flex flex-col items-center p-2 rounded-lg bg-background/50">

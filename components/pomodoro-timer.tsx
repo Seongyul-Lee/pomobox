@@ -478,7 +478,7 @@ export function PomodoroTimer() {
       </div>
 
       <div className="text-center">
-        <p className="text-lg font-bold text-foreground uppercase tracking-wider mb-1 hover-title-outline">
+        <p className="text-2xl md:text-lg font-bold text-foreground uppercase tracking-wider mb-1 hover-title-outline">
           {getTypeLabel()}
         </p>
         <p className="text-xs text-muted-foreground mb-2 hover-phase-label">
@@ -525,7 +525,7 @@ export function PomodoroTimer() {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-6xl font-mono font-bold tracking-tight text-foreground dark:text-transparent dark:bg-gradient-to-b dark:from-white dark:to-zinc-500 dark:bg-clip-text hover-timer-display">
+          <span className="text-6xl font-mono font-bold tracking-tight tabular-nums text-foreground dark:text-transparent dark:bg-gradient-to-b dark:from-white dark:to-zinc-500 dark:bg-clip-text hover-timer-display">
             {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
           </span>
         </div>

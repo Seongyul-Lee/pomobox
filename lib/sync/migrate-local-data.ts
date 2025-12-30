@@ -410,31 +410,37 @@ export async function migrateLocalToSupabase(userId: string): Promise<MigrationR
     }
 
     // 2. 재시도 로직과 함께 마이그레이션 실행
-    const [historyResult, attendanceResult, todayCount] = await withRetry(async () => {
+    // history/attendance 먼저 실행하고, 배치 실패 여부 확인 후 today-stats 결정
+    const [historyResult, attendanceResult] = await withRetry(async () => {
       const hr = await migrateHistoryToStats(userId, history)
       const ar = await migrateAttendance(userId, attendance)
-      const tc = await migrateTodayStats(userId)
-      await migrateBestStreak(userId)
-      return [hr, ar, tc] as const
+      return [hr, ar] as const
     })
 
-    const totalMigrated = historyResult.migratedCount + attendanceResult.migratedCount + todayCount
     const totalSkipped = historyResult.skippedBatches + attendanceResult.skippedBatches
 
-    // 3. skipped batches가 있으면 실패로 처리 (로컬 데이터 보존)
+    // 3. skipped batches가 있으면 today-stats 마이그레이션 스킵 (중복 카운트 방지)
+    // today-stats는 기존 값에 더하는 방식이므로, 재시도 시 중복 카운트됨
     if (totalSkipped > 0) {
       console.error(`[pomobox] Migration failed: ${totalSkipped} batches were skipped due to errors`)
+      console.warn(`[pomobox] Skipping today-stats migration to prevent double-counting on retry`)
       return {
         success: false,
-        migratedRecords: totalMigrated,
+        migratedRecords: historyResult.migratedCount + attendanceResult.migratedCount,
         error: `${totalSkipped} batches failed to migrate. Local data preserved for retry.`,
       }
     }
 
-    // 4. 마이그레이션 성공 시 로컬 데이터 삭제
+    // 4. 배치가 모두 성공한 경우에만 today-stats와 bestStreak 마이그레이션
+    const todayCount = await migrateTodayStats(userId)
+    await migrateBestStreak(userId)
+
+    const totalMigrated = historyResult.migratedCount + attendanceResult.migratedCount + todayCount
+
+    // 5. 마이그레이션 성공 시 로컬 데이터 삭제
     await clearLocalData()
 
-    // 5. 마이그레이션 완료 플래그 설정
+    // 6. 마이그레이션 완료 플래그 설정
     setSynced()
 
     console.log(`[pomobox] Migration completed: ${totalMigrated} records migrated`)

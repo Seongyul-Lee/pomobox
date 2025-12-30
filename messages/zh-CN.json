@@ -99,7 +99,9 @@
     "error": "错误",
     "unknownError": "发生意外错误",
     "loading": "加载中",
-    "userMenu": "用户菜单"
+    "userMenu": "用户菜单",
+    "agreeToTerms": "注册即表示您同意我们的",
+    "privacyPolicy": "隐私政策"
   },
   "Dashboard": {
     "title": "仪表板",
@@ -207,5 +209,11 @@
   "Time": {
     "hour": "小时",
     "minute": "分钟"
+  },
+  "Sync": {
+    "syncComplete": "数据同步完成",
+    "syncCompleteDescription": "已同步{count}条记录。",
+    "syncFailed": "同步失败",
+    "syncFailedDescription": "请稍后重试。"
   }
 }

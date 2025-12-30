@@ -99,7 +99,9 @@
     "error": "Error",
     "unknownError": "An unexpected error occurred",
     "loading": "Loading",
-    "userMenu": "User menu"
+    "userMenu": "User menu",
+    "agreeToTerms": "By signing up, you agree to our",
+    "privacyPolicy": "Privacy Policy"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -207,5 +209,11 @@
   "Time": {
     "hour": "Hour",
     "minute": "Min"
+  },
+  "Sync": {
+    "syncComplete": "Data sync complete",
+    "syncCompleteDescription": "Synced {count} records.",
+    "syncFailed": "Sync failed",
+    "syncFailedDescription": "Please try again later."
   }
 }

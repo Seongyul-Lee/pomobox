@@ -133,8 +133,9 @@ export function PomodoroTimer() {
 
   // Zustand store와 세션 상태 동기화 (대시보드 실시간 업데이트용)
   useEffect(() => {
-    // running 상태이고 focus phase일 때만 sessionStartTime 전달
-    const sessionStartTime = status === 'running' && phase === 'focus'
+    // Focus phase일 때 sessionStartTime 전달 (running/paused 모두)
+    // Pause 시에도 sessionStartTime을 유지해야 대시보드 시간이 초기화되지 않음
+    const sessionStartTime = phase === 'focus'
       ? focusSessionStartRef.current
       : null
 

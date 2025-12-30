@@ -174,8 +174,8 @@
     }
   }
 
-  /* FHD (1920x1080) 이하: 축소 조정 */
-  @media (max-width: 1920px) {
+  /* FHD (1920x1080) 이하: 축소 조정 - XL(1280px) 이상에서만 적용 */
+  @media (min-width: 1280px) and (max-width: 1920px) {
     :root {
       font-size: 94%;  /* QHD 대비 동일 시각적 비율 유지 (125% × 0.75) */
     }
@@ -295,6 +295,8 @@
 }
 
 /* ===== Hover Effects (inspired by do-bit.com) ===== */
+/* 모바일(터치 기기)에서는 호버 효과 비활성화 */
+@media (hover: hover) {
 
 /* Card lift effect - subtle elevation on hover */
 .hover-lift {
@@ -621,6 +623,8 @@
   background-color: #a78bfa;
 }
 
+} /* End of @media (hover: hover) */
+
 /* Collapsible animations (Radix UI pattern) */
 @keyframes collapsible-down {
   from {
@@ -652,7 +656,7 @@
   /* Sign in 버튼: 우측 상단 */
   main > div.absolute {
     left: auto !important;
-    right: -33px !important;
+    right: 1rem !important;
     transform: none !important;
   }
 
@@ -758,5 +762,14 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@layer utilities {
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }

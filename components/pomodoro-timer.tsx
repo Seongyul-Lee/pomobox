@@ -478,7 +478,7 @@ export function PomodoroTimer() {
       </div>
 
       <div className="text-center">
-        <p className="text-lg font-bold text-foreground uppercase tracking-wider mb-1 hover-title-outline">
+        <p className="text-2xl md:text-lg font-bold text-foreground uppercase tracking-wider mb-1 hover-title-outline">
           {getTypeLabel()}
         </p>
         <p className="text-xs text-muted-foreground mb-2 hover-phase-label">

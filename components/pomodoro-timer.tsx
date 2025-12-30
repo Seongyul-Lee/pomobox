@@ -502,7 +502,7 @@ export function PomodoroTimer() {
 
       <div className="relative flex items-center justify-center group">
         <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90 hover-ring" viewBox="0 0 300 300">
-          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-muted dark:text-[oklch(100%_0_0/0.1)] transition-all duration-300" />
+          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-slate-300 dark:text-[oklch(100%_0_0/0.1)] transition-all duration-300" />
           <circle
             cx="150"
             cy="150"
@@ -525,7 +525,7 @@ export function PomodoroTimer() {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-6xl font-mono font-semibold tracking-tight bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent hover-timer-display">
+          <span className="text-6xl font-mono font-bold tracking-tight text-foreground dark:text-transparent dark:bg-gradient-to-b dark:from-white dark:to-zinc-500 dark:bg-clip-text hover-timer-display">
             {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
           </span>
         </div>

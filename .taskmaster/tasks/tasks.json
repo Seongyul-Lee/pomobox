@@ -75,8 +75,9 @@
         "testStrategy": "1. 테마 토글 시 CSS 변수 변경 확인 (DevTools)\n2. 6개 테마 모두 적용 시 UI 깨짐 없음 확인\n3. 브라우저 새로고침 시 선택한 테마 유지 확인\n4. 시스템 다크모드 변경 시 자동 전환 확인 (기본 테마일 때)\n5. 색상 대비 비율 측정 (Chrome DevTools > Lighthouse)",
         "priority": "medium",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-30T13:39:39.449Z"
       },
       {
         "id": "70",
@@ -273,13 +274,25 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2025-12-30T03:35:00.000Z"
+      },
+      {
+        "id": "81",
+        "title": "Pause 시 대시보드 통계 초기화 버그 수정",
+        "description": "Focus 세션 중 Pause 클릭 시 대시보드 Today Focus 시간이 0으로 초기화되는 버그 수정",
+        "details": "PR #33 머지 시 timerContext → Zustand 전환 과정에서 누락된 로직 복구:\n\n1. 문제 원인:\n   - pomodoro-timer.tsx의 syncSessionState useEffect에서\n   - status === 'running' 조건으로 sessionStartTime 전달\n   - Pause 시 status가 'paused'가 되면서 sessionStartTime이 null로 설정됨\n   - use-realtime-focus.ts에서 sessionStartTime이 null이면 elapsedMinutes를 0으로 초기화\n\n2. 수정 내용 (components/pomodoro-timer.tsx:134-147):\n   - 기존: status === 'running' && phase === 'focus' 조건\n   - 수정: phase === 'focus' 조건으로 변경\n   - Pause 상태에서도 sessionStartTime을 유지하도록 수정\n\n3. 삭제된 원래 로직 (contexts/timer-context.tsx):\n   - pauseSession: 일시정지 시 pausedElapsedMs 저장, sessionStartTime 유지\n   - resumeSession: 재개 시 경과 시간 복원\n   - PR #33에서 Zustand로 전환하면서 이 로직이 누락됨",
+        "testStrategy": "1. Focus 세션 시작 → 대시보드 Today Focus 시간 증가 확인\n2. Pause 클릭 → Today Focus 시간 유지 확인 (0으로 초기화 안됨)\n3. Resume 클릭 → Today Focus 시간 계속 증가 확인\n4. Reset 클릭 → 정상적으로 통계 저장 확인",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-30T12:30:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-30T07:13:45.524Z",
-      "taskCount": 17,
-      "completedCount": 10,
+      "lastModified": "2025-12-30T13:39:39.450Z",
+      "taskCount": 18,
+      "completedCount": 12,
       "tags": [
         "master"
       ]

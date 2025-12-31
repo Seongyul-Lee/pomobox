@@ -34,16 +34,24 @@ export function StatsChart({ data }: StatsChartProps) {
     const container = containerRef.current
     if (!container) return
 
+    let rafId: number
+
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0]
       if (entry && entry.contentRect.width > 0 && entry.contentRect.height > 0) {
-        setMounted(true)
+        // requestAnimationFrame으로 레이아웃 계산 완료 후 마운트
+        rafId = requestAnimationFrame(() => {
+          setMounted(true)
+        })
         observer.disconnect()
       }
     })
 
     observer.observe(container)
-    return () => observer.disconnect()
+    return () => {
+      observer.disconnect()
+      if (rafId) cancelAnimationFrame(rafId)
+    }
   }, [])
 
   // 날짜를 짧은 형식으로 변환 (MM/DD)

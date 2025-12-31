@@ -14,6 +14,10 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: t("mypage"),
     description: t("accountManagement"),
+    robots: {
+      index: false,
+      follow: false,
+    },
   }
 }
 

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 import { deleteAccount } from "@/app/actions/account"
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Dialog,
   DialogContent,
@@ -14,33 +15,47 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Loader2, AlertTriangle } from "lucide-react"
+import { Loader2, AlertTriangle, Lock } from "lucide-react"
 
 interface DeleteAccountDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   locale: string
+  isOAuthUser: boolean
 }
 
 export function DeleteAccountDialog({
   open,
   onOpenChange,
   locale,
+  isOAuthUser,
 }: DeleteAccountDialogProps) {
   const t = useTranslations("Account")
+  const tAuth = useTranslations("Auth")
   const router = useRouter()
   const { toast } = useToast()
+  const [password, setPassword] = useState("")
   const [isPending, startTransition] = useTransition()
 
   const handleDelete = () => {
+    // 이메일 유저인 경우 비밀번호 필수
+    if (!isOAuthUser && !password) {
+      toast({
+        variant: "destructive",
+        title: tAuth("error"),
+        description: t("currentPasswordRequired"),
+      })
+      return
+    }
+
     startTransition(async () => {
-      const result = await deleteAccount()
+      const result = await deleteAccount(isOAuthUser ? undefined : password)
 
       if (result.error) {
         toast({
           variant: "destructive",
           title: t("deleteAccount"),
-          description: result.error,
+          description: t(result.error) || result.error,
         })
         return
       }
@@ -72,6 +87,24 @@ export function DeleteAccountDialog({
             {t("deleteConfirmMessage")}
           </DialogDescription>
         </DialogHeader>
+
+        {/* 이메일 유저인 경우에만 비밀번호 입력 필드 표시 */}
+        {!isOAuthUser && (
+          <div className="py-2">
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                type="password"
+                placeholder={t("enterPasswordToDelete")}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isPending}
+                className="pl-10"
+              />
+            </div>
+          </div>
+        )}
+
         <DialogFooter className="gap-2 sm:gap-0">
           <Button
             variant="outline"

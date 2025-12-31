@@ -164,6 +164,7 @@ export function MypageContent({
           open={deleteDialogOpen}
           onOpenChange={setDeleteDialogOpen}
           locale={locale}
+          isOAuthUser={isOAuthUser}
         />
       </div>
     </div>

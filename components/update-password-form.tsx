@@ -4,7 +4,7 @@ import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/navigation"
-import { updatePassword } from "@/app/actions/account"
+import { updatePassword, verifyCurrentPassword } from "@/app/actions/account"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -27,6 +27,7 @@ export function UpdatePasswordForm({ locale }: UpdatePasswordFormProps) {
   const router = useRouter()
   const { toast } = useToast()
 
+  const [currentPassword, setCurrentPassword] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [success, setSuccess] = useState(false)
@@ -36,6 +37,15 @@ export function UpdatePasswordForm({ locale }: UpdatePasswordFormProps) {
     e.preventDefault()
 
     // 클라이언트 측 유효성 검사
+    if (!currentPassword) {
+      toast({
+        variant: "destructive",
+        title: tAuth("error"),
+        description: t("currentPasswordRequired"),
+      })
+      return
+    }
+
     if (password.length < 6) {
       toast({
         variant: "destructive",
@@ -55,6 +65,17 @@ export function UpdatePasswordForm({ locale }: UpdatePasswordFormProps) {
     }
 
     startTransition(async () => {
+      // 현재 비밀번호 검증
+      const verifyResult = await verifyCurrentPassword(currentPassword)
+      if (verifyResult.error) {
+        toast({
+          variant: "destructive",
+          title: tAuth("error"),
+          description: t(verifyResult.error),
+        })
+        return
+      }
+
       const result = await updatePassword(password)
 
       if (result.error) {
@@ -109,6 +130,21 @@ export function UpdatePasswordForm({ locale }: UpdatePasswordFormProps) {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="password"
+              placeholder={t("currentPassword")}
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              required
+              disabled={isPending}
+              className="pl-10"
+            />
+          </div>
+
+          <hr className="border-border" />
+
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input

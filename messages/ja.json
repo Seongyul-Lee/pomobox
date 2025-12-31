@@ -259,6 +259,10 @@
     "passwordUpdatedMessage": "パスワードが正常に変更されました。",
     "passwordMismatch": "パスワードが一致しません",
     "passwordTooShort": "パスワードは6文字以上必要です",
+    "currentPassword": "現在のパスワード",
+    "currentPasswordRequired": "現在のパスワードを入力してください",
+    "incorrectPassword": "現在のパスワードが正しくありません",
+    "enterPasswordToDelete": "パスワードを入力して確認",
     "loggedInViaGoogle": "Googleでログイン",
     "backToMypage": "マイページに戻る"
   },

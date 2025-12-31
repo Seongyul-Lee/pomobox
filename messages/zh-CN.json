@@ -259,6 +259,10 @@
     "passwordUpdatedMessage": "您的密码已成功更新。",
     "passwordMismatch": "密码不匹配",
     "passwordTooShort": "密码至少需要6个字符",
+    "currentPassword": "当前密码",
+    "currentPasswordRequired": "请输入当前密码",
+    "incorrectPassword": "当前密码不正确",
+    "enterPasswordToDelete": "输入密码以确认",
     "loggedInViaGoogle": "通过Google登录",
     "backToMypage": "返回我的账户"
   },

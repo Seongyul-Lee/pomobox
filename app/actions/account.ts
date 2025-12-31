@@ -10,11 +10,49 @@ export type ActionResult = {
 }
 
 /**
+ * 현재 비밀번호 검증 (Re-authentication)
+ * - signInWithPassword로 현재 비밀번호 확인
+ */
+export async function verifyCurrentPassword(
+  currentPassword: string
+): Promise<ActionResult> {
+  try {
+    const supabase = await createClient()
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+
+    if (authError || !user || !user.email) {
+      return { error: "Unauthorized" }
+    }
+
+    // 현재 비밀번호로 로그인 시도하여 검증
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: currentPassword,
+    })
+
+    if (signInError) {
+      return { error: "incorrectPassword" }
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error("verifyCurrentPassword error:", error)
+    return { error: "An unexpected error occurred" }
+  }
+}
+
+/**
  * 회원 탈퇴 Server Action
- * - Supabase Admin API로 유저 삭제
+ * - 이메일 유저: 비밀번호 검증 후 삭제
+ * - OAuth 유저: 바로 삭제
  * - DB CASCADE 정책으로 관련 데이터 자동 삭제
  */
-export async function deleteAccount(): Promise<ActionResult> {
+export async function deleteAccount(
+  currentPassword?: string
+): Promise<ActionResult> {
   try {
     const supabase = await createClient()
     const {
@@ -24,6 +62,20 @@ export async function deleteAccount(): Promise<ActionResult> {
 
     if (authError || !user) {
       return { error: "Unauthorized" }
+    }
+
+    // 이메일 유저인 경우 비밀번호 검증 필수
+    const isEmailUser = user.app_metadata?.provider === "email"
+    if (isEmailUser) {
+      if (!currentPassword) {
+        return { error: "currentPasswordRequired" }
+      }
+
+      // 비밀번호 검증
+      const verifyResult = await verifyCurrentPassword(currentPassword)
+      if (verifyResult.error) {
+        return verifyResult
+      }
     }
 
     // Admin API로 유저 삭제 (CASCADE로 모든 데이터 자동 삭제)

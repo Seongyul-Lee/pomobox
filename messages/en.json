@@ -259,6 +259,10 @@
     "passwordUpdatedMessage": "Your password has been successfully updated.",
     "passwordMismatch": "Passwords do not match",
     "passwordTooShort": "Password must be at least 6 characters",
+    "currentPassword": "Current Password",
+    "currentPasswordRequired": "Please enter your current password",
+    "incorrectPassword": "Current password is incorrect",
+    "enterPasswordToDelete": "Enter your password to confirm",
     "loggedInViaGoogle": "Logged in via Google",
     "backToMypage": "Back to My Account"
   },

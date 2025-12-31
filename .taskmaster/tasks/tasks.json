@@ -376,13 +376,61 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2026-01-01T12:00:00.000Z"
+      },
+      {
+        "id": "89",
+        "title": "계정 관리 보안 강화: 재인증 로직 추가",
+        "description": "비밀번호 변경 및 회원 탈퇴 시 현재 비밀번호 검증 (Re-authentication) 추가",
+        "details": "민감한 계정 작업에 재인증 보안 레이어 추가:\n\n1. Server Action 수정 (app/actions/account.ts):\n   - verifyCurrentPassword(currentPassword) 함수 추가\n   - signInWithPassword로 현재 비밀번호 검증\n   - deleteAccount(currentPassword?) 수정: 이메일 유저는 비밀번호 필수, OAuth 유저는 기존과 동일\n\n2. 비밀번호 변경 폼 수정 (components/update-password-form.tsx):\n   - 상단에 '현재 비밀번호' 입력 필드 추가\n   - verifyCurrentPassword() 호출하여 현재 비밀번호 검증 후 변경 진행\n   - 잘못된 비밀번호 입력 시 에러 토스트 표시\n\n3. 회원 탈퇴 다이얼로그 수정 (components/delete-account-dialog.tsx):\n   - isOAuthUser prop 추가로 OAuth/이메일 유저 구분\n   - 이메일 유저: 비밀번호 입력 필드 표시 및 검증 필수\n   - OAuth 유저: 비밀번호 입력 없이 바로 삭제 (기존과 동일)\n\n4. i18n 키 추가 (4개 언어):\n   - currentPassword: 현재 비밀번호\n   - currentPasswordRequired: 현재 비밀번호를 입력하세요\n   - incorrectPassword: 현재 비밀번호가 올바르지 않습니다\n   - enterPasswordToDelete: 비밀번호를 입력하여 확인\n\n5. mypage-content.tsx 수정:\n   - DeleteAccountDialog에 isOAuthUser prop 전달",
+        "testStrategy": "1. 이메일 유저 비밀번호 변경: 현재 비밀번호 틀리면 에러, 맞으면 변경 성공\n2. 이메일 유저 회원 탈퇴: 비밀번호 입력 필드 표시, 틀리면 에러, 맞으면 삭제 성공\n3. OAuth 유저 회원 탈퇴: 비밀번호 입력 없이 바로 삭제 가능\n4. pnpm lint && pnpm build 성공",
+        "priority": "high",
+        "dependencies": ["88"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T13:00:00.000Z"
+      },
+      {
+        "id": "90",
+        "title": "비공개 페이지 SEO 제외 처리 (noindex/nofollow)",
+        "description": "마이페이지, 비밀번호 변경 등 비공개 페이지를 검색 엔진에서 제외",
+        "details": "비공개 페이지들이 검색 엔진에 노출되지 않도록 SEO 제외 처리:\n\n1. robots.ts 수정:\n   - disallow 배열에 /mypage/, /update-password/, /api/auth/ 추가\n   - 검색 봇이 해당 경로를 크롤링하지 않도록 차단\n\n2. 페이지별 generateMetadata 수정:\n   - mypage/page.tsx: robots { index: false, follow: false } 추가\n   - update-password/page.tsx: 동일하게 robots 메타 추가\n   - HTML <meta name=\"robots\" content=\"noindex, nofollow\"> 생성\n\n3. sitemap.ts 점검:\n   - 이미 공개 페이지(/, /guide, /privacy)만 포함되어 있어 수정 불필요",
+        "testStrategy": "1. /robots.txt 접속 시 Disallow 목록에 비공개 경로 포함 확인\n2. /mypage view-source에서 <meta name=\"robots\" content=\"noindex, nofollow\"> 확인\n3. /sitemap.xml에 /mypage 등 비공개 페이지 미포함 확인\n4. pnpm lint && pnpm build 성공",
+        "priority": "medium",
+        "dependencies": ["87"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T14:00:00.000Z"
+      },
+      {
+        "id": "91",
+        "title": "Google OAuth 로그인 시 Sync failed 에러 수정",
+        "description": "OAuth 신규 사용자에게 public 테이블 초기 데이터가 없어 발생하는 동기화 실패 해결",
+        "details": "Google OAuth 로그인 시 'Sync failed' 에러 원인 분석 및 수정:\n\n1. 원인 분석:\n   - Google OAuth는 auth.users에만 데이터 생성\n   - public.user_settings, public.user_stats에 초기 데이터 없음\n   - upsert 시 onConflict 누락으로 conflict 처리 실패\n\n2. 해결책 1 - Postgres 트리거 추가:\n   - supabase/migrations/20260101140000_create_user_profile_trigger.sql 생성\n   - handle_new_user() 함수: auth.users INSERT 시 user_settings, user_stats 자동 생성\n   - on_auth_user_created 트리거 등록\n   - 기존 사용자 백필 쿼리 포함\n\n3. 해결책 2 - upsert onConflict 수정 (3개 파일):\n   - lib/sync/migrate-local-data.ts: user_stats upsert에 onConflict: 'user_id' 추가\n   - app/api/settings/route.ts: user_settings upsert에 onConflict: 'user_id' 추가\n   - app/api/check-in/route.ts: user_stats upsert에 onConflict: 'user_id' 추가\n\n4. 배포 후 필요 작업:\n   - supabase db push 또는 Dashboard SQL Editor에서 마이그레이션 실행",
+        "testStrategy": "1. Google OAuth로 신규 계정 로그인 → Sync failed 에러 없음 확인\n2. Supabase Dashboard에서 user_settings, user_stats에 신규 유저 데이터 생성 확인\n3. 로컬 데이터 있는 상태로 로그인 → 마이그레이션 성공 확인\n4. pnpm lint && pnpm build 성공",
+        "priority": "high",
+        "dependencies": ["73"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T15:00:00.000Z"
+      },
+      {
+        "id": "92",
+        "title": "이메일 스팸 방지 최적화 (Resend + Supabase)",
+        "description": "회원가입 인증 메일이 스팸함으로 가는 문제 해결을 위한 이메일 인프라 최적화",
+        "details": "이메일 전달률(Deliverability) 개선 작업:\n\n1. Supabase 이메일 템플릿 리팩토링:\n   - Confirm signup / Reset Password 템플릿 Anti-Spam 최적화\n   - 다크 모드 테마 적용 (Pomobox 브랜드 일관성)\n   - 스팸 방지 필수 요소 포함:\n     * 로고 이미지 (https://pomobox.app/icon.png)\n     * 환영 인사 + CTA 버튼\n     * Footer: Privacy Policy 링크, 수신 이유 설명\n   - 모바일 반응형 디자인\n\n2. 이메일 인증 설정 (Resend):\n   - SPF 레코드 설정 완료\n   - DKIM 서명 설정 완료\n   - DMARC 정책 설정 완료\n\n3. 모니터링 도구 등록:\n   - Google Postmaster Tools 도메인 등록 완료\n   - Mail-Tester로 스팸 점수 확인 가능",
+        "testStrategy": "1. mail-tester.com으로 스팸 점수 9점 이상 확인\n2. Gmail 테스트 계정으로 회원가입 → 받은편지함 도착 확인\n3. 이메일 템플릿 렌더링 확인 (모바일/데스크탑)",
+        "priority": "high",
+        "dependencies": ["73"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T16:00:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-01T12:00:00.000Z",
-      "taskCount": 25,
-      "completedCount": 25,
+      "lastModified": "2026-01-01T16:00:00.000Z",
+      "taskCount": 29,
+      "completedCount": 29,
       "tags": [
         "master"
       ]

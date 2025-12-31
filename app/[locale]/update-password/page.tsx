@@ -14,6 +14,10 @@ export async function generateMetadata({ params }: Props) {
   return {
     title: t("updatePassword"),
     description: t("updatePasswordDescription"),
+    robots: {
+      index: false,
+      follow: false,
+    },
   }
 }
 

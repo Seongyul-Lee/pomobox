@@ -283,7 +283,7 @@ async function migrateBestStreak(userId: string): Promise<void> {
 
   const { error } = await supabase
     .from("user_stats")
-    .upsert(data)
+    .upsert(data, { onConflict: "user_id" })
 
   if (error) {
     logSupabaseError("Failed to migrate bestStreak", error, data)

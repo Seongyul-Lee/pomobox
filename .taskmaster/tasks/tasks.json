@@ -340,13 +340,25 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2026-01-01T00:00:00.000Z"
+      },
+      {
+        "id": "86",
+        "title": "JSON-LD 구조화 데이터 적용 (SEO 강화)",
+        "description": "메인 페이지와 가이드 페이지에 JSON-LD 스키마 마크업 추가",
+        "details": "Next.js 15 native <script> 태그를 사용하여 JSON-LD 구현:\n\n1. 메인 페이지 (app/[locale]/page.tsx):\n   - Schema Type: WebApplication\n   - params를 Promise<{ locale: string }>로 받아 동적 URL 생성\n   - 포함 데이터: name, applicationCategory, operatingSystem, browserRequirements, offers, description, featureList, url, screenshot\n   - description은 Metadata 딕셔너리에서 동적 로드\n\n2. 가이드 페이지 (app/[locale]/guide/what-is-pomodoro/page.tsx):\n   - Schema Type: Article + FAQPage (배열로 묶어서 단일 스크립트에 삽입)\n   - Article: headline, author, publisher, datePublished, url\n   - FAQPage: FAQ 컴포넌트와 동일한 번역 키 사용 (화면-스키마 불일치 방지)\n\n3. 공통 구현 패턴:\n   - <script type=\"application/ld+json\" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />\n   - 모든 url 필드는 locale 파라미터를 반영하여 동적 생성",
+        "testStrategy": "1. /en 페이지 view-source에서 JSON-LD 스크립트 확인\n2. Google Rich Results Test로 구조화 데이터 검증\n3. 4개 언어 모두 url 필드에 올바른 locale 포함 확인\n4. pnpm lint && pnpm build 성공",
+        "priority": "medium",
+        "dependencies": ["83", "85"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T00:00:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
       "lastModified": "2026-01-01T00:00:00.000Z",
-      "taskCount": 22,
-      "completedCount": 22,
+      "taskCount": 23,
+      "completedCount": 23,
       "tags": [
         "master"
       ]

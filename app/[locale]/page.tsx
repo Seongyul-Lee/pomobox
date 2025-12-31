@@ -9,6 +9,10 @@ import { DashboardLeft } from "@/components/dashboard-left"
 import { DashboardRight } from "@/components/dashboard-right"
 import { BgmPanel } from "@/components/bgm-panel"
 
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
 // Static timer skeleton for fast LCP - shows default 25:00
 function TimerFallback() {
   return (
@@ -35,9 +39,30 @@ function TimerFallback() {
   )
 }
 
-export default async function Home() {
+export default async function Home({ params }: Props) {
+  const { locale } = await params
   const t = await getTranslations("Home")
   const tGuide = await getTranslations("Guide")
+  const tMeta = await getTranslations("Metadata")
+
+  // JSON-LD 구조화 데이터: WebApplication
+  const webApplicationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Pomobox",
+    applicationCategory: "ProductivityApplication",
+    operatingSystem: "Web Browser",
+    browserRequirements: "Requires JavaScript. Works in Chrome, Firefox, Safari, Edge.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    description: tMeta("description"),
+    featureList: ["Pomodoro Timer", "Task Management", "Statistics", "White Noise"],
+    url: `https://pomobox.app/${locale}`,
+    screenshot: "https://pomobox.app/og-image.png",
+  }
 
   return (
       <main className="relative min-h-screen flex flex-col text-foreground pt-safe">
@@ -132,6 +157,14 @@ export default async function Home() {
             </LocaleLink>
           </div>
         </div>
+
+        {/* JSON-LD 구조화 데이터 */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(webApplicationJsonLd),
+          }}
+        />
       </main>
   )
 }

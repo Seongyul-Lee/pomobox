@@ -166,11 +166,14 @@ export async function PUT(request: Request) {
     // upsert 실행
     const { data, error } = await supabase
       .from("user_settings")
-      .upsert({
-        user_id: user.id,
-        ...updateData,
-        updated_at: new Date().toISOString(),
-      })
+      .upsert(
+        {
+          user_id: user.id,
+          ...updateData,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" }
+      )
       .select()
       .single()
 

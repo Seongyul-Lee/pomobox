@@ -111,11 +111,14 @@ async function updateStreakIfNeeded(
 
     // 현재가 더 높으면 업데이트
     if (currentStreak > bestStreak) {
-      await supabase.from("user_stats").upsert({
-        user_id: userId,
-        best_streak: currentStreak,
-        updated_at: new Date().toISOString(),
-      })
+      await supabase.from("user_stats").upsert(
+        {
+          user_id: userId,
+          best_streak: currentStreak,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" }
+      )
     }
   } catch (error) {
     console.error("Failed to update streak:", error)

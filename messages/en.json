@@ -223,6 +223,10 @@
     "syncFailed": "Sync failed",
     "syncFailedDescription": "Please try again later."
   },
+  "Privacy": {
+    "title": "Privacy Policy",
+    "description": "Pomobox Privacy Policy - How we collect, use, and protect your data"
+  },
   "Guide": {
     "whatIsPomodoro": "What is Pomodoro?",
     "backToTimer": "Back to Timer",

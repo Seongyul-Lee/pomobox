@@ -352,13 +352,25 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2026-01-01T00:00:00.000Z"
+      },
+      {
+        "id": "87",
+        "title": "SEO 메타데이터 완전화 (OG Image, Sitemap, Privacy)",
+        "description": "Dynamic OG Image 생성, Sitemap 다국어/서브페이지 확장, Privacy 페이지 메타데이터 개선",
+        "details": "SEO 메타데이터 점검 후 누락 항목 일괄 구현:\n\n1. Dynamic OG Image (ImageResponse API):\n   - app/[locale]/opengraph-image.tsx 생성\n   - app/[locale]/twitter-image.tsx 생성\n   - 1200x630 크기, #111116 배경\n   - 'Pomobox' 타이틀 + 언어별 서브타이틀\n   - edge runtime 사용\n\n2. Sitemap 완전화 (app/sitemap.ts):\n   - 4개 언어 (en, ko, ja, zh-CN) × 3개 페이지\n   - 메인: /{lang}\n   - 가이드: /{lang}/guide/what-is-pomodoro\n   - Privacy: /{lang}/privacy\n   - 총 12개 URL 생성\n\n3. Privacy 페이지 메타데이터 (app/[locale]/privacy/page.tsx):\n   - 정적 metadata → generateMetadata 함수로 전환\n   - getTranslations('Privacy') 사용\n   - openGraph, twitter, alternates 설정 추가\n   - 4개 언어 번역 키 추가 (messages/*.json)",
+        "testStrategy": "1. /sitemap.xml 접속 시 12개 URL 출력 확인\n2. /en/opengraph-image 접속 시 이미지 생성 확인\n3. /ko/privacy view-source에서 한국어 메타데이터 확인\n4. pnpm lint && pnpm build 성공",
+        "priority": "medium",
+        "dependencies": ["85", "86"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T00:00:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
       "lastModified": "2026-01-01T00:00:00.000Z",
-      "taskCount": 23,
-      "completedCount": 23,
+      "taskCount": 24,
+      "completedCount": 24,
       "tags": [
         "master"
       ]

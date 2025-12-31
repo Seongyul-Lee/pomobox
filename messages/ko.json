@@ -223,6 +223,10 @@
     "syncFailed": "동기화 실패",
     "syncFailedDescription": "나중에 다시 시도해주세요."
   },
+  "Privacy": {
+    "title": "개인정보처리방침",
+    "description": "Pomobox 개인정보처리방침 - 데이터 수집, 사용 및 보호 방법"
+  },
   "Guide": {
     "whatIsPomodoro": "포모도로 기법이란?",
     "backToTimer": "타이머로 돌아가기",

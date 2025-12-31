@@ -49,7 +49,10 @@
   "Home": {
     "title": "Pomodoro Timer",
     "description": "Stay focused, one session at a time",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "seoSectionTitle": "What is the Pomodoro Technique?",
+    "seoSectionDesc": "The Pomodoro Technique is a time management method that involves 25 minutes of focus and 5 minutes of rest. Use Pomobox to overcome procrastination and boost productivity.",
+    "seoSectionMore": "Read more about Pomodoro"
   },
   "Sounds": {
     "achievement": "Achievement",

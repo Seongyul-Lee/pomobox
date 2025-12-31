@@ -113,7 +113,7 @@ function BenefitCard({
   description: string
 }) {
   return (
-    <div className="p-4 rounded-xl border border-border/50 bg-background/50 hover:border-primary/30 transition-colors">
+    <div className="p-4 rounded-xl border border-white/10 bg-white/5 hover:border-primary/30 transition-colors">
       <div className="flex items-center gap-2 mb-2">
         <Icon className="h-5 w-5 text-primary" />
         <h3 className="font-medium text-foreground">{title}</h3>
@@ -145,7 +145,7 @@ function FeatureCard({
 
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   return (
-    <details className="group p-4 rounded-xl border border-border/50 hover:border-primary/30 transition-colors">
+    <details className="group p-4 rounded-xl border border-white/10 hover:border-primary/30 transition-colors">
       <summary className="flex items-center justify-between cursor-pointer list-none">
         <span className="font-medium text-foreground pr-4">{question}</span>
         <ChevronDown className="h-5 w-5 text-muted-foreground group-open:rotate-180 transition-transform flex-shrink-0" />
@@ -160,12 +160,7 @@ export default async function WhatIsPomodoroPage({ params }: Props) {
   const t = await getTranslations("Guide")
 
   return (
-    <main className="min-h-screen text-foreground">
-      {/* Dark mode gradient background */}
-      <div className="fixed inset-0 -z-10 bg-background dark:bg-[oklch(4.7%_0.025_284)]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(48.3%_0.3375_293/0.15),transparent),radial-gradient(ellipse_60%_40%_at_100%_100%,oklch(59.1%_0.2625_255/0.1),transparent),radial-gradient(ellipse_50%_30%_at_0%_100%,oklch(62.3%_0.325_293/0.1),transparent)]" />
-      </div>
-
+    <main className="min-h-screen bg-background text-foreground">
       <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6">
         {/* Back Navigation */}
         <Link
@@ -177,9 +172,9 @@ export default async function WhatIsPomodoroPage({ params }: Props) {
         </Link>
 
         {/* Main Content Card */}
-        <article className="glass-card rounded-2xl p-6 sm:p-8 border border-border/50">
+        <article className="glass-card rounded-2xl p-6 sm:p-8">
           {/* Hero Section */}
-          <header className="text-center mb-10 pb-8 border-b border-border/50">
+          <header className="text-center mb-10 pb-8 border-b border-white/10">
             <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 mb-4">
               <Timer className="h-8 w-8 text-primary" />
             </div>
@@ -301,7 +296,7 @@ export default async function WhatIsPomodoroPage({ params }: Props) {
           </div>
 
           {/* Footer */}
-          <div className="mt-12 pt-8 border-t border-border/50">
+          <div className="mt-12 pt-8 border-t border-white/10">
             <Link
               href="/"
               className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors group"

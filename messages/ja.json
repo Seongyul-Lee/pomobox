@@ -49,7 +49,10 @@
   "Home": {
     "title": "ポモドーロタイマー",
     "description": "一セッションずつ、集中しよう",
-    "loading": "読み込み中..."
+    "loading": "読み込み中...",
+    "seoSectionTitle": "ポモドーロ・テクニックとは？",
+    "seoSectionDesc": "ポモドーロ・テクニックは、25分の集中と5分の休憩を繰り返す時間管理法です。Pomoboxで先延ばしを克服し、生産性を高めましょう。",
+    "seoSectionMore": "ポモドーロについてもっと読む"
   },
   "Sounds": {
     "achievement": "達成音",

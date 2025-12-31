@@ -63,12 +63,7 @@ function ExternalLinkStyled({ href, children }: { href: string; children: React.
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen text-foreground">
-      {/* Dark mode gradient background */}
-      <div className="fixed inset-0 -z-10 bg-background dark:bg-[oklch(4.7%_0.025_284)]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(48.3%_0.3375_293/0.15),transparent),radial-gradient(ellipse_60%_40%_at_100%_100%,oklch(59.1%_0.2625_255/0.1),transparent),radial-gradient(ellipse_50%_30%_at_0%_100%,oklch(62.3%_0.325_293/0.1),transparent)]" />
-      </div>
-
+    <main className="min-h-screen bg-background text-foreground">
       <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6">
         {/* Back Navigation */}
         <Link
@@ -80,9 +75,9 @@ export default function PrivacyPage() {
         </Link>
 
         {/* Main Content Card */}
-        <div className="glass-card rounded-2xl p-6 sm:p-8 border border-border/50">
+        <div className="glass-card rounded-2xl p-6 sm:p-8">
           {/* Header */}
-          <div className="text-center mb-10 pb-8 border-b border-border/50">
+          <div className="text-center mb-10 pb-8 border-b border-white/10">
             <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 mb-4">
               <Shield className="h-8 w-8 text-primary" />
             </div>
@@ -303,7 +298,7 @@ export default function PrivacyPage() {
           </div>
 
           {/* Footer */}
-          <div className="mt-12 pt-8 border-t border-border/50">
+          <div className="mt-12 pt-8 border-t border-white/10">
             <Link
               href="/"
               className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors group"

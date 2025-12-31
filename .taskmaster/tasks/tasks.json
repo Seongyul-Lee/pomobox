@@ -316,13 +316,25 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2025-12-31T15:30:00.000Z"
+      },
+      {
+        "id": "84",
+        "title": "메인 페이지 SEO 섹션 추가 및 서브페이지 테마 통일",
+        "description": "메인 페이지 하단에 포모도로 기법 요약 SEO 섹션 추가, 가이드/Privacy 페이지 테마 스타일 통일",
+        "details": "1. 메인 페이지 SEO 섹션 추가:\n   - messages/*.json (4개 언어)에 Home.seoSectionTitle/Desc/More 키 추가\n   - app/[locale]/page.tsx에 SEO 섹션 컴포넌트 삽입 (광고 영역 위)\n   - 투명 배경, 중앙 정렬, text-primary 링크 스타일\n   - /guide/what-is-pomodoro 링크 연결\n\n2. SEO 섹션 레이아웃 개선:\n   - max-w-3xl → max-w-5xl로 확대 (대시보드와 조화)\n   - mb-8 → mb-10 (광고 영역과 여백 확보)\n   - 제목-본문 간격 mb-3 → mb-4, 본문-링크 간격 mb-4 → mb-5\n\n3. 가이드 페이지 테마 통일:\n   - 하드코딩 배경 제거: bg-[oklch(4.7%_0.025_284)] → bg-background\n   - 그라데이션 오버레이 제거\n   - 카드: glass-card border border-border/50 → glass-card (중복 border 제거)\n   - 내부 border: border-border/50 → border-white/10\n   - BenefitCard: bg-background/50 → bg-white/5\n\n4. Privacy 페이지 테마 통일:\n   - 가이드 페이지와 동일한 변경 적용\n   - Dark/Midnight 테마 변경 시 메인 페이지와 동일한 분위기",
+        "testStrategy": "1. /ko 메인 페이지에서 SEO 섹션 표시 확인\n2. SEO 섹션 링크 클릭 → 가이드 페이지 이동 확인\n3. Dark ↔ Midnight 테마 변경 시 가이드/Privacy 배경색 동일 확인\n4. pnpm lint && pnpm build 성공",
+        "priority": "medium",
+        "dependencies": ["83"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-31T16:30:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-31T15:30:00.000Z",
-      "taskCount": 20,
-      "completedCount": 20,
+      "lastModified": "2025-12-31T16:30:00.000Z",
+      "taskCount": 21,
+      "completedCount": 21,
       "tags": [
         "master"
       ]

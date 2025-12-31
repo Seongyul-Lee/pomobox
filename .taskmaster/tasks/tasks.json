@@ -364,13 +364,25 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2026-01-01T00:00:00.000Z"
+      },
+      {
+        "id": "88",
+        "title": "사용자 계정 관리 기능 구현 (마이페이지, 탈퇴, 비밀번호 재설정)",
+        "description": "마이페이지 UI, 회원 탈퇴 Server Action, 비밀번호 재설정 Flow 구현",
+        "details": "사용자 계정 관리 3대 기능 구현:\n\n1. i18n 딕셔너리 업데이트:\n   - messages/*.json (4개 언어)에 Account 네임스페이스 추가 (33개 키)\n   - mypage, profile, deleteAccount, forgotPassword, updatePassword 등\n\n2. Supabase Admin 클라이언트:\n   - lib/supabase/admin.ts 생성\n   - SUPABASE_SERVICE_ROLE_KEY 사용\n   - 회원 탈퇴 시 auth.admin.deleteUser() 호출\n\n3. Server Actions (app/actions/account.ts):\n   - deleteAccount(): 회원 탈퇴 (Supabase Admin API)\n   - sendPasswordResetEmail(): 비밀번호 재설정 이메일 발송\n   - updatePassword(): 새 비밀번호 설정\n\n4. 마이페이지 (app/[locale]/mypage/page.tsx):\n   - 서버 컴포넌트에서 인증 체크 → 비로그인 시 /auth/login?next=/mypage 리다이렉트\n   - OAuth 사용자 감지 (app_metadata.provider !== 'email')\n   - OAuth 사용자에게 'Google 로그인' 배지 표시, 비밀번호 변경 버튼 숨김\n\n5. 마이페이지 UI (components/mypage-content.tsx):\n   - 프로필 섹션: 이메일 표시 + OAuth 배지\n   - 계정 관리 섹션: 로그아웃, 비밀번호 변경\n   - 계정 삭제 섹션: 붉은색 카드 + Delete Account 버튼\n   - 텍스트 밝기 조정 (foreground/80)\n\n6. 회원 탈퇴 다이얼로그 (components/delete-account-dialog.tsx):\n   - 확인 모달: AlertTriangle 아이콘 + 경고 메시지\n   - Delete 버튼 클릭 시 Server Action 호출\n   - 성공 시 메인 페이지 리다이렉트 + 토스트\n\n7. 비밀번호 재설정 Flow:\n   - app/[locale]/auth/forgot-password/page.tsx: 이메일 입력 → 재설정 링크 발송\n   - components/forgot-password-form.tsx: 이메일 폼 + 성공 UI\n   - auth/callback에서 next=/update-password 처리 (기존 구현 활용)\n   - app/[locale]/update-password/page.tsx: 새 비밀번호 입력\n   - components/update-password-form.tsx: 비밀번호 폼 + 유효성 검사\n\n8. 기존 컴포넌트 수정:\n   - components/auth-form.tsx: '비밀번호 찾기' 링크 추가\n   - components/user-menu.tsx: '마이페이지' 메뉴 항목 추가\n\nDB 스키마: 모든 테이블에 ON DELETE CASCADE 이미 적용됨 → 유저 삭제 시 데이터 자동 삭제",
+        "testStrategy": "1. 비로그인 상태에서 /mypage 접근 → 로그인 페이지 리다이렉트 확인\n2. OAuth 사용자 로그인 → 'Google 로그인' 배지 표시, 비밀번호 변경 버튼 숨김 확인\n3. 이메일 사용자 로그인 → 비밀번호 변경 버튼 표시 확인\n4. 비밀번호 변경 → 로그아웃 후 새 비밀번호로 로그인 성공 확인\n5. 회원 탈퇴 → 확인 모달 → 삭제 후 메인 리다이렉트 + 토스트 확인\n6. 탈퇴한 계정으로 로그인 시도 → 실패 확인\n7. pnpm lint && pnpm build 성공",
+        "priority": "high",
+        "dependencies": ["73", "68"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T12:00:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-01T00:00:00.000Z",
-      "taskCount": 24,
-      "completedCount": 24,
+      "lastModified": "2026-01-01T12:00:00.000Z",
+      "taskCount": 25,
+      "completedCount": 25,
       "tags": [
         "master"
       ]

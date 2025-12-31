@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,6 +16,7 @@ interface AuthFormProps {
 
 export function AuthForm({ mode }: AuthFormProps) {
   const t = useTranslations("Auth")
+  const tAccount = useTranslations("Account")
   const router = useRouter()
   const { toast } = useToast()
   const [email, setEmail] = useState("")
@@ -105,6 +107,18 @@ export function AuthForm({ mode }: AuthFormProps) {
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {mode === "login" ? t("login") : t("signup")}
         </Button>
+
+        {/* 비밀번호 찾기 링크 (로그인 모드에서만) */}
+        {mode === "login" && (
+          <div className="text-center">
+            <Link
+              href="/auth/forgot-password"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              {tAccount("forgotPassword")}
+            </Link>
+          </div>
+        )}
       </form>
 
       <div className="relative">

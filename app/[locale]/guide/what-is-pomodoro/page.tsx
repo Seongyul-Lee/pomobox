@@ -159,6 +159,45 @@ export default async function WhatIsPomodoroPage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations("Guide")
 
+  // JSON-LD 구조화 데이터: Article + FAQPage
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: t("hero.title"),
+      author: { "@type": "Organization", name: "Pomobox Team" },
+      publisher: {
+        "@type": "Organization",
+        name: "Pomobox",
+        logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
+      },
+      datePublished: "2025-01-20",
+      url: `https://pomobox.app/${locale}/guide/what-is-pomodoro`,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: t("sections.faq.q1.q"),
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: t("sections.faq.q1.a"),
+          },
+        },
+        {
+          "@type": "Question",
+          name: t("sections.faq.q2.q"),
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: t("sections.faq.q2.a"),
+          },
+        },
+      ],
+    },
+  ]
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6">
@@ -306,6 +345,14 @@ export default async function WhatIsPomodoroPage({ params }: Props) {
             </Link>
           </div>
         </article>
+
+        {/* JSON-LD 구조화 데이터 */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd),
+          }}
+        />
       </div>
     </main>
   )

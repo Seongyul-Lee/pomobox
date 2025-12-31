@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import {
   ArrowLeft,
   Shield,
@@ -15,9 +16,42 @@ import {
   ExternalLink,
 } from "lucide-react"
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Pomobox Privacy Policy - How we collect and use your data",
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+const siteUrl = "https://pomobox.app"
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations("Privacy")
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    openGraph: {
+      type: "article",
+      locale: locale === "ko" ? "ko_KR" : locale === "ja" ? "ja_JP" : locale === "zh-CN" ? "zh_CN" : "en_US",
+      url: `${siteUrl}/${locale}/privacy`,
+      siteName: "Pomobox",
+      title: t("title"),
+      description: t("description"),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+    },
+    alternates: {
+      canonical: `${siteUrl}/${locale}/privacy`,
+      languages: {
+        en: `${siteUrl}/en/privacy`,
+        ko: `${siteUrl}/ko/privacy`,
+        ja: `${siteUrl}/ja/privacy`,
+        "zh-CN": `${siteUrl}/zh-CN/privacy`,
+      },
+    },
+  }
 }
 
 function SectionTitle({ icon: Icon, children }: { icon: React.ComponentType<{ className?: string }>; children: React.ReactNode }) {
@@ -61,7 +95,8 @@ function ExternalLinkStyled({ href, children }: { href: string; children: React.
   )
 }
 
-export default function PrivacyPage() {
+export default async function PrivacyPage({ params }: Props) {
+  const { locale } = await params
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6">

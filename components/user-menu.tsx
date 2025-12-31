@@ -12,11 +12,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { User, LogOut, Loader2 } from "lucide-react"
+import { User, LogOut, Loader2, Settings } from "lucide-react"
 import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 export function UserMenu() {
   const t = useTranslations("Auth")
+  const tAccount = useTranslations("Account")
   const router = useRouter()
   const [user, setUser] = useState<SupabaseUser | null>(null)
   const [loading, setLoading] = useState(true)
@@ -73,6 +74,12 @@ export function UserMenu() {
       <DropdownMenuContent align="end">
         <DropdownMenuItem disabled className="text-xs text-muted-foreground">
           {user.email}
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className="gap-2 cursor-pointer">
+          <Link href="/mypage">
+            <Settings className="h-4 w-4" />
+            {tAccount("mypage")}
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout} className="gap-2 cursor-pointer">
           <LogOut className="h-4 w-4" />

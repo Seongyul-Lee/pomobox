@@ -49,7 +49,10 @@
   "Home": {
     "title": "Pomodoro Timer",
     "description": "Stay focused, one session at a time",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "seoSectionTitle": "What is the Pomodoro Technique?",
+    "seoSectionDesc": "The Pomodoro Technique is a time management method that involves 25 minutes of focus and 5 minutes of rest. Use Pomobox to overcome procrastination and boost productivity.",
+    "seoSectionMore": "Read more about Pomodoro"
   },
   "Sounds": {
     "achievement": "Achievement",
@@ -215,5 +218,50 @@
     "syncCompleteDescription": "Synced {count} records.",
     "syncFailed": "Sync failed",
     "syncFailedDescription": "Please try again later."
+  },
+  "Guide": {
+    "whatIsPomodoro": "What is Pomodoro?",
+    "backToTimer": "Back to Timer",
+    "startTimer": "Start Timer",
+    "meta": {
+      "title": "Pomodoro Technique: Complete Guide to Time Management",
+      "description": "Learn the Pomodoro Technique - a proven time management method developed in the 1980s. Discover how 25-minute focus sessions can boost your productivity."
+    },
+    "hero": {
+      "title": "Pomodoro Technique: Complete Guide to Time Management",
+      "subtitle": "A scientifically proven method to boost focus and productivity"
+    },
+    "sections": {
+      "whatIs": {
+        "title": "What is the Pomodoro Technique?",
+        "content": "The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. Named after the tomato-shaped kitchen timer he used as a university student, this technique has helped millions worldwide improve their focus and productivity."
+      },
+      "howTo": {
+        "title": "How to Use the Pomodoro Timer (Step-by-Step)",
+        "step1": { "title": "Create Your Task List", "desc": "Write down what you need to accomplish" },
+        "step2": { "title": "Set 25-Minute Timer", "desc": "Start your focus session" },
+        "step3": { "title": "Work on the Task", "desc": "Give your full attention until the timer rings" },
+        "step4": { "title": "Take a 5-Minute Break", "desc": "Rest your mind briefly" },
+        "step5": { "title": "Repeat & Long Break", "desc": "After 4 sessions, take a 15-30 minute break" }
+      },
+      "whyWorks": {
+        "title": "Why 25 Minutes Focus and 5 Minutes Rest?",
+        "benefit1": { "title": "Prevents Burnout", "desc": "Regular breaks keep your mind fresh" },
+        "benefit2": { "title": "Beats Procrastination", "desc": "25 minutes feels achievable, reducing resistance" },
+        "benefit3": { "title": "Parkinson's Law", "desc": "Time constraints increase efficiency" },
+        "benefit4": { "title": "Flow State", "desc": "Structured intervals help achieve deep focus" }
+      },
+      "pomobox": {
+        "title": "Maximize Productivity with Pomobox.app",
+        "feature1": { "title": "Lo-fi BGM", "desc": "Block distractions with ambient music" },
+        "feature2": { "title": "Dashboard Stats", "desc": "Track your achievements and stay motivated" },
+        "feature3": { "title": "Calendar & Streaks", "desc": "Build lasting habits with visual progress" }
+      },
+      "faq": {
+        "title": "Frequently Asked Questions",
+        "q1": { "q": "Can I customize the timer durations?", "a": "Yes! Adjust focus and break times to match your personal rhythm in Settings." },
+        "q2": { "q": "What should I do during breaks?", "a": "Stretch, rest your eyes, grab water, or take a short walk. Avoid screens if possible." }
+      }
+    }
   }
 }

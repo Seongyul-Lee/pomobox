@@ -89,8 +89,9 @@
         "dependencies": [
           "69"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-31T11:52:26.365Z"
       },
       {
         "id": "71",
@@ -198,8 +199,9 @@
           "67",
           "68"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-31T11:52:26.368Z"
       },
       {
         "id": "75",
@@ -212,8 +214,9 @@
           "66",
           "67"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-31T11:52:26.371Z"
       },
       {
         "id": "76",
@@ -223,8 +226,9 @@
         "testStrategy": "1. BGM 패널에서 YouTube 비디오 재생 확인\n2. 드롭다운에서 다른 BGM 선택 → 비디오 전환 확인\n3. 볼륨 슬라이더 조정 → 소리 크기 변경 확인\n4. 브라우저 새로고침 시 선택한 BGM 유지 확인\n5. 모바일에서 BGM 패널 숨김 확인 (md:block)",
         "priority": "low",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-31T11:52:26.373Z"
       },
       {
         "id": "77",
@@ -234,8 +238,9 @@
         "testStrategy": "1. `/privacy` 페이지 접속 → 내용 표시 확인\n2. 다국어 전환 시 Privacy 내용 변경 확인\n3. 푸터 링크 클릭 → Privacy 페이지 이동 확인\n4. 모바일에서 레이아웃 깨짐 없음 확인\n5. `pnpm build` 빌드 성공 확인",
         "priority": "low",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-31T11:52:26.375Z"
       },
       {
         "id": "78",
@@ -248,8 +253,9 @@
           "73",
           "75"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-31T12:19:04.717Z"
       },
       {
         "id": "79",
@@ -286,13 +292,49 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2025-12-30T12:30:00.000Z"
+      },
+      {
+        "id": "82",
+        "title": "콘솔 에러 수정 및 마이그레이션 안전성 강화",
+        "description": "Supabase 406 에러, 차트 경고 수정 및 마이그레이션 배치 실패 시 데이터 보존",
+        "details": "1. Supabase 406 에러 수정 (lib/supabase/attendance.ts):\n   - .single() → .maybeSingle()로 변경\n   - 출석 기록이 없을 때 406 에러 대신 null 반환\n\n2. 차트 크기 경고 수정 (components/dashboard-left.tsx, stats-chart.tsx):\n   - ResponsiveContainer에 minWidth={1} minHeight={1} 추가\n   - ResizeObserver 트리거 전 0 크기 경고 억제\n   - [2025-01-01] ResizeObserver 콜백에 requestAnimationFrame 추가\n   - 레이아웃 계산 완료 후 차트 마운트하도록 개선\n   - cleanup 함수에서 cancelAnimationFrame 호출 추가\n\n3. 마이그레이션 안전성 강화 (lib/sync/migrate-local-data.ts):\n   - MigrationBatchResult 타입 추가 (migratedCount, skippedBatches)\n   - 배치 upsert 실패 시 로컬 데이터 삭제하지 않고 보존\n   - skippedBatches > 0이면 success: false 반환\n   - Codex P1 코드 리뷰 이슈 해결",
+        "testStrategy": "1. 브라우저 콘솔에서 406 에러 사라짐 확인\n2. 차트 크기 경고 사라짐 확인\n3. 마이그레이션 실패 시 로컬 데이터 유지 확인",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T00:00:00.000Z"
+      },
+      {
+        "id": "83",
+        "title": "포모도로 가이드 페이지 구현 (SEO 강화)",
+        "description": "SEO 강화 및 애드센스 승인을 위한 포모도로 기법 설명 가이드 페이지 신규 생성",
+        "details": "1. i18n 메시지 확장 (4개 파일):\n   - messages/en.json, ko.json, ja.json, zh-CN.json에 Guide 네임스페이스 추가\n   - 메타데이터, Hero, 섹션별 콘텐츠, FAQ 등 다국어 번역\n\n2. 가이드 페이지 생성:\n   - app/[locale]/guide/what-is-pomodoro/page.tsx\n   - generateMetadata로 동적 SEO 메타데이터 (title, description, openGraph, twitter, alternates)\n   - 시맨틱 HTML 구조 (H1-H2 계층)\n   - 섹션: 포모도로 정의, Step-by-Step 사용법, 과학적 이점, Pomobox 소개, FAQ\n   - CTA 버튼으로 메인 타이머 페이지 연결\n   - 다크 모드 및 반응형 디자인 적용\n\n3. Footer 수정:\n   - app/[locale]/page.tsx Footer에 가이드 페이지 링크 추가\n   - Privacy Policy 옆에 '포모도로 기법이란?' 링크\n\n4. Context7 baseline 업데이트:\n   - nextjs-app-router-metadata 항목 갱신 (2025-12-31)",
+        "testStrategy": "1. /en/guide/what-is-pomodoro 페이지 접속 확인\n2. 4개 언어 모두 번역 표시 확인\n3. SEO 메타태그 확인 (view-source)\n4. Footer 링크 클릭 시 가이드 페이지 이동 확인\n5. pnpm lint && pnpm build 성공",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-31T15:30:00.000Z"
+      },
+      {
+        "id": "84",
+        "title": "메인 페이지 SEO 섹션 추가 및 서브페이지 테마 통일",
+        "description": "메인 페이지 하단에 포모도로 기법 요약 SEO 섹션 추가, 가이드/Privacy 페이지 테마 스타일 통일",
+        "details": "1. 메인 페이지 SEO 섹션 추가:\n   - messages/*.json (4개 언어)에 Home.seoSectionTitle/Desc/More 키 추가\n   - app/[locale]/page.tsx에 SEO 섹션 컴포넌트 삽입 (광고 영역 위)\n   - 투명 배경, 중앙 정렬, text-primary 링크 스타일\n   - /guide/what-is-pomodoro 링크 연결\n\n2. SEO 섹션 레이아웃 개선:\n   - max-w-3xl → max-w-5xl로 확대 (대시보드와 조화)\n   - mb-8 → mb-10 (광고 영역과 여백 확보)\n   - 제목-본문 간격 mb-3 → mb-4, 본문-링크 간격 mb-4 → mb-5\n\n3. 가이드 페이지 테마 통일:\n   - 하드코딩 배경 제거: bg-[oklch(4.7%_0.025_284)] → bg-background\n   - 그라데이션 오버레이 제거\n   - 카드: glass-card border border-border/50 → glass-card (중복 border 제거)\n   - 내부 border: border-border/50 → border-white/10\n   - BenefitCard: bg-background/50 → bg-white/5\n\n4. Privacy 페이지 테마 통일:\n   - 가이드 페이지와 동일한 변경 적용\n   - Dark/Midnight 테마 변경 시 메인 페이지와 동일한 분위기",
+        "testStrategy": "1. /ko 메인 페이지에서 SEO 섹션 표시 확인\n2. SEO 섹션 링크 클릭 → 가이드 페이지 이동 확인\n3. Dark ↔ Midnight 테마 변경 시 가이드/Privacy 배경색 동일 확인\n4. pnpm lint && pnpm build 성공",
+        "priority": "medium",
+        "dependencies": ["83"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2025-12-31T16:30:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-30T13:39:39.450Z",
-      "taskCount": 18,
-      "completedCount": 12,
+      "lastModified": "2025-12-31T16:30:00.000Z",
+      "taskCount": 21,
+      "completedCount": 21,
       "tags": [
         "master"
       ]

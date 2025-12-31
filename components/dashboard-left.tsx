@@ -216,16 +216,24 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
     const container = containerRef.current
     if (!container) return
 
+    let rafId: number
+
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0]
       if (entry && entry.contentRect.width > 0 && entry.contentRect.height > 0) {
-        setChartMounted(true)
+        // requestAnimationFrame으로 레이아웃 계산 완료 후 마운트
+        rafId = requestAnimationFrame(() => {
+          setChartMounted(true)
+        })
         observer.disconnect()
       }
     })
 
     observer.observe(container)
-    return () => observer.disconnect()
+    return () => {
+      observer.disconnect()
+      if (rafId) cancelAnimationFrame(rafId)
+    }
   }, [])
 
   // 총 시간 및 세션 (로그인 사용자만 실시간 시간 포함)

@@ -1,4 +1,8 @@
 {
+  "Metadata": {
+    "title": "Pomobox - 집중력을 높이는 미니멀 포모도로 타이머",
+    "description": "집중 시간 추적, 스마트 휴식 알림, 통계 기능 제공. 군더더기 없는 미니멀 디자인의 포모도로 타이머로 생산성을 극대화하세요."
+  },
   "Timer": {
     "focusSession": "집중 시간",
     "breakTime": "휴식 시간",

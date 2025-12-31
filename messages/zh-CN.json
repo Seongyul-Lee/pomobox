@@ -1,4 +1,8 @@
 {
+  "Metadata": {
+    "title": "Pomobox - 极简番茄钟，助你专注高效",
+    "description": "简洁无干扰的番茄钟计时器。追踪专注时间，智能休息提醒，数据统计助你提升生产力。"
+  },
   "Timer": {
     "focusSession": "专注时段",
     "breakTime": "休息时间",

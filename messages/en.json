@@ -1,4 +1,8 @@
 {
+  "Metadata": {
+    "title": "Pomobox - Minimal Pomodoro Timer for Focused Work",
+    "description": "A clean, distraction-free Pomodoro timer to boost your productivity. Track focus sessions, take smart breaks, and stay in flow."
+  },
   "Timer": {
     "focusSession": "Focus Session",
     "breakTime": "Break Time",

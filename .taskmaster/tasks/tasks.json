@@ -328,13 +328,25 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2025-12-31T16:30:00.000Z"
+      },
+      {
+        "id": "85",
+        "title": "네이버 SEO 최적화를 위한 메타데이터 길이 조정",
+        "description": "네이버 서치어드바이저 권장 기준에 맞춰 한국어 메타데이터 단축, generateMetadata 함수로 동적 다국어 메타데이터 생성",
+        "details": "1. 네이버 권장 기준:\n   - 제목: 40자 이내\n   - 설명: 80자 이내\n\n2. messages/*.json Metadata 섹션 추가:\n   - ko.json: 네이버 최적화 (title 33자, description 69자)\n   - en.json: 구글 최적화 (기존 긴 버전 유지)\n   - ja.json, zh-CN.json: 각 검색엔진 최적화 버전\n\n3. app/[locale]/layout.tsx 수정:\n   - 하드코딩된 metadata 객체 → generateMetadata 함수로 변경\n   - getTranslations('Metadata')로 언어별 동적 메타데이터 생성\n   - Open Graph, Twitter Card도 딕셔너리 값 참조\n   - alternates.languages로 hreflang 태그 추가",
+        "testStrategy": "1. /ko 페이지 view-source에서 한국어 메타데이터 확인\n2. /en 페이지에서 영어 메타데이터 확인\n3. SNS 공유 시 Open Graph 태그 확인\n4. pnpm lint && pnpm build 성공",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T00:00:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2025-12-31T16:30:00.000Z",
-      "taskCount": 21,
-      "completedCount": 21,
+      "lastModified": "2026-01-01T00:00:00.000Z",
+      "taskCount": 22,
+      "completedCount": 22,
       "tags": [
         "master"
       ]

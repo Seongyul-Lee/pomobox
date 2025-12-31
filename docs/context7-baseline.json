@@ -2,31 +2,31 @@
   {
     "topicName": "nextjs-app-router-metadata",
     "context7CompatibleLibraryID": "/vercel/next.js",
-    "topic": "app router metadata",
+    "topic": "app router metadata generateMetadata SEO",
     "pageRange": "1",
-    "retrievedAt": "2025-12-23T00:00:00Z",
+    "retrievedAt": "2025-12-31T00:00:00Z",
     "keyAPIs": [
       "Metadata type export from 'next'",
       "metadata object export (static)",
       "generateMetadata async function (dynamic)",
-      "MetadataRoute.Manifest for PWA",
-      "headers() and cookies() from 'next/headers'",
-      "openGraph, twitter, appLinks, appleWebApp, itunes properties"
+      "openGraph: { type, locale, url, siteName, title, description, images }",
+      "twitter: { card, title, description, images }",
+      "alternates: { canonical, languages }",
+      "params: Promise<{ slug: string }> - Next.js 15에서 비동기",
+      "ResolvingMetadata - 부모 메타데이터 접근용 타입"
     ],
     "constraints": [
       "metadata must be exported from layout.tsx or page.tsx",
-      "generateMetadata is async and receives params/searchParams",
-      "headers() and cookies() are read-only in Server Components",
+      "generateMetadata is async and receives { params, searchParams }",
+      "Next.js 15: params/searchParams are Promise, need await",
       "Child page metadata merges with parent layout metadata",
-      "Replace next/head with metadata exports in App Router",
-      "Manifest file should be app/manifest.ts or app/manifest.json",
-      "Icons referenced in manifest must exist in public folder"
+      "Use alternates.languages for hreflang SEO",
+      "openGraph.locale follows ISO format (en_US, ko_KR, etc.)"
     ],
     "appliesToFiles": [
-      "app/layout.tsx",
-      "app/[...path]/page.tsx",
-      "app/manifest.ts",
-      "app/opengraph-image.tsx"
+      "app/[locale]/layout.tsx",
+      "app/[locale]/guide/what-is-pomodoro/page.tsx",
+      "app/[locale]/privacy/page.tsx"
     ]
   },
   {
@@ -572,6 +572,36 @@
     "appliesToFiles": [
       "app/providers.tsx",
       "lib/queries/stats-queries.ts"
+    ]
+  },
+  {
+    "topicName": "playwright-e2e-locators-assertions",
+    "context7CompatibleLibraryID": "/websites/playwright_dev",
+    "topic": "E2E testing page locators getByRole getByPlaceholder assertions toBeVisible authentication storageState",
+    "pageRange": "1",
+    "retrievedAt": "2025-12-31T00:00:00Z",
+    "keyAPIs": [
+      "page.getByRole('button', { name: /pattern/i }) - ARIA role로 요소 찾기",
+      "page.getByPlaceholder('text') - placeholder로 입력 필드 찾기",
+      "page.getByLabel('text') - label로 요소 찾기",
+      "expect(locator).toBeVisible() - Web First Assertion",
+      "expect(locator).toHaveValue('value') - 값 확인",
+      "expect(locator).toContainText('text') - 텍스트 포함 확인",
+      "expect(locator).toBeFocused() - 포커스 확인",
+      "expect(page).toHaveURL(/pattern/) - URL 확인",
+      "storageState - 인증 상태 저장/로드"
+    ],
+    "constraints": [
+      "await expect()로 Web First Assertions 사용 (isVisible() 대신)",
+      "getByRole이 getByTestId보다 접근성 측면에서 권장됨",
+      "locator.first()로 여러 요소 중 첫 번째 선택",
+      "storageState 파일로 인증 상태 재사용 가능",
+      "test.beforeEach로 공통 설정, test.describe로 그룹화"
+    ],
+    "appliesToFiles": [
+      "tests/e2e/auth.spec.ts",
+      "tests/e2e/stats.auth.spec.ts",
+      "playwright.config.ts"
     ]
   }
 ]

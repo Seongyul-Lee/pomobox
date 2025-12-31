@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
+import { Link as LocaleLink } from "@/i18n/navigation"
 import { PomodoroTimer } from "@/components/pomodoro-timer"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { UserMenu } from "@/components/user-menu"
@@ -36,6 +37,7 @@ function TimerFallback() {
 
 export default async function Home() {
   const t = await getTranslations("Home")
+  const tGuide = await getTranslations("Guide")
 
   return (
       <main className="relative min-h-screen flex flex-col text-foreground pt-safe">
@@ -104,6 +106,10 @@ export default async function Home() {
             <Link href="/privacy" className="hover:text-foreground hover:underline">
               Privacy Policy
             </Link>
+            <span className="mx-2">·</span>
+            <LocaleLink href="/guide/what-is-pomodoro" className="hover:text-foreground hover:underline">
+              {tGuide("whatIsPomodoro")}
+            </LocaleLink>
           </div>
         </div>
       </main>

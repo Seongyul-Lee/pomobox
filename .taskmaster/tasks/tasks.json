@@ -424,13 +424,25 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2026-01-01T16:00:00.000Z"
+      },
+      {
+        "id": "93",
+        "title": "Weekly Stats 차트 UI 개선 (텍스트/그래프/애니메이션/Mock 데이터)",
+        "description": "Weekly Stats 컴포넌트의 가독성 및 시각적 완성도 향상",
+        "details": "Weekly Stats 차트 UI 전반 개선:\n\n1. 텍스트 포맷팅 (공백 추가):\n   - messages/*.json (4개 언어)의 Dashboard.sessions, Dashboard.days에 앞공백 추가\n   - '0Sessions' → '0 Sessions', '5일' → '5 일'\n\n2. 그래프 빈 상태 디자인 개선:\n   - Bar 컴포넌트에 minPointSize={4} 추가 → 데이터 0일 때도 4px 높이 보장\n   - CHART_COLORS.muted 색상을 oklch(100% 0 0 / 0.1)로 변경 (bg-white/10)\n   - displayMinutes 로직 단순화 (minPointSize가 최소 높이 처리)\n\n3. 그래프 로딩 애니메이션:\n   - Bar 컴포넌트에 Recharts 애니메이션 속성 추가\n   - isAnimationActive={true}, animationDuration={1000}, animationEasing='ease-out', animationBegin={200}\n   - 레이아웃 안정화 후 200ms 딜레이로 부드러운 시작\n\n4. 비로그인 Mock 데이터:\n   - WEEKLY_MOCK_MINUTES = [10, 45, 90, 75, 100, 60, 30] (SUN~SAT)\n   - WEEKLY_MOCK_SESSIONS = [1, 2, 4, 3, 4, 2, 1]\n   - 비로그인 시 블러 배경에 풍성한 그래프 표시로 가입 유도 효과 향상",
+        "testStrategy": "1. 비로그인 상태에서 WeeklyStats에 Mock 데이터 그래프 표시 확인\n2. 텍스트 '0 Sessions', '5 일' 형태로 공백 포함 확인\n3. 그래프 애니메이션 1초간 부드럽게 올라오는지 확인\n4. 데이터 0인 날에 4px 높이의 어두운 회색 막대 표시 확인\n5. pnpm lint && pnpm build 성공",
+        "priority": "medium",
+        "dependencies": ["75"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T17:00:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-01T16:00:00.000Z",
-      "taskCount": 29,
-      "completedCount": 29,
+      "lastModified": "2026-01-01T17:00:00.000Z",
+      "taskCount": 30,
+      "completedCount": 30,
       "tags": [
         "master"
       ]

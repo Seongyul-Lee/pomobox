@@ -189,13 +189,17 @@ function TodayCard({
 const CHART_COLORS = {
   today: "oklch(72% 0.25 293.5)",           // 보라색 (오늘 강조)
   default: "oklch(72% 0.30 149.6)",         // 녹색 (기본)
-  muted: "oklch(70.4% 0.021 256.8 / 0.2)",  // slate-400 계열 placeholder
+  muted: "oklch(100% 0 0 / 0.1)",  // 어두운 회색 (bg-white/10) - 데이터 없는 날
   todayLabel: "oklch(72% 0.25 293.5)",      // 오늘 레이블 색상
   defaultLabel: "oklch(98.5% 0.0025 247.9 / 0.8)", // 기본 레이블 색상
   // 글로우 효과용
   todayGlow: "drop-shadow(0 0 12px oklch(72% 0.25 293.5 / 0.7))",
   defaultGlow: "drop-shadow(0 0 10px oklch(72% 0.30 149.6 / 0.6))",
 }
+
+// 비로그인 시 보여줄 Mock 데이터 (요일별 분 단위: 주중에 열심히, 주말에 쉬는 패턴)
+const WEEKLY_MOCK_MINUTES = [10, 45, 90, 75, 100, 60, 30] // SUN, MON, TUE, WED, THU, FRI, SAT
+const WEEKLY_MOCK_SESSIONS = [1, 2, 4, 3, 4, 2, 1]
 
 // 주간 현황 카드
 function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; isLoggedIn: boolean; realtimeMinutes: number }) {
@@ -236,10 +240,12 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
     }
   }, [])
 
-  // 총 시간 및 세션 (로그인 사용자만 실시간 시간 포함)
+  // 총 시간 및 세션 (비로그인 시 Mock 데이터 사용)
   const storedMinutes = data.reduce((sum, d) => sum + d.totalMinutes, 0)
-  const totalMinutes = storedMinutes + (isLoggedIn ? realtimeMinutes : 0)
-  const totalSessions = data.reduce((sum, d) => sum + d.totalSessions, 0)
+  const mockTotalMinutes = WEEKLY_MOCK_MINUTES.reduce((sum, m) => sum + m, 0)
+  const mockTotalSessions = WEEKLY_MOCK_SESSIONS.reduce((sum, s) => sum + s, 0)
+  const totalMinutes = isLoggedIn ? storedMinutes + realtimeMinutes : mockTotalMinutes
+  const totalSessions = isLoggedIn ? data.reduce((sum, d) => sum + d.totalSessions, 0) : mockTotalSessions
   const avgMinutes = Math.round(totalMinutes / 7)
 
   // 일~토 순서로 7일 데이터 정렬 (오늘 기준으로 지난 7일을 요일별로 배치)
@@ -253,19 +259,27 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
   ]
 
   // 7일 모두 표시 (데이터 없는 날도 placeholder로)
+  // 비로그인 시 Mock 데이터 사용 (블러 배경용)
   const chartData = Array.from({ length: 7 }, (_, dayIndex) => {
     const dayData = data.find(d => new Date(d.date).getDay() === dayIndex)
     const storedMins = dayData?.totalMinutes || 0
     const isToday = todayDayIndex !== null && dayIndex === todayDayIndex
-    // 오늘인 경우 실시간 시간 추가 (로그인 사용자만 - 비로그인은 블러 영역이므로 제외)
-    const minutes = isToday && isLoggedIn ? storedMins + realtimeMinutes : storedMins
+
+    // 비로그인: Mock 데이터 사용, 로그인: 실제 데이터 사용
+    const minutes = isLoggedIn
+      ? (isToday ? storedMins + realtimeMinutes : storedMins)
+      : WEEKLY_MOCK_MINUTES[dayIndex]
+    const sessions = isLoggedIn
+      ? (dayData?.totalSessions || 0)
+      : WEEKLY_MOCK_SESSIONS[dayIndex]
+
     return {
       day: dayLabels[dayIndex],
       fullDay: fullDayLabels[dayIndex],
       minutes,
-      // 차트 표시용: 0값도 최소 높이(3) 보장
-      displayMinutes: minutes > 0 ? minutes : 3,
-      sessions: dayData?.totalSessions || 0,
+      // 차트 표시용: 실제 분 값 (minPointSize로 최소 높이 보장)
+      displayMinutes: minutes,
+      sessions,
       dayIndex,
       isToday,
       hasData: minutes > 0,
@@ -328,6 +342,11 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
                   dataKey="displayMinutes"
                   fill={CHART_COLORS.default}
                   radius={[6, 6, 0, 0]}
+                  minPointSize={4}
+                  isAnimationActive={true}
+                  animationDuration={1000}
+                  animationEasing="ease-out"
+                  animationBegin={200}
                   activeBar={{
                     fillOpacity: 1,
                     strokeWidth: 2,

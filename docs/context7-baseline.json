@@ -219,9 +219,9 @@
   {
     "topicName": "next-intl-app-router",
     "context7CompatibleLibraryID": "/amannn/next-intl",
-    "topic": "App Router setup configuration middleware routing useTranslations",
+    "topic": "App Router setup configuration middleware routing useTranslations getTranslations raw",
     "pageRange": "1-2",
-    "retrievedAt": "2025-12-25T00:00:00Z",
+    "retrievedAt": "2026-01-01T00:00:00Z",
     "keyAPIs": [
       "defineRouting({ locales, defaultLocale }) - routing config",
       "createMiddleware(routing) - locale routing middleware",
@@ -229,6 +229,8 @@
       "NextIntlClientProvider - wraps app for client components",
       "useTranslations(namespace) - client component hook",
       "getTranslations(namespace) - async server component function",
+      "t.raw('key') - 배열/객체 원시값 접근 (JSON array 등)",
+      "t('nested.key.path') - dot notation으로 중첩 접근",
       "hasLocale(locales, locale) - validate locale param",
       "createNextIntlPlugin() - next.config.ts plugin"
     ],
@@ -239,7 +241,8 @@
       "App content must be in app/[locale]/ folder for URL-based routing",
       "Messages in messages/{locale}.json format",
       "NextIntlClientProvider required in layout for client hooks",
-      "Use hasLocale + notFound() for invalid locale validation"
+      "Use hasLocale + notFound() for invalid locale validation",
+      "t.raw() returns raw value (array, object) without string interpolation"
     ],
     "appliesToFiles": [
       "i18n/routing.ts",
@@ -247,6 +250,7 @@
       "middleware.ts",
       "next.config.ts",
       "app/[locale]/layout.tsx",
+      "app/[locale]/privacy/page.tsx",
       "messages/*.json"
     ]
   },

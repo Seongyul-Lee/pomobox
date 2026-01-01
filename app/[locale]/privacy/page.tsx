@@ -73,12 +73,24 @@ function Paragraph({ children }: { children: React.ReactNode }) {
   return <p className="text-muted-foreground leading-relaxed mb-4">{children}</p>
 }
 
-function List({ children }: { children: React.ReactNode }) {
-  return <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-4 ml-2">{children}</ul>
+function List({ items }: { items: string[] }) {
+  return (
+    <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-4 ml-2">
+      {items.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ul>
+  )
 }
 
-function OrderedList({ children }: { children: React.ReactNode }) {
-  return <ol className="list-decimal list-inside space-y-2 text-muted-foreground mb-4 ml-2">{children}</ol>
+function OrderedList({ items }: { items: string[] }) {
+  return (
+    <ol className="list-decimal list-inside space-y-2 text-muted-foreground mb-4 ml-2">
+      {items.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ol>
+  )
 }
 
 function ExternalLinkStyled({ href, children }: { href: string; children: React.ReactNode }) {
@@ -97,6 +109,8 @@ function ExternalLinkStyled({ href, children }: { href: string; children: React.
 
 export default async function PrivacyPage({ params }: Props) {
   const { locale } = await params
+  const t = await getTranslations("Privacy")
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6">
@@ -106,7 +120,7 @@ export default async function PrivacyPage({ params }: Props) {
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8 group"
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          Back to Pomobox
+          {t("backToHome")}
         </Link>
 
         {/* Main Content Card */}
@@ -116,218 +130,129 @@ export default async function PrivacyPage({ params }: Props) {
             <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 mb-4">
               <Shield className="h-8 w-8 text-primary" />
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">Privacy Policy</h1>
-            <p className="text-muted-foreground">Last updated: December 26, 2024</p>
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">{t("title")}</h1>
+            <p className="text-muted-foreground">Last updated: {t("lastUpdated")}</p>
           </div>
 
           {/* Content */}
           <div className="space-y-2">
-            {/* Introduction */}
-            <SectionTitle icon={Shield}>1. Introduction</SectionTitle>
+            {/* 1. Introduction */}
+            <SectionTitle icon={Shield}>{t("intro.title")}</SectionTitle>
+            <Paragraph>{t("intro.content")}</Paragraph>
+
+            {/* 2. Information We Collect */}
+            <SectionTitle icon={Database}>{t("collection.title")}</SectionTitle>
+
+            <SubSection>{t("collection.accountInfo.title")}</SubSection>
+            <Paragraph>{t("collection.accountInfo.content")}</Paragraph>
+            <List items={t.raw("collection.accountInfo.items") as string[]} />
+
+            <SubSection>{t("collection.activityData.title")}</SubSection>
+            <Paragraph>{t("collection.activityData.content")}</Paragraph>
+            <List items={t.raw("collection.activityData.items") as string[]} />
+
+            <SubSection>{t("collection.localStorage.title")}</SubSection>
+            <Paragraph>{t("collection.localStorage.content")}</Paragraph>
+            <List items={t.raw("collection.localStorage.items") as string[]} />
+            <Paragraph>{t("collection.localStorage.note")}</Paragraph>
+
+            <SubSection>{t("collection.automatic.title")}</SubSection>
+            <Paragraph>{t("collection.automatic.content")}</Paragraph>
+            <List items={t.raw("collection.automatic.items") as string[]} />
+
+            {/* 2.5 Cookies */}
+            <SectionTitle icon={Cookie}>{t("collection.cookies.title")}</SectionTitle>
+            <Paragraph>{t("collection.cookies.content")}</Paragraph>
+
+            {/* 3. Third-Party Services */}
+            <SectionTitle icon={Server}>{t("thirdParty.title")}</SectionTitle>
+
+            <SubSection>{t("thirdParty.supabase.title")}</SubSection>
             <Paragraph>
-              Welcome to Pomobox. We respect your privacy and are committed to
-              protecting your personal data. This privacy policy explains how we
-              collect, use, and safeguard your information when you use our service.
-            </Paragraph>
-
-            {/* Information We Collect */}
-            <SectionTitle icon={Database}>2. Information We Collect</SectionTitle>
-
-            <SubSection>2.1 Account Information (Registered Users)</SubSection>
-            <Paragraph>When you create an account, we collect:</Paragraph>
-            <List>
-              <li>Email address</li>
-              <li>Encrypted password (hashed, not stored in plain text)</li>
-              <li>Account creation date</li>
-            </List>
-
-            <SubSection>2.2 User Activity Data (Registered Users)</SubSection>
-            <Paragraph>When you use Pomobox while logged in, we collect:</Paragraph>
-            <List>
-              <li>Focus session records (duration, completion time)</li>
-              <li>Daily statistics (date, session count, total focus minutes)</li>
-              <li>Attendance check-in records</li>
-              <li>Streak statistics (consecutive days)</li>
-            </List>
-
-            <SubSection>2.3 Local Storage (All Users)</SubSection>
-            <Paragraph>
-              For users who are not logged in, we store data locally in your browser
-              using localStorage. This data includes:
-            </Paragraph>
-            <List>
-              <li>Timer settings and preferences</li>
-              <li>Session history</li>
-              <li>Daily statistics</li>
-              <li>Attendance records</li>
-            </List>
-            <Paragraph>
-              This data never leaves your device and is not accessible to us. You can
-              clear this data at any time through your browser settings.
-            </Paragraph>
-
-            <SubSection>2.4 Automatically Collected Information</SubSection>
-            <Paragraph>When you use Pomobox, we may automatically collect:</Paragraph>
-            <List>
-              <li>Device information (browser type, operating system)</li>
-              <li>Usage data (pages visited, time spent)</li>
-              <li>IP address (anonymized)</li>
-            </List>
-
-            {/* Cookies */}
-            <SectionTitle icon={Cookie}>2.5 Cookies and Similar Technologies</SectionTitle>
-            <Paragraph>
-              We use cookies and similar tracking technologies for authentication
-              and to improve your experience. Essential cookies are required for
-              the service to function properly.
-            </Paragraph>
-
-            {/* Third-Party Services */}
-            <SectionTitle icon={Server}>3. Third-Party Services</SectionTitle>
-
-            <SubSection>3.1 Supabase</SubSection>
-            <Paragraph>
-              We use Supabase as our database and authentication provider. Supabase
-              stores your account information and activity data on secure servers.
-              For more information, see{" "}
-              <ExternalLinkStyled href="https://supabase.com/privacy">
-                Supabase Privacy Policy
+              {t("thirdParty.supabase.content")}{" "}
+              <ExternalLinkStyled href={t("thirdParty.supabase.link")}>
+                {t("thirdParty.supabase.linkText")}
               </ExternalLinkStyled>
-              .
             </Paragraph>
 
-            <SubSection>3.2 Vercel</SubSection>
+            <SubSection>{t("thirdParty.vercel.title")}</SubSection>
             <Paragraph>
-              Our website is hosted on Vercel. Vercel may collect anonymous usage
-              data and logs. For more information, see{" "}
-              <ExternalLinkStyled href="https://vercel.com/legal/privacy-policy">
-                Vercel Privacy Policy
+              {t("thirdParty.vercel.content")}{" "}
+              <ExternalLinkStyled href={t("thirdParty.vercel.link")}>
+                {t("thirdParty.vercel.linkText")}
               </ExternalLinkStyled>
-              .
             </Paragraph>
 
-            <SubSection>3.3 Google AdSense</SubSection>
+            <SubSection>{t("thirdParty.adsense.title")}</SubSection>
             <Paragraph>
-              We use Google AdSense to display advertisements. Google may use cookies
-              to serve ads based on your prior visits to this or other websites.
-              You can opt out of personalized advertising by visiting{" "}
-              <ExternalLinkStyled href="https://www.google.com/settings/ads">
-                Google Ads Settings
+              {t("thirdParty.adsense.content")}{" "}
+              <ExternalLinkStyled href={t("thirdParty.adsense.link")}>
+                {t("thirdParty.adsense.linkText")}
               </ExternalLinkStyled>
-              .
             </Paragraph>
 
-            {/* How We Use */}
-            <SectionTitle icon={Database}>4. How We Use Your Information</SectionTitle>
-            <Paragraph>We use the collected information to:</Paragraph>
-            <List>
-              <li>Provide and maintain our service</li>
-              <li>Authenticate your account and keep you signed in</li>
-              <li>Sync your focus data across devices (registered users)</li>
-              <li>Display your productivity statistics</li>
-              <li>Improve user experience</li>
-              <li>Display relevant advertisements</li>
-              <li>Analyze usage patterns</li>
-            </List>
-
-            {/* Data Storage */}
-            <SectionTitle icon={Server}>5. Data Storage and Retention</SectionTitle>
-
-            <SubSection>5.1 Registered Users</SubSection>
+            <SubSection>{t("thirdParty.resend.title")}</SubSection>
             <Paragraph>
-              Your account and activity data is stored on Supabase servers. We retain
-              your data for as long as your account is active. If you delete your
-              account, your data will be permanently deleted within 30 days.
+              {t("thirdParty.resend.content")}{" "}
+              <ExternalLinkStyled href={t("thirdParty.resend.link")}>
+                {t("thirdParty.resend.linkText")}
+              </ExternalLinkStyled>
             </Paragraph>
 
-            <SubSection>5.2 Non-Registered Users</SubSection>
+            {/* 4. How We Use */}
+            <SectionTitle icon={Database}>{t("usage.title")}</SectionTitle>
+            <Paragraph>{t("usage.content")}</Paragraph>
+            <List items={t.raw("usage.items") as string[]} />
+
+            {/* 5. Data Storage */}
+            <SectionTitle icon={Server}>{t("storage.title")}</SectionTitle>
+
+            <SubSection>{t("storage.registered.title")}</SubSection>
+            <Paragraph>{t("storage.registered.content")}</Paragraph>
+
+            <SubSection>{t("storage.nonRegistered.title")}</SubSection>
+            <Paragraph>{t("storage.nonRegistered.content")}</Paragraph>
+
+            {/* 6. Data Security */}
+            <SectionTitle icon={Lock}>{t("security.title")}</SectionTitle>
+            <Paragraph>{t("security.content")}</Paragraph>
+            <List items={t.raw("security.items") as string[]} />
+
+            {/* 7. GDPR */}
+            <SectionTitle icon={Scale}>{t("gdpr.title")}</SectionTitle>
+            <Paragraph>{t("gdpr.content")}</Paragraph>
+            <List items={t.raw("gdpr.items") as string[]} />
+
+            {/* 8. CCPA */}
+            <SectionTitle icon={Scale}>{t("ccpa.title")}</SectionTitle>
+            <Paragraph>{t("ccpa.content")}</Paragraph>
+            <List items={t.raw("ccpa.items") as string[]} />
+
+            {/* 9. Delete Data */}
+            <SectionTitle icon={Trash2}>{t("deletion.title")}</SectionTitle>
+
+            <SubSection>{t("deletion.registered.title")}</SubSection>
+            <Paragraph>{t("deletion.registered.content")}</Paragraph>
+
+            <SubSection>{t("deletion.nonRegistered.title")}</SubSection>
+            <Paragraph>{t("deletion.nonRegistered.content")}</Paragraph>
+            <OrderedList items={t.raw("deletion.nonRegistered.steps") as string[]} />
+            <Paragraph>{t("deletion.nonRegistered.note")}</Paragraph>
+
+            {/* 10. Children */}
+            <SectionTitle icon={Baby}>{t("children.title")}</SectionTitle>
+            <Paragraph>{t("children.content")}</Paragraph>
+
+            {/* 11. Changes */}
+            <SectionTitle icon={Bell}>{t("changes.title")}</SectionTitle>
+            <Paragraph>{t("changes.content")}</Paragraph>
+
+            {/* 12. Contact */}
+            <SectionTitle icon={Mail}>{t("contact.title")}</SectionTitle>
             <Paragraph>
-              If you use Pomobox without an account, all your data is stored locally
-              in your browser (localStorage). This data is not transmitted to our
-              servers and remains on your device until you clear your browser data.
-            </Paragraph>
-
-            {/* Data Security */}
-            <SectionTitle icon={Lock}>6. Data Security</SectionTitle>
-            <Paragraph>We implement appropriate security measures to protect your data:</Paragraph>
-            <List>
-              <li>All data is transmitted over HTTPS (encrypted connection)</li>
-              <li>Passwords are hashed using industry-standard algorithms</li>
-              <li>Database access is protected by Row Level Security (RLS) policies</li>
-              <li>We regularly review and update our security practices</li>
-            </List>
-
-            {/* GDPR */}
-            <SectionTitle icon={Scale}>7. Your Rights (GDPR)</SectionTitle>
-            <Paragraph>If you are in the European Economic Area, you have the right to:</Paragraph>
-            <List>
-              <li>Access your personal data</li>
-              <li>Rectify inaccurate data</li>
-              <li>Request deletion of your data</li>
-              <li>Object to data processing</li>
-              <li>Data portability</li>
-              <li>Withdraw consent at any time</li>
-            </List>
-
-            {/* CCPA */}
-            <SectionTitle icon={Scale}>8. Your Rights (CCPA)</SectionTitle>
-            <Paragraph>If you are a California resident, you have the right to:</Paragraph>
-            <List>
-              <li>Know what personal information is collected</li>
-              <li>Know whether your personal information is sold or disclosed</li>
-              <li>Say no to the sale of personal information (we do not sell your data)</li>
-              <li>Request deletion of your personal information</li>
-              <li>Not be discriminated against for exercising your privacy rights</li>
-            </List>
-
-            {/* Delete Data */}
-            <SectionTitle icon={Trash2}>9. How to Delete Your Data</SectionTitle>
-
-            <SubSection>9.1 Registered Users</SubSection>
-            <Paragraph>
-              To delete your account and all associated data, please contact us at{" "}
-              <a href="mailto:pomoboxapp@gmail.com" className="text-primary hover:underline">
-                pomoboxapp@gmail.com
-              </a>{" "}
-              with your account email address. We will process your request within 30 days.
-            </Paragraph>
-
-            <SubSection>9.2 Non-Registered Users</SubSection>
-            <Paragraph>To delete your local data:</Paragraph>
-            <OrderedList>
-              <li>Open your browser settings</li>
-              <li>Navigate to Privacy or Site Settings</li>
-              <li>Find and clear site data for pomobox.app</li>
-            </OrderedList>
-            <Paragraph>
-              Alternatively, you can clear all browsing data or use your browser&apos;s
-              developer tools to clear localStorage.
-            </Paragraph>
-
-            {/* Children */}
-            <SectionTitle icon={Baby}>10. Children&apos;s Privacy</SectionTitle>
-            <Paragraph>
-              Our service is not directed to children under 13. We do not knowingly
-              collect personal information from children under 13. If you are a parent
-              or guardian and believe your child has provided us with personal
-              information, please contact us.
-            </Paragraph>
-
-            {/* Changes */}
-            <SectionTitle icon={Bell}>11. Changes to This Policy</SectionTitle>
-            <Paragraph>
-              We may update this privacy policy from time to time. We will notify
-              you of any changes by posting the new policy on this page and updating
-              the &quot;Last updated&quot; date.
-            </Paragraph>
-
-            {/* Contact */}
-            <SectionTitle icon={Mail}>12. Contact Us</SectionTitle>
-            <Paragraph>
-              If you have questions about this privacy policy or want to exercise
-              your data rights, please contact us at:{" "}
-              <a href="mailto:pomoboxapp@gmail.com" className="text-primary hover:underline">
-                pomoboxapp@gmail.com
+              {t("contact.content")}{" "}
+              <a href={`mailto:${t("contact.email")}`} className="text-primary hover:underline">
+                {t("contact.email")}
               </a>
             </Paragraph>
           </div>
@@ -339,7 +264,7 @@ export default async function PrivacyPage({ params }: Props) {
               className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors group"
             >
               <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              Back to Pomobox
+              {t("backToHome")}
             </Link>
           </div>
         </div>

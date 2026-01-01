@@ -225,7 +225,174 @@
   },
   "Privacy": {
     "title": "Privacy Policy",
-    "description": "Pomobox Privacy Policy - How we collect, use, and protect your data"
+    "description": "Pomobox Privacy Policy - How we collect, use, and protect your data",
+    "lastUpdated": "January 1, 2026",
+    "backToHome": "Back to Pomobox",
+    "intro": {
+      "title": "1. Introduction",
+      "content": "Welcome to Pomobox. We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we collect, use, and safeguard your information when you use our service."
+    },
+    "collection": {
+      "title": "2. Information We Collect",
+      "accountInfo": {
+        "title": "2.1 Account Information (Registered Users)",
+        "content": "When you create an account, we collect:",
+        "items": [
+          "Email address",
+          "Encrypted password (hashed, not stored in plain text)",
+          "Account creation date",
+          "Google OAuth information (if you sign in with Google): Provider ID, email address, and profile image"
+        ]
+      },
+      "activityData": {
+        "title": "2.2 User Activity Data (Registered Users)",
+        "content": "When you use Pomobox while logged in, we collect:",
+        "items": [
+          "Focus session records (duration, completion time)",
+          "Daily statistics (date, session count, total focus minutes)",
+          "Attendance check-in records",
+          "Streak statistics (consecutive days)"
+        ]
+      },
+      "localStorage": {
+        "title": "2.3 Local Storage (All Users)",
+        "content": "For users who are not logged in, we store data locally in your browser using localStorage. This data includes:",
+        "items": [
+          "Timer settings and preferences",
+          "Session history",
+          "Daily statistics",
+          "Attendance records"
+        ],
+        "note": "This data never leaves your device and is not accessible to us. You can clear this data at any time through your browser settings."
+      },
+      "automatic": {
+        "title": "2.4 Automatically Collected Information",
+        "content": "When you use Pomobox, we may automatically collect:",
+        "items": [
+          "Device information (browser type, operating system)",
+          "Usage data (pages visited, time spent)",
+          "IP address (anonymized)"
+        ]
+      },
+      "cookies": {
+        "title": "2.5 Cookies and Similar Technologies",
+        "content": "We use cookies and similar tracking technologies for authentication and to improve your experience. Essential cookies are required for the service to function properly."
+      }
+    },
+    "thirdParty": {
+      "title": "3. Third-Party Services",
+      "supabase": {
+        "title": "3.1 Supabase",
+        "content": "We use Supabase as our database and authentication provider. Supabase stores your account information and activity data on secure servers.",
+        "link": "https://supabase.com/privacy",
+        "linkText": "Supabase Privacy Policy"
+      },
+      "vercel": {
+        "title": "3.2 Vercel",
+        "content": "Our website is hosted on Vercel. Vercel may collect anonymous usage data and logs.",
+        "link": "https://vercel.com/legal/privacy-policy",
+        "linkText": "Vercel Privacy Policy"
+      },
+      "adsense": {
+        "title": "3.3 Google AdSense",
+        "content": "We use Google AdSense to display advertisements. Google may use cookies to serve ads based on your prior visits to this or other websites. You can opt out of personalized advertising by visiting",
+        "link": "https://www.google.com/settings/ads",
+        "linkText": "Google Ads Settings"
+      },
+      "resend": {
+        "title": "3.4 Resend",
+        "content": "We use Resend as our email delivery service for sending authentication and notification emails (such as password reset links and account verification).",
+        "link": "https://resend.com/legal/privacy-policy",
+        "linkText": "Resend Privacy Policy"
+      }
+    },
+    "usage": {
+      "title": "4. How We Use Your Information",
+      "content": "We use the collected information to:",
+      "items": [
+        "Provide and maintain our service",
+        "Authenticate your account and keep you signed in",
+        "Sync your focus data across devices (registered users)",
+        "Display your productivity statistics",
+        "Improve user experience",
+        "Display relevant advertisements",
+        "Analyze usage patterns"
+      ]
+    },
+    "storage": {
+      "title": "5. Data Storage and Retention",
+      "registered": {
+        "title": "5.1 Registered Users",
+        "content": "Your account and activity data is stored on Supabase servers. We retain your data for as long as your account is active. If you delete your account, your data will be permanently deleted immediately."
+      },
+      "nonRegistered": {
+        "title": "5.2 Non-Registered Users",
+        "content": "If you use Pomobox without an account, all your data is stored locally in your browser (localStorage). This data is not transmitted to our servers and remains on your device until you clear your browser data."
+      }
+    },
+    "security": {
+      "title": "6. Data Security",
+      "content": "We implement appropriate security measures to protect your data:",
+      "items": [
+        "All data is transmitted over HTTPS (encrypted connection)",
+        "Passwords are hashed using industry-standard algorithms",
+        "Database access is protected by Row Level Security (RLS) policies",
+        "We regularly review and update our security practices"
+      ]
+    },
+    "gdpr": {
+      "title": "7. Your Rights (GDPR)",
+      "content": "If you are in the European Economic Area, you have the right to:",
+      "items": [
+        "Access your personal data",
+        "Rectify inaccurate data",
+        "Request deletion of your data",
+        "Object to data processing",
+        "Data portability",
+        "Withdraw consent at any time"
+      ]
+    },
+    "ccpa": {
+      "title": "8. Your Rights (CCPA)",
+      "content": "If you are a California resident, you have the right to:",
+      "items": [
+        "Know what personal information is collected",
+        "Know whether your personal information is sold or disclosed",
+        "Say no to the sale of personal information (we do not sell your data)",
+        "Request deletion of your personal information",
+        "Not be discriminated against for exercising your privacy rights"
+      ]
+    },
+    "deletion": {
+      "title": "9. How to Delete Your Data",
+      "registered": {
+        "title": "9.1 Registered Users",
+        "content": "You can permanently delete your account and all associated data at any time through the 'Delete Account' option in your My Account page. The deletion is immediate and irreversible."
+      },
+      "nonRegistered": {
+        "title": "9.2 Non-Registered Users",
+        "content": "To delete your local data:",
+        "steps": [
+          "Open your browser settings",
+          "Navigate to Privacy or Site Settings",
+          "Find and clear site data for pomobox.app"
+        ],
+        "note": "Alternatively, you can clear all browsing data or use your browser's developer tools to clear localStorage."
+      }
+    },
+    "children": {
+      "title": "10. Children's Privacy",
+      "content": "Our service is not directed to children under 13. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us."
+    },
+    "changes": {
+      "title": "11. Changes to This Policy",
+      "content": "We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the \"Last updated\" date."
+    },
+    "contact": {
+      "title": "12. Contact Us",
+      "content": "If you have questions about this privacy policy or want to exercise your data rights, please contact us at:",
+      "email": "pomoboxapp@gmail.com"
+    }
   },
   "Account": {
     "mypage": "My Account",

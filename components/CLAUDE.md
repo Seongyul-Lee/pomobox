@@ -37,7 +37,7 @@ Tailwind CSS는 **Mobile First**가 원칙:
 
 - 버튼 최소 크기: **44px × 44px**
 - 버튼 간 여백: 데스크탑보다 넉넉하게
-- 스와이프 지원: 통계 카드 좌우 넘기기
+- Task 패널: 하단 시트(Sheet)로 전환 (xl 미만)
 
 ---
 
@@ -52,13 +52,17 @@ Tailwind CSS는 **Mobile First**가 원칙:
 
 ## 주요 컴포넌트
 
-| 파일 | 역할 |
-|------|------|
-| `pomodoro-timer.tsx` | 타이머 UI, Start/Reset/Skip |
-| `dashboard-left.tsx` | 좌측 통계 대시보드 |
-| `dashboard-right.tsx` | BGM, 캘린더, Check-in |
-| `settings-dialog.tsx` | 설정 다이얼로그 |
-| `ui/` | shadcn/ui 기본 컴포넌트 |
+| 파일 | 역할 | 상태 |
+|------|------|------|
+| `pomodoro-timer.tsx` | 타이머 UI, Start/Reset/Skip | 1차 완료 |
+| `dashboard-right.tsx` | BGM, 캘린더, Check-in | 1차 완료 |
+| `settings-dialog.tsx` | 설정 다이얼로그 | 1차 완료 |
+| `sidebar.tsx` | 좌측 사이드바 (Global Navigation) | 2차 예정 |
+| `task-panel.tsx` | Task 슬라이드 패널 | 2차 예정 |
+| `stats/` | 통계 페이지 차트 컴포넌트들 | 2차 예정 |
+| `ui/` | shadcn/ui 기본 컴포넌트 | - |
+
+**삭제 예정**: `dashboard-left.tsx` → /stats 페이지로 통합 (2차)
 
 ---
 

@@ -187,19 +187,24 @@
   }
 }
 
-/* Light mode card style with shadow */
+/* Light mode card style with shadow - Glassmorphism */
 .glass-card {
-  background: oklch(1 0 0);
+  background: oklch(1 0 0 / 85%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid oklch(0.92 0.008 255);
   box-shadow:
-    0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px -1px rgb(0 0 0 / 0.1);
+    0 8px 32px -4px rgb(0 0 0 / 12%),
+    0 4px 16px -2px rgb(0 0 0 / 8%),
+    inset 0 1px 0 0 rgb(255 255 255 / 80%);
 }
 
 .glass-panel {
-  background: oklch(1 0 0);
+  background: oklch(1 0 0 / 90%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid oklch(0.92 0.008 255);
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  box-shadow: 0 4px 12px 0 rgb(0 0 0 / 0.06);
 }
 
 /* Dark mode solid background */
@@ -236,13 +241,13 @@
 
 /* Glassmorphism card style for midnight mode - Deep Purple Glass */
 .midnight .glass-card {
-  background: oklch(0.14 0.05 280 / 50%);
+  background: oklch(0.14 0.05 280 / 45%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid oklch(0.70 0.18 280 / 15%);
+  border: 1px solid oklch(0.70 0.18 280 / 12%);
   box-shadow:
-    0 8px 32px -4px oklch(0.10 0.05 280 / 60%),
-    0 4px 16px -2px oklch(0.10 0.05 280 / 50%),
+    0 8px 32px -4px oklch(0.05 0.03 280 / 50%),
+    0 4px 16px -2px oklch(0.05 0.03 280 / 40%),
     inset 0 1px 0 0 oklch(0.70 0.18 280 / 10%);
 }
 
@@ -251,7 +256,7 @@
   background: oklch(0.12 0.04 280 / 60%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid oklch(0.70 0.18 280 / 10%);
+  border: 1px solid oklch(0.70 0.18 280 / 8%);
 }
 
 /* Status color bars */
@@ -264,9 +269,21 @@
 .dark .glow-primary {
   box-shadow: 0 0 30px rgb(124 58 237 / 40%);
 }
+.midnight .glow-primary {
+  box-shadow: 0 0 30px oklch(0.55 0.25 280 / 40%);
+}
+.glow-primary {
+  box-shadow: 0 0 20px oklch(0.45 0.18 270 / 25%);
+}
 
 .dark .glow-success {
   box-shadow: 0 0 30px rgb(34 197 94 / 40%);
+}
+.midnight .glow-success {
+  box-shadow: 0 0 30px oklch(0.65 0.20 145 / 40%);
+}
+.glow-success {
+  box-shadow: 0 0 20px oklch(0.65 0.20 145 / 25%);
 }
 
 /* Calendar day glow effects - "living data" feel */
@@ -274,15 +291,39 @@
   box-shadow: 0 0 12px rgb(34 197 94 / 50%);
   background: linear-gradient(135deg, rgb(34 197 94 / 50%) 0%, rgb(34 197 94 / 30%) 100%);
 }
+.midnight .calendar-day-active {
+  box-shadow: 0 0 12px oklch(0.65 0.20 145 / 50%);
+  background: linear-gradient(135deg, oklch(0.65 0.20 145 / 50%) 0%, oklch(0.65 0.20 145 / 30%) 100%);
+}
+.calendar-day-active {
+  box-shadow: 0 0 8px oklch(0.65 0.20 145 / 35%);
+  background: linear-gradient(135deg, oklch(0.65 0.20 145 / 40%) 0%, oklch(0.65 0.20 145 / 20%) 100%);
+}
 
 .dark .calendar-day-today {
   box-shadow: 0 0 16px rgb(167 139 250 / 60%);
   background: linear-gradient(135deg, rgb(167 139 250 / 40%) 0%, rgb(124 58 237 / 25%) 100%);
 }
+.midnight .calendar-day-today {
+  box-shadow: 0 0 16px oklch(0.70 0.18 280 / 60%);
+  background: linear-gradient(135deg, oklch(0.70 0.18 280 / 40%) 0%, oklch(0.55 0.25 280 / 25%) 100%);
+}
+.calendar-day-today {
+  box-shadow: 0 0 12px oklch(0.45 0.18 270 / 45%);
+  background: linear-gradient(135deg, oklch(0.45 0.18 270 / 30%) 0%, oklch(0.45 0.18 270 / 15%) 100%);
+}
 
 .dark .calendar-day-checked {
   box-shadow: 0 0 12px rgb(59 130 246 / 50%);
   background: linear-gradient(135deg, rgb(59 130 246 / 50%) 0%, rgb(59 130 246 / 30%) 100%);
+}
+.midnight .calendar-day-checked {
+  box-shadow: 0 0 12px oklch(0.70 0.15 220 / 50%);
+  background: linear-gradient(135deg, oklch(0.70 0.15 220 / 50%) 0%, oklch(0.70 0.15 220 / 30%) 100%);
+}
+.calendar-day-checked {
+  box-shadow: 0 0 8px oklch(0.55 0.20 250 / 40%);
+  background: linear-gradient(135deg, oklch(0.55 0.20 250 / 40%) 0%, oklch(0.55 0.20 250 / 20%) 100%);
 }
 
 /* Chart bar glow effect */
@@ -304,10 +345,13 @@
 }
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px oklch(0.45 0.18 270 / 20%);
 }
 .dark .hover-lift:hover {
   box-shadow: 0 8px 25px rgba(124, 58, 237, 0.15);
+}
+.midnight .hover-lift:hover {
+  box-shadow: 0 8px 25px oklch(0.55 0.25 280 / 15%);
 }
 
 /* Card scale effect - gentle scale up */
@@ -323,11 +367,14 @@
   transition: all 0.2s ease;
 }
 .hover-stat:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: oklch(0.45 0.18 270 / 8%);
   transform: translateY(-1px);
 }
 .dark .hover-stat:hover {
   background: rgba(255, 255, 255, 0.05);
+}
+.midnight .hover-stat:hover {
+  background: oklch(0.70 0.18 280 / 8%);
 }
 
 /* Button glow effect - enhanced on hover */
@@ -352,6 +399,19 @@
 }
 
 /* Glass card hover - enhanced crystal glass effect */
+.glass-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-card:hover {
+  background: oklch(1 0 0 / 95%);
+  border-color: oklch(0.45 0.18 270 / 25%);
+  box-shadow:
+    0 16px 56px -8px rgb(0 0 0 / 18%),
+    0 8px 28px -4px rgb(0 0 0 / 12%),
+    0 0 0 1px oklch(0.45 0.18 270 / 10%),
+    inset 0 1px 0 0 rgb(255 255 255 / 90%);
+  transform: translateY(-2px);
+}
 .dark .glass-card {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -363,6 +423,19 @@
     0 8px 28px -4px rgb(0 0 0 / 55%),
     0 0 0 1px rgb(255 255 255 / 8%),
     inset 0 1px 0 0 rgb(255 255 255 / 15%);
+  transform: translateY(-2px);
+}
+.midnight .glass-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.midnight .glass-card:hover {
+  background: oklch(0.18 0.06 280 / 55%);
+  border-color: oklch(0.70 0.18 280 / 25%);
+  box-shadow:
+    0 16px 56px -8px oklch(0.05 0.03 280 / 60%),
+    0 8px 28px -4px oklch(0.05 0.03 280 / 50%),
+    0 0 0 1px oklch(0.70 0.18 280 / 8%),
+    inset 0 1px 0 0 oklch(0.70 0.18 280 / 15%);
   transform: translateY(-2px);
 }
 
@@ -407,17 +480,16 @@
 }
 .hover-timer-display:hover {
   transform: scale(1.08);
-  color: #a78bfa;
-}
-.dark .hover-timer-display:hover {
-  text-shadow: 0 0 25px rgba(167, 139, 250, 0.6);
-}
-.hover-timer-display:hover {
   color: #7c3aed;
+  text-shadow: 0 0 15px oklch(0.45 0.18 270 / 30%);
 }
 .dark .hover-timer-display:hover {
   color: #c4b5fd;
   text-shadow: 0 0 25px rgba(167, 139, 250, 0.6);
+}
+.midnight .hover-timer-display:hover {
+  color: oklch(0.80 0.15 280);
+  text-shadow: 0 0 25px oklch(0.70 0.18 280 / 60%);
 }
 
 /* Progress ring - glow effect */
@@ -435,9 +507,13 @@
 }
 .hover-phase-label:hover {
   transform: translateY(-1px);
+  text-shadow: 0 0 10px oklch(0.45 0.18 270 / 25%);
 }
 .dark .hover-phase-label:hover {
   text-shadow: 0 0 15px rgba(167, 139, 250, 0.4);
+}
+.midnight .hover-phase-label:hover {
+  text-shadow: 0 0 15px oklch(0.70 0.18 280 / 40%);
 }
 
 /* Pomodoro Timer title - scale with outline and shadow */
@@ -447,11 +523,16 @@
 }
 .hover-title-outline:hover {
   transform: scale(1.05);
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+  text-shadow: 0 0 15px oklch(0.45 0.18 270 / 30%), 2px 2px 8px rgba(0, 0, 0, 0.12);
+  -webkit-text-stroke: 0.3px oklch(0.45 0.18 270 / 20%);
 }
 .dark .hover-title-outline:hover {
   text-shadow: 0 0 20px rgba(167, 139, 250, 0.5), 2px 2px 10px rgba(0, 0, 0, 0.3);
   -webkit-text-stroke: 0.5px rgba(167, 139, 250, 0.3);
+}
+.midnight .hover-title-outline:hover {
+  text-shadow: 0 0 20px oklch(0.70 0.18 280 / 50%), 2px 2px 10px oklch(0.10 0.05 280 / 30%);
+  -webkit-text-stroke: 0.5px oklch(0.70 0.18 280 / 30%);
 }
 
 /* Daily Goal individual text hover */
@@ -466,6 +547,9 @@
 .dark .hover-goal-label:hover {
   color: #a78bfa;
 }
+.midnight .hover-goal-label:hover {
+  color: oklch(0.70 0.18 280);
+}
 
 .hover-goal-value {
   transition: all 0.2s ease;
@@ -474,9 +558,13 @@
 .hover-goal-value:hover {
   transform: scale(1.05);
   font-weight: 600;
+  color: #7c3aed;
 }
 .dark .hover-goal-value:hover {
   color: #c4b5fd;
+}
+.midnight .hover-goal-value:hover {
+  color: oklch(0.80 0.15 280);
 }
 
 /* Progress bar - purple outline only */
@@ -495,9 +583,13 @@
 }
 .hover-today-stats:hover {
   transform: scale(1.02);
+  color: #7c3aed;
 }
 .dark .hover-today-stats:hover {
   color: #a78bfa;
+}
+.midnight .hover-today-stats:hover {
+  color: oklch(0.70 0.18 280);
 }
 
 /* Hint text fade in */
@@ -506,9 +598,13 @@
 }
 .hover-hint-text:hover {
   opacity: 1 !important;
+  color: #7c3aed;
 }
 .dark .hover-hint-text:hover {
   color: #a78bfa;
+}
+.midnight .hover-hint-text:hover {
+  color: oklch(0.70 0.18 280);
 }
 
 /* ===== Settings Dialog Hover Effects ===== */
@@ -569,10 +665,15 @@
 .hover-dashboard-title:hover {
   color: #7c3aed;
   transform: translateX(2px);
+  text-shadow: 0 0 8px oklch(0.45 0.18 270 / 20%);
 }
 .dark .hover-dashboard-title:hover {
   color: #a78bfa;
   text-shadow: 0 0 12px rgba(167, 139, 250, 0.3);
+}
+.midnight .hover-dashboard-title:hover {
+  color: oklch(0.70 0.18 280);
+  text-shadow: 0 0 12px oklch(0.70 0.18 280 / 30%);
 }
 
 /* Dashboard main icon hover */
@@ -606,10 +707,15 @@
 }
 .hover-song-title:hover {
   color: #7c3aed;
+  text-shadow: 0 0 8px oklch(0.45 0.18 270 / 20%);
 }
 .dark .hover-song-title:hover {
   color: #a78bfa;
   text-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+}
+.midnight .hover-song-title:hover {
+  color: oklch(0.70 0.18 280);
+  text-shadow: 0 0 10px oklch(0.70 0.18 280 / 30%);
 }
 
 /* Music progress bar hover - color change only */
@@ -752,6 +858,19 @@
 
 .dark .settings-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgb(167 139 250 / 40%);
+}
+
+/* Midnight mode scrollbar */
+.midnight .settings-scrollbar {
+  scrollbar-color: oklch(0.70 0.18 280 / 20%) transparent;
+}
+
+.midnight .settings-scrollbar::-webkit-scrollbar-thumb {
+  background: oklch(0.70 0.18 280 / 20%);
+}
+
+.midnight .settings-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.70 0.18 280 / 40%);
 }
 
 /* Reduced motion for accessibility */

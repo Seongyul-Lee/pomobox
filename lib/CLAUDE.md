@@ -63,10 +63,12 @@ idle → running → paused → running → completed
 | This Week vs Last Week | 전주 대비 비교 |
 | Rolling 4-Week | 최근 4주 데이터 (2차 기능) |
 
-### 성능 고려 (3차 기능)
+### 성능 최적화 (3차 기능)
 
-- 통계 데이터 증가 시 집계 테이블 별도 관리
-- 캐싱 전략 적용
+- **시간대별 집중도**: Supabase RPC 함수 (`get_focus_distribution_by_hour`) 사용
+  - DB에서 시간대별 집계 완료 후 결과만 반환
+  - 클라이언트에서 Raw 데이터 처리 방지
+- React Query 캐싱: staleTime 10분 (변동 적음)
 
 ---
 

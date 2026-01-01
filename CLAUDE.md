@@ -22,7 +22,9 @@
 - `lib/state-machine.ts` - 타이머 상태 머신
 - `lib/storage/` - IndexedDB 저장소
 - `components/pomodoro-timer.tsx` - 타이머 UI
-- `components/dashboard-*.tsx` - 대시보드 UI
+- `components/sidebar.tsx` - 좌측 사이드바 (2차)
+- `components/task-panel.tsx` - Task 슬라이드 패널 (2차)
+- `components/dashboard-right.tsx` - BGM, 캘린더, Check-in
 
 ---
 
@@ -31,8 +33,8 @@
 | 단계 | 주요 기능 |
 |------|----------|
 | 1차 | 타이머 core, 좌/우 대시보드, 로그인, 테마, 모바일 최적화 |
-| 2차 | 사이드바, Task 기능, 통계 페이지, Rolling 4-Week |
-| 3차 | 고급 통계 (시간대별, 카테고리별, 스트릭) |
+| 2차 | 사이드바, Task 패널, Dynamic Layout, 통계 페이지 (/stats), Rolling 4-Week |
+| 3차 | 로그인 유도 팝업, 시간대별 집중도 (RPC 함수 기반) |
 
 **브랜치 전략**: 페이지별 branch 분리 (stats, history 등)
 

@@ -21,7 +21,12 @@
     "dailyGoal": "日目標",
     "min": "分",
     "goalReached": "目標達成！お疲れ様でした！",
-    "goalHint": "セッション完了時に追加"
+    "goalHint": "セッション完了時に追加",
+    "timerRemaining": "残り{minutes}分{seconds}秒",
+    "progressLabel": "{phase} 進捗: {progress}%",
+    "resetTimer": "タイマーをリセット",
+    "skipToBreakLabel": "現在の集中セッションをスキップして休憩を開始",
+    "backToFocusLabel": "現在の休憩をスキップして集中セッションに戻る"
   },
   "Settings": {
     "title": "設定",

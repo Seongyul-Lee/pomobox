@@ -356,6 +356,10 @@ export function PomodoroTimer() {
       }
 
       if (e.code === 'Space') {
+        // 버튼에 포커스된 경우 기본 동작(버튼 클릭) 허용
+        if (target.tagName === 'BUTTON' || target.closest('button')) {
+          return
+        }
         e.preventDefault()
         if (status === 'running') {
           handlePause()
@@ -500,8 +504,15 @@ export function PomodoroTimer() {
         </div>
       </div>
 
-      <div className="relative flex items-center justify-center group">
-        <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90 hover-ring" viewBox="0 0 300 300">
+      <div
+        className="relative flex items-center justify-center group"
+        role="progressbar"
+        aria-valuenow={Math.round(progress)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={t('progressLabel', { phase: getTypeLabel(), progress: Math.round(progress) })}
+      >
+        <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90 hover-ring" viewBox="0 0 300 300" aria-hidden="true">
           <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-slate-300 dark:text-[oklch(100%_0_0/0.1)] transition-all duration-300" />
           <circle
             cx="150"
@@ -525,7 +536,13 @@ export function PomodoroTimer() {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-6xl font-mono font-bold tracking-tight tabular-nums text-foreground hover-timer-display">
+          <span
+            className="text-6xl font-mono font-bold tracking-tight tabular-nums text-foreground hover-timer-display"
+            role="timer"
+            aria-live="off"
+            aria-atomic="true"
+            aria-label={t('timerRemaining', { minutes, seconds })}
+          >
             {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
           </span>
         </div>
@@ -549,12 +566,18 @@ export function PomodoroTimer() {
               {t('start')}
             </Button>
           )}
-          <Button size="lg" variant="outline" onClick={handleReset} aria-label="Reset timer" className="hover:scale-105 hover:bg-muted/50 transition-all duration-200">
+          <Button size="lg" variant="outline" onClick={handleReset} aria-label={t('resetTimer')} className="hover:scale-105 hover:bg-muted/50 transition-all duration-200">
             <RotateCcw className="h-5 w-5" />
           </Button>
         </div>
 
-        <Button size="sm" variant="ghost" onClick={handleSkip} className="group gap-2 text-muted-foreground hover:text-foreground/60 border border-muted-foreground/30 rounded-xl hover:bg-muted/50 hover:scale-105 transition-all duration-200">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={handleSkip}
+          aria-label={phase === 'focus' ? t('skipToBreakLabel') : t('backToFocusLabel')}
+          className="group gap-2 text-muted-foreground hover:text-foreground/60 border border-muted-foreground/30 rounded-xl hover:bg-muted/50 hover:scale-105 transition-all duration-200"
+        >
           <SkipForward className="h-4 w-4 drop-shadow-md transition-transform duration-200 group-hover:translate-x-0.5" />
           {phase === 'focus' ? t('skipToBreak') : t('backToFocus')}
         </Button>

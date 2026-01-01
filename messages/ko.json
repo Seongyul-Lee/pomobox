@@ -21,7 +21,12 @@
     "dailyGoal": "일일 목표",
     "min": "분",
     "goalReached": "목표 달성! 수고하셨습니다!",
-    "goalHint": "세션 완료 시 추가"
+    "goalHint": "세션 완료 시 추가",
+    "timerRemaining": "{minutes}분 {seconds}초 남음",
+    "progressLabel": "{phase} 진행률: {progress}%",
+    "resetTimer": "타이머 초기화",
+    "skipToBreakLabel": "현재 집중 세션을 건너뛰고 휴식 시작",
+    "backToFocusLabel": "현재 휴식을 건너뛰고 집중 세션으로 돌아가기"
   },
   "Settings": {
     "title": "설정",

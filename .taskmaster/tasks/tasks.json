@@ -436,13 +436,37 @@
         "status": "done",
         "subtasks": [],
         "updatedAt": "2026-01-01T17:00:00.000Z"
+      },
+      {
+        "id": "94",
+        "title": "Privacy Policy i18n 전환 및 타이머 UI 개선",
+        "description": "Privacy Policy 페이지 다국어 시스템 전환, 최신 기능 반영, 타이머 텍스트 디자인 통일",
+        "details": "1. Privacy Policy i18n 전환:\n   - 하드코딩된 영문 텍스트를 messages/*.json으로 이동\n   - 4개 언어 (en, ko, ja, zh-CN) 번역 완료\n   - 섹션별 객체 구조: intro, collection, thirdParty, usage, storage, security, gdpr, ccpa, deletion, children, changes, contact\n   - t.raw() 사용하여 배열 데이터 렌더링\n\n2. Privacy Policy 내용 업데이트 (3가지):\n   - Last updated: 2026년 1월 1일\n   - 2.1 Account Info: Google OAuth (Provider ID, Email, Profile Image) 추가\n   - 3.4 Resend: 이메일 발송 서비스 추가\n   - 9.1 Registered Users: 마이페이지 > 계정 삭제로 즉시 삭제 (GDPR 준수)\n\n3. app/[locale]/privacy/page.tsx 리팩토링:\n   - getTranslations('Privacy')로 동적 렌더링\n   - 기존 UI 컴포넌트 (SectionTitle, SubSection, List 등) 유지\n\n4. 타이머 텍스트 디자인 통일:\n   - 다크 모드 그라데이션 제거 (dark:bg-gradient-to-b 등)\n   - 모든 테마에서 text-foreground 단색 적용",
+        "testStrategy": "1. /en/privacy, /ko/privacy, /ja/privacy, /zh-CN/privacy 정상 렌더링 확인\n2. 메타데이터 언어별 적용 확인\n3. 타이머 텍스트 다크/라이트 모드에서 동일한 단색 표시 확인\n4. pnpm lint && pnpm build 성공",
+        "priority": "medium",
+        "dependencies": ["87", "93"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T18:00:00.000Z"
+      },
+      {
+        "id": "95",
+        "title": "3개 테마 Glassmorphism 효과 통일 (그림자/호버)",
+        "description": "다크 테마의 그림자 및 호버 효과를 라이트/미드나이트 테마에 동일하게 적용",
+        "details": "모든 테마에 일관된 Glassmorphism 효과 적용:\n\n1. Glow 효과 추가:\n   - .glow-primary, .glow-success → 라이트/미드나이트 테마 버전 추가\n   - oklch 색상 체계 사용\n\n2. Calendar Day 효과:\n   - .calendar-day-active, .calendar-day-today, .calendar-day-checked\n   - 3개 테마 모두 그라데이션 + 그림자 적용\n\n3. Glass Card 기본 스타일:\n   - 라이트: background oklch(1 0 0 / 85%) + backdrop-filter blur(12px) + 3단 그림자\n   - 미드나이트: background oklch(0.14 0.05 280 / 45%) + 동일 구조\n   - 다크: 기존 유지 (rgb 기반)\n\n4. Glass Card 호버 효과:\n   - 모든 테마: background 밝아짐 + 테두리 색상 변화 + 4단 그림자 + translateY(-2px)\n   - 라이트: 보라색 계열 (oklch 0.45 0.18 270)\n   - 미드나이트: 딥 퍼플 계열 (oklch 0.70 0.18 280)\n\n5. 호버 효과 확장:\n   - hover-lift, hover-stat, hover-timer-display, hover-phase-label\n   - hover-title-outline, hover-goal-*, hover-today-stats, hover-hint-text\n   - hover-dashboard-title, hover-song-title\n   - 각 효과에 .midnight 및 라이트 테마 버전 추가\n\n6. 스크롤바 스타일:\n   - .midnight .settings-scrollbar 추가",
+        "testStrategy": "1. 라이트 테마에서 카드 호버 시 그림자 강화 + 위로 뜨는 효과 확인\n2. 미드나이트 테마에서 동일한 효과 확인\n3. 캘린더 day에 그라데이션/그림자 적용 확인\n4. 타이머 텍스트 호버 시 text-shadow 적용 확인\n5. pnpm lint && pnpm build 성공",
+        "priority": "medium",
+        "dependencies": ["94"],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-01T19:00:00.000Z"
       }
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-01T17:00:00.000Z",
-      "taskCount": 30,
-      "completedCount": 30,
+      "lastModified": "2026-01-01T19:00:00.000Z",
+      "taskCount": 32,
+      "completedCount": 32,
       "tags": [
         "master"
       ]

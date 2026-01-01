@@ -123,7 +123,7 @@ export default async function Home({ params }: Props) {
         <section className="mb-10 siderail-margin">
           <div className="px-4 xl:px-8">
             <div className="max-w-5xl mx-auto text-center">
-              <h2 className="text-lg xl:text-xl font-bold text-white mb-4">
+              <h2 className="text-lg xl:text-xl font-bold text-foreground mb-4">
                 {t("seoSectionTitle")}
               </h2>
               <p className="text-sm xl:text-base text-gray-400 mb-5 leading-relaxed">

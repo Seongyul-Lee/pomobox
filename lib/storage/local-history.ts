@@ -90,8 +90,13 @@ function saveLocalHistory(history: DayRecord[]): void {
 
 /**
  * 오늘 기록 추가/업데이트 (async)
+ * @param minutes 추가할 분
+ * @param incrementSession true면 세션 수도 1 증가 (세션 완료 시에만 true)
  */
-export async function recordToHistoryAsync(minutes: number): Promise<void> {
+export async function recordToHistoryAsync(
+  minutes: number,
+  incrementSession: boolean = false
+): Promise<void> {
   const today = getLocalDate()
 
   try {
@@ -101,13 +106,13 @@ export async function recordToHistoryAsync(minutes: number): Promise<void> {
       await saveHistoryRecord({
         date: today,
         totalMinutes: existing.totalMinutes + minutes,
-        totalSessions: existing.totalSessions + 1,
+        totalSessions: existing.totalSessions + (incrementSession ? 1 : 0),
       })
     } else {
       await saveHistoryRecord({
         date: today,
         totalMinutes: minutes,
-        totalSessions: 1,
+        totalSessions: incrementSession ? 1 : 0,
       })
     }
 
@@ -116,12 +121,14 @@ export async function recordToHistoryAsync(minutes: number): Promise<void> {
     const existingIndex = history.findIndex((r) => r.date === today)
     if (existingIndex >= 0) {
       history[existingIndex].totalMinutes += minutes
-      history[existingIndex].totalSessions += 1
+      if (incrementSession) {
+        history[existingIndex].totalSessions += 1
+      }
     } else {
       history.push({
         date: today,
         totalMinutes: minutes,
-        totalSessions: 1,
+        totalSessions: incrementSession ? 1 : 0,
       })
     }
     saveLocalHistory(history)
@@ -132,8 +139,13 @@ export async function recordToHistoryAsync(minutes: number): Promise<void> {
 
 /**
  * 동기 버전 (하위 호환성)
+ * @param minutes 추가할 분
+ * @param incrementSession true면 세션 수도 1 증가 (세션 완료 시에만 true)
  */
-export function recordToHistory(minutes: number): void {
+export function recordToHistory(
+  minutes: number,
+  incrementSession: boolean = false
+): void {
   const today = getLocalDate()
   const history = getLocalHistory()
 
@@ -141,11 +153,35 @@ export function recordToHistory(minutes: number): void {
 
   if (existingIndex >= 0) {
     history[existingIndex].totalMinutes += minutes
-    history[existingIndex].totalSessions += 1
+    if (incrementSession) {
+      history[existingIndex].totalSessions += 1
+    }
   } else {
     history.push({
       date: today,
       totalMinutes: minutes,
+      totalSessions: incrementSession ? 1 : 0,
+    })
+  }
+
+  saveLocalHistory(history)
+}
+
+/**
+ * 히스토리에 세션 완료만 기록 (분 추가 없이)
+ */
+export function incrementHistorySession(): void {
+  const today = getLocalDate()
+  const history = getLocalHistory()
+
+  const existingIndex = history.findIndex((r) => r.date === today)
+
+  if (existingIndex >= 0) {
+    history[existingIndex].totalSessions += 1
+  } else {
+    history.push({
+      date: today,
+      totalMinutes: 0,
       totalSessions: 1,
     })
   }

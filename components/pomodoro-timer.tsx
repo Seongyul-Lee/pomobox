@@ -10,6 +10,7 @@ import { playSound } from "@/lib/sounds"
 import { useUser } from "@/hooks/use-user"
 import { recordSessionComplete, incrementDailyMinutes } from "@/lib/supabase/stats"
 import { getLocalTodayStats, incrementLocalMinutes, saveLocalTodayStats } from "@/lib/storage/local-stats"
+import { incrementHistorySession } from "@/lib/storage/local-history"
 import { GoalProgress } from "./goal-progress"
 import { useTimerStore, useSettingsStore, type TimerSettings } from "@/lib/store"
 
@@ -219,12 +220,15 @@ export function PomodoroTimer() {
       if (remainingMinutes > 0) {
         incrementLocalMinutes(remainingMinutes)
       }
-      // 세션 카운트 증가
+      // 세션 카운트 증가 (daily_stats)
       const localStats = getLocalTodayStats()
       saveLocalTodayStats({
         ...localStats,
         totalSessions: localStats.totalSessions + 1,
       })
+
+      // 히스토리에 세션 완료 기록
+      incrementHistorySession()
 
       // localStorage에서 최신 값 읽어와서 state 동기화
       const updatedStats = getLocalTodayStats()

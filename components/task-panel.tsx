@@ -60,7 +60,7 @@ function TaskItem({
   return (
     <div
       className={cn(
-        "group flex items-center gap-3 p-3 rounded-lg",
+        "group flex items-start gap-3 p-3 rounded-lg",
         "bg-background/50 hover:bg-background/80",
         "border border-border/30 hover:border-border/50",
         "transition-all duration-200"
@@ -73,7 +73,7 @@ function TaskItem({
         aria-checked={task.isCompleted}
         onClick={() => onToggle(task.id)}
         className={cn(
-          "flex-shrink-0 w-5 h-5 rounded-md border-2",
+          "flex-shrink-0 w-5 h-5 mt-0.5 rounded-md border-2",
           "flex items-center justify-center",
           "transition-all duration-200",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
@@ -89,7 +89,7 @@ function TaskItem({
       {/* Title */}
       <span
         className={cn(
-          "flex-1 text-sm truncate",
+          "flex-1 text-sm whitespace-normal break-all text-left",
           task.isCompleted && "text-muted-foreground"
         )}
       >
@@ -208,10 +208,23 @@ function TaskListContent({
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={t("addPlaceholder")}
-            className="pl-9 pr-4"
-            maxLength={200}
+            className="pl-9 pr-16"
+            maxLength={100}
             aria-label={t("addPlaceholder")}
           />
+          {/* Character Counter */}
+          <span
+            className={cn(
+              "absolute right-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none",
+              inputValue.length >= 90
+                ? "text-red-500"
+                : "text-muted-foreground/60"
+            )}
+            aria-live="polite"
+            aria-label={`${inputValue.length} of 100 characters`}
+          >
+            {inputValue.length}/100
+          </span>
         </div>
       </div>
 

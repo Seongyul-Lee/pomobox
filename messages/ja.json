@@ -436,7 +436,8 @@
     "incorrectPassword": "現在のパスワードが正しくありません",
     "enterPasswordToDelete": "パスワードを入力して確認",
     "loggedInViaGoogle": "Googleでログイン",
-    "backToMypage": "マイページに戻る"
+    "backToMypage": "マイページに戻る",
+    "serverConfigurationError": "サーバー設定エラーです。しばらくしてからもう一度お試しください。"
   },
   "Guide": {
     "whatIsPomodoro": "ポモドーロとは？",

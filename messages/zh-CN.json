@@ -436,7 +436,8 @@
     "incorrectPassword": "当前密码不正确",
     "enterPasswordToDelete": "输入密码以确认",
     "loggedInViaGoogle": "通过Google登录",
-    "backToMypage": "返回我的账户"
+    "backToMypage": "返回我的账户",
+    "serverConfigurationError": "服务器配置错误，请稍后重试。"
   },
   "Guide": {
     "whatIsPomodoro": "什么是番茄钟？",

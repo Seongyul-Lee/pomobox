@@ -6,6 +6,30 @@ All notable changes to this project will be documented in this file.
 
 ### User Requests
 
+#### 2026-01-02: Delete Account 서버 에러 수정
+
+**문제:**
+- Google 로그인 사용자가 My Account → Delete Account 클릭 시 서버 에러 발생
+- 원인: `SUPABASE_SERVICE_ROLE_KEY` 환경변수 누락
+
+**변경 파일:**
+- `lib/supabase/admin.ts`
+- `app/actions/account.ts`
+- `messages/en.json`, `ko.json`, `ja.json`, `zh-CN.json`
+
+**수정 내용:**
+
+| 항목 | 설명 |
+|------|------|
+| Lazy initialization | Admin 클라이언트를 모듈 로드 시점이 아닌 실제 사용 시점에 초기화 |
+| 에러 핸들링 | Admin API 호출 실패 시 친화적 에러 메시지 반환 |
+| 번역 추가 | `serverConfigurationError` 메시지 4개 언어 추가 |
+
+**환경변수 설정 필요:**
+- Vercel Settings → Environment Variables에 `SUPABASE_SERVICE_ROLE_KEY` 추가 필수
+
+---
+
 #### 2026-01-02: 모바일 반응형 UI 최적화
 
 **변경 파일:**

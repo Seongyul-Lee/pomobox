@@ -436,7 +436,8 @@
     "incorrectPassword": "Current password is incorrect",
     "enterPasswordToDelete": "Enter your password to confirm",
     "loggedInViaGoogle": "Logged in via Google",
-    "backToMypage": "Back to My Account"
+    "backToMypage": "Back to My Account",
+    "serverConfigurationError": "Server configuration error. Please try again later."
   },
   "Guide": {
     "whatIsPomodoro": "What is Pomodoro?",

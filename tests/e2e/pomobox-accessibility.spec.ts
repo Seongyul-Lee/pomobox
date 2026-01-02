@@ -4,7 +4,7 @@ test.describe('Settings Dialog Accessibility', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     // Wait for the timer to be visible
-    await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
   });
 
   test('should open Settings dialog with Enter key', async ({ page }) => {
@@ -94,7 +94,7 @@ test.describe('Settings Dialog Accessibility', () => {
 
   test('should not respond to global shortcuts when dialog is open', async ({ page }) => {
     // Get initial timer display - use specific class selector to avoid matching title
-    const timerDisplay = page.locator('span.text-6xl.font-mono');
+    const timerDisplay = page.locator('.hover-timer-display');
     const initialTime = await timerDisplay.textContent();
 
     // Open Settings dialog
@@ -118,6 +118,6 @@ test.describe('Settings Dialog Accessibility', () => {
     expect(currentTime).toBe(initialTime);
 
     // Verify Start button is still visible (timer didn't start)
-    await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
   });
 });

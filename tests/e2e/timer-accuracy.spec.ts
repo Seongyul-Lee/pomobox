@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test.describe('Timer Accuracy', () => {
   // Timer display locator - targets the main timer span
   const getTimerDisplay = (page: import('@playwright/test').Page) =>
-    page.locator('span.text-6xl.font-mono')
+    page.locator('.hover-timer-display')
 
   test('should complete 10-second timer accurately with clock manipulation', async ({ page }) => {
     // Install mock clock before navigation
@@ -16,7 +16,7 @@ test.describe('Timer Accuracy', () => {
     await expect(getTimerDisplay(page)).toHaveText('00:10')
 
     // Start the timer
-    await page.getByRole('button', { name: /start/i }).click()
+    await page.getByRole('button', { name: 'Start', exact: true }).click()
 
     // Verify timer is running
     await expect(page.getByRole('button', { name: /pause/i })).toBeVisible()
@@ -39,7 +39,7 @@ test.describe('Timer Accuracy', () => {
     await page.goto('/?testDuration=10')
 
     // Start timer
-    await page.getByRole('button', { name: /start/i }).click()
+    await page.getByRole('button', { name: 'Start', exact: true }).click()
 
     // Fast forward 3 seconds
     await page.clock.fastForward('00:03')
@@ -75,7 +75,7 @@ test.describe('Timer Accuracy', () => {
     await expect(page.locator('span.text-foreground').filter({ hasText: /Today: 0 sessions/ })).toBeVisible()
 
     // Start and complete timer
-    await page.getByRole('button', { name: /start/i }).click()
+    await page.getByRole('button', { name: 'Start', exact: true }).click()
     await page.clock.fastForward('00:05')
 
     // Wait for transition and check session count
@@ -91,7 +91,7 @@ test.describe('Timer Accuracy', () => {
     await expect(page).toHaveTitle(/00:10.*Pomobox/i)
 
     // Start timer
-    await page.getByRole('button', { name: /start/i }).click()
+    await page.getByRole('button', { name: 'Start', exact: true }).click()
 
     // Fast forward 3 seconds
     await page.clock.fastForward('00:03')

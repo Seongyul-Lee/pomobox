@@ -9,7 +9,7 @@ test.describe('Statistics Dashboard (Authenticated)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     // 페이지 로드 대기
-    await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
   });
 
   test.describe('Dashboard Left - Statistics Cards', () => {
@@ -106,7 +106,7 @@ test.describe('Statistics Dashboard (Authenticated)', () => {
       await page.setViewportSize({ width: 375, height: 667 });
 
       // 타이머가 보여야 함
-      await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
 
       // 모바일에서 대시보드가 타이머 아래에 스택으로 배치됨
       // 스크롤해서 대시보드 영역 확인

@@ -78,7 +78,7 @@ test.describe('Authentication Pages', () => {
       await backLink.click();
 
       // 메인 페이지로 이동 확인
-      await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
     });
 
     test('should disable inputs and show loading state during submission', async ({ page }) => {
@@ -136,7 +136,7 @@ test.describe('Authentication Pages', () => {
       await expect(page).toHaveURL(/\/auth\/login/);
     });
 
-    test('should validate password minimum length', async ({ page }) => {
+    test('should validate password minimum length', async ({ page, browserName }) => {
       const emailInput = page.getByPlaceholder(/email/i);
       const passwordInput = page.getByPlaceholder(/password/i);
       const signupButton = page.getByRole('button', { name: /sign\s*up|회원가입/i });
@@ -145,8 +145,13 @@ test.describe('Authentication Pages', () => {
       await passwordInput.fill('short'); // 8자 미만
       await signupButton.click();
 
-      // HTML5 minlength validation
-      await expect(passwordInput).toBeFocused();
+      // HTML5 minlength validation - webkit handles focus differently
+      if (browserName !== 'webkit') {
+        await expect(passwordInput).toBeFocused();
+      }
+
+      // Verify form was not submitted (still on signup page)
+      await expect(page).toHaveURL(/\/auth\/signup/);
     });
   });
 
@@ -166,7 +171,7 @@ test.describe('Authentication Pages', () => {
 
       // 타이머로 돌아가기
       await page.getByRole('link', { name: /back|돌아가기|timer/i }).click();
-      await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
     });
   });
 });

@@ -58,6 +58,14 @@ export function MainLayout({
           </div>
         </main>
 
+        {/* Vertical Divider: Timer ↔ Right Widget */}
+        {rightWidget && (
+          <div
+            aria-hidden="true"
+            className="hidden xl:block w-[1px] self-stretch mx-6 bg-gradient-to-b from-transparent via-black/10 dark:via-white/10 to-transparent"
+          />
+        )}
+
         {/* Right: Widget Area (BGM + Calendar) */}
         {rightWidget && (
           <aside

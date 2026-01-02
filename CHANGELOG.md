@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.1] - 2026-01-03
+
+UI/UX 디테일 개선
+
+### UI/UX 개선
+
+#### 레이아웃 구분선
+- 메인 타이머와 우측 대시보드 사이에 반응형 그라데이션 구분선 추가
+- Light/Dark 모드 대응: `via-black/10` / `via-white/10`
+- xl(1280px+) 이상에서만 표시
+
+#### Settings 버튼 중복 제거
+- md+(768px+) 화면에서 타이머 영역 Settings 버튼 숨김
+- 사이드바 Settings 버튼만 사용하도록 통합
+
+---
+
 ## [2.1.0] - 2026-01-03
 
 애드센스 승인을 위한 필수 페이지 추가

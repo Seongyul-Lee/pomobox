@@ -476,7 +476,7 @@ export function PomodoroTimer() {
 
   return (
     <div className="relative flex flex-col items-center gap-6 sm:gap-8">
-      <div className="absolute top-0 right-0 sm:top-4 sm:right-4">
+      <div className="md:hidden absolute top-0 right-0 sm:top-4 sm:right-4">
         <SettingsDialog
           settings={currentSettings}
           isRunning={status === 'running'}

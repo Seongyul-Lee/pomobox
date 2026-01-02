@@ -97,9 +97,10 @@ export function MainLayout({
         </main>
 
         {/* Mobile: Additional Content (BGM + Calendar) */}
-        {mobileContent && (
+        {/* mobileContent가 없으면 rightWidget 재사용 */}
+        {(mobileContent || rightWidget) && (
           <div className="mt-6 space-y-4">
-            {mobileContent}
+            {mobileContent ?? rightWidget}
           </div>
         )}
       </div>

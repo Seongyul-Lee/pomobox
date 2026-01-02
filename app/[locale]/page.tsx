@@ -89,14 +89,6 @@ export default async function Home({ params }: Props) {
               <span className="text-xs text-muted-foreground">Ad</span>
             </div>
           }
-          mobileContent={
-            <>
-              <BgmPanel />
-              <Suspense fallback={null}>
-                <DashboardRight />
-              </Suspense>
-            </>
-          }
         >
           {/* Center: Timer */}
           <section className="flex flex-col items-center justify-start pt-8 xl:pt-12">

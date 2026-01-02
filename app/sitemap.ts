@@ -8,6 +8,9 @@ const staticPages = [
   "", // 메인 페이지
   "/guide/what-is-pomodoro",
   "/privacy",
+  "/terms",
+  "/about",
+  "/contact",
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -439,6 +439,126 @@
     "backToMypage": "返回我的账户",
     "serverConfigurationError": "服务器配置错误，请稍后重试。"
   },
+  "Contact": {
+    "title": "联系我们",
+    "description": "联系Pomobox团队",
+    "subtitle": "期待您的来信",
+    "backToHome": "返回Pomobox",
+    "email": {
+      "title": "电子邮件",
+      "description": "一般咨询、反馈或支持请求"
+    },
+    "github": {
+      "title": "GitHub",
+      "description": "报告错误、请求功能或为项目做出贡献",
+      "linkText": "在GitHub上查看"
+    },
+    "responseTime": "我们通常会在1-2个工作日内回复。如有紧急问题，请在邮件主题中注明「紧急」。"
+  },
+  "About": {
+    "title": "关于Pomobox",
+    "description": "了解更多关于Pomobox - 专注工作的免费在线番茄钟",
+    "subtitle": "您的生产力伙伴",
+    "backToHome": "返回Pomobox",
+    "whatIs": {
+      "title": "什么是Pomobox？",
+      "content1": "Pomobox是一款免费的开源番茄钟计时器，旨在帮助您保持专注和提高效率。以简洁为设计理念，提供您实践番茄工作法所需的一切，不受干扰。",
+      "content2": "无论是学习、工作还是创意项目，Pomobox都能通过结构化的工作时段和令人神清气爽的休息来帮助您保持专注。"
+    },
+    "features": {
+      "title": "主要功能",
+      "timer": {
+        "title": "番茄钟计时器",
+        "description": "可自定义专注和休息时长，并可视化追踪进度"
+      },
+      "stats": {
+        "title": "统计数据",
+        "description": "通过详细洞察追踪每日、每周和每月的专注时间"
+      },
+      "bgm": {
+        "title": "背景音乐",
+        "description": "Lo-fi和环境音乐帮助您集中注意力"
+      },
+      "calendar": {
+        "title": "活动日历",
+        "description": "可视化您的生产力模式并保持连续记录"
+      }
+    },
+    "cta": {
+      "text": "准备好提升您的生产力了吗？",
+      "button": "开始计时"
+    }
+  },
+  "Terms": {
+    "title": "服务条款",
+    "description": "Pomobox服务条款 - 服务使用规则和指南",
+    "lastUpdated": "2026年1月1日",
+    "backToHome": "返回Pomobox",
+    "acceptance": {
+      "title": "1. 条款接受",
+      "content": "访问或使用Pomobox即表示您同意受本服务条款的约束。如果您不同意这些条款，请不要使用我们的服务。"
+    },
+    "service": {
+      "title": "2. 服务说明",
+      "content": "Pomobox是一款提供以下功能的生产力工具：",
+      "items": [
+        "用于专注工作的番茄钟计时器",
+        "专注时段跟踪和统计",
+        "提高注意力的背景音乐",
+        "跨设备数据同步（注册用户）"
+      ]
+    },
+    "accounts": {
+      "title": "3. 用户账户",
+      "content": "创建账户时，您同意：",
+      "items": [
+        "提供准确完整的信息",
+        "维护密码安全",
+        "对账户下的所有活动承担责任",
+        "发现未授权使用时立即通知我们"
+      ]
+    },
+    "acceptableUse": {
+      "title": "4. 可接受的使用",
+      "content": "您同意不：",
+      "items": [
+        "将服务用于任何非法目的",
+        "尝试未经授权访问服务的任何部分",
+        "干扰或中断服务",
+        "未经许可复制、修改或分发我们的内容",
+        "未经同意使用自动化系统访问服务"
+      ]
+    },
+    "intellectualProperty": {
+      "title": "5. 知识产权",
+      "content": "Pomobox的所有内容、功能和功能性，包括但不限于文本、图形、徽标和软件，均为Pomobox所有，并受国际版权、商标和其他知识产权法的保护。"
+    },
+    "disclaimer": {
+      "title": "6. 免责声明",
+      "content": "Pomobox按\"现状\"和\"可用\"提供，不提供任何明示或暗示的保证。我们不保证服务将不间断、安全或无错误地运行。"
+    },
+    "liability": {
+      "title": "7. 责任限制",
+      "content": "在法律允许的最大范围内，Pomobox不对因使用服务而产生的任何间接、附带、特殊、后果性或惩罚性损害承担责任，包括利润损失、数据损失或其他无形损失。"
+    },
+    "changes": {
+      "title": "8. 条款变更",
+      "content": "我们保留随时修改这些条款的权利。如有重大变更，我们将在此页面发布新的服务条款并更新\"最后更新\"日期以通知用户。"
+    },
+    "termination": {
+      "title": "9. 终止",
+      "content": "如果我们认为您的行为违反了本服务条款或对其他用户、我们或第三方有害，我们可能会立即终止或暂停您的账户和服务访问权限，无需事先通知。"
+    },
+    "governingLaw": {
+      "title": "10. 适用法律",
+      "content": "本条款应根据适用法律进行解释和执行，不考虑法律冲突原则。"
+    },
+    "contact": {
+      "title": "11. 联系我们",
+      "content": "如果您对本服务条款有任何疑问，请通过以下方式联系我们：",
+      "email": "pomoboxapp@gmail.com"
+    }
+  },
   "Guide": {
     "whatIsPomodoro": "什么是番茄钟？",
     "backToTimer": "返回计时器",

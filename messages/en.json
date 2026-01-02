@@ -439,6 +439,126 @@
     "backToMypage": "Back to My Account",
     "serverConfigurationError": "Server configuration error. Please try again later."
   },
+  "Contact": {
+    "title": "Contact Us",
+    "description": "Get in touch with the Pomobox team",
+    "subtitle": "We'd love to hear from you",
+    "backToHome": "Back to Pomobox",
+    "email": {
+      "title": "Email",
+      "description": "For general inquiries, feedback, or support requests"
+    },
+    "github": {
+      "title": "GitHub",
+      "description": "Report bugs, request features, or contribute to the project",
+      "linkText": "View on GitHub"
+    },
+    "responseTime": "We typically respond within 1-2 business days. For urgent issues, please include 'URGENT' in your email subject."
+  },
+  "About": {
+    "title": "About Pomobox",
+    "description": "Learn more about Pomobox - a free online Pomodoro timer for focused work",
+    "subtitle": "Your productivity companion",
+    "backToHome": "Back to Pomobox",
+    "whatIs": {
+      "title": "What is Pomobox?",
+      "content1": "Pomobox is a free, open-source Pomodoro timer designed to help you stay focused and productive. Built with simplicity in mind, it provides everything you need to implement the Pomodoro Technique without distractions.",
+      "content2": "Whether you're studying, working, or tackling creative projects, Pomobox helps you maintain focus through structured work sessions and refreshing breaks."
+    },
+    "features": {
+      "title": "Key Features",
+      "timer": {
+        "title": "Pomodoro Timer",
+        "description": "Customizable focus and break durations with visual progress tracking"
+      },
+      "stats": {
+        "title": "Statistics",
+        "description": "Track your daily, weekly, and monthly focus time with detailed insights"
+      },
+      "bgm": {
+        "title": "Background Music",
+        "description": "Lo-fi and ambient sounds to help you concentrate"
+      },
+      "calendar": {
+        "title": "Activity Calendar",
+        "description": "Visualize your productivity patterns and maintain streaks"
+      }
+    },
+    "cta": {
+      "text": "Ready to boost your productivity?",
+      "button": "Start Timer"
+    }
+  },
+  "Terms": {
+    "title": "Terms of Service",
+    "description": "Pomobox Terms of Service - Rules and guidelines for using our service",
+    "lastUpdated": "January 1, 2026",
+    "backToHome": "Back to Pomobox",
+    "acceptance": {
+      "title": "1. Acceptance of Terms",
+      "content": "By accessing or using Pomobox, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our service."
+    },
+    "service": {
+      "title": "2. Service Description",
+      "content": "Pomobox is a productivity tool that provides:",
+      "items": [
+        "Pomodoro timer for focused work sessions",
+        "Focus session tracking and statistics",
+        "Background music for concentration",
+        "Cross-device data synchronization (for registered users)"
+      ]
+    },
+    "accounts": {
+      "title": "3. User Accounts",
+      "content": "When you create an account, you agree to:",
+      "items": [
+        "Provide accurate and complete information",
+        "Maintain the security of your password",
+        "Accept responsibility for all activities under your account",
+        "Notify us immediately of any unauthorized use"
+      ]
+    },
+    "acceptableUse": {
+      "title": "4. Acceptable Use",
+      "content": "You agree not to:",
+      "items": [
+        "Use the service for any illegal purpose",
+        "Attempt to gain unauthorized access to any part of the service",
+        "Interfere with or disrupt the service",
+        "Copy, modify, or distribute our content without permission",
+        "Use automated systems to access the service without our consent"
+      ]
+    },
+    "intellectualProperty": {
+      "title": "5. Intellectual Property",
+      "content": "All content, features, and functionality of Pomobox, including but not limited to text, graphics, logos, and software, are owned by Pomobox and are protected by international copyright, trademark, and other intellectual property laws."
+    },
+    "disclaimer": {
+      "title": "6. Disclaimer of Warranties",
+      "content": "Pomobox is provided \"as is\" and \"as available\" without any warranties of any kind, either express or implied. We do not guarantee that the service will be uninterrupted, secure, or error-free."
+    },
+    "liability": {
+      "title": "7. Limitation of Liability",
+      "content": "To the maximum extent permitted by law, Pomobox shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or other intangible losses resulting from your use of the service."
+    },
+    "changes": {
+      "title": "8. Changes to Terms",
+      "content": "We reserve the right to modify these terms at any time. We will notify users of any material changes by posting the new Terms of Service on this page and updating the \"Last updated\" date."
+    },
+    "termination": {
+      "title": "9. Termination",
+      "content": "We may terminate or suspend your account and access to the service immediately, without prior notice, for conduct that we believe violates these Terms of Service or is harmful to other users, us, or third parties."
+    },
+    "governingLaw": {
+      "title": "10. Governing Law",
+      "content": "These Terms shall be governed by and construed in accordance with applicable laws, without regard to conflict of law principles."
+    },
+    "contact": {
+      "title": "11. Contact Us",
+      "content": "If you have any questions about these Terms of Service, please contact us at:",
+      "email": "pomoboxapp@gmail.com"
+    }
+  },
   "Guide": {
     "whatIsPomodoro": "What is Pomodoro?",
     "backToTimer": "Back to Timer",

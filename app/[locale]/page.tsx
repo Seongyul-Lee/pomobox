@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import { Link as LocaleLink } from "@/i18n/navigation"
 import { PomodoroTimer } from "@/components/pomodoro-timer"
@@ -42,7 +41,6 @@ function TimerFallback() {
 export default async function Home({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations("Home")
-  const tGuide = await getTranslations("Guide")
   const tMeta = await getTranslations("Metadata")
 
   // JSON-LD 구조화 데이터: WebApplication
@@ -148,12 +146,20 @@ export default async function Home({ params }: Props) {
           <div className="text-center text-xs text-muted-foreground py-1">
             <span>© 2025 pomobox</span>
             <span className="mx-2">·</span>
-            <Link href="/privacy" className="hover:text-foreground hover:underline">
-              Privacy Policy
-            </Link>
+            <LocaleLink href="/about" className="hover:text-foreground hover:underline">
+              About
+            </LocaleLink>
             <span className="mx-2">·</span>
-            <LocaleLink href="/guide/what-is-pomodoro" className="hover:text-foreground hover:underline">
-              {tGuide("whatIsPomodoro")}
+            <LocaleLink href="/contact" className="hover:text-foreground hover:underline">
+              Contact
+            </LocaleLink>
+            <span className="mx-2">·</span>
+            <LocaleLink href="/privacy" className="hover:text-foreground hover:underline">
+              Privacy
+            </LocaleLink>
+            <span className="mx-2">·</span>
+            <LocaleLink href="/terms" className="hover:text-foreground hover:underline">
+              Terms
             </LocaleLink>
           </div>
         </div>

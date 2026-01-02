@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2026-01-03
+
+애드센스 승인을 위한 필수 페이지 추가
+
+### Features
+
+#### 신규 페이지
+- **Terms of Service** (`/terms`): 이용약관 페이지
+- **About** (`/about`): 서비스 소개 페이지 (주요 기능 4가지)
+- **Contact** (`/contact`): 문의 페이지 (이메일 + GitHub 링크)
+
+#### SEO 개선
+- sitemap.xml 확장: 4개 → 6개 페이지 (24개 URL)
+- Footer 링크 추가: About, Contact, Privacy, Terms
+
+### 지원 언어
+- 모든 신규 페이지 4개 언어 번역 완료 (EN, KO, JA, ZH-CN)
+
+---
+
 ## [2.0.0] - 2026-01-02 (Phase 2)
 
 Phase 2 업데이트: 다국어 지원, 계정 관리, 대시보드 UI 전면 개편

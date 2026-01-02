@@ -5,6 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/navigation"
+import { routing } from "@/i18n/routing"
 import { Timer, ListTodo, BarChart3, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -42,8 +43,9 @@ export function Sidebar() {
   }
 
   // Check if current path matches (handles locale prefix)
+  const localePattern = new RegExp(`^/(${routing.locales.join("|")})`)
   const isActive = (path: string) => {
-    const pathWithoutLocale = pathname.replace(/^\/(en|ko|ja|zh-CN)/, "")
+    const pathWithoutLocale = pathname.replace(localePattern, "")
     if (path === "/") {
       return pathWithoutLocale === "" || pathWithoutLocale === "/"
     }

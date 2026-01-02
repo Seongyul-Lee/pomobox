@@ -30,3 +30,14 @@ export {
   DEFAULT_SETTINGS,
   type TimerSettings,
 } from './settings-store'
+
+export {
+  useTaskStore,
+  createTask,
+  selectIsTaskPanelOpen,
+  selectTasks,
+  selectIncompleteTasks,
+  selectCompletedTasks,
+  selectTaskCount,
+  type Task,
+} from './task-store'

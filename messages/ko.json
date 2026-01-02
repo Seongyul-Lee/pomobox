@@ -567,6 +567,19 @@
     "statistics": "통계",
     "settings": "설정"
   },
+  "Task": {
+    "title": "할 일",
+    "ariaLabel": "할 일 관리 패널",
+    "close": "닫기",
+    "addPlaceholder": "할 일 추가...",
+    "emptyState": "아직 할 일이 없습니다. 추가해보세요!",
+    "completed": "완료됨",
+    "markComplete": "완료로 표시",
+    "markIncomplete": "미완료로 표시",
+    "deleteTask": "할 일 삭제",
+    "limitReached": "할 일 개수 제한",
+    "limitReachedDesc": "완료된 할 일을 삭제하면 더 추가할 수 있습니다."
+  },
   "Guide": {
     "whatIsPomodoro": "포모도로 기법이란?",
     "backToTimer": "타이머로 돌아가기",

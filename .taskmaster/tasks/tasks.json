@@ -37,8 +37,40 @@
         "dependencies": [
           "97"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": "98.1",
+            "title": "TaskPanel 컴포넌트 생성",
+            "description": "components/task-panel.tsx - 데스크탑 슬라이드 패널(360px) + 모바일 하단 시트(Radix Dialog)",
+            "status": "done"
+          },
+          {
+            "id": "98.2",
+            "title": "Sidebar 연동",
+            "description": "toggleTaskPanel/closeTaskPanel 연결, Timer 버튼 제거 (Logo와 중복), 페이지 이동 시 패널 닫기",
+            "status": "done"
+          },
+          {
+            "id": "98.3",
+            "title": "다국어 키 추가",
+            "description": "messages/en,ko,ja,zh-CN.json에 Task 섹션 추가 (title, close, addPlaceholder, emptyState 등)",
+            "status": "done"
+          },
+          {
+            "id": "98.4",
+            "title": "애니메이션 개선",
+            "description": "translate → width 애니메이션으로 변경 (사이드바 겹침 문제 해결)",
+            "status": "done"
+          },
+          {
+            "id": "98.5",
+            "title": "코드 정리",
+            "description": "MAX_TASKS를 task-store.ts에서 export하여 중복 제거, defaultIconClass/isolate 미사용 코드 제거",
+            "status": "done"
+          }
+        ],
+        "updatedAt": "2026-01-02T17:04:21.248Z"
       },
       {
         "id": "99",
@@ -332,9 +364,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-02T16:34:07.597Z",
+      "lastModified": "2026-01-02T17:04:21.249Z",
       "taskCount": 25,
-      "completedCount": 2,
+      "completedCount": 3,
       "tags": [
         "master"
       ]

@@ -39,5 +39,6 @@ export {
   selectIncompleteTasks,
   selectCompletedTasks,
   selectTaskCount,
+  MAX_TASKS,
   type Task,
 } from './task-store'

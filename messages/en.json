@@ -567,6 +567,19 @@
     "statistics": "Statistics",
     "settings": "Settings"
   },
+  "Task": {
+    "title": "Tasks",
+    "ariaLabel": "Task management panel",
+    "close": "Close",
+    "addPlaceholder": "Add a new task...",
+    "emptyState": "No tasks yet. Start adding!",
+    "completed": "Completed",
+    "markComplete": "Mark as complete",
+    "markIncomplete": "Mark as incomplete",
+    "deleteTask": "Delete task",
+    "limitReached": "Task limit reached",
+    "limitReachedDesc": "Delete completed tasks to add more."
+  },
   "Guide": {
     "whatIsPomodoro": "What is Pomodoro?",
     "backToTimer": "Back to Timer",

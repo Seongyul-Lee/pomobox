@@ -20,7 +20,7 @@ export interface Task {
 }
 
 // 최대 Task 개수 제한
-const MAX_TASKS = 30
+export const MAX_TASKS = 30
 
 // Task 생성 헬퍼 (ID 자동 생성)
 export function createTask(

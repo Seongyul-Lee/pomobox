@@ -4,6 +4,7 @@ import { Link as LocaleLink } from "@/i18n/navigation"
 import { PomodoroTimer } from "@/components/pomodoro-timer"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Sidebar } from "@/components/sidebar"
+import { TaskPanel } from "@/components/task-panel"
 import { DashboardLeft } from "@/components/dashboard-left"
 import { DashboardRight } from "@/components/dashboard-right"
 import { BgmPanel } from "@/components/bgm-panel"
@@ -66,6 +67,9 @@ export default async function Home({ params }: Props) {
       <main className="relative min-h-screen flex flex-col text-foreground pt-safe">
         {/* Fixed Sidebar (md+) */}
         <Sidebar />
+
+        {/* Task Panel (slides from left on desktop, bottom sheet on mobile) */}
+        <TaskPanel />
 
         {/* Fixed Header Controls */}
         <ThemeToggle />

@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server"
 import { Link as LocaleLink } from "@/i18n/navigation"
 import { PomodoroTimer } from "@/components/pomodoro-timer"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { UserMenu } from "@/components/user-menu"
+import { Sidebar } from "@/components/sidebar"
 import { DashboardLeft } from "@/components/dashboard-left"
 import { DashboardRight } from "@/components/dashboard-right"
 import { BgmPanel } from "@/components/bgm-panel"
@@ -64,14 +64,14 @@ export default async function Home({ params }: Props) {
 
   return (
       <main className="relative min-h-screen flex flex-col text-foreground pt-safe">
+        {/* Fixed Sidebar (md+) */}
+        <Sidebar />
+
         {/* Fixed Header Controls */}
         <ThemeToggle />
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
-          <UserMenu />
-        </div>
 
-        {/* Main Layout */}
-        <div className="flex-1 pt-16 pb-6 siderail-margin">
+        {/* Main Layout - add left margin for sidebar on md+ */}
+        <div className="flex-1 pt-16 pb-6 md:ml-16 lg:ml-20 siderail-margin">
           <div className="main-layout flex justify-center items-start gap-4 px-4 xl:px-8">
             {/* 3-Column Content Grid */}
             <div className="dashboard-grid w-full grid grid-cols-1 xl:grid-cols-[570px_minmax(400px,1fr)_570px] gap-6 xl:gap-6 xl:items-stretch">
@@ -106,7 +106,7 @@ export default async function Home({ params }: Props) {
           </div>
 
           {/* Mobile: BGM + Calendar only (Stats hidden - will be in /stats page) */}
-          <div className="xl:hidden mt-6 space-y-4 px-4">
+          <div className="xl:hidden mt-6 space-y-4 px-4 md:ml-16 lg:ml-20">
             {/* BGM Panel */}
             <BgmPanel />
 
@@ -118,7 +118,7 @@ export default async function Home({ params }: Props) {
         </div>
 
         {/* SEO Section */}
-        <section className="mb-10 siderail-margin">
+        <section className="mb-10 md:ml-16 lg:ml-20 siderail-margin">
           <div className="px-4 xl:px-8">
             <div className="max-w-5xl mx-auto text-center">
               <h2 className="text-lg xl:text-xl font-bold text-foreground mb-4">
@@ -138,7 +138,7 @@ export default async function Home({ params }: Props) {
         </section>
 
         {/* Footer */}
-        <div className="w-full px-4 xl:px-8 pb-3">
+        <div className="w-full px-4 xl:px-8 pb-3 md:ml-16 lg:ml-20">
           {/* 하단 광고 여백 */}
           <div className="h-24 mb-2" />
 

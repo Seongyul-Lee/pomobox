@@ -559,6 +559,14 @@
       "email": "pomoboxapp@gmail.com"
     }
   },
+  "Sidebar": {
+    "ariaLabel": "메인 내비게이션",
+    "home": "홈",
+    "timer": "타이머",
+    "task": "할 일",
+    "statistics": "통계",
+    "settings": "설정"
+  },
   "Guide": {
     "whatIsPomodoro": "포모도로 기법이란?",
     "backToTimer": "타이머로 돌아가기",

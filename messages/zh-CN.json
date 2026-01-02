@@ -559,6 +559,14 @@
       "email": "pomoboxapp@gmail.com"
     }
   },
+  "Sidebar": {
+    "ariaLabel": "主导航",
+    "home": "首页",
+    "timer": "计时器",
+    "task": "任务",
+    "statistics": "统计",
+    "settings": "设置"
+  },
   "Guide": {
     "whatIsPomodoro": "什么是番茄钟？",
     "backToTimer": "返回计时器",

@@ -559,6 +559,14 @@
       "email": "pomoboxapp@gmail.com"
     }
   },
+  "Sidebar": {
+    "ariaLabel": "Main Navigation",
+    "home": "Home",
+    "timer": "Timer",
+    "task": "Tasks",
+    "statistics": "Statistics",
+    "settings": "Settings"
+  },
   "Guide": {
     "whatIsPomodoro": "What is Pomodoro?",
     "backToTimer": "Back to Timer",

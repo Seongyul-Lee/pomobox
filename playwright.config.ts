@@ -30,34 +30,32 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    // Auth setup - 로그인하여 인증 상태 저장
-    {
-      name: 'setup',
-      testMatch: /auth\.setup\.ts/,
-    },
-
-    // 인증이 필요 없는 테스트 (기본)
+    // 인증이 필요 없는 테스트 (기본) - CI와 로컬 모두 실행
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      testIgnore: /auth\.setup\.ts/,
+      testIgnore: [/auth\.setup\.ts/, /.*\.auth\.spec\.ts/],
     },
 
-    // 인증이 필요한 테스트 (로그인 상태 사용)
-    {
-      name: 'chromium-authenticated',
-      use: {
-        ...devices['Desktop Chrome'],
-        storageState: STORAGE_STATE,
-      },
-      dependencies: ['setup'],
-      testMatch: /.*\.auth\.spec\.ts/,
-    },
-
-    // CI가 아닐 때만 다른 브라우저 테스트
+    // CI가 아닐 때만 인증 테스트와 다른 브라우저 테스트 실행
     ...(process.env.CI
       ? []
       : [
+          // Auth setup - 로그인하여 인증 상태 저장 (로컬 전용)
+          {
+            name: 'setup',
+            testMatch: /auth\.setup\.ts/,
+          },
+          // 인증이 필요한 테스트 (로컬 전용)
+          {
+            name: 'chromium-authenticated',
+            use: {
+              ...devices['Desktop Chrome'],
+              storageState: STORAGE_STATE,
+            },
+            dependencies: ['setup'],
+            testMatch: /.*\.auth\.spec\.ts/,
+          },
           {
             name: 'firefox',
             use: { ...devices['Desktop Firefox'] },

@@ -166,23 +166,10 @@
     gap: 1rem;
   }
 
-  /* 사이드레일 광고 여백 (비율 기반, xl 이상) */
-  @media (min-width: 1280px) {
-    .siderail-margin {
-      padding-left: clamp(0px, 8vw, 176px);
-      padding-right: clamp(0px, 8vw, 176px);
-    }
-  }
-
   /* FHD (1920x1080) 이하: 축소 조정 - XL(1280px) 이상에서만 적용 */
   @media (min-width: 1280px) and (max-width: 1920px) {
     :root {
       font-size: 94%;  /* QHD 대비 동일 시각적 비율 유지 (125% × 0.75) */
-    }
-    .dashboard-grid {
-      grid-template-columns: 428px minmax(300px, 1fr) 428px !important;  /* 570px × 0.75 */
-      max-width: none !important;
-      width: 100% !important;
     }
   }
 }

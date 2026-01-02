@@ -5,9 +5,9 @@ import { PomodoroTimer } from "@/components/pomodoro-timer"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Sidebar } from "@/components/sidebar"
 import { TaskPanel } from "@/components/task-panel"
-import { DashboardLeft } from "@/components/dashboard-left"
 import { DashboardRight } from "@/components/dashboard-right"
 import { BgmPanel } from "@/components/bgm-panel"
+import { MainLayout } from "@/components/main-layout"
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -74,55 +74,46 @@ export default async function Home({ params }: Props) {
         {/* Fixed Header Controls */}
         <ThemeToggle />
 
-        {/* Main Layout - add left margin for sidebar on md+ */}
-        <div className="flex-1 pt-16 pb-6 md:ml-16 lg:ml-20 siderail-margin">
-          <div className="main-layout flex justify-center items-start gap-4 px-4 xl:px-8">
-            {/* 3-Column Content Grid */}
-            <div className="dashboard-grid w-full grid grid-cols-1 xl:grid-cols-[570px_minmax(400px,1fr)_570px] gap-6 xl:gap-6 xl:items-stretch">
-              {/* Left: Dashboard (오늘 요약, 주간, 월간) */}
-              <aside className="hidden xl:flex xl:flex-col gap-4" aria-label="Statistics Dashboard">
-                <Suspense fallback={null}>
-                  <DashboardLeft />
-                </Suspense>
-              </aside>
-
-              {/* Center: Timer */}
-              <section className="flex flex-col items-center justify-start pt-8 xl:pt-12">
-                <div className="hidden md:block text-center mb-4 md:mb-8 px-4">
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 hover-title-outline inline-block">
-                    {t("title")}
-                  </h1>
-                  <p className="text-slate-500 dark:text-slate-400 hover-phase-label">{t("description")}</p>
-                </div>
-                <Suspense fallback={<TimerFallback />}>
-                  <PomodoroTimer />
-                </Suspense>
-              </section>
-
-              {/* Right: BGM + Activity Calendar */}
-              <aside className="hidden xl:flex xl:flex-col gap-4" aria-label="Music and Calendar">
-                <BgmPanel />
-                <Suspense fallback={null}>
-                  <DashboardRight />
-                </Suspense>
-              </aside>
+        {/* Main Layout - Dynamic layout based on Task Panel state */}
+        <MainLayout
+          rightWidget={
+            <>
+              <BgmPanel />
+              <Suspense fallback={null}>
+                <DashboardRight />
+              </Suspense>
+            </>
+          }
+          adArea={
+            <div className="h-[600px] rounded-xl bg-muted/30 border border-border/50 flex items-center justify-center">
+              <span className="text-xs text-muted-foreground">Ad</span>
             </div>
-          </div>
-
-          {/* Mobile: BGM + Calendar only (Stats hidden - will be in /stats page) */}
-          <div className="xl:hidden mt-6 space-y-4 px-4 md:ml-16 lg:ml-20">
-            {/* BGM Panel */}
-            <BgmPanel />
-
-            {/* Activity Calendar + Check-in */}
-            <Suspense fallback={null}>
-              <DashboardRight />
+          }
+          mobileContent={
+            <>
+              <BgmPanel />
+              <Suspense fallback={null}>
+                <DashboardRight />
+              </Suspense>
+            </>
+          }
+        >
+          {/* Center: Timer */}
+          <section className="flex flex-col items-center justify-start pt-8 xl:pt-12">
+            <div className="hidden md:block text-center mb-4 md:mb-8 px-4">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 hover-title-outline inline-block">
+                {t("title")}
+              </h1>
+              <p className="text-slate-500 dark:text-slate-400 hover-phase-label">{t("description")}</p>
+            </div>
+            <Suspense fallback={<TimerFallback />}>
+              <PomodoroTimer />
             </Suspense>
-          </div>
-        </div>
+          </section>
+        </MainLayout>
 
         {/* SEO Section */}
-        <section className="mb-10 md:ml-16 lg:ml-20 siderail-margin">
+        <section className="mb-10 md:ml-16 lg:ml-20">
           <div className="px-4 xl:px-8">
             <div className="max-w-5xl mx-auto text-center">
               <h2 className="text-lg xl:text-xl font-bold text-foreground mb-4">

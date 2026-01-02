@@ -90,7 +90,7 @@ function TaskItem({
       <span
         className={cn(
           "flex-1 text-sm truncate",
-          task.isCompleted && "text-muted-foreground line-through"
+          task.isCompleted && "text-muted-foreground"
         )}
       >
         {task.title}

@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { WeeklyStatsChart } from "@/components/stats/weekly-stats-chart"
+import { WeekComparison } from "@/components/stats/week-comparison"
 
 export function StatsContent() {
   const t = useTranslations("Stats")
@@ -32,9 +33,7 @@ export function StatsContent() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[200px] flex items-center justify-center text-muted-foreground">
-              {t("comingSoon")}
-            </div>
+            <WeekComparison />
           </CardContent>
         </Card>
       </section>

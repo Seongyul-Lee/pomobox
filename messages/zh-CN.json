@@ -674,6 +674,11 @@
     "weeklyStats": "每周概览",
     "weeklyComparison": "本周 vs 上周",
     "rollingStats": "最近4周趋势",
-    "comingSoon": "即将推出..."
+    "comingSoon": "即将推出...",
+    "totalTime": "总时长",
+    "totalSessions": "会话数",
+    "avgPerDay": "日均",
+    "lastWeekLabel": "上周",
+    "retry": "重试"
   }
 }

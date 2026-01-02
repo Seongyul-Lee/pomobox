@@ -674,6 +674,11 @@
     "weeklyStats": "週間概要",
     "weeklyComparison": "今週 vs 先週",
     "rollingStats": "直近4週間のトレンド",
-    "comingSoon": "準備中..."
+    "comingSoon": "準備中...",
+    "totalTime": "合計時間",
+    "totalSessions": "セッション数",
+    "avgPerDay": "1日平均",
+    "lastWeekLabel": "先週",
+    "retry": "再試行"
   }
 }

@@ -674,6 +674,11 @@
     "weeklyStats": "주간 현황",
     "weeklyComparison": "이번 주 vs 지난 주",
     "rollingStats": "최근 4주 트렌드",
-    "comingSoon": "준비 중..."
+    "comingSoon": "준비 중...",
+    "totalTime": "총 집중 시간",
+    "totalSessions": "세션 수",
+    "avgPerDay": "일 평균",
+    "lastWeekLabel": "지난 주",
+    "retry": "재시도"
   }
 }

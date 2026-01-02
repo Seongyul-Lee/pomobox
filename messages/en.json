@@ -674,6 +674,11 @@
     "weeklyStats": "Weekly Overview",
     "weeklyComparison": "This Week vs Last Week",
     "rollingStats": "Rolling 4-Week Trend",
-    "comingSoon": "Coming soon..."
+    "comingSoon": "Coming soon...",
+    "totalTime": "Total Time",
+    "totalSessions": "Sessions",
+    "avgPerDay": "Avg per Day",
+    "lastWeekLabel": "Last Week",
+    "retry": "Retry"
   }
 }

@@ -91,14 +91,17 @@ function CustomTooltip({ active, payload, t, tDashboard }: CustomTooltipProps) {
   )
 }
 
+// 고정 높이 패턴 (hydration mismatch 방지)
+const SKELETON_HEIGHTS = [45, 65, 55, 40, 70, 50, 60]
+
 function SkeletonChart() {
   return (
     <div className="h-[200px] xl:h-[300px] flex items-end justify-between gap-2 px-4">
-      {Array.from({ length: 7 }).map((_, i) => (
+      {SKELETON_HEIGHTS.map((height, i) => (
         <div
           key={i}
           className="flex-1 bg-muted/50 rounded-t animate-pulse"
-          style={{ height: `${30 + Math.random() * 50}%` }}
+          style={{ height: `${height}%` }}
         />
       ))}
     </div>
@@ -142,14 +145,15 @@ export function WeeklyStatsChart() {
 
   // 커스텀 Dot 렌더링 함수 (Area/Line 공통)
   const renderDot = useMemo(() => {
-    return (props: { cx?: number; cy?: number; payload?: WeeklyStatsData }) => {
-      const { cx, cy, payload } = props
+    return (props: { cx?: number; cy?: number; payload?: WeeklyStatsData; index?: number }) => {
+      const { cx, cy, payload, index } = props
       if (cx === undefined || cy === undefined || !payload) {
-        return <circle cx={0} cy={0} r={0} fill="transparent" />
+        return <circle key={`dot-empty-${index}`} cx={0} cy={0} r={0} fill="transparent" />
       }
       const isToday = payload.isToday
       return (
         <circle
+          key={`dot-${payload.date}`}
           cx={cx}
           cy={cy}
           r={isToday ? 6 : 4}

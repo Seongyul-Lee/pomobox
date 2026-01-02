@@ -105,9 +105,9 @@ async function updateStreakIfNeeded(
       .from("user_stats")
       .select("best_streak")
       .eq("user_id", userId)
-      .single()
+      .maybeSingle()
 
-    const bestStreak = stats?.best_streak || 0
+    const bestStreak = stats?.best_streak ?? 0
 
     // 현재가 더 높으면 업데이트
     if (currentStreak > bestStreak) {

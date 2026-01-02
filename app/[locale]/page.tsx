@@ -107,12 +107,12 @@ export default async function Home({ params }: Props) {
             </div>
           </div>
 
-          {/* Mobile: Stacked panels below timer */}
-          <div className="xl:hidden mt-8 space-y-6 max-w-md mx-auto">
+          {/* Mobile: BGM + Calendar only (Stats hidden - will be in /stats page) */}
+          <div className="xl:hidden mt-6 space-y-4 px-4">
+            {/* BGM Panel */}
             <BgmPanel />
-            <Suspense fallback={null}>
-              <DashboardLeft />
-            </Suspense>
+
+            {/* Activity Calendar + Check-in */}
             <Suspense fallback={null}>
               <DashboardRight />
             </Suspense>

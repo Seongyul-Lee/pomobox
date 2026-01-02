@@ -252,33 +252,33 @@ export function DashboardRight() {
 
   return (
     <Card className="glass-card border-0 flex flex-col flex-1">
-      <CardHeader className="pb-4">
+      <CardHeader className="pb-2 xl:pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-medium flex items-center gap-2">
-            <Calendar className="h-6 w-6 text-amber-400 hover-dashboard-icon" />
+          <CardTitle className="text-base xl:text-lg font-medium flex items-center gap-2">
+            <Calendar className="h-5 w-5 xl:h-6 xl:w-6 text-amber-400 hover-dashboard-icon" />
             <span className="hover-dashboard-title">{t("activityCalendar")}</span>
           </CardTitle>
-          <span className="text-base text-muted-foreground">
+          <span className="text-sm xl:text-base text-muted-foreground">
             {year}.{month + 1}.{today}
           </span>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6 flex-1 flex flex-col">
-        {/* 출석 체크 버튼 */}
-        <div className="flex items-center justify-between p-4 rounded-xl bg-primary/5 border border-primary/10">
-          <div className="flex items-center gap-3">
+      <CardContent className="space-y-4 xl:space-y-6 flex-1 flex flex-col">
+        {/* 출석 체크 버튼 - 모바일 컴팩트 */}
+        <div className="flex items-center justify-between p-3 xl:p-4 rounded-xl bg-primary/5 border border-primary/10">
+          <div className="flex items-center gap-2 xl:gap-3">
             {isCheckedIn === null ? (
-              <Loader2 className="h-7 w-7 text-muted-foreground animate-spin" />
+              <Loader2 className="h-5 w-5 xl:h-7 xl:w-7 text-muted-foreground animate-spin" />
             ) : isCheckedIn ? (
-              <CheckCircle2 className="h-7 w-7 text-green-500" />
+              <CheckCircle2 className="h-5 w-5 xl:h-7 xl:w-7 text-green-500" />
             ) : (
-              <Circle className="h-7 w-7 text-muted-foreground" />
+              <Circle className="h-5 w-5 xl:h-7 xl:w-7 text-muted-foreground" />
             )}
             <div className="break-keep">
-              <p className="text-base font-medium whitespace-nowrap">
+              <p className="text-sm xl:text-base font-medium whitespace-nowrap">
                 {isCheckedIn === null ? t("loading") : isCheckedIn ? t("checkedIn") : t("checkInPrompt")}
               </p>
-              <p className="text-sm text-muted-foreground whitespace-nowrap">
+              <p className="text-xs xl:text-sm text-muted-foreground whitespace-nowrap">
                 {t("monthlyAttendance")}: {monthAttendanceCount}{t("days")}
               </p>
             </div>
@@ -286,38 +286,38 @@ export function DashboardRight() {
           {isCheckedIn === false && (
             <Button
               onClick={handleCheckIn}
-              className="h-9 px-4 text-sm glow-primary hover-glow hover-shine"
+              className="h-8 xl:h-9 px-3 xl:px-4 text-xs xl:text-sm glow-primary hover-glow hover-shine"
             >
               {t("checkIn")}
             </Button>
           )}
         </div>
 
-        {/* 스트릭 통계 */}
-        <div className="grid grid-cols-3 gap-3">
-          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(64.5%_0.3075_16.4/0.15)] dark:bg-[oklch(64.5%_0.3075_16.4/0.1)] hover-stat cursor-default">
-            <Flame className="h-5 w-5 text-rose-500 dark:text-rose-400 mb-1.5 hover-bounce" />
-            <p className="text-base font-semibold text-[oklch(0.25_0.03_265)] dark:text-foreground">{streakStats.current}{t("days")}</p>
-            <p className="text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">{t("currentStreak")}</p>
+        {/* 스트릭 통계 - 모바일 컴팩트 */}
+        <div className="grid grid-cols-3 gap-2 xl:gap-3">
+          <div className="flex flex-col items-center p-2 xl:p-3 rounded-xl bg-[oklch(64.5%_0.3075_16.4/0.15)] dark:bg-[oklch(64.5%_0.3075_16.4/0.1)] hover-stat cursor-default">
+            <Flame className="h-4 w-4 xl:h-5 xl:w-5 text-rose-500 dark:text-rose-400 mb-1 xl:mb-1.5 hover-bounce" />
+            <p className="text-sm xl:text-base font-semibold text-[oklch(0.25_0.03_265)] dark:text-foreground">{streakStats.current}{t("days")}</p>
+            <p className="text-[10px] xl:text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">{t("currentStreak")}</p>
           </div>
-          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(76.9%_0.235_70.1/0.15)] dark:bg-[oklch(76.9%_0.235_70.1/0.1)] hover-stat cursor-default">
-            <Flame className="h-5 w-5 text-amber-500 dark:text-amber-400 mb-1.5 hover-bounce" />
-            <p className="text-base font-semibold text-[oklch(0.25_0.03_265)] dark:text-foreground">{streakStats.best}{t("days")}</p>
-            <p className="text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">{t("bestStreak")}</p>
+          <div className="flex flex-col items-center p-2 xl:p-3 rounded-xl bg-[oklch(76.9%_0.235_70.1/0.15)] dark:bg-[oklch(76.9%_0.235_70.1/0.1)] hover-stat cursor-default">
+            <Flame className="h-4 w-4 xl:h-5 xl:w-5 text-amber-500 dark:text-amber-400 mb-1 xl:mb-1.5 hover-bounce" />
+            <p className="text-sm xl:text-base font-semibold text-[oklch(0.25_0.03_265)] dark:text-foreground">{streakStats.best}{t("days")}</p>
+            <p className="text-[10px] xl:text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">{t("bestStreak")}</p>
           </div>
-          <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(68.5%_0.211_237.3/0.15)] dark:bg-[oklch(68.5%_0.211_237.3/0.1)] hover-stat cursor-default">
-            <Target className="h-5 w-5 text-sky-500 dark:text-sky-400 mb-1.5 hover-bounce" />
-            <p className="text-base font-semibold text-[oklch(0.25_0.03_265)] dark:text-foreground">{weeklyRate.rate}%</p>
-            <p className="text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">{t("weeklyRate")}</p>
+          <div className="flex flex-col items-center p-2 xl:p-3 rounded-xl bg-[oklch(68.5%_0.211_237.3/0.15)] dark:bg-[oklch(68.5%_0.211_237.3/0.1)] hover-stat cursor-default">
+            <Target className="h-4 w-4 xl:h-5 xl:w-5 text-sky-500 dark:text-sky-400 mb-1 xl:mb-1.5 hover-bounce" />
+            <p className="text-sm xl:text-base font-semibold text-[oklch(0.25_0.03_265)] dark:text-foreground">{weeklyRate.rate}%</p>
+            <p className="text-[10px] xl:text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">{t("weeklyRate")}</p>
           </div>
         </div>
 
-        {/* 요일 헤더 */}
-        <div className="grid grid-cols-7 gap-2">
+        {/* 요일 헤더 - 모바일 컴팩트 */}
+        <div className="grid grid-cols-7 gap-1 xl:gap-2">
           {dayLabels.map((day, i) => (
             <div
               key={i}
-              className={`text-sm text-center py-2 font-semibold ${
+              className={`text-xs xl:text-sm text-center py-1 xl:py-2 font-semibold ${
                 i === 0 ? "text-rose-500 dark:text-rose-400" : i === 6 ? "text-blue-500 dark:text-blue-400" : "text-[oklch(0.4_0.02_260)] dark:text-muted-foreground"
               }`}
             >
@@ -326,9 +326,9 @@ export function DashboardRight() {
           ))}
         </div>
 
-        {/* 캘린더 그리드 */}
+        {/* 캘린더 그리드 - 모바일 컴팩트 */}
         <TooltipProvider delayDuration={200}>
-          <div className="grid grid-cols-7 gap-2.5 flex-1 content-start">
+          <div className="grid grid-cols-7 gap-1.5 xl:gap-2.5 flex-1 content-start">
             {calendarDays.map((day, index) => {
               const isToday = day === today
               const dayOfWeek = day ? (firstDayOfMonth + day - 1) % 7 : -1
@@ -348,7 +348,7 @@ export function DashboardRight() {
                     <button
                       type="button"
                       onClick={() => handleDayClick(day)}
-                      className={`aspect-square rounded-lg flex items-center justify-center text-base font-semibold transition-all cursor-pointer hover:scale-105 hover:brightness-110 text-[oklch(0.25_0.03_265)] dark:text-foreground ${
+                      className={`aspect-square rounded-md xl:rounded-lg flex items-center justify-center text-xs xl:text-base font-semibold transition-all cursor-pointer hover:scale-105 hover:brightness-110 text-[oklch(0.25_0.03_265)] dark:text-foreground ${
                         isSelected
                           ? `${getIntensityClass(day, isToday)} ring-2 ring-amber-400`
                           : isToday
@@ -389,63 +389,63 @@ export function DashboardRight() {
           </div>
         </TooltipProvider>
 
-        {/* 선택된 날짜 상세 정보 */}
+        {/* 선택된 날짜 상세 정보 - 모바일 컴팩트 */}
         {selectedDayInfo && selectedDay && (
-          <div className="p-4 rounded-xl bg-[oklch(76.9%_0.235_70.1/0.1)] border border-[oklch(76.9%_0.235_70.1/0.2)] animate-in fade-in duration-200">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-base font-medium">
+          <div className="p-3 xl:p-4 rounded-xl bg-[oklch(76.9%_0.235_70.1/0.1)] border border-[oklch(76.9%_0.235_70.1/0.2)] animate-in fade-in duration-200">
+            <div className="flex items-center justify-between mb-2 xl:mb-3">
+              <p className="text-sm xl:text-base font-medium">
                 {month + 1}/{selectedDay} ({fullDayLabels[selectedDayInfo.dayOfWeek]})
               </p>
               <button
                 type="button"
                 onClick={() => setSelectedDay(null)}
-                className="text-muted-foreground hover:text-foreground text-sm"
+                className="text-muted-foreground hover:text-foreground text-xs xl:text-sm"
               >
                 ✕
               </button>
             </div>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="flex flex-col items-center p-2 rounded-lg bg-background/50">
-                <Clock className="h-4 w-4 text-primary mb-1" />
-                <p className="text-sm font-semibold">{formatTimeWithLocale(selectedDayInfo.minutes, tTime)}</p>
-                <p className="text-xs text-muted-foreground">{t("todayFocus")}</p>
+            <div className="grid grid-cols-3 gap-2 xl:gap-3">
+              <div className="flex flex-col items-center p-1.5 xl:p-2 rounded-lg bg-background/50">
+                <Clock className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary mb-0.5 xl:mb-1" />
+                <p className="text-xs xl:text-sm font-semibold">{formatTimeWithLocale(selectedDayInfo.minutes, tTime)}</p>
+                <p className="text-[10px] xl:text-xs text-muted-foreground">{t("todayFocus")}</p>
               </div>
-              <div className="flex flex-col items-center p-2 rounded-lg bg-background/50">
-                <Target className="h-4 w-4 text-green-400 mb-1" />
-                <p className="text-sm font-semibold">{selectedDayInfo.sessions}{t("sessions")}</p>
-                <p className="text-xs text-muted-foreground">{t("sessions")}</p>
+              <div className="flex flex-col items-center p-1.5 xl:p-2 rounded-lg bg-background/50">
+                <Target className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-green-400 mb-0.5 xl:mb-1" />
+                <p className="text-xs xl:text-sm font-semibold">{selectedDayInfo.sessions}{t("sessions")}</p>
+                <p className="text-[10px] xl:text-xs text-muted-foreground">{t("sessions")}</p>
               </div>
-              <div className="flex flex-col items-center p-2 rounded-lg bg-background/50">
+              <div className="flex flex-col items-center p-1.5 xl:p-2 rounded-lg bg-background/50">
                 {selectedDayInfo.attended ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4 text-blue-400 mb-1" />
-                    <p className="text-sm font-semibold text-blue-400">O</p>
+                    <CheckCircle2 className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-blue-400 mb-0.5 xl:mb-1" />
+                    <p className="text-xs xl:text-sm font-semibold text-blue-400">O</p>
                   </>
                 ) : (
                   <>
-                    <Circle className="h-4 w-4 text-muted-foreground mb-1" />
-                    <p className="text-sm font-semibold text-muted-foreground">-</p>
+                    <Circle className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-muted-foreground mb-0.5 xl:mb-1" />
+                    <p className="text-xs xl:text-sm font-semibold text-muted-foreground">-</p>
                   </>
                 )}
-                <p className="text-xs text-muted-foreground">{t("checkIn")}</p>
+                <p className="text-[10px] xl:text-xs text-muted-foreground">{t("checkIn")}</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* 범례 */}
-        <div className="flex items-center justify-between text-sm text-muted-foreground pt-2">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-sm bg-blue-500/40 ring-1 ring-blue-400/50" />
+        {/* 범례 - 모바일 컴팩트 */}
+        <div className="flex items-center justify-between text-[10px] xl:text-sm text-muted-foreground pt-1 xl:pt-2">
+          <div className="flex items-center gap-1 xl:gap-2">
+            <div className="w-3 h-3 xl:w-4 xl:h-4 rounded-sm bg-blue-500/40 ring-1 ring-blue-400/50" />
             <span>{t("attendanceOnly")}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 xl:gap-2">
             <span>{t("less")}</span>
-            <div className="w-3.5 h-3.5 rounded-sm bg-muted/20" />
-            <div className="w-3.5 h-3.5 rounded-sm bg-green-500/30" />
-            <div className="w-3.5 h-3.5 rounded-sm bg-green-500/50" />
-            <div className="w-3.5 h-3.5 rounded-sm bg-green-500/70" />
-            <div className="w-3.5 h-3.5 rounded-sm bg-green-500" />
+            <div className="w-2.5 h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-muted/20" />
+            <div className="w-2.5 h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500/30" />
+            <div className="w-2.5 h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500/50" />
+            <div className="w-2.5 h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500/70" />
+            <div className="w-2.5 h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500" />
             <span>{t("more")}</span>
           </div>
         </div>

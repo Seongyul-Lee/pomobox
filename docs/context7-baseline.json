@@ -579,6 +579,32 @@
     ]
   },
   {
+    "topicName": "tailwindcss-scroll-snap-carousel",
+    "context7CompatibleLibraryID": "/websites/v3_tailwindcss",
+    "topic": "scroll snap horizontal carousel mobile swipe",
+    "pageRange": "1",
+    "retrievedAt": "2026-01-02T00:00:00Z",
+    "keyAPIs": [
+      "snap-x - 가로 스크롤 스냅 활성화",
+      "snap-mandatory - 항상 스냅 포인트에 정지 강제",
+      "snap-center - 자식 요소 중앙 정렬로 스냅",
+      "snap-start - 자식 요소 시작점으로 스냅",
+      "overflow-x-auto - 가로 스크롤 허용",
+      "scrollbar-hide - 스크롤바 숨김 (플러그인)"
+    ],
+    "constraints": [
+      "컨테이너에 snap-x snap-mandatory overflow-x-auto 필요",
+      "자식에 snap-center 또는 snap-start 필요",
+      "flex-shrink-0으로 자식 크기 고정",
+      "w-[85%] 등으로 다음 카드 살짝 보이게 설정",
+      "scroll-pl-4로 첫 번째 아이템 패딩 조절"
+    ],
+    "appliesToFiles": [
+      "app/[locale]/page.tsx",
+      "components/mobile-stats-carousel.tsx"
+    ]
+  },
+  {
     "topicName": "playwright-e2e-locators-assertions",
     "context7CompatibleLibraryID": "/websites/playwright_dev",
     "topic": "E2E testing page locators getByRole getByPlaceholder assertions toBeVisible authentication storageState",

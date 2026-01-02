@@ -127,9 +127,9 @@ export async function getBestStreakFromDB(userId: string): Promise<number> {
     .from("user_stats")
     .select("best_streak")
     .eq("user_id", userId)
-    .single()
+    .maybeSingle()
 
-  return data?.best_streak || 0
+  return data?.best_streak ?? 0
 }
 
 /**

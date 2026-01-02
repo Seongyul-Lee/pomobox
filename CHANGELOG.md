@@ -6,6 +6,39 @@ All notable changes to this project will be documented in this file.
 
 ### User Requests
 
+#### 2026-01-02: 모바일 반응형 UI 최적화
+
+**변경 파일:**
+- `app/[locale]/page.tsx`
+- `components/dashboard-right.tsx`
+- `components/mobile-stats-carousel.tsx` (신규)
+- `components/dashboard-left.tsx`
+- `app/globals.css`
+- `docs/context7-baseline.json`
+
+**변경 내용:**
+
+| 항목 | 설명 |
+|------|------|
+| 통계 카드 캐러셀 | CSS Scroll Snap 기반 가로 스와이프 구현 (`MobileStatsCarousel`) |
+| 캘린더 모바일 최적화 | 폰트/아이콘/패딩 축소 (`text-xs xl:text-base`, `p-2 xl:p-3`) |
+| 스트릭 통계 컴팩트화 | 모바일에서 `text-[10px]`, `gap-1 xl:gap-2` 적용 |
+| 모바일 레이아웃 간소화 | 통계 카드 숨김, BGM + 캘린더만 표시 (스크롤 길이 감소) |
+| scrollbar-hide 유틸리티 | `globals.css`에 추가 |
+
+**모바일 레이아웃 (xl 미만):**
+```
+Header → Timer → BGM → Calendar → Footer
+(통계 카드는 Phase 2 /stats 페이지로 이동 예정)
+```
+
+**데스크탑 레이아웃 (xl 이상):**
+```
+[DashboardLeft] | [Timer] | [BGM + Calendar]
+```
+
+---
+
 #### 2025-01-02: 통계 이중 기록 버그 수정
 
 **변경 파일:**

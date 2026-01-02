@@ -21,7 +21,12 @@
     "dailyGoal": "每日目标",
     "min": "分钟",
     "goalReached": "目标达成！做得好！",
-    "goalHint": "完成时段后增加"
+    "goalHint": "完成时段后增加",
+    "timerRemaining": "剩余{minutes}分{seconds}秒",
+    "progressLabel": "{phase} 进度: {progress}%",
+    "resetTimer": "重置计时器",
+    "skipToBreakLabel": "跳过当前专注时段并开始休息",
+    "backToFocusLabel": "跳过当前休息并返回专注时段"
   },
   "Settings": {
     "title": "设置",
@@ -431,7 +436,8 @@
     "incorrectPassword": "当前密码不正确",
     "enterPasswordToDelete": "输入密码以确认",
     "loggedInViaGoogle": "通过Google登录",
-    "backToMypage": "返回我的账户"
+    "backToMypage": "返回我的账户",
+    "serverConfigurationError": "服务器配置错误，请稍后重试。"
   },
   "Guide": {
     "whatIsPomodoro": "什么是番茄钟？",

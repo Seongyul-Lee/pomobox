@@ -21,7 +21,12 @@
     "dailyGoal": "Daily Goal",
     "min": "min",
     "goalReached": "Goal reached! Great job!",
-    "goalHint": "Added on session complete"
+    "goalHint": "Added on session complete",
+    "timerRemaining": "{minutes} minutes {seconds} seconds remaining",
+    "progressLabel": "{phase} progress: {progress}%",
+    "resetTimer": "Reset timer",
+    "skipToBreakLabel": "Skip current focus session and start break",
+    "backToFocusLabel": "Skip current break and return to focus session"
   },
   "Settings": {
     "title": "Settings",
@@ -431,7 +436,8 @@
     "incorrectPassword": "Current password is incorrect",
     "enterPasswordToDelete": "Enter your password to confirm",
     "loggedInViaGoogle": "Logged in via Google",
-    "backToMypage": "Back to My Account"
+    "backToMypage": "Back to My Account",
+    "serverConfigurationError": "Server configuration error. Please try again later."
   },
   "Guide": {
     "whatIsPomodoro": "What is Pomodoro?",

@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Timer Operations', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
   });
 
   test('should start, pause, and resume timer', async ({ page }) => {
@@ -12,7 +12,7 @@ test.describe('Timer Operations', () => {
     const initialTime = await timerDisplay.textContent();
 
     // Start timer
-    await page.getByRole('button', { name: /start/i }).click();
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
 
     // Wait for timer to tick (at least 1 second)
     await page.waitForTimeout(2000);
@@ -46,19 +46,19 @@ test.describe('Timer Operations', () => {
 
     // Skip 3 Focus sessions to get completedSessions=3
     for (let i = 0; i < 3; i++) {
-      await page.getByRole('button', { name: /start/i }).click();
+      await page.getByRole('button', { name: 'Start', exact: true }).click();
       await page.waitForTimeout(500);
-      await page.getByRole('button', { name: /skip to break/i }).click();
+      await page.getByRole('button').filter({ hasText: /skip to break/i }).click();
       await page.waitForTimeout(1000); // Wait for state update
       // Skip break too to return to Focus
-      await page.getByRole('button', { name: /skip break/i }).click();
+      await page.getByRole('button').filter({ hasText: /back to focus/i }).click();
       await page.waitForTimeout(1000); // Wait for state update
     }
 
     // 4th Focus session - Skip this will trigger Long Break (completedSessions=4)
-    await page.getByRole('button', { name: /start/i }).click();
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
     await page.waitForTimeout(500);
-    await page.getByRole('button', { name: /skip to break/i }).click();
+    await page.getByRole('button').filter({ hasText: /skip to break/i }).click();
     await page.waitForTimeout(1500); // Wait for Long Break transition
 
     // Verify we're in Long Break phase
@@ -80,7 +80,7 @@ test.describe('Timer Operations', () => {
 
   test('should reset to initial state after page refresh (Stateless)', async ({ page }) => {
     // Start timer
-    await page.getByRole('button', { name: /start/i }).click();
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
 
     // Wait for timer to tick
     await page.waitForTimeout(2000);
@@ -92,7 +92,7 @@ test.describe('Timer Operations', () => {
     await page.reload();
 
     // Verify timer reset to initial state (Stateless policy)
-    await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
 
     // Verify time reset to 25:00
     const timerDisplay = page.locator('text=/\\d{2}:\\d{2}/').first();
@@ -108,14 +108,14 @@ test.describe('Timer Operations', () => {
 test.describe('Statistics Regression Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
   });
 
   test.skip('should increment all stats when Focus session completes (TIME_UP)', async ({ page }) => {
     // SKIPPED: Real timer completion takes 25 minutes, impractical for E2E testing
     // This behavior is verified through manual testing and code review
     // Start timer
-    await page.getByRole('button', { name: /start/i }).click();
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
 
     // Wait for timer to start
     await page.waitForTimeout(1000);
@@ -174,12 +174,12 @@ test.describe('Statistics Regression Tests', () => {
     // SKIPPED: React state updates to localStorage are async and difficult to test reliably
     // This behavior is covered by the Long Break trigger test and manual testing
     // Start timer
-    await page.getByRole('button', { name: /start/i }).click();
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
 
     await page.waitForTimeout(500);
 
     // Skip to break (skips Focus, only increments completedSessions)
-    await page.getByRole('button', { name: /skip to break/i }).click();
+    await page.getByRole('button').filter({ hasText: /skip to break/i }).click();
 
     // Wait for state updates to localStorage
     await page.waitForTimeout(1000);
@@ -213,9 +213,9 @@ test.describe('Statistics Regression Tests', () => {
 
   test('should not change stats when skipping Break', async ({ page }) => {
     // Complete one Focus session by skipping
-    await page.getByRole('button', { name: /start/i }).click();
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
     await page.waitForTimeout(500);
-    await page.getByRole('button', { name: /skip to break/i }).click();
+    await page.getByRole('button').filter({ hasText: /skip to break/i }).click();
 
     // Verify we're in Break phase
     await expect(page.locator('text=/Break Time/i')).toBeVisible();
@@ -224,7 +224,7 @@ test.describe('Statistics Regression Tests', () => {
     const initialStats = await page.locator('text=/Today:.*sessions/').textContent();
 
     // Skip Break (button text is "Back to Focus" in Break phase)
-    await page.getByRole('button', { name: /back to focus/i }).click();
+    await page.getByRole('button').filter({ hasText: /back to focus/i }).click();
 
     // Verify we're back to Focus
     await expect(page.locator('text=/Focus Session/i')).toBeVisible();
@@ -258,7 +258,7 @@ test.describe('Statistics Regression Tests', () => {
     await page.waitForTimeout(500);
 
     // App should load without errors
-    await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
 
     // Verify old stats are preserved
     const statsText = await page.locator('text=/Today:.*sessions/').textContent();
@@ -279,7 +279,7 @@ test.describe('Statistics Regression Tests', () => {
     expect(completedSessions === null || completedSessions === '0').toBe(true);
 
     // Verify timer still works
-    await page.getByRole('button', { name: /start/i }).click();
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
     await page.waitForTimeout(1000);
     await page.getByRole('button', { name: /pause/i }).click();
     await expect(page.getByRole('button', { name: /resume/i })).toBeVisible();
@@ -287,19 +287,19 @@ test.describe('Statistics Regression Tests', () => {
 
   test('should not change stats when resetting timer', async ({ page }) => {
     // Complete one Focus session by skipping
-    await page.getByRole('button', { name: /start/i }).click();
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
     await page.waitForTimeout(500);
-    await page.getByRole('button', { name: /skip to break/i }).click();
+    await page.getByRole('button').filter({ hasText: /skip to break/i }).click();
 
     // Skip break to return to Focus (button text is "Back to Focus" in Break phase)
     await page.waitForTimeout(500);
-    await page.getByRole('button', { name: /back to focus/i }).click();
+    await page.getByRole('button').filter({ hasText: /back to focus/i }).click();
 
     // Get current stats
     const initialStats = await page.locator('text=/Today:.*sessions/').textContent();
 
     // Start timer
-    await page.getByRole('button', { name: /start/i }).click();
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
 
     await page.waitForTimeout(1000);
 
@@ -307,7 +307,7 @@ test.describe('Statistics Regression Tests', () => {
     await page.getByRole('button', { name: /reset/i }).click();
 
     // Verify we're back to Focus idle
-    await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
     await expect(page.locator('text=/Focus Session/i')).toBeVisible();
 
     // Verify statistics didn't change

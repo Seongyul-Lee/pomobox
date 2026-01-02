@@ -4,7 +4,7 @@ import AxeBuilder from '@axe-core/playwright';
 test.describe('Accessibility (A11y) Tests', () => {
   test('should not have any automatically detectable accessibility issues on main page', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('button', { name: /start/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
 
     const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 
@@ -34,7 +34,7 @@ test.describe('Accessibility (A11y) Tests', () => {
     await page.goto('/');
 
     // Start and pause timer
-    await page.getByRole('button', { name: /start/i }).click();
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
     await page.waitForTimeout(1000);
     await page.getByRole('button', { name: /pause/i }).click();
 

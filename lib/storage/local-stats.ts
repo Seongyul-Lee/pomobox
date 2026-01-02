@@ -123,6 +123,7 @@ export function saveLocalTodayStats(stats: LocalDailyStats): void {
 /**
  * 1분 단위 증분 저장 (async)
  * - Focus 세션 중 1분마다 호출
+ * - daily_stats와 history 모두 업데이트 (분만 기록, 세션 수는 증가 안 함)
  */
 export async function incrementLocalMinutesAsync(
   minutes: number = 1
@@ -135,8 +136,8 @@ export async function incrementLocalMinutesAsync(
   }
   await saveLocalTodayStatsAsync(updated)
 
-  // 히스토리에도 기록 (대시보드용)
-  await recordToHistory(minutes)
+  // 히스토리에 분만 기록 (세션 수는 증가 안 함)
+  await recordToHistory(minutes, false)
 
   return updated
 }
@@ -144,6 +145,7 @@ export async function incrementLocalMinutesAsync(
 /**
  * 동기 버전 (하위 호환성)
  * @deprecated incrementLocalMinutesAsync 사용 권장
+ * - daily_stats와 history 모두 업데이트 (분만 기록, 세션 수는 증가 안 함)
  */
 export function incrementLocalMinutes(minutes: number = 1): LocalDailyStats {
   const current = getLocalTodayStats()
@@ -154,8 +156,8 @@ export function incrementLocalMinutes(minutes: number = 1): LocalDailyStats {
   }
   saveLocalTodayStats(updated)
 
-  // 히스토리에도 기록 (대시보드용) - 백그라운드
-  recordToHistory(minutes)
+  // 히스토리에 분만 기록 (세션 수는 증가 안 함)
+  recordToHistory(minutes, false)
 
   return updated
 }

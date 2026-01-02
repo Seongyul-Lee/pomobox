@@ -34,225 +34,170 @@
 
 ---
 
-## [1차 기능 구현 목표]
+## [1차 기능 구현 - 완료]
 
 ### 페이지 구성
-- 메인 페이지, 로그인 페이지, 회원가입 페이지, Privacy 페이지
+- 메인 페이지 (`app/[locale]/page.tsx`): 타이머 + 대시보드 레이아웃
+- 로그인 페이지 (`app/[locale]/auth/login/page.tsx`): Email/Password + Google OAuth
+- 회원가입 페이지 (`app/[locale]/auth/signup/page.tsx`): Email 인증 방식
+- 비밀번호 찾기 (`app/[locale]/auth/forgot-password/page.tsx`)
+- 비밀번호 재설정 (`app/[locale]/update-password/page.tsx`)
+- Privacy 페이지 (`app/[locale]/privacy/page.tsx`)
+- 마이페이지 (`app/[locale]/mypage/page.tsx`): 계정 정보 및 삭제 기능
+- 가이드 페이지 (`app/[locale]/guide/what-is-pomodoro/page.tsx`): SEO용 포모도로 설명
 
-### 중앙 타이머
-- 정확한 타이머 상태/로직 (state-machine.ts)
-- Start, Reset, Skip 버튼 구현
-- Settings 다이얼로그: 알람(멜로디, 앰비언트), Focus/Break Duration, Daily Goal, Language(4개), 스크롤 바
+### 중앙 타이머 (`components/pomodoro-timer.tsx`)
+- 타이머 상태: idle → running → paused → completed
+- 버튼: Start/Pause/Resume, Reset, Skip (Focus ↔ Break 전환)
+- 진행률 원형 프로그레스 바 (SVG), 브라우저 탭 제목에 시간 표시
+- 키보드 단축키: Space(재생/일시정지), Escape(일시정지)
+- Focus 세션 완료 시 통계 기록, 4세션 연속 완료 시 Long Break (15분) 자동 전환
+- 일일 목표 달성 시 Confetti 애니메이션
 
-### 좌측 대시보드 (1초 간격 정확한 상태/통계)
-- Today Overview
-- Weekly Stats
-- This Week vs Last Week
-- Monthly Stats
+### Settings 다이얼로그 (`components/settings-dialog.tsx`)
+- Notifications: 브라우저 알림 On/Off
+- Sound: 카테고리별 알람 선택 (Melody 10종, Ambient 10종), 볼륨 슬라이더, 테스트 재생
+- Language: 4개 언어 (English, 한국어, 日本語, 简体中文)
+- Focus Duration: 15/25/45/60분
+- Break Duration: 5/10/15/30분
+- Daily Goal: 60/90/120/180/240분
+- 스크롤 바 지원, 타이머 실행 중 Duration 변경 비활성화
 
-### 우측 대시보드
-- BGM
-- Activity Calendar
-- Check In(출석) 기능 및 통계
+### 좌측 대시보드 (`components/dashboard-left.tsx`)
+- **Today Overview**: 오늘 집중 시간, 세션 수, 연속 스트릭, 일일 목표 진행률 바
+- **Weekly Stats**: 요일별 Bar Chart (Recharts), 총 세션, 일 평균 시간, 오늘 강조 색상
+- **This Week vs Last Week**: 시간/세션 비교, 전주 대비 % 변화 표시
+- **Monthly Stats**: 총 집중 시간, 총 세션, 일 평균, 활동일, 전월 대비 트렌드
+- 비로그인 시: Mock 데이터 + 블러 오버레이 + "로그인 필요" 표시
+- 실시간 업데이트: 1분 단위 자동 저장, 세션 종료 시 즉시 갱신
 
-### 레이아웃
-- 좌측/우측/하단 Ad Space 영역 나누기
-- QHD 기준 레이아웃 위치 고정
-- 해상도별 미디어 쿼리 대응
+### 우측 대시보드 (`components/dashboard-right.tsx`)
+- **BGM 패널**: LoFi 음악 재생기, 재생/일시정지, 이전/다음, 셔플, 반복 모드 (Off/All/One), 플레이리스트 팝오버, 볼륨 조절
+- **Activity Calendar**: 월간 캘린더 그리드, 날짜별 집중 시간 강도 색상, 클릭 시 상세 정보 (시간, 세션, 출석)
+- **Check In**: 일일 출석 체크 버튼, 월 출석 일수, 스트릭 통계 (현재/최고), 주간 출석률
+- 범례: 출석만 (파란색), 활동 강도 (연한 녹색 → 진한 녹색)
 
-### 테마
-- 다크 테마(기본값), 라이트 테마
-- (선택) Context7으로 테마 4개 추가 구현
+### 레이아웃 (`app/[locale]/page.tsx`, `app/globals.css`)
+- 3단 그리드: 좌측 대시보드 (570px) | 중앙 타이머 (auto) | 우측 대시보드 (570px)
+- 하단: SEO 섹션 + 광고 여백 (h-24) + 최소 푸터 (Copyright, Privacy Policy, Guide 링크)
+- QHD (2560px) 기준 설계, FHD (1920px) 미디어 쿼리로 축소 대응
+- Glassmorphism 효과 (glass-card 클래스)
 
-### 인증 (1차)
-- Email/Password 로그인
+### 테마 (`components/theme-toggle.tsx`)
+- Midnight (기본값, Sparkles 아이콘): 깊은 보라-회색 톤
+- Dark (Moon 아이콘): 순수 다크 모드
+- Light (Sun 아이콘): 밝은 테마
+- 드롭다운 메뉴로 선택, 우측 하단 고정 위치 (md 이상만 표시)
+- 3개 테마 모두 Glassmorphism 효과 통일
+
+### 인증 (`components/auth-form.tsx`, `lib/supabase/`)
+- Email/Password 로그인/회원가입
 - Google OAuth 지원
-- Sign up: Email 인증 방식
+- 비밀번호 찾기 (이메일 링크 방식)
+- 비밀번호 재설정 페이지
+- 마이페이지: 계정 정보 확인, 계정 삭제 기능
+- Supabase Auth 연동, Auth Callback 처리
+
+### 데이터 동기화 (`lib/sync/`, `lib/storage/`, `lib/supabase/`)
+- 비로그인: IndexedDB/localStorage에 로컬 저장
+- 로그인: Supabase PostgreSQL 저장, React Query로 서버 상태 관리
+- 1분 단위 자동 저장 (Focus 세션 중), 세션 완료 시 즉시 기록
+- 로그인 시 로컬 데이터 → Supabase 마이그레이션
 
 ### 모바일 최적화
-- Ad 전체 제거 (추후 환경에 맞게 추가)
-- 우측 상단에 Settings 다이얼로그
-- 세로(Column) 레이아웃: 타이머 → 통계
-- 통계 카드 Swipe (가로 스크롤): Activity Calendar → Today Overview → Weekly Stats → This Week vs Last Week → Monthly Stats
-- 터치 최적화: 버튼 최소 44px × 44px, 여백 확보
-- Tailwind Mobile First: 기본 = 모바일, md: = 데스크탑
+- xl 미만: 좌/우 대시보드 숨김, 타이머 하단에 세로 배치 (BGM → 통계)
+- 타이머 중앙 표시, 제목/설명 md 이상에서만 표시
+- 테마 토글: md 이상에서만 표시
+- Tailwind Mobile First: 기본 = 모바일, md/xl 프리픽스로 데스크탑 스타일 적용
+- 터치 최적화: 버튼 크기 확보, 충분한 여백
 
 ---
 
 ## [2차 기능 구현 목표]
 
-### 좌측 사이드바 (대시보드 대체)
-- 상단: pomobox.app 아이콘
-- 중단: Timer, Task, 통계 아이콘, Settings
-- 하단: "Sign in" 버튼
+### 좌측 사이드바 (Global Navigation)
+- 기존 좌측 대시보드를 대체하는 앱의 핵심 내비게이션 영역
+- 위치/크기: 화면 좌측 고정 (Width: 64px ~ 80px)
+- 상단: pomobox 심볼 아이콘
+- 중단 (메뉴):
+  - Timer: 메인 타이머 화면으로 이동
+  - Task: 메인 화면 내 좌측 Task 패널 토글 (Toggle)
+  - Statistics: 상세 통계 페이지(/stats)로 이동
+  - Settings: 설정 다이얼로그 호출
+- 하단:
+  - User Profile: 로그인 시 아바타 표시 (클릭 시 마이페이지/로그아웃 메뉴)
+  - Sign in: 비로그인 시 로그인 버튼
+
+### 메인 페이지 레이아웃 (Dynamic Layout)
+- Task 패널의 활성화 여부에 따라 중앙 타이머의 위치가 유동적으로 조정
+- 구조: [사이드바] - [Task 패널(가변)] - [중앙 타이머 영역(Flex)] - [우측 위젯] - [광고 영역]
+- 동작 방식:
+  - Task 닫힘 (기본): Task 패널 너비 0. 중앙 타이머는 사이드바와 우측 위젯 사이의 남은 공간 정중앙에 위치
+  - Task 열림: Task 패널이 좌측에서 슬라이드(Push)되어 나오며 공간 차지. 중앙 타이머 영역은 줄어든 공간 내에서 다시 중앙 정렬
+- 우측 영역: BGM 패널, Activity Calendar 탭 유지
+- 우측 끝: Google AdSense 수직 배너 영역 (데스크탑 전용)
 
 ### Task 기능
-- 좌측에서 우측으로 슬라이드 탭
-- 텍스트로 작업 작성/편집/삭제
-- 최대 30개 작업 (스크롤 바)
-- 비로그인: localStorage 저장
-- 로그인: Supabase 저장
+- UI: 메인 페이지 좌측 사이드바 바로 옆에서 열리는 슬라이드 패널 (Slide-out Drawer)
+- 기능:
+  - 텍스트 기반의 빠른 작업 작성/수정/삭제
+  - 체크박스로 완료 처리
+  - 최대 30개 아이템 제한 (내부 스크롤 바 제공)
+- 데이터 저장:
+  - 비로그인: localStorage에 즉시 저장
+  - 로그인: Supabase 연동 (작성/수정 시 자동 저장)
 
-### 통계 페이지
-- Weekly Stats: Area/Line/Bar chart 옵션
-- This Week vs Last Week: 전주 대비 비교
-- Rolling 4-Week: 최근 4주 데이터 (오늘 기준 역산)
-  - 예: 12월 3일 → [11월 2주 | 11월 3주 | 11월 4주 | 12월 1주]
-  - 데이터 없는 주: 연한 회색 빈 막대
+### 통계 페이지 (/stats)
+- 별도의 전체 페이지로 구현하며, 기존 좌측 대시보드의 미니 차트들은 삭제하거나 이 페이지로 통합
+- Weekly Stats (패턴 분석):
+  - 컨셉: "이번 주 나의 집중 리듬은?" (Volume & Pattern)
+  - UI 구성: Chart Selector (Bar/Area/Line), Main Chart (요일별 집중 시간 절대량), 데이터 범위(이번 주 한정)
+  - 인터랙션: 마우스 호버 시 상세 시간(분/시간) 툴팁 표시
+- This Week vs Last Week (성장 분석):
+  - 컨셉: "지난주보다 성장했는가?" (Growth & Gap)
+  - UI 구성: KPI 스코어카드 형태 (차트보다는 숫자 강조)
+  - 표현 방식: 증감 지표(▲ 15%, ▼ 20m), 비교 텍스트("지난주 동시간 대비 30분 더 집중했습니다.")
+- Rolling 4-Week (장기 흐름):
+  - 컨셉: 최근 한 달간의 추세
+  - 기준: **주차 시작은 월요일(Monday)을 기준으로 함** (ISO-8601 준수)
+  - 로직: 오늘 날짜 기준 과거 4주 데이터를 역산하여 표시 (예: [W-3] | [W-2] | [W-1] | [This Week])
+  - Empty State: 데이터가 없는 주간은 연한 회색의 빈 막대(Placeholder)와 "No Data" 표시
+
+### 백엔드 및 데이터 연동 (Backend Support)
+- 기존 프로젝트 아키텍처(Direct Supabase Client + React Query)를 유지하며 구현
+- Task 데이터 연동 (lib/supabase/tasks.ts):
+  - 기존 테이블 활용: 이미 생성된 tasks 테이블과 RLS 정책 그대로 사용
+  - CRUD 함수 구현: fetchTasks, createTask, updateTask, deleteTask 함수 작성
+  - React Query 훅: useTasks, useTaskMutations 등을 구현하여 낙관적 업데이트(Optimistic Update) 지원
+- 통계 데이터 고도화 (lib/supabase/stats.ts):
+  - 범위 쿼리 추가: daily_stats 테이블에서 특정 기간(startDate ~ endDate) 데이터를 가져오는 함수 추가
+  - 비교 로직(Comparison): 별도 API Route 없이 프론트엔드(lib/hooks/useStatsComparison.ts)에서 '이번 주'와 '지난주' 데이터를 조회하여 비교 계산
+  - Rolling 4-Week: daily_stats에서 최근 28일~30일 치 데이터를 한 번에 가져와 프론트엔드에서 주차별로 그룹핑(Grouping) 처리
 
 ---
 
 ## [3차 기능 완성 목표]
 
 ### 로그인 유도
-- 비로그인 사용자 첫 세션 완료 시 팝업/대시보드
-- 예시: "첫 세션 완료! 기록을 남기고 싶다면 로그인하세요."
+- 비로그인 사용자 첫 세션 완료 시 팝업 또는 대시보드 알림
+- 조건: `localStorage`의 `hasShownLoginPrompt` 플래그를 확인하여 **최초 1회만 노출** (사용자 경험 보호)
+- 예시: "첫 세션 완료! 기록을 영구히 저장하고 싶다면 로그인하세요."
+- 백엔드: 별도 작업 없음
 
-### 고급 통계
-- 시간대별 집중도 (Focus Distribution by Time): 24시간 라인 차트/히트맵
-- 카테고리/태그별 비중 (Focus Categories): Donut/Pie Chart
-- 집중 스트릭 (Focus Streak): "현재 5일 연속!", "최대: 15일"
-- 집중 vs 휴식 비율 (Focus to Break Ratio): 최근 6개월
-
----
-
-## 백엔드 아키텍처 (Supabase)
-
-### 인증 (Supabase Auth)
-
-| 방식 | 설명 |
-|------|------|
-| Email/Password | 기본 인증 |
-| Google OAuth | 소셜 로그인 |
-| Email 인증 | Magic Link 또는 OTP |
-
-### 데이터베이스 스키마 (PostgreSQL)
-
-```sql
--- 사용자 (Supabase Auth 연동)
-users (
-  id UUID PRIMARY KEY REFERENCES auth.users,
-  email TEXT,
-  display_name TEXT,
-  timezone TEXT DEFAULT 'Asia/Seoul',
-  created_at TIMESTAMPTZ DEFAULT now()
-)
-
--- Focus 세션 기록
-focus_sessions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id),
-  duration_minutes INTEGER NOT NULL,
-  completed_at TIMESTAMPTZ DEFAULT now(),
-  category TEXT,  -- 3차: 카테고리/태그
-  INDEX idx_user_completed (user_id, completed_at)
-)
-
--- 일별 집계 테이블 (성능 최적화)
-daily_stats (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id),
-  date DATE NOT NULL,
-  total_sessions INTEGER DEFAULT 0,
-  total_minutes INTEGER DEFAULT 0,
-  streak_count INTEGER DEFAULT 0,
-  UNIQUE(user_id, date)
-)
-
--- Task 목록 (2차)
-tasks (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id),
-  content TEXT NOT NULL,
-  completed BOOLEAN DEFAULT false,
-  order_index INTEGER,
-  created_at TIMESTAMPTZ DEFAULT now()
-)
-
--- Check-in 출석 (1차)
-check_ins (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id),
-  date DATE NOT NULL,
-  UNIQUE(user_id, date)
-)
-
--- 사용자 설정
-user_settings (
-  user_id UUID PRIMARY KEY REFERENCES users(id),
-  focus_duration INTEGER DEFAULT 25,
-  break_duration INTEGER DEFAULT 5,
-  long_break_duration INTEGER DEFAULT 15,
-  daily_goal INTEGER DEFAULT 8,
-  sound_enabled BOOLEAN DEFAULT true,
-  sound_type TEXT DEFAULT 'bell',
-  volume INTEGER DEFAULT 50,
-  language TEXT DEFAULT 'en'
-)
-```
-
-### Row Level Security (RLS)
-
-```sql
--- 모든 테이블에 RLS 활성화
-ALTER TABLE focus_sessions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE daily_stats ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
-
--- 정책: 본인 데이터만 접근
-CREATE POLICY "Users can only access own data"
-ON focus_sessions FOR ALL
-USING (auth.uid() = user_id);
-```
-
-### API 엔드포인트 (Next.js API Routes)
-
-| Method | Endpoint | 설명 |
-|--------|----------|------|
-| POST | `/api/sessions` | 세션 완료 기록 |
-| GET | `/api/stats/daily` | 일별 통계 조회 |
-| GET | `/api/stats/weekly` | 주간 통계 조회 |
-| GET | `/api/stats/monthly` | 월간 통계 조회 |
-| CRUD | `/api/tasks` | Task 관리 (2차) |
-| POST | `/api/check-in` | 출석 체크 |
-| GET/PUT | `/api/settings` | 사용자 설정 |
-
-### 데이터 동기화 정책
-
-| 상태 | 저장소 | 동기화 |
-|------|--------|--------|
-| 비로그인 | IndexedDB/localStorage | 로컬만 |
-| 로그인 시 | 로컬 → Supabase | 1회 마이그레이션 |
-| 로그인 후 | Supabase | 실시간 (Realtime 또는 polling) |
-
-### 마이그레이션 로직 (로그인 시)
-
-```typescript
-// 로그인 성공 후 실행
-async function migrateLocalData(userId: string) {
-  const localSessions = await getLocalSessions();  // IndexedDB
-
-  if (localSessions.length > 0) {
-    await supabase.from('focus_sessions').insert(
-      localSessions.map(s => ({ ...s, user_id: userId }))
-    );
-    await clearLocalSessions();  // 마이그레이션 후 로컬 삭제
-  }
-}
-```
-
-### 성능 최적화
-
-- **집계 테이블**: daily_stats로 일별 통계 미리 계산
-- **인덱스**: user_id + completed_at 복합 인덱스
-- **캐싱**: React Query staleTime 설정 (통계 5분, 실시간 데이터 30초)
-- **페이지네이션**: 히스토리 조회 시 cursor 기반 페이징
-
----
-
-## Quality Gates
-
-- 타입 오류 확인: `pnpm lint`
-- 빌드 확인: `pnpm build`
-- E2E 테스트: `pnpm e2e` (리스크 높은 변경 시)
-- 기준 통과할 때까지 작업 반복
+### 고급 통계: 시간대별 집중도 (Focus Distribution by Time)
+- **목표**: 사용자가 주로 어떤 시간대에 집중하는지 시각적으로 분석
+- **UI**: 24시간 라인 차트 또는 히트맵 (Heatmap)
+- **백엔드 및 데이터 연동 (성능 최적화 필수)**:
+  - **Supabase 데이터베이스 함수 (RPC) 생성**: `get_focus_distribution_by_hour`
+    - **역할**: 클라이언트에서 Raw 데이터를 모두 가져와 계산하는 대신, DB에서 시간대별 집계를 완료하여 최종 결과만 반환 (성능 최적화)
+    - **Input**: `user_id`, `start_date`, `end_date`, `user_timezone`
+    - **Logic**:
+      1. `focus_sessions` 테이블에서 특정 기간의 데이터를 조회
+      2. **필터 조건**: `session_type = 'focus'` (휴식 시간 제외, 순수 집중 시간만 집계)
+      3. `completed_at` (UTC) 타임스탬프를 `user_timezone` 기준으로 변환
+      4. 변환된 시간에서 '시간(hour)' 정보 추출
+      5. 시간대별(0-23시)로 `duration_minutes`를 합산(SUM)하여 그룹화
+    - **Output**: `{ "hour": 9, "total_minutes": 125 }` 형태의 JSON 배열
+  - **프론트엔드 연동**:
+    - `lib/supabase/stats.ts`에 RPC 호출 함수 추가
+    - `lib/queries/`에 해당 함수를 사용하는 React Query 훅(`useFocusDistributionQuery`) 생성 및 캐싱 전략 적용

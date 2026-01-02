@@ -21,7 +21,12 @@
     "dailyGoal": "일일 목표",
     "min": "분",
     "goalReached": "목표 달성! 수고하셨습니다!",
-    "goalHint": "세션 완료 시 추가"
+    "goalHint": "세션 완료 시 추가",
+    "timerRemaining": "{minutes}분 {seconds}초 남음",
+    "progressLabel": "{phase} 진행률: {progress}%",
+    "resetTimer": "타이머 초기화",
+    "skipToBreakLabel": "현재 집중 세션을 건너뛰고 휴식 시작",
+    "backToFocusLabel": "현재 휴식을 건너뛰고 집중 세션으로 돌아가기"
   },
   "Settings": {
     "title": "설정",
@@ -431,7 +436,8 @@
     "incorrectPassword": "현재 비밀번호가 올바르지 않습니다",
     "enterPasswordToDelete": "비밀번호를 입력하여 확인",
     "loggedInViaGoogle": "Google 로그인",
-    "backToMypage": "마이페이지로 돌아가기"
+    "backToMypage": "마이페이지로 돌아가기",
+    "serverConfigurationError": "서버 설정 오류입니다. 잠시 후 다시 시도해주세요."
   },
   "Guide": {
     "whatIsPomodoro": "포모도로 기법이란?",

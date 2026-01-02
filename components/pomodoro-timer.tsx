@@ -10,6 +10,7 @@ import { playSound } from "@/lib/sounds"
 import { useUser } from "@/hooks/use-user"
 import { recordSessionComplete, incrementDailyMinutes } from "@/lib/supabase/stats"
 import { getLocalTodayStats, incrementLocalMinutes, saveLocalTodayStats } from "@/lib/storage/local-stats"
+import { incrementHistorySession } from "@/lib/storage/local-history"
 import { GoalProgress } from "./goal-progress"
 import { useTimerStore, useSettingsStore, type TimerSettings } from "@/lib/store"
 
@@ -219,12 +220,15 @@ export function PomodoroTimer() {
       if (remainingMinutes > 0) {
         incrementLocalMinutes(remainingMinutes)
       }
-      // 세션 카운트 증가
+      // 세션 카운트 증가 (daily_stats)
       const localStats = getLocalTodayStats()
       saveLocalTodayStats({
         ...localStats,
         totalSessions: localStats.totalSessions + 1,
       })
+
+      // 히스토리에 세션 완료 기록
+      incrementHistorySession()
 
       // localStorage에서 최신 값 읽어와서 state 동기화
       const updatedStats = getLocalTodayStats()
@@ -356,6 +360,10 @@ export function PomodoroTimer() {
       }
 
       if (e.code === 'Space') {
+        // 버튼에 포커스된 경우 기본 동작(버튼 클릭) 허용
+        if (target.tagName === 'BUTTON' || target.closest('button')) {
+          return
+        }
         e.preventDefault()
         if (status === 'running') {
           handlePause()
@@ -467,8 +475,8 @@ export function PomodoroTimer() {
   ])
 
   return (
-    <div className="relative flex flex-col items-center gap-8">
-      <div className="absolute top-4 right-4">
+    <div className="relative flex flex-col items-center gap-6 sm:gap-8">
+      <div className="absolute top-0 right-0 sm:top-4 sm:right-4">
         <SettingsDialog
           settings={currentSettings}
           isRunning={status === 'running'}
@@ -478,7 +486,7 @@ export function PomodoroTimer() {
       </div>
 
       <div className="text-center">
-        <p className="text-2xl md:text-lg font-bold text-foreground uppercase tracking-wider mb-1 hover-title-outline">
+        <p className="text-lg sm:text-xl md:text-2xl font-bold text-foreground uppercase tracking-wider mb-1 hover-title-outline">
           {getTypeLabel()}
         </p>
         <p className="text-xs text-muted-foreground mb-2 hover-phase-label">
@@ -500,8 +508,15 @@ export function PomodoroTimer() {
         </div>
       </div>
 
-      <div className="relative flex items-center justify-center group">
-        <svg className="w-64 h-64 sm:w-72 sm:h-72 -rotate-90 hover-ring" viewBox="0 0 300 300">
+      <div
+        className="relative flex items-center justify-center group"
+        role="progressbar"
+        aria-valuenow={Math.round(progress)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={t('progressLabel', { phase: getTypeLabel(), progress: Math.round(progress) })}
+      >
+        <svg className="w-52 h-52 sm:w-64 sm:h-64 md:w-72 md:h-72 -rotate-90 hover-ring" viewBox="0 0 300 300" aria-hidden="true">
           <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-slate-300 dark:text-[oklch(100%_0_0/0.1)] transition-all duration-300" />
           <circle
             cx="150"
@@ -525,7 +540,13 @@ export function PomodoroTimer() {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-6xl font-mono font-bold tracking-tight tabular-nums text-foreground hover-timer-display">
+          <span
+            className="text-5xl sm:text-6xl font-mono font-bold tracking-tight tabular-nums text-foreground hover-timer-display"
+            role="timer"
+            aria-live="off"
+            aria-atomic="true"
+            aria-label={t('timerRemaining', { minutes, seconds })}
+          >
             {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
           </span>
         </div>
@@ -534,27 +555,33 @@ export function PomodoroTimer() {
       <div className="flex flex-col items-center gap-4">
         <div className="flex items-center gap-3">
           {status === 'running' ? (
-            <Button size="lg" onClick={handlePause} variant="secondary" className="gap-2 px-8 border-2 border-border dark:border-transparent hover:scale-105 transition-transform duration-200">
+            <Button size="lg" onClick={handlePause} variant="secondary" className="gap-2 px-6 sm:px-8 border-2 border-border dark:border-transparent hover:scale-105 transition-transform duration-200">
               <Pause className="h-5 w-5" />
               {t('pause')}
             </Button>
           ) : status === 'paused' ? (
-            <Button size="lg" onClick={handleResume} className="gap-2 px-8 glow-primary hover-glow hover-shine">
+            <Button size="lg" onClick={handleResume} className="gap-2 px-6 sm:px-8 glow-primary hover-glow hover-shine">
               <Play className="h-5 w-5" />
               {t('resume')}
             </Button>
           ) : (
-            <Button size="lg" onClick={handleStart} className="gap-2 px-8 glow-primary hover-glow hover-shine">
+            <Button size="lg" onClick={handleStart} className="gap-2 px-6 sm:px-8 glow-primary hover-glow hover-shine">
               <Play className="h-5 w-5" />
               {t('start')}
             </Button>
           )}
-          <Button size="lg" variant="outline" onClick={handleReset} aria-label="Reset timer" className="hover:scale-105 hover:bg-muted/50 transition-all duration-200">
+          <Button size="lg" variant="outline" onClick={handleReset} aria-label={t('resetTimer')} className="hover:scale-105 hover:bg-muted/50 transition-all duration-200">
             <RotateCcw className="h-5 w-5" />
           </Button>
         </div>
 
-        <Button size="sm" variant="ghost" onClick={handleSkip} className="group gap-2 text-muted-foreground hover:text-foreground/60 border border-muted-foreground/30 rounded-xl hover:bg-muted/50 hover:scale-105 transition-all duration-200">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={handleSkip}
+          aria-label={phase === 'focus' ? t('skipToBreakLabel') : t('backToFocusLabel')}
+          className="group gap-2 text-muted-foreground hover:text-foreground/60 border border-muted-foreground/30 rounded-xl hover:bg-muted/50 hover:scale-105 transition-all duration-200"
+        >
           <SkipForward className="h-4 w-4 drop-shadow-md transition-transform duration-200 group-hover:translate-x-0.5" />
           {phase === 'focus' ? t('skipToBreak') : t('backToFocus')}
         </Button>

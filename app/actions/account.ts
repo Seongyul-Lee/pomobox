@@ -79,13 +79,19 @@ export async function deleteAccount(
     }
 
     // Admin API로 유저 삭제 (CASCADE로 모든 데이터 자동 삭제)
-    const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(
-      user.id
-    )
+    try {
+      const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(
+        user.id
+      )
 
-    if (deleteError) {
-      console.error("Failed to delete user:", deleteError.message)
-      return { error: deleteError.message }
+      if (deleteError) {
+        console.error("Failed to delete user:", deleteError.message)
+        return { error: deleteError.message }
+      }
+    } catch (adminError) {
+      console.error("Admin client error:", adminError)
+      // 환경변수 누락 등의 설정 오류
+      return { error: "serverConfigurationError" }
     }
 
     // 세션 삭제 (쿠키 정리)

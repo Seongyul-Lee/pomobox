@@ -547,6 +547,9 @@ function MonthlyCard({ data, prevData, isLoggedIn, realtimeMinutes }: { data: Da
   )
 }
 
+// Export individual cards for mobile carousel
+export { TodayCard, WeeklyCard, WeeklyComparisonCard, MonthlyCard }
+
 export function DashboardLeft() {
   const { user } = useUser()
   const realtimeMinutes = useRealtimeFocusMinutes()

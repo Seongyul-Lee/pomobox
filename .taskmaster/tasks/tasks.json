@@ -26,16 +26,18 @@
         "status": "done",
         "subtasks": [
           {
-            "id": "97.1",
+            "id": 97.1,
             "title": "Task 목록 아이템 텍스트 줄바꿈 처리",
             "description": "truncate 제거, whitespace-normal break-all 적용, items-center→items-start 정렬, 체크박스 mt-0.5 추가",
-            "status": "done"
+            "status": "done",
+            "parentId": "undefined"
           },
           {
-            "id": "97.2",
+            "id": 97.2,
             "title": "Task 입력창 글자 수 제한 및 카운터 추가",
             "description": "maxLength 100, 실시간 카운터 (0/100) 표시, 90자 이상 text-red-500 경고 색상",
-            "status": "done"
+            "status": "done",
+            "parentId": "undefined"
           }
         ],
         "updatedAt": "2026-01-03T12:00:00.000Z"
@@ -154,8 +156,9 @@
         "dependencies": [
           "96"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-02T20:21:22.741Z"
       },
       {
         "id": "104",
@@ -383,9 +386,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-02T18:12:17.989Z",
+      "lastModified": "2026-01-02T20:21:22.741Z",
       "taskCount": 25,
-      "completedCount": 4,
+      "completedCount": 5,
       "tags": [
         "master"
       ]

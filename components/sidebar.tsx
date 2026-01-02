@@ -66,8 +66,8 @@ export function Sidebar() {
     {
       id: "statistics",
       icon: BarChart3,
-      href: "/dashboard",
-      isActive: isActive("/dashboard"),
+      href: "/stats",
+      isActive: isActive("/stats"),
     },
     {
       id: "settings",

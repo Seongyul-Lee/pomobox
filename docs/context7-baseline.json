@@ -332,26 +332,28 @@
   },
   {
     "topicName": "supabase-crud-operations",
-    "context7CompatibleLibraryID": "/supabase/supabase",
-    "topic": "insert upsert update select client javascript",
+    "context7CompatibleLibraryID": "/supabase/supabase-js",
+    "topic": "insert update delete select single order eq from table CRUD",
     "pageRange": "1",
-    "retrievedAt": "2025-12-25T00:00:00Z",
+    "retrievedAt": "2026-01-03T00:00:00Z",
     "keyAPIs": [
       ".from('table') - 테이블 선택",
-      ".insert({ data }) - 데이터 삽입",
-      ".upsert({ data }) - 삽입 또는 업데이트",
-      ".update({ data }).eq('col', val) - 조건부 업데이트",
-      ".select() - v2에서 데이터 반환 시 필수",
-      ".single() - 단일 행 반환"
+      ".insert({ data }).select().single() - 데이터 삽입 후 반환",
+      ".update({ data }).eq('col', val).select().single() - 조건부 업데이트",
+      ".delete().eq('col', val) - 조건부 삭제",
+      ".select('*').eq().order().limit() - 조회 + 필터 + 정렬",
+      ".single() - 단일 행 반환 (없으면 에러)"
     ],
     "constraints": [
-      "v2에서 insert/upsert 후 데이터 반환 시 .select() 필수",
-      "RLS 정책에 따라 data가 빈 객체일 수 있음",
-      "upsert는 unique constraint가 있는 컬럼 기준으로 동작",
-      "에러 핸들링: { data, error } 패턴 사용"
+      "v2에서 insert/update 후 데이터 반환 시 .select() 필수",
+      "RLS 정책에 따라 본인 데이터만 접근 가능",
+      "delete()는 조건 없이 호출 시 전체 삭제 (eq 필수)",
+      "에러 핸들링: { data, error } 패턴 사용",
+      "order()는 { ascending: false } 옵션으로 DESC 정렬"
     ],
     "appliesToFiles": [
-      "lib/supabase/stats.ts"
+      "lib/supabase/stats.ts",
+      "lib/supabase/tasks.ts"
     ]
   },
   {

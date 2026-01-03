@@ -577,7 +577,13 @@
     "markIncomplete": "标记为未完成",
     "deleteTask": "删除任务",
     "limitReached": "任务数量已满",
-    "limitReachedDesc": "删除已完成的任务后可以添加更多。"
+    "limitReachedDesc": "删除已完成的任务后可以添加更多。",
+    "migrationComplete": "任务已同步",
+    "migrationCompleteDesc": "本地任务已同步到您的账户。",
+    "migrationFailed": "同步失败",
+    "migrationFailedDesc": "任务同步失败，请重试。",
+    "fetchError": "加载任务失败",
+    "fetchErrorDesc": "无法加载任务，请刷新页面。"
   },
   "Guide": {
     "whatIsPomodoro": "什么是番茄钟？",

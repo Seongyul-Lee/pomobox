@@ -577,7 +577,13 @@
     "markIncomplete": "未完了にする",
     "deleteTask": "タスクを削除",
     "limitReached": "タスク数の上限",
-    "limitReachedDesc": "完了したタスクを削除すると追加できます。"
+    "limitReachedDesc": "完了したタスクを削除すると追加できます。",
+    "migrationComplete": "タスクを同期しました",
+    "migrationCompleteDesc": "ローカルタスクがアカウントに同期されました。",
+    "migrationFailed": "同期に失敗しました",
+    "migrationFailedDesc": "タスクの同期に失敗しました。もう一度お試しください。",
+    "fetchError": "タスクの読み込みに失敗しました",
+    "fetchErrorDesc": "タスクを読み込めません。ページを再読み込みしてください。"
   },
   "Guide": {
     "whatIsPomodoro": "ポモドーロとは？",

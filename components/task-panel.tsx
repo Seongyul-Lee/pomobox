@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useCallback } from "react"
 import { useTranslations } from "next-intl"
 import { X, Plus, Trash2, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -17,11 +17,31 @@ import {
   useTaskStore,
   selectIsTaskPanelOpen,
   selectTasks,
-  selectTaskCount,
   MAX_TASKS,
   type Task,
 } from "@/lib/store"
 import { useToast } from "@/hooks/use-toast"
+import { useUser } from "@/hooks/use-user"
+import {
+  useTasks,
+  useTaskMutations,
+  type SupabaseTask,
+} from "@/lib/queries/task-queries"
+
+/**
+ * SupabaseTask → 로컬 Task 형식으로 변환
+ */
+function convertSupabaseToLocal(task: SupabaseTask): Task {
+  return {
+    id: task.id,
+    title: task.title,
+    description: task.description ?? undefined,
+    isCompleted: task.is_completed,
+    priority: task.priority,
+    createdAt: task.created_at,
+    updatedAt: task.updated_at,
+  }
+}
 
 /**
  * useMediaQuery hook for responsive rendering
@@ -115,6 +135,22 @@ function TaskItem({
 }
 
 /**
+ * 로딩 스켈레톤 UI
+ */
+function TaskListSkeleton() {
+  return (
+    <div className="space-y-2">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="h-12 w-full rounded-lg bg-muted/50 animate-pulse"
+        />
+      ))}
+    </div>
+  )
+}
+
+/**
  * Task List Content (shared between desktop and mobile)
  */
 function TaskListContent({
@@ -126,12 +162,71 @@ function TaskListContent({
 }) {
   const t = useTranslations("Task")
   const { toast } = useToast()
+  const { user, loading: userLoading } = useUser()
+  const userId = user?.id ?? null
 
-  const tasks = useTaskStore(selectTasks)
-  const taskCount = useTaskStore(selectTaskCount)
-  const addTask = useTaskStore((state) => state.addTask)
-  const toggleTaskComplete = useTaskStore((state) => state.toggleTaskComplete)
-  const deleteTask = useTaskStore((state) => state.deleteTask)
+  // Zustand store (비로그인 사용자용)
+  const localTasks = useTaskStore(selectTasks)
+  const localAddTask = useTaskStore((state) => state.addTask)
+  const localToggleComplete = useTaskStore((state) => state.toggleTaskComplete)
+  const localDeleteTask = useTaskStore((state) => state.deleteTask)
+  const clearLocalTasks = useTaskStore((state) => state.clearLocalTasks)
+
+  // React Query (로그인 사용자용)
+  const {
+    data: supabaseTasks,
+    isLoading: tasksLoading,
+    isError,
+    error,
+  } = useTasks(userId)
+  const { addTask: addTaskMutation, toggleComplete, removeTask } = useTaskMutations(userId)
+
+  // 마이그레이션 완료 플래그
+  const [migrationDone, setMigrationDone] = useState(false)
+
+  // 로그인 시 localStorage → Supabase 마이그레이션
+  useEffect(() => {
+    if (user && localTasks.length > 0 && !migrationDone) {
+      const migrateLocalTasks = async () => {
+        try {
+          // 각 로컬 Task를 Supabase로 마이그레이션
+          for (const task of localTasks) {
+            await addTaskMutation.mutateAsync({
+              title: task.title,
+              description: task.description,
+              is_completed: task.isCompleted,
+              priority: task.priority,
+            })
+          }
+          // 마이그레이션 완료 후 localStorage 정리
+          clearLocalTasks()
+          setMigrationDone(true)
+          toast({
+            title: t("migrationComplete"),
+            description: t("migrationCompleteDesc"),
+          })
+        } catch {
+          toast({
+            title: t("migrationFailed"),
+            description: t("migrationFailedDesc"),
+            variant: "destructive",
+          })
+        }
+      }
+      migrateLocalTasks()
+    }
+  }, [user, localTasks, migrationDone, addTaskMutation, clearLocalTasks, toast, t])
+
+  // 에러 토스트
+  useEffect(() => {
+    if (isError && error) {
+      toast({
+        title: t("fetchError"),
+        description: t("fetchErrorDesc"),
+        variant: "destructive",
+      })
+    }
+  }, [isError, error, toast, t])
 
   const [inputValue, setInputValue] = useState("")
   const localInputRef = useRef<HTMLInputElement>(null)
@@ -145,22 +240,69 @@ function TaskListContent({
     return () => clearTimeout(timer)
   }, [effectiveInputRef])
 
-  const handleAddTask = () => {
+  // 통합된 Task 리스트
+  const tasks: Task[] = userId
+    ? (supabaseTasks ?? []).map(convertSupabaseToLocal)
+    : localTasks
+
+  const taskCount = tasks.length
+  const isLoading = userLoading || (!!userId && tasksLoading)
+
+  // Task 추가 핸들러
+  const handleAddTask = useCallback(() => {
     const trimmedValue = inputValue.trim()
     if (!trimmedValue) return
 
-    const result = addTask(trimmedValue)
-    if (result) {
+    if (userId) {
+      // 로그인 사용자: Supabase에 추가
+      if (taskCount >= MAX_TASKS) {
+        toast({
+          title: t("limitReached"),
+          description: t("limitReachedDesc"),
+          variant: "destructive",
+        })
+        return
+      }
+      addTaskMutation.mutate({ title: trimmedValue })
       setInputValue("")
     } else {
-      // 30개 제한 도달
-      toast({
-        title: t("limitReached"),
-        description: t("limitReachedDesc"),
-        variant: "destructive",
-      })
+      // 비로그인 사용자: localStorage에 추가
+      const result = localAddTask(trimmedValue)
+      if (result) {
+        setInputValue("")
+      } else {
+        toast({
+          title: t("limitReached"),
+          description: t("limitReachedDesc"),
+          variant: "destructive",
+        })
+      }
     }
-  }
+  }, [inputValue, userId, taskCount, addTaskMutation, localAddTask, toast, t])
+
+  // Task 토글 핸들러
+  const handleToggle = useCallback(
+    (id: string) => {
+      if (userId) {
+        toggleComplete.mutate(id)
+      } else {
+        localToggleComplete(id)
+      }
+    },
+    [userId, toggleComplete, localToggleComplete]
+  )
+
+  // Task 삭제 핸들러
+  const handleDelete = useCallback(
+    (id: string) => {
+      if (userId) {
+        removeTask.mutate(id)
+      } else {
+        localDeleteTask(id)
+      }
+    },
+    [userId, removeTask, localDeleteTask]
+  )
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -211,13 +353,14 @@ function TaskListContent({
             className="pl-9 pr-16"
             maxLength={100}
             aria-label={t("addPlaceholder")}
+            disabled={isLoading}
           />
           {/* Character Counter */}
           <span
             className={cn(
               "absolute right-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none",
               inputValue.length >= 90
-                ? "text-red-500"
+                ? "text-destructive"
                 : "text-muted-foreground/60"
             )}
             aria-live="polite"
@@ -230,7 +373,9 @@ function TaskListContent({
 
       {/* Task List */}
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
-        {tasks.length === 0 ? (
+        {isLoading ? (
+          <TaskListSkeleton />
+        ) : tasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
             <p className="text-sm">{t("emptyState")}</p>
           </div>
@@ -241,8 +386,8 @@ function TaskListContent({
               <TaskItem
                 key={task.id}
                 task={task}
-                onToggle={toggleTaskComplete}
-                onDelete={deleteTask}
+                onToggle={handleToggle}
+                onDelete={handleDelete}
               />
             ))}
 
@@ -258,8 +403,8 @@ function TaskListContent({
                   <TaskItem
                     key={task.id}
                     task={task}
-                    onToggle={toggleTaskComplete}
-                    onDelete={deleteTask}
+                    onToggle={handleToggle}
+                    onDelete={handleDelete}
                   />
                 ))}
               </>

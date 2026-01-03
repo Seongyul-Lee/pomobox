@@ -577,7 +577,13 @@
     "markIncomplete": "미완료로 표시",
     "deleteTask": "할 일 삭제",
     "limitReached": "할 일 개수 제한",
-    "limitReachedDesc": "완료된 할 일을 삭제하면 더 추가할 수 있습니다."
+    "limitReachedDesc": "완료된 할 일을 삭제하면 더 추가할 수 있습니다.",
+    "migrationComplete": "할 일 동기화 완료",
+    "migrationCompleteDesc": "로컬 할 일이 계정에 동기화되었습니다.",
+    "migrationFailed": "동기화 실패",
+    "migrationFailedDesc": "할 일 동기화에 실패했습니다. 다시 시도해주세요.",
+    "fetchError": "할 일 불러오기 실패",
+    "fetchErrorDesc": "할 일을 불러올 수 없습니다. 페이지를 새로고침해주세요."
   },
   "Guide": {
     "whatIsPomodoro": "포모도로 기법이란?",

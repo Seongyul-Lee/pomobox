@@ -2,19 +2,20 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import {
   ArrowLeft,
-  Info,
   Timer,
   BarChart3,
   Music,
   Calendar,
   Zap,
-  Globe,
   Shield,
-  Sparkles,
-  HelpCircle,
-  ChevronDown,
   Wifi,
   Eye,
+  ChevronDown,
+  Sparkles,
+  CheckCircle2,
+  Heart,
+  Github,
+  Globe,
 } from "lucide-react"
 
 const siteUrl = "https://pomobox.app"
@@ -40,68 +41,84 @@ export const metadata: Metadata = {
   },
 }
 
-function FeatureCard({
-  icon: Icon,
-  title,
-  description,
-}: {
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  description: string
-}) {
-  return (
-    <div className="p-5 rounded-xl border border-white/10 bg-white/5 hover:border-primary/30 transition-colors">
-      <div className="flex items-center gap-3 mb-2">
-        <div className="p-2 rounded-lg bg-primary/10">
-          <Icon className="h-5 w-5 text-primary" />
-        </div>
-        <h3 className="font-semibold text-foreground">{title}</h3>
-      </div>
-      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
-    </div>
-  )
-}
+// Data
+const FEATURES = [
+  {
+    icon: Timer,
+    title: "Smart Focus Sessions",
+    description: "Start a pomodoro in one click. Visual countdown keeps you on track. Customizable from 15-60 minutes.",
+    gradient: "from-violet-500/20 to-purple-500/20",
+  },
+  {
+    icon: BarChart3,
+    title: "Productivity Analytics",
+    description: "See your focus trends: daily hours, weekly streaks, and peak performance times.",
+    gradient: "from-emerald-500/20 to-green-500/20",
+  },
+  {
+    icon: Music,
+    title: "Focus-Enhancing Music",
+    description: "Curated lo-fi and ambient tracks scientifically shown to improve concentration.",
+    gradient: "from-amber-500/20 to-orange-500/20",
+  },
+  {
+    icon: Calendar,
+    title: "Progress Visualization",
+    description: "Activity heatmap shows your focus history at a glance. Streaks motivate consistency.",
+    gradient: "from-sky-500/20 to-cyan-500/20",
+  },
+]
 
-function DifferentiatorCard({
-  number,
-  title,
-  description,
-}: {
-  number: number
-  title: string
-  description: string
-}) {
-  return (
-    <div className="flex gap-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
-      <div className="flex-shrink-0">
-        <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary/20 text-primary text-sm font-bold">
-          {number}
-        </span>
-      </div>
-      <div>
-        <h3 className="font-semibold text-foreground mb-1">{title}</h3>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </div>
-    </div>
-  )
-}
+const DIFFERENTIATORS = [
+  {
+    icon: Shield,
+    title: "Open Source & Privacy First",
+    description: "Your data stays yours. No tracking, no paywalls, no premium tiers. Our code is public—anyone can review it.",
+  },
+  {
+    icon: BarChart3,
+    title: "Statistics That Matter",
+    description: "Most timer apps count seconds. Pomobox reveals productivity patterns: peak hours, weekly trends, long-term progress.",
+  },
+  {
+    icon: Zap,
+    title: "Built for Deep Work",
+    description: "Curated focus music, activity calendars, customizable timers—everything a knowledge worker needs.",
+  },
+  {
+    icon: Wifi,
+    title: "Works Offline",
+    description: "No internet? No problem. Pomobox works entirely offline with local data storage.",
+  },
+]
 
-function FaqItem({ question, answer }: { question: string; answer: string }) {
-  return (
-    <details className="group p-4 rounded-xl border border-white/10 hover:border-primary/30 transition-colors">
-      <summary className="flex items-center justify-between cursor-pointer list-none">
-        <span className="font-medium text-foreground pr-4">{question}</span>
-        <ChevronDown className="h-5 w-5 text-muted-foreground group-open:rotate-180 transition-transform flex-shrink-0" />
-      </summary>
-      <p className="mt-3 text-muted-foreground leading-relaxed">{answer}</p>
-    </details>
-  )
-}
+const FAQS = [
+  {
+    question: "Is Pomobox free? Will I have to pay later?",
+    answer: "Pomobox is completely free, forever. There are no premium tiers, hidden fees, or ads. We're open-source—our code is public and anyone can review it.",
+  },
+  {
+    question: "Do I need an account to use Pomobox?",
+    answer: "No account required. Start using Pomobox immediately. Your data is stored locally on your device. If you want to sync across devices, you can optionally sign in (still free).",
+  },
+  {
+    question: "How is Pomobox different from other apps?",
+    answer: "Most timer apps offer basic counting. Pomobox combines the timer with meaningful statistics, ambient focus music, and an activity calendar—helping you understand your productivity patterns.",
+  },
+  {
+    question: "Is my data secure?",
+    answer: "Your data never leaves your device unless you enable cloud sync. We use local IndexedDB storage. No third-party tracking, no analytics, no ads.",
+  },
+  {
+    question: "Can I export my data?",
+    answer: "Yes. All your statistics and session history can be exported. You own your data completely.",
+  },
+]
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6">
+    <main className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
+      <div className="max-w-4xl mx-auto py-8 md:py-12 px-4 sm:px-6">
         {/* Back Navigation */}
         <Link
           href="/"
@@ -111,187 +128,200 @@ export default function AboutPage() {
           Back to Pomobox
         </Link>
 
-        {/* Main Content Card */}
-        <div className="glass-card rounded-2xl p-6 sm:p-8">
-          {/* Header */}
-          <div className="text-center mb-10 pb-8 border-b border-white/10">
-            <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 mb-4">
-              <Info className="h-8 w-8 text-primary" />
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">About Pomobox</h1>
-            <p className="text-muted-foreground">Free, open-source productivity for everyone</p>
-          </div>
+        {/* Hero Section */}
+        <header className="text-center mb-16">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 mb-6">
+            <Sparkles className="h-3 w-3" />
+            About Us
+          </span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-4">
+            About Pomobox
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+            Free, open-source productivity for everyone
+          </p>
+        </header>
 
-          {/* What is Pomobox - Expanded */}
-          <section className="mb-10">
-            <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-              <Zap className="h-5 w-5 text-primary" />
+        {/* What is Pomobox */}
+        <section className="mb-16">
+          <div className="p-6 md:p-8 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50">
+            <h2 className="flex items-center gap-3 text-xl md:text-2xl font-semibold text-foreground mb-4">
+              <span className="p-2 rounded-xl bg-primary/10">
+                <Zap className="h-5 w-5 text-primary" />
+              </span>
               What is Pomobox?
             </h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                Pomobox is a <strong>free, open-source Pomodoro timer</strong> designed for distraction-free productivity.
-                Unlike generic timer apps, Pomobox combines three essential elements modern workers need:
+                Pomobox is a <strong className="text-foreground">free, open-source Pomodoro timer</strong> designed for distraction-free productivity. Unlike generic timer apps, Pomobox combines three essential elements:
               </p>
-
-              <div className="pl-4 border-l-2 border-primary/30 space-y-3">
-                <div>
-                  <p className="font-medium text-foreground">1. Focused Work Sessions</p>
-                  <p className="text-sm">
-                    The Pomodoro Technique is proven to increase focus by 25-40%.
-                    Pomobox removes friction by handling all timing automatically—no manual clock-watching,
-                    no complicated settings. Just click &quot;Start&quot; and eliminate distractions for 25 minutes.
-                  </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+                <div className="p-4 rounded-xl bg-background/50 dark:bg-background/30 border border-border/30">
+                  <div className="text-lg font-bold text-primary mb-1">1</div>
+                  <h3 className="font-medium text-foreground text-sm mb-1">Focused Sessions</h3>
+                  <p className="text-xs text-muted-foreground">Click "Start" and eliminate distractions for 25 minutes. No friction.</p>
                 </div>
-
-                <div>
-                  <p className="font-medium text-foreground">2. Real-Time Insights</p>
-                  <p className="text-sm">
-                    Not all focus time is equal. Pomobox tracks your productivity patterns with weekly and monthly statistics,
-                    showing you daily focus trends, peak concentration hours, current streaks, and progress visualization.
-                    Answer &quot;Am I more productive than last month?&quot; with real data.
-                  </p>
+                <div className="p-4 rounded-xl bg-background/50 dark:bg-background/30 border border-border/30">
+                  <div className="text-lg font-bold text-primary mb-1">2</div>
+                  <h3 className="font-medium text-foreground text-sm mb-1">Real-Time Insights</h3>
+                  <p className="text-xs text-muted-foreground">Weekly and monthly statistics reveal your productivity patterns.</p>
                 </div>
-
-                <div>
-                  <p className="font-medium text-foreground">3. Environmental Support</p>
-                  <p className="text-sm">
-                    Focus requires the right atmosphere. Pomobox includes curated lo-fi & ambient soundscapes
-                    proven to mask distracting sounds, a visual activity calendar showing your consistency,
-                    and customizable timer durations because one size doesn&apos;t fit all.
-                  </p>
+                <div className="p-4 rounded-xl bg-background/50 dark:bg-background/30 border border-border/30">
+                  <div className="text-lg font-bold text-primary mb-1">3</div>
+                  <h3 className="font-medium text-foreground text-sm mb-1">Environmental Support</h3>
+                  <p className="text-xs text-muted-foreground">Lo-fi music, visual calendar, customizable durations.</p>
                 </div>
               </div>
-
               <p>
-                Whether you&apos;re a student studying for exams, a developer deep in code, a writer fighting blank page anxiety,
-                or a manager protecting time for strategic thinking—Pomobox adapts to your needs.
-                <strong> You own your data. No paywalls. No premium features hidden behind subscriptions.</strong>
+                Whether you're a student studying for exams, a developer deep in code, a writer facing blank page anxiety, or a manager protecting time for strategic thinking—Pomobox adapts to your needs.
+                <strong className="text-foreground"> You own your data. No paywalls. No premium features hidden behind subscriptions.</strong>
               </p>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Why Choose Pomobox */}
-          <section className="mb-10">
-            <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              Why Choose Pomobox?
+        {/* Why Choose Pomobox */}
+        <section className="mb-16">
+          <div className="text-center mb-8">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <CheckCircle2 className="h-3 w-3" />
+              Why Choose Us
+            </span>
+            <h2 className="mt-4 text-2xl md:text-3xl font-bold text-foreground">
+              Why Pomobox?
             </h2>
-            <div className="space-y-3">
-              <DifferentiatorCard
-                number={1}
-                title="Open Source & Privacy First"
-                description="Your data stays yours. No tracking, no paywalls, no premium tiers. Our code is public—anyone can review it. Full transparency."
-              />
-              <DifferentiatorCard
-                number={2}
-                title="Statistics That Matter"
-                description="Most timer apps count seconds. Pomobox reveals your productivity patterns: peak focus hours, weekly trends, and long-term progress."
-              />
-              <DifferentiatorCard
-                number={3}
-                title="Built for Deep Work"
-                description="Curated focus music, activity calendars, and customizable timers—everything a knowledge worker needs. Nothing you don't."
-              />
-              <DifferentiatorCard
-                number={4}
-                title="Works Offline"
-                description="No internet? No problem. Pomobox works entirely offline with local data storage. Your productivity doesn't depend on connectivity."
-              />
-            </div>
-          </section>
+          </div>
 
-          {/* Key Features */}
-          <section className="mb-10">
-            <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-              <Globe className="h-5 w-5 text-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {DIFFERENTIATORS.map((item, idx) => {
+              const Icon = item.icon
+              return (
+                <div
+                  key={item.title}
+                  className="flex gap-4 p-5 md:p-6 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50 hover:border-primary/30 transition-colors"
+                >
+                  <div className="flex-shrink-0">
+                    <span className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary font-bold">
+                      {idx + 1}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Icon className="h-4 w-4 text-primary" />
+                      <h3 className="font-semibold text-foreground">{item.title}</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{item.description}</p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Key Features */}
+        <section className="mb-16">
+          <div className="text-center mb-8">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20">
+              <Globe className="h-3 w-3" />
+              Features
+            </span>
+            <h2 className="mt-4 text-2xl md:text-3xl font-bold text-foreground">
               Key Features
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FeatureCard
-                icon={Timer}
-                title="Smart Focus Sessions"
-                description="Start a pomodoro in one click. Visual countdown keeps you on track without distracting notifications. Customizable from 15-60 minutes."
-              />
-              <FeatureCard
-                icon={BarChart3}
-                title="Productivity Analytics"
-                description="See your focus trends: daily hours, weekly streaks, and peak performance times. Understand when you're most productive."
-              />
-              <FeatureCard
-                icon={Music}
-                title="Focus-Enhancing Music"
-                description="Curated lo-fi and ambient tracks scientifically shown to improve concentration. Block out background noise naturally."
-              />
-              <FeatureCard
-                icon={Calendar}
-                title="Progress Visualization"
-                description="Activity heatmap shows your focus history at a glance. Streaks motivate consistency. Watch productivity compound over time."
-              />
-            </div>
-          </section>
+          </div>
 
-          {/* Social Proof */}
-          <section className="mb-10 py-8 px-6 rounded-xl bg-muted/30 border border-border/50">
-            <h2 className="text-lg font-semibold text-foreground mb-6 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {FEATURES.map((feature) => {
+              const Icon = feature.icon
+              return (
+                <div
+                  key={feature.title}
+                  className={`p-5 md:p-6 rounded-2xl bg-gradient-to-br ${feature.gradient} border border-border/50 hover:scale-[1.02] transition-transform duration-300`}
+                >
+                  <div className="p-2.5 rounded-xl bg-background/80 dark:bg-background/50 w-fit mb-4">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-foreground mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Social Proof / Trust */}
+        <section className="mb-16">
+          <div className="p-8 md:p-10 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
+            <h2 className="text-center text-lg md:text-xl font-semibold text-foreground mb-8">
               Built for Focused Workers
             </h2>
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-6 md:gap-8">
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary mb-1">Free</div>
+                <div className="text-2xl md:text-3xl font-bold text-primary mb-2">Free</div>
                 <p className="text-xs text-muted-foreground">Forever, No Ads</p>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary mb-1">Open Source</div>
+              <div className="text-center border-x border-primary/20">
+                <div className="text-2xl md:text-3xl font-bold text-primary mb-2">Open</div>
                 <p className="text-xs text-muted-foreground">Full Transparency</p>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary mb-1">Private</div>
-                <p className="text-xs text-muted-foreground">Your Data, Your Device</p>
+                <div className="text-2xl md:text-3xl font-bold text-primary mb-2">Private</div>
+                <p className="text-xs text-muted-foreground">Your Data, Yours</p>
               </div>
             </div>
-          </section>
 
-          {/* About-Specific FAQ */}
-          <section className="mb-10">
-            <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-              <HelpCircle className="h-5 w-5 text-primary" />
+            {/* Trust badges */}
+            <div className="mt-8 flex flex-wrap justify-center gap-4 md:gap-6">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Eye className="h-4 w-4 text-emerald-500" />
+                <span>No Tracking</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Shield className="h-4 w-4 text-emerald-500" />
+                <span>No Data Selling</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Wifi className="h-4 w-4 text-emerald-500" />
+                <span>Works Offline</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground">
               Common Questions
             </h2>
-            <div className="space-y-3">
-              <FaqItem
-                question="Is Pomobox free? Will I have to pay later?"
-                answer="Pomobox is completely free, forever. There are no premium tiers, no hidden fees, and no ads. We're open-source, which means our code is public and anyone can review it."
-              />
-              <FaqItem
-                question="Do I need an account to use Pomobox?"
-                answer="No account required. You can start using Pomobox immediately. Your data is stored locally on your device. If you want to sync across devices, you can optionally sign in (still free)."
-              />
-              <FaqItem
-                question="How is Pomobox different from other Pomodoro apps?"
-                answer="Most timer apps offer basic counting. Pomobox combines the timer with meaningful statistics, ambient focus music, and an activity calendar. We focus on helping you understand your productivity patterns, not just counting minutes."
-              />
-              <FaqItem
-                question="Is my data secure? Where is it stored?"
-                answer="Your data never leaves your device unless you enable cloud sync. We use local IndexedDB storage and optional authentication. No third-party tracking, no analytics, no ads."
-              />
-              <FaqItem
-                question="Can I export my data?"
-                answer="Yes. All your statistics and session history can be exported. You own your data completely."
-              />
-            </div>
-          </section>
+          </div>
 
-          {/* Enhanced CTA */}
-          <div className="space-y-4 py-8 px-6 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
-            <div>
-              <p className="text-foreground font-semibold mb-2">Try It Free (No Sign-Up)</p>
-              <p className="text-sm text-muted-foreground mb-4">
-                Start your first pomodoro right now. No email, no account, no commitment.
-                Your data stays private and on your device.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3">
+          <div className="space-y-3">
+            {FAQS.map((faq) => (
+              <details
+                key={faq.question}
+                className="group p-4 md:p-5 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50 hover:border-primary/30 transition-colors"
+              >
+                <summary className="flex items-center justify-between cursor-pointer list-none">
+                  <span className="font-medium text-foreground pr-4">{faq.question}</span>
+                  <ChevronDown className="h-5 w-5 text-muted-foreground group-open:rotate-180 transition-transform flex-shrink-0" />
+                </summary>
+                <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="mb-8">
+          <div className="text-center p-8 md:p-10 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+            <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">
+              Try It Free (No Sign-Up)
+            </h3>
+            <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+              Start your first pomodoro right now. No email, no account, no commitment. Your data stays private on your device.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
@@ -301,23 +331,30 @@ export default function AboutPage() {
               </Link>
               <Link
                 href="/guide/what-is-pomodoro"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border hover:border-primary/50 text-foreground font-medium transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-border/50 hover:border-primary/50 text-foreground font-medium transition-colors"
               >
                 Read Pomodoro Guide
               </Link>
             </div>
           </div>
+        </section>
 
-          {/* Footer */}
-          <div className="mt-12 pt-8 border-t border-white/10">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors group"
-            >
-              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              Back to Pomobox
-            </Link>
-          </div>
+        {/* Made with Love */}
+        <div className="text-center py-6 text-sm text-muted-foreground">
+          <p className="flex items-center justify-center gap-2">
+            Made with <Heart className="h-4 w-4 text-rose-500" /> for focused workers everywhere
+          </p>
+        </div>
+
+        {/* Footer Navigation */}
+        <div className="pt-8 border-t border-border/50">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors group"
+          >
+            <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+            Back to Pomobox
+          </Link>
         </div>
       </div>
     </main>

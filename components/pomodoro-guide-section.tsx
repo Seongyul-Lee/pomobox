@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import {
-  Timer,
   Brain,
   Zap,
   ListTodo,
@@ -15,480 +14,310 @@ import {
   Calendar,
   ChevronDown,
   ArrowRight,
-  Users,
   Code,
   Pen,
   Briefcase,
   Globe,
+  Sparkles,
+  CheckCircle2,
 } from "lucide-react"
 
-// Shared content data
+// Compact step data for horizontal carousel
 const STEPS = [
-  {
-    number: 1,
-    icon: ListTodo,
-    title: "Choose a Task",
-    description:
-      "Select a task you want to work on. It can be anything - studying, coding, writing, or any work that needs your attention.",
-  },
-  {
-    number: 2,
-    icon: Clock,
-    title: "Set the Timer",
-    description:
-      "Set your timer for 25 minutes. This is one pomodoro. Commit to focusing solely on your task until the timer rings.",
-  },
-  {
-    number: 3,
-    icon: Target,
-    title: "Work with Focus",
-    description:
-      "Work on your task with full concentration. Avoid distractions and interruptions. If something pops up, note it and return to your task.",
-  },
-  {
-    number: 4,
-    icon: Coffee,
-    title: "Take a Break",
-    description:
-      "When the timer rings, take a 5-minute break. Step away from your work, stretch, or grab a drink. Let your mind rest.",
-  },
-  {
-    number: 5,
-    icon: Repeat,
-    title: "Repeat",
-    description:
-      "After 4 pomodoros, take a longer break (15-30 minutes). Then start a new cycle. Track your progress and celebrate your focus sessions!",
-  },
+  { number: 1, icon: ListTodo, title: "Choose Task", emoji: "📋" },
+  { number: 2, icon: Clock, title: "Set Timer", emoji: "⏱️" },
+  { number: 3, icon: Target, title: "Focus", emoji: "🎯" },
+  { number: 4, icon: Coffee, title: "Break", emoji: "☕" },
+  { number: 5, icon: Repeat, title: "Repeat", emoji: "🔄" },
 ]
 
 const BENEFITS = [
   {
     icon: Brain,
     title: "Fights Procrastination",
-    description:
-      "Research shows that 'planning fallacy' causes 40% of procrastination. A 25-minute pomodoro feels achievable, removing the mental barrier to start.",
+    description: "25 minutes feels achievable, removing the mental barrier to start.",
+    stat: "40%",
+    statLabel: "less procrastination",
   },
   {
     icon: Target,
     title: "Improves Focus",
-    description:
-      "Task-switching reduces productivity by 40% (Stanford research). Pomodoros train your brain to concentrate on one thing, entering 'flow state' faster.",
+    description: "Train your brain to concentrate and enter flow state faster.",
+    stat: "2x",
+    statLabel: "deeper focus",
   },
   {
     icon: Clock,
     title: "Prevents Burnout",
-    description:
-      "Neuroscience shows that structured breaks maximize cognitive performance. Pomodoro's rest periods prevent fatigue that kills long-term productivity.",
+    description: "Strategic breaks maximize cognitive performance.",
+    stat: "25%",
+    statLabel: "more sustainable",
   },
   {
     icon: Zap,
     title: "Builds Momentum",
-    description:
-      "Each completed pomodoro triggers dopamine release. Small wins create a positive feedback loop—from 'I should work' to 'I want to keep going.'",
+    description: "Small wins create a positive feedback loop.",
+    stat: "3x",
+    statLabel: "more productive",
   },
 ]
 
 const WHO_BENEFITS = [
-  {
-    icon: Brain,
-    title: "Students",
-    description:
-      "Pomodoro prevents burnout during long study sessions and helps you retain information better with strategic breaks.",
-  },
-  {
-    icon: Code,
-    title: "Developers & Engineers",
-    description:
-      "Avoid decision fatigue and context-switching. Pomodoros lead to fewer bugs and better code quality.",
-  },
-  {
-    icon: Pen,
-    title: "Writers & Creators",
-    description:
-      "Blank page anxiety disappears when you commit to 25 minutes. Pomodoro cycles help ideas percolate between sessions.",
-  },
-  {
-    icon: Briefcase,
-    title: "Professionals & Managers",
-    description:
-      "Create protected time for strategic thinking and deep work that moves projects forward.",
-  },
-  {
-    icon: Globe,
-    title: "Freelancers & Remote Workers",
-    description:
-      "Create natural work rhythms and track billable hours accurately without office structure.",
-  },
-  {
-    icon: Target,
-    title: "Anyone Fighting Distraction",
-    description:
-      "If you struggle with notifications or maintaining focus, Pomodoro provides the external structure your brain needs.",
-  },
+  { icon: Brain, title: "Students", emoji: "📚" },
+  { icon: Code, title: "Developers", emoji: "💻" },
+  { icon: Pen, title: "Writers", emoji: "✍️" },
+  { icon: Briefcase, title: "Professionals", emoji: "💼" },
+  { icon: Globe, title: "Remote Workers", emoji: "🌍" },
+  { icon: Target, title: "Anyone", emoji: "🎯" },
 ]
 
 const FEATURES = [
   {
     icon: Music,
     title: "Focus BGM",
-    description:
-      "Curated lo-fi and ambient music to help you concentrate. Our BGM player helps create the perfect atmosphere for deep work.",
+    description: "Curated lo-fi and ambient music for deep work",
+    gradient: "from-violet-500/20 to-purple-500/20",
   },
   {
     icon: BarChart3,
-    title: "Detailed Statistics",
-    description:
-      "Track your focus time, sessions, and streaks. Visualize your productivity patterns with weekly and monthly charts.",
+    title: "Statistics",
+    description: "Track focus time, sessions, and streaks",
+    gradient: "from-emerald-500/20 to-green-500/20",
   },
   {
     icon: Calendar,
     title: "Activity Calendar",
-    description:
-      "See your focus history at a glance. Daily check-ins and streak tracking keep you motivated and accountable.",
+    description: "Daily check-ins and streak tracking",
+    gradient: "from-amber-500/20 to-orange-500/20",
   },
 ]
 
 const FAQS = [
   {
     question: "What makes Pomodoro effective?",
-    answer:
-      "The Pomodoro Technique works because it aligns with how our brains naturally function. The 25-minute intervals match our natural attention span, making it easier to maintain focus. Regular breaks prevent mental fatigue and keep your mind fresh throughout the day.",
+    answer: "25-minute intervals match our natural attention span. Regular breaks prevent mental fatigue.",
   },
   {
-    question: "How do I get started with Pomodoro?",
-    answer:
-      "Getting started is simple: choose a task, set your timer for 25 minutes, and work with full focus until the timer rings. Take a 5-minute break, then repeat. After 4 sessions, take a longer 15-30 minute break. Pomobox handles all the timing for you automatically!",
+    question: "How do I get started?",
+    answer: "Choose a task, set 25 minutes, focus until the timer rings. Take a 5-minute break, repeat.",
   },
   {
-    question: "Can I customize the timer duration?",
-    answer:
-      "Yes! While the traditional Pomodoro is 25 minutes, you can adjust the focus and break durations to match your personal workflow. Some people prefer 50-minute sessions, while others find 15-minute bursts more effective.",
-  },
-  {
-    question: "What should I do during breaks?",
-    answer:
-      "Step away from your screen! Stretch, walk around, grab a drink, or do some light exercises. The key is to give your mind a real rest - avoid checking social media or emails, as these can be mentally draining.",
+    question: "Can I customize the timer?",
+    answer: "Yes! Adjust focus and break durations to match your workflow. 15-50 minutes work well.",
   },
 ]
 
-// Sub-components
-function SectionTitle({
-  icon: Icon,
-  children,
-}: {
-  icon: React.ComponentType<{ className?: string }>
-  children: React.ReactNode
-}) {
+// Section badge component
+function SectionBadge({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="flex items-center gap-3 text-xl md:text-2xl font-semibold text-foreground mb-6 group">
-      <span className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-        <Icon className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-      </span>
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+      <Sparkles className="h-3 w-3" />
       {children}
-    </h2>
+    </span>
   )
 }
 
-function StepCard({
-  number,
-  icon: Icon,
-  title,
-  description,
-}: {
-  number: number
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  description: string
-}) {
-  return (
-    <div className="flex gap-4 p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
-      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-        <span className="text-lg font-bold text-primary">{number}</span>
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <Icon className="h-4 w-4 text-primary" />
-          <h3 className="font-medium text-foreground">{title}</h3>
-        </div>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </div>
-    </div>
-  )
-}
-
-function BenefitCard({
-  icon: Icon,
-  title,
-  description,
-}: {
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  description: string
-}) {
-  return (
-    <div className="p-4 rounded-xl border border-white/10 bg-white/5 hover:border-primary/30 transition-colors">
-      <div className="flex items-center gap-2 mb-2">
-        <Icon className="h-5 w-5 text-primary" />
-        <h3 className="font-medium text-foreground">{title}</h3>
-      </div>
-      <p className="text-sm text-muted-foreground">{description}</p>
-    </div>
-  )
-}
-
-function FeatureCard({
-  icon: Icon,
-  title,
-  description,
-}: {
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  description: string
-}) {
-  return (
-    <div className="flex items-start gap-3 p-4 rounded-xl bg-primary/5 hover:bg-primary/10 transition-colors">
-      <Icon className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-      <div>
-        <h3 className="font-medium text-foreground mb-1">{title}</h3>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </div>
-    </div>
-  )
-}
-
-function FaqItem({ question, answer }: { question: string; answer: string }) {
-  return (
-    <details className="group p-4 rounded-xl border border-white/10 hover:border-primary/30 transition-colors">
-      <summary className="flex items-center justify-between cursor-pointer list-none">
-        <span className="font-medium text-foreground pr-4">{question}</span>
-        <ChevronDown className="h-5 w-5 text-muted-foreground group-open:rotate-180 transition-transform flex-shrink-0" />
-      </summary>
-      <p className="mt-3 text-muted-foreground leading-relaxed">{answer}</p>
-    </details>
-  )
-}
-
-// Guide section wrapper for scroll snap
-function GuideSection({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode
-  className?: string
-}) {
-  return (
-    <section
-      className={`guide-snap-section min-h-[75vh] flex flex-col justify-center px-4 py-12 md:py-16 ${className}`}
-    >
-      <div className="max-w-3xl mx-auto w-full">{children}</div>
-    </section>
-  )
-}
-
-// Main component for homepage (with scroll snap)
+// Main component for homepage - Modern editorial design
 export function PomodoroGuideSection() {
   return (
-    <div className="guide-snap-container md:ml-16 lg:ml-20">
-      {/* Section 1: What is Pomodoro - Problem-Solution Hook */}
-      <GuideSection>
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 mb-4">
-            <Timer className="h-8 w-8 text-primary" />
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-            Reclaim Your Focus in 25 Minutes
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            The Pomodoro Technique is proven to boost focus and cut procrastination
-          </p>
-        </div>
-        <div className="space-y-4 text-muted-foreground leading-relaxed">
-          <p>
-            <strong className="text-foreground">The Problem:</strong> You open your laptop to work, but 11 minutes
-            later, you&apos;re distracted. A Slack message. An email. A random YouTube video.
-            By lunchtime, you&apos;ve been &quot;working&quot; for hours but completed almost nothing.
-            Sound familiar?
-          </p>
-          <p>
-            <strong className="text-foreground">The Pomodoro Technique</strong> solves this by leveraging a simple
-            psychological principle: when you commit to focusing for just <em>25 minutes</em>,
-            your brain stops fighting. The task feels manageable. Distractions lose their power.
-          </p>
-          <p>
-            Created by Francesco Cirillo in the late 1980s (using an actual tomato-shaped
-            kitchen timer), this method has helped millions of students, developers, writers,
-            and professionals reclaim their focus. Pomobox brings this timeless technique
-            to the digital age with automation, statistics, and ambient focus music.
-          </p>
-        </div>
-      </GuideSection>
-
-      {/* Section 2: How to Use */}
-      <GuideSection>
-        <SectionTitle icon={ListTodo}>How to Use</SectionTitle>
-        <div className="space-y-3">
-          {STEPS.map((step) => (
-            <StepCard key={step.number} {...step} />
-          ))}
-        </div>
-      </GuideSection>
-
-      {/* Section 3: Why It Works */}
-      <GuideSection>
-        <SectionTitle icon={Zap}>Why It Works</SectionTitle>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {BENEFITS.map((benefit) => (
-            <BenefitCard key={benefit.title} {...benefit} />
-          ))}
-        </div>
-      </GuideSection>
-
-      {/* Section 4: Pomobox Features */}
-      <GuideSection>
-        <SectionTitle icon={Timer}>Why Pomobox?</SectionTitle>
-        <div className="space-y-3 mb-8">
-          {FEATURES.map((feature) => (
-            <FeatureCard key={feature.title} {...feature} />
-          ))}
-        </div>
-
-        {/* Social Proof */}
-        <div className="grid grid-cols-3 gap-3 p-6 rounded-xl bg-muted/30 border border-border/50">
-          <div className="text-center">
-            <p className="text-xl font-bold text-primary mb-1">Free</p>
-            <p className="text-xs text-muted-foreground">Forever, No Ads</p>
-          </div>
-          <div className="text-center">
-            <p className="text-xl font-bold text-primary mb-1">Open Source</p>
-            <p className="text-xs text-muted-foreground">Your Data, Your Control</p>
-          </div>
-          <div className="text-center">
-            <p className="text-xl font-bold text-primary mb-1">Private</p>
-            <p className="text-xs text-muted-foreground">Works Offline</p>
-          </div>
-        </div>
-      </GuideSection>
-
-      {/* Section 5: Who Benefits Most */}
-      <GuideSection>
-        <SectionTitle icon={Users}>Who Benefits Most?</SectionTitle>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {WHO_BENEFITS.map((item) => (
-            <BenefitCard key={item.title} {...item} />
-          ))}
-        </div>
-      </GuideSection>
-
-      {/* Section 6: FAQ */}
-      <GuideSection className="pb-24">
-        <SectionTitle icon={Brain}>Frequently Asked Questions</SectionTitle>
-        <div className="space-y-3">
-          {FAQS.map((faq) => (
-            <FaqItem key={faq.question} {...faq} />
-          ))}
-        </div>
-
-        {/* Enhanced CTA */}
-        <div className="mt-10 text-center">
-          <p className="text-sm text-muted-foreground mb-4">
-            Want to master Pomodoro? Learn best practices, common mistakes, and how to customize for your work style.
-          </p>
-          <Link
-            href="/guide/what-is-pomodoro"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary font-medium transition-colors group"
-          >
-            Read the Complete Guide
-            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </GuideSection>
-    </div>
-  )
-}
-
-// Standalone version for guide page (without scroll snap)
-export function PomodoroGuideContent({
-  variant = "standalone",
-}: {
-  variant?: "standalone" | "embedded"
-}) {
-  const containerClass =
-    variant === "standalone" ? "max-w-3xl mx-auto py-12 px-4 sm:px-6" : ""
-
-  return (
-    <div className={containerClass}>
-      {/* Hero */}
-      <header className="text-center mb-10 pb-8 border-b border-white/10">
-        <div className="inline-flex items-center justify-center p-3 rounded-xl bg-primary/10 mb-4">
-          <Timer className="h-8 w-8 text-primary" />
-        </div>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3">
-          What is the Pomodoro Technique?
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          Master your focus with time-boxed productivity
-        </p>
-      </header>
-
-      {/* Content */}
-      <div className="space-y-10">
-        {/* What is Pomodoro */}
-        <section>
-          <SectionTitle icon={Brain}>What is Pomodoro?</SectionTitle>
-          <div className="space-y-4 text-muted-foreground leading-relaxed">
-            <p>
-              The Pomodoro Technique is a time management method developed by
-              Francesco Cirillo in the late 1980s. It uses a timer to break work
-              into focused intervals (traditionally 25 minutes), separated by
-              short breaks.
-            </p>
-            <p>
-              Each interval is known as a &quot;pomodoro&quot;, named after the
-              tomato-shaped kitchen timer Cirillo used as a university student.
+    <div className="md:ml-16 lg:ml-20 bg-gradient-to-b from-transparent via-muted/30 to-muted/50 dark:via-background dark:to-muted/10">
+      {/* Hero Section - Bold typography, editorial style */}
+      <section className="px-4 py-16 md:py-24">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <SectionBadge>Productivity Method</SectionBadge>
+            <h2 className="mt-6 text-3xl md:text-5xl font-bold text-foreground tracking-tight">
+              Reclaim Your Focus
+              <span className="block text-primary mt-1">in 25 Minutes</span>
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+              The Pomodoro Technique transforms how you work—one focused session at a time.
             </p>
           </div>
-        </section>
 
-        {/* How to Use */}
-        <section>
-          <SectionTitle icon={ListTodo}>How to Use</SectionTitle>
-          <div className="space-y-3">
-            {STEPS.map((step) => (
-              <StepCard key={step.number} {...step} />
+          {/* Quick Stats Row */}
+          <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-12">
+            <div className="text-center">
+              <div className="text-2xl md:text-3xl font-bold text-primary">25</div>
+              <div className="text-xs text-muted-foreground">min focus</div>
+            </div>
+            <div className="text-center border-x border-border/50">
+              <div className="text-2xl md:text-3xl font-bold text-emerald-500">5</div>
+              <div className="text-xs text-muted-foreground">min break</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl md:text-3xl font-bold text-amber-500">4</div>
+              <div className="text-xs text-muted-foreground">cycles</div>
+            </div>
+          </div>
+
+          {/* Steps - Horizontal scroll on mobile, grid on desktop */}
+          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-4">
+            <div className="flex gap-3 md:grid md:grid-cols-5 min-w-max md:min-w-0">
+              {STEPS.map((step, idx) => (
+                <div
+                  key={step.number}
+                  className="relative flex flex-col items-center p-4 rounded-2xl bg-card/50 dark:bg-card/30 border border-border/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 w-28 md:w-auto shrink-0"
+                >
+                  <span className="text-2xl mb-2">{step.emoji}</span>
+                  <span className="text-xs font-bold text-primary mb-1">Step {step.number}</span>
+                  <span className="text-xs text-foreground font-medium text-center">{step.title}</span>
+                  {idx < STEPS.length - 1 && (
+                    <div className="hidden md:block absolute -right-2 top-1/2 -translate-y-1/2 text-muted-foreground/30">
+                      →
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section - Magazine card layout */}
+      <section className="px-4 py-12 md:py-16">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <SectionBadge>Science-Backed</SectionBadge>
+            <h2 className="mt-4 text-2xl md:text-3xl font-bold text-foreground">
+              Why It Works
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            {BENEFITS.map((benefit) => {
+              const Icon = benefit.icon
+              return (
+                <div
+                  key={benefit.title}
+                  className="group p-4 md:p-5 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <Icon className="h-5 w-5 text-primary" />
+                    <span className="text-lg md:text-xl font-bold text-primary">{benefit.stat}</span>
+                  </div>
+                  <h3 className="text-sm font-semibold text-foreground mb-1">{benefit.title}</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed hidden md:block">{benefit.description}</p>
+                  <p className="text-[10px] text-muted-foreground/70 mt-1">{benefit.statLabel}</p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section - Gradient cards */}
+      <section className="px-4 py-12 md:py-16">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <SectionBadge>Pomobox Features</SectionBadge>
+            <h2 className="mt-4 text-2xl md:text-3xl font-bold text-foreground">
+              Built for Deep Work
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {FEATURES.map((feature) => {
+              const Icon = feature.icon
+              return (
+                <div
+                  key={feature.title}
+                  className={`p-5 md:p-6 rounded-2xl bg-gradient-to-br ${feature.gradient} border border-border/50 hover:scale-[1.02] transition-transform duration-300`}
+                >
+                  <div className="p-2.5 rounded-xl bg-background/80 dark:bg-background/50 w-fit mb-4">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-base font-semibold text-foreground mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Trust badges */}
+          <div className="mt-8 flex flex-wrap justify-center gap-4 md:gap-8">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <span>Free Forever</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <span>Open Source</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <span>Works Offline</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Who Benefits - Compact chips */}
+      <section className="px-4 py-12 md:py-16">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground">
+              Perfect For
+            </h2>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+            {WHO_BENEFITS.map((item) => (
+              <div
+                key={item.title}
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/60 dark:bg-card/40 border border-border/50 hover:border-primary/30 transition-colors"
+              >
+                <span className="text-base">{item.emoji}</span>
+                <span className="text-sm font-medium text-foreground">{item.title}</span>
+              </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Why It Works */}
-        <section>
-          <SectionTitle icon={Zap}>Why It Works</SectionTitle>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {BENEFITS.map((benefit) => (
-              <BenefitCard key={benefit.title} {...benefit} />
-            ))}
+      {/* FAQ + CTA Section */}
+      <section className="px-4 py-12 md:py-16 pb-24">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground">
+              Quick FAQ
+            </h2>
           </div>
-        </section>
 
-        {/* Features */}
-        <section>
-          <SectionTitle icon={Timer}>Pomobox Features</SectionTitle>
-          <div className="space-y-3">
-            {FEATURES.map((feature) => (
-              <FeatureCard key={feature.title} {...feature} />
-            ))}
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section>
-          <SectionTitle icon={Brain}>FAQ</SectionTitle>
-          <div className="space-y-3">
+          <div className="space-y-3 mb-10">
             {FAQS.map((faq) => (
-              <FaqItem key={faq.question} {...faq} />
+              <details
+                key={faq.question}
+                className="group p-4 rounded-xl bg-card/60 dark:bg-card/40 border border-border/50 hover:border-primary/30 transition-colors"
+              >
+                <summary className="flex items-center justify-between cursor-pointer list-none">
+                  <span className="text-sm font-medium text-foreground pr-4">{faq.question}</span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground group-open:rotate-180 transition-transform flex-shrink-0" />
+                </summary>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
+              </details>
             ))}
           </div>
-        </section>
-      </div>
+
+          {/* CTA */}
+          <div className="text-center p-6 md:p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
+              Ready to Master Pomodoro?
+            </h3>
+            <p className="text-sm text-muted-foreground mb-5">
+              Learn best practices, common mistakes, and pro tips for your workflow.
+            </p>
+            <Link
+              href="/guide/what-is-pomodoro"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 group"
+            >
+              Read the Complete Guide
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
+

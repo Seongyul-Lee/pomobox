@@ -10,6 +10,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import {
   Play,
   Pause,
   SkipBack,
@@ -23,6 +29,9 @@ import {
   Music,
 } from "lucide-react"
 import { BGM_TRACKS, getBgmPlayer, type BgmTrack, type RepeatMode } from "@/lib/bgm"
+
+// Playback mode: shuffle → repeat-all → repeat-one → (cycle)
+type PlaybackMode = 'shuffle' | 'repeat-all' | 'repeat-one'
 
 // Track label lookup for English strings
 const TRACK_LABELS: Record<string, string> = {
@@ -42,13 +51,17 @@ export function BgmPanel() {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
   const [volume, setVolume] = useState(30)
   const [isMuted, setIsMuted] = useState(false)
-  const [isShuffled, setIsShuffled] = useState(false)
-  const [repeatMode, setRepeatMode] = useState<RepeatMode>('all')
+  // Combined playback mode: shuffle → repeat-all → repeat-one
+  const [playbackMode, setPlaybackMode] = useState<PlaybackMode>('repeat-all')
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [showVolume, setShowVolume] = useState(false)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const currentTrackIndexRef = useRef(currentTrackIndex)
+
+  // Derive shuffle and repeat from playbackMode
+  const isShuffled = playbackMode === 'shuffle'
+  const repeatMode: RepeatMode = playbackMode === 'repeat-one' ? 'one' : 'all'
 
   const player = typeof window !== "undefined" ? getBgmPlayer() : null
   const currentTrack = BGM_TRACKS[currentTrackIndex]
@@ -120,18 +133,12 @@ export function BgmPanel() {
     const handleTrackEnded = () => {
       const currentIdx = currentTrackIndexRef.current
 
-      if (repeatMode === 'off') {
-        // Stop playback
-        setIsPlaying(false)
-        return
-      }
-
       if (repeatMode === 'one') {
         // Single track repeat is handled by audio.loop
         return
       }
 
-      // repeatMode === 'all': play next track
+      // repeatMode === 'all': play next track (or shuffle)
       let nextIndex: number
       if (isShuffled) {
         do {
@@ -222,15 +229,12 @@ export function BgmPanel() {
     }
   }, [isShuffled, currentTrackIndex, isPlaying, playTrack])
 
-  const handleShuffle = useCallback(() => {
-    setIsShuffled((prev) => !prev)
-  }, [])
-
-  const handleRepeatToggle = useCallback(() => {
-    setRepeatMode((prev) => {
-      if (prev === 'off') return 'all'
-      if (prev === 'all') return 'one'
-      return 'off'
+  // Cycle through playback modes: shuffle → repeat-all → repeat-one
+  const handlePlaybackModeToggle = useCallback(() => {
+    setPlaybackMode((prev) => {
+      if (prev === 'shuffle') return 'repeat-all'
+      if (prev === 'repeat-all') return 'repeat-one'
+      return 'shuffle'
     })
   }, [])
 
@@ -280,79 +284,105 @@ export function BgmPanel() {
     [isPlaying, playTrack]
   )
 
+  // Get playback mode icon and label
+  const getPlaybackModeIcon = () => {
+    switch (playbackMode) {
+      case 'shuffle':
+        return <Shuffle className="h-3.5 w-3.5" strokeWidth={2.5} />
+      case 'repeat-one':
+        return <Repeat1 className="h-3.5 w-3.5" strokeWidth={2.5} />
+      default:
+        return <Repeat className="h-3.5 w-3.5" strokeWidth={2.5} />
+    }
+  }
+
+  const getPlaybackModeLabel = () => {
+    switch (playbackMode) {
+      case 'shuffle':
+        return 'Shuffle'
+      case 'repeat-one':
+        return 'Repeat One'
+      default:
+        return 'Repeat All'
+    }
+  }
+
   return (
-    <Card className="w-full glass-card border-0 overflow-hidden">
-      <CardContent className="pt-3 pb-4 px-4 space-y-3">
-        {/* Track Info with visualizer effect */}
-        <div className="flex items-center gap-3">
-          <div className={`relative p-2.5 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 hover-music-icon ${isPlaying ? 'music-playing' : ''}`}>
-            <Music className="h-5 w-5 text-primary" />
-            {/* Playing indicator bars */}
-            {isPlaying && (
-              <div className="absolute -right-0.5 -bottom-0.5 flex items-end gap-[2px]">
-                <span className="w-[3px] h-2 bg-primary rounded-full animate-music-bar-1" />
-                <span className="w-[3px] h-3 bg-primary rounded-full animate-music-bar-2" />
-                <span className="w-[3px] h-1.5 bg-primary rounded-full animate-music-bar-3" />
-              </div>
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold truncate hover-song-title">
-              {getTrackLabel(currentTrack.labelKey)}
-            </p>
-            <p className="text-xs text-muted-foreground/80">
-              {getCategoryLabel(currentTrack.category)}
-            </p>
-          </div>
-          {/* Volume Control */}
-          <Popover open={showVolume} onOpenChange={setShowVolume}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 shrink-0"
-                aria-label={isMuted || volume === 0 ? "Unmute" : "Mute"}
-              >
-                {isMuted || volume === 0 ? (
-                  <VolumeX className="h-4 w-4" strokeWidth={2.5} />
-                ) : (
-                  <Volume2 className="h-4 w-4" strokeWidth={2.5} />
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-40 p-3" align="end">
-              <div className="flex items-center gap-2">
+    <TooltipProvider delayDuration={300}>
+      <Card className="w-full glass-card border-0 overflow-hidden">
+        <CardContent className="pt-2.5 pb-3 px-3 space-y-2">
+          {/* Track Info + Progress in one row */}
+          <div className="flex items-center gap-2.5">
+            <div className={`relative p-2 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 hover-music-icon ${isPlaying ? 'music-playing' : ''}`}>
+              <Music className="h-4 w-4 text-primary" />
+              {isPlaying && (
+                <div className="absolute -right-0.5 -bottom-0.5 flex items-end gap-[1.5px]">
+                  <span className="w-[2px] h-1.5 bg-primary rounded-full animate-music-bar-1" />
+                  <span className="w-[2px] h-2.5 bg-primary rounded-full animate-music-bar-2" />
+                  <span className="w-[2px] h-1 bg-primary rounded-full animate-music-bar-3" />
+                </div>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold truncate hover-song-title leading-tight">
+                {getTrackLabel(currentTrack.labelKey)}
+              </p>
+              <p className="text-[10px] text-muted-foreground/70 leading-tight">
+                {getCategoryLabel(currentTrack.category)}
+              </p>
+            </div>
+            {/* Time Display */}
+            <div className="text-[10px] text-muted-foreground tabular-nums">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </div>
+            {/* Volume Control */}
+            <Popover open={showVolume} onOpenChange={setShowVolume}>
+              <PopoverTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6 shrink-0"
-                  onClick={handleMuteToggle}
                   aria-label={isMuted || volume === 0 ? "Unmute" : "Mute"}
                 >
                   {isMuted || volume === 0 ? (
-                    <VolumeX className="h-3 w-3" />
+                    <VolumeX className="h-3.5 w-3.5" strokeWidth={2.5} />
                   ) : (
-                    <Volume2 className="h-3 w-3" />
+                    <Volume2 className="h-3.5 w-3.5" strokeWidth={2.5} />
                   )}
                 </Button>
-                <Slider
-                  value={[isMuted ? 0 : volume]}
-                  onValueChange={handleVolumeChange}
-                  max={100}
-                  step={1}
-                  className="flex-1"
-                  aria-label="Volume"
-                />
-                <span className="text-xs text-muted-foreground w-7 text-right">
-                  {isMuted ? 0 : volume}
-                </span>
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-36 p-2.5" align="end">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-5 w-5 shrink-0"
+                    onClick={handleMuteToggle}
+                    aria-label={isMuted || volume === 0 ? "Unmute" : "Mute"}
+                  >
+                    {isMuted || volume === 0 ? (
+                      <VolumeX className="h-3 w-3" />
+                    ) : (
+                      <Volume2 className="h-3 w-3" />
+                    )}
+                  </Button>
+                  <Slider
+                    value={[isMuted ? 0 : volume]}
+                    onValueChange={handleVolumeChange}
+                    max={100}
+                    step={1}
+                    className="flex-1"
+                    aria-label="Volume"
+                  />
+                  <span className="text-[10px] text-muted-foreground w-6 text-right">
+                    {isMuted ? 0 : volume}
+                  </span>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
 
-        {/* Progress Bar */}
-        <div className="space-y-0.5">
+          {/* Progress Bar - compact */}
           <Slider
             value={[currentTime]}
             onValueChange={handleSeek}
@@ -361,115 +391,102 @@ export function BgmPanel() {
             className="w-full hover-music-bar"
             aria-label="Track progress"
           />
-          <div className="flex justify-between text-xs text-muted-foreground mt-2">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
-        </div>
 
-        {/* Playback Controls */}
-        <div className="flex items-center justify-between">
-          {/* Shuffle + Repeat */}
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`h-7 w-7 hover:scale-110 transition-all duration-200 ${isShuffled ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
-              onClick={handleShuffle}
-              aria-label="Shuffle"
-              aria-pressed={isShuffled}
-            >
-              <Shuffle className="h-4 w-4" strokeWidth={2.5} />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`h-7 w-7 hover:scale-110 transition-all duration-200 ${repeatMode !== 'off' ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
-              onClick={handleRepeatToggle}
-              aria-label={repeatMode === 'off' ? "Repeat off" : repeatMode === 'all' ? "Repeat all" : "Repeat one"}
-            >
-              {repeatMode === 'one' ? (
-                <Repeat1 className="h-4 w-4" strokeWidth={2.5} />
-              ) : (
-                <Repeat className="h-4 w-4" strokeWidth={2.5} />
-              )}
-            </Button>
-          </div>
+          {/* Playback Controls - compact */}
+          <div className="flex items-center justify-between">
+            {/* Unified Playback Mode Toggle */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 hover:scale-110 transition-all duration-200 text-primary"
+                  onClick={handlePlaybackModeToggle}
+                  aria-label={getPlaybackModeLabel()}
+                >
+                  {getPlaybackModeIcon()}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="text-xs">
+                {getPlaybackModeLabel()}
+              </TooltipContent>
+            </Tooltip>
 
-          {/* Center Controls: Previous / Play / Next */}
-          <div className="flex items-center gap-5">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200"
-              onClick={handlePrevious}
-              aria-label="Previous track"
-            >
-              <SkipBack className="h-4 w-4" strokeWidth={2.5} />
-            </Button>
+            {/* Center Controls: Previous / Play / Next */}
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 hover:scale-110 hover:text-primary transition-all duration-200"
+                onClick={handlePrevious}
+                aria-label="Previous track"
+              >
+                <SkipBack className="h-3.5 w-3.5" strokeWidth={2.5} />
+              </Button>
 
-            <Button
-              size="icon"
-              className={`h-11 w-11 rounded-full transition-all duration-300 ${
-                isPlaying
-                  ? 'bg-gradient-to-br from-primary to-primary/80 glow-primary shadow-lg shadow-primary/25'
-                  : 'bg-gradient-to-br from-primary to-primary/80 hover:shadow-lg hover:shadow-primary/30'
-              } hover:scale-110`}
-              onClick={handlePlayPause}
-              aria-label={isPlaying ? "Pause" : "Play"}
-            >
-              {isPlaying ? (
-                <Pause className="h-4 w-4 text-primary-foreground" strokeWidth={2.5} />
-              ) : (
-                <Play className="h-4 w-4 ml-0.5 text-primary-foreground" strokeWidth={2.5} />
-              )}
-            </Button>
+              <Button
+                size="icon"
+                className={`h-9 w-9 rounded-full transition-all duration-300 ${
+                  isPlaying
+                    ? 'bg-gradient-to-br from-primary to-primary/80 glow-primary shadow-lg shadow-primary/25'
+                    : 'bg-gradient-to-br from-primary to-primary/80 hover:shadow-lg hover:shadow-primary/30'
+                } hover:scale-110`}
+                onClick={handlePlayPause}
+                aria-label={isPlaying ? "Pause" : "Play"}
+              >
+                {isPlaying ? (
+                  <Pause className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={2.5} />
+                ) : (
+                  <Play className="h-3.5 w-3.5 ml-0.5 text-primary-foreground" strokeWidth={2.5} />
+                )}
+              </Button>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200"
-              onClick={handleNext}
-              aria-label="Next track"
-            >
-              <SkipForward className="h-4 w-4" strokeWidth={2.5} />
-            </Button>
-          </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 hover:scale-110 hover:text-primary transition-all duration-200"
+                onClick={handleNext}
+                aria-label="Next track"
+              >
+                <SkipForward className="h-3.5 w-3.5" strokeWidth={2.5} />
+              </Button>
+            </div>
 
-          {/* Playlist */}
-          <Popover>
+            {/* Playlist */}
+            <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200" aria-label="Playlist">
-                  <List className="h-4 w-4" strokeWidth={2.5} />
+                <Button variant="ghost" size="icon" className="h-6 w-6 hover:scale-110 hover:text-primary transition-all duration-200" aria-label="Playlist">
+                  <List className="h-3.5 w-3.5" strokeWidth={2.5} />
                 </Button>
               </PopoverTrigger>
-            <PopoverContent className="w-56 p-2" align="end">
-              <div className="space-y-1">
-                {BGM_TRACKS.map((track) => (
-                  <button
-                    key={track.id}
-                    onClick={() => handleSelectTrack(track)}
-                    className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left text-xs transition-colors ${
-                      track.id === currentTrack.id
-                        ? "bg-primary/10 text-primary"
-                        : "hover:bg-muted"
-                    }`}
-                  >
-                    {track.id === currentTrack.id && isPlaying ? (
-                      <span className="w-3.5 h-3.5 flex items-center justify-center">
-                        <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-                      </span>
-                    ) : (
-                      <Music className="h-3.5 w-3.5 text-muted-foreground" />
-                    )}
-                    <span className="truncate">{getTrackLabel(track.labelKey)}</span>
-                  </button>
-                ))}
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
-      </CardContent>
-    </Card>
+              <PopoverContent className="w-52 p-1.5" align="end">
+                <div className="space-y-0.5">
+                  {BGM_TRACKS.map((track) => (
+                    <button
+                      key={track.id}
+                      onClick={() => handleSelectTrack(track)}
+                      className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left text-xs transition-colors ${
+                        track.id === currentTrack.id
+                          ? "bg-primary/10 text-primary"
+                          : "hover:bg-muted"
+                      }`}
+                    >
+                      {track.id === currentTrack.id && isPlaying ? (
+                        <span className="w-3 h-3 flex items-center justify-center">
+                          <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                        </span>
+                      ) : (
+                        <Music className="h-3 w-3 text-muted-foreground" />
+                      )}
+                      <span className="truncate text-[11px]">{getTrackLabel(track.labelKey)}</span>
+                    </button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+        </CardContent>
+      </Card>
+    </TooltipProvider>
   )
 }

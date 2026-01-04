@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useRef, useState, useCallback } from "react"
-import { useTranslations } from "next-intl"
 import { X, Plus, Trash2, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -75,8 +74,6 @@ function TaskItem({
   onToggle: (id: string) => void
   onDelete: (id: string) => void
 }) {
-  const t = useTranslations("Task")
-
   return (
     <div
       className={cn(
@@ -101,7 +98,7 @@ function TaskItem({
             ? "bg-primary border-primary text-primary-foreground"
             : "border-muted-foreground/50 hover:border-primary"
         )}
-        aria-label={task.isCompleted ? t("markIncomplete") : t("markComplete")}
+        aria-label={task.isCompleted ? "Mark as incomplete" : "Mark as complete"}
       >
         {task.isCompleted && <Check className="w-3 h-3" aria-hidden="true" />}
       </button>
@@ -126,7 +123,7 @@ function TaskItem({
           "text-muted-foreground hover:text-destructive",
           "transition-opacity duration-200"
         )}
-        aria-label={t("deleteTask")}
+        aria-label="Delete task"
       >
         <Trash2 className="w-4 h-4" />
       </Button>
@@ -160,7 +157,6 @@ function TaskListContent({
   onClose: () => void
   inputRef?: React.RefObject<HTMLInputElement | null>
 }) {
-  const t = useTranslations("Task")
   const { toast } = useToast()
   const { user, loading: userLoading } = useUser()
   const userId = user?.id ?? null
@@ -202,31 +198,31 @@ function TaskListContent({
           clearLocalTasks()
           setMigrationDone(true)
           toast({
-            title: t("migrationComplete"),
-            description: t("migrationCompleteDesc"),
+            title: "Migration Complete",
+            description: "Your tasks have been synced to your account.",
           })
         } catch {
           toast({
-            title: t("migrationFailed"),
-            description: t("migrationFailedDesc"),
+            title: "Migration Failed",
+            description: "Failed to sync your tasks. Please try again.",
             variant: "destructive",
           })
         }
       }
       migrateLocalTasks()
     }
-  }, [user, localTasks, migrationDone, addTaskMutation, clearLocalTasks, toast, t])
+  }, [user, localTasks, migrationDone, addTaskMutation, clearLocalTasks, toast])
 
   // 에러 토스트
   useEffect(() => {
     if (isError && error) {
       toast({
-        title: t("fetchError"),
-        description: t("fetchErrorDesc"),
+        title: "Failed to load tasks",
+        description: "Please check your connection and try again.",
         variant: "destructive",
       })
     }
-  }, [isError, error, toast, t])
+  }, [isError, error, toast])
 
   const [inputValue, setInputValue] = useState("")
   const localInputRef = useRef<HTMLInputElement>(null)
@@ -257,8 +253,8 @@ function TaskListContent({
       // 로그인 사용자: Supabase에 추가
       if (taskCount >= MAX_TASKS) {
         toast({
-          title: t("limitReached"),
-          description: t("limitReachedDesc"),
+          title: "Limit Reached",
+          description: `You can only have up to ${MAX_TASKS} tasks.`,
           variant: "destructive",
         })
         return
@@ -272,13 +268,13 @@ function TaskListContent({
         setInputValue("")
       } else {
         toast({
-          title: t("limitReached"),
-          description: t("limitReachedDesc"),
+          title: "Limit Reached",
+          description: `You can only have up to ${MAX_TASKS} tasks.`,
           variant: "destructive",
         })
       }
     }
-  }, [inputValue, userId, taskCount, addTaskMutation, localAddTask, toast, t])
+  }, [inputValue, userId, taskCount, addTaskMutation, localAddTask, toast])
 
   // Task 토글 핸들러
   const handleToggle = useCallback(
@@ -320,7 +316,7 @@ function TaskListContent({
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-semibold">{t("title")}</h2>
+          <h2 className="text-lg font-semibold">Tasks</h2>
           <span className="text-sm text-muted-foreground">
             {taskCount}/{MAX_TASKS}
           </span>
@@ -330,7 +326,7 @@ function TaskListContent({
           size="icon"
           onClick={onClose}
           className="w-8 h-8"
-          aria-label={t("close")}
+          aria-label="Close"
         >
           <X className="w-4 h-4" />
         </Button>
@@ -349,10 +345,10 @@ function TaskListContent({
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={t("addPlaceholder")}
+            placeholder="Add a new task..."
             className="pl-9 pr-16"
             maxLength={100}
-            aria-label={t("addPlaceholder")}
+            aria-label="Add a new task"
             disabled={isLoading}
           />
           {/* Character Counter */}
@@ -377,7 +373,7 @@ function TaskListContent({
           <TaskListSkeleton />
         ) : tasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-            <p className="text-sm">{t("emptyState")}</p>
+            <p className="text-sm">No tasks yet. Add your first task above!</p>
           </div>
         ) : (
           <>
@@ -396,7 +392,7 @@ function TaskListContent({
               <>
                 <div className="pt-4 pb-2">
                   <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    {t("completed")} ({completedTasks.length})
+                    Completed ({completedTasks.length})
                   </span>
                 </div>
                 {completedTasks.map((task) => (
@@ -423,7 +419,6 @@ function DesktopTaskPanel() {
   const isOpen = useTaskStore(selectIsTaskPanelOpen)
   const closeTaskPanel = useTaskStore((state) => state.closeTaskPanel)
   const inputRef = useRef<HTMLInputElement>(null)
-  const t = useTranslations("Task")
 
   // Handle Escape key
   useEffect(() => {
@@ -439,7 +434,7 @@ function DesktopTaskPanel() {
   return (
     <aside
       role="complementary"
-      aria-label={t("ariaLabel")}
+      aria-label="Task panel"
       aria-hidden={!isOpen}
       className={cn(
         "fixed top-0 z-30 h-screen overflow-hidden",
@@ -465,7 +460,6 @@ function DesktopTaskPanel() {
 function MobileTaskSheet() {
   const isOpen = useTaskStore(selectIsTaskPanelOpen)
   const closeTaskPanel = useTaskStore((state) => state.closeTaskPanel)
-  const t = useTranslations("Task")
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && closeTaskPanel()}>
@@ -489,8 +483,8 @@ function MobileTaskSheet() {
         </div>
 
         <DialogHeader className="sr-only">
-          <DialogTitle>{t("title")}</DialogTitle>
-          <DialogDescription>{t("ariaLabel")}</DialogDescription>
+          <DialogTitle>Tasks</DialogTitle>
+          <DialogDescription>Task management panel</DialogDescription>
         </DialogHeader>
 
         <div className="h-[70vh]">

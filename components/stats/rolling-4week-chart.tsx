@@ -1,6 +1,5 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import {
   BarChart,
   Bar,
@@ -21,11 +20,7 @@ import {
 // Skeleton heights for loading state (hydration mismatch prevention)
 const SKELETON_HEIGHTS = [50, 70, 60, 80]
 
-interface CustomTooltipProps extends TooltipProps<number, string> {
-  tDashboard: ReturnType<typeof useTranslations<"Dashboard">>
-}
-
-function CustomTooltip({ active, payload, tDashboard }: CustomTooltipProps) {
+function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   if (!active || !payload || !payload.length) return null
 
   const data = payload[0].payload as RollingWeekData
@@ -38,8 +33,7 @@ function CustomTooltip({ active, payload, tDashboard }: CustomTooltipProps) {
   // Format time: "2h 30m"
   const hours = Math.floor(data.totalMinutes / 60)
   const minutes = data.totalMinutes % 60
-  const formattedTime =
-    hours > 0 ? `${hours}h ${minutes}m` : `${minutes}${tDashboard("minute")}`
+  const formattedTime = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`
 
   return (
     <div className="rounded-lg border bg-background/95 backdrop-blur-sm p-3 shadow-lg">
@@ -48,9 +42,7 @@ function CustomTooltip({ active, payload, tDashboard }: CustomTooltipProps) {
       </p>
       <div className="mt-1.5 space-y-0.5 text-sm text-muted-foreground">
         <p>{formattedTime}</p>
-        <p>
-          {data.totalSessions} {tDashboard("sessions")}
-        </p>
+        <p>{data.totalSessions} sessions</p>
       </div>
     </div>
   )
@@ -72,8 +64,6 @@ function SkeletonChart() {
 
 export function Rolling4WeekChart() {
   const { data, isLoading, error, refetch } = useRolling4WeekStats()
-  const t = useTranslations("Stats")
-  const tDashboard = useTranslations("Dashboard")
 
   // Y-axis max calculation (max value + 20%)
   const maxMinutes = Math.max(...data.map((d) => d.totalMinutes), 1)
@@ -91,7 +81,7 @@ export function Rolling4WeekChart() {
           className="flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm hover:bg-primary/90 transition-colors"
         >
           <RefreshCw className="h-4 w-4" />
-          {t("retry")}
+          Retry
         </button>
       </div>
     )
@@ -146,7 +136,7 @@ export function Rolling4WeekChart() {
             tickFormatter={formatYAxis}
           />
           <Tooltip
-            content={<CustomTooltip tDashboard={tDashboard} />}
+            content={<CustomTooltip />}
             cursor={{ fill: "var(--muted)", opacity: 0.3 }}
           />
           <Bar dataKey="totalMinutes" radius={[4, 4, 0, 0]} minPointSize={5}>

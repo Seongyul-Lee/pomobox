@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
-import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { Card, CardContent } from "@/components/ui/card"
@@ -25,8 +24,20 @@ import {
 } from "lucide-react"
 import { BGM_TRACKS, getBgmPlayer, type BgmTrack, type RepeatMode } from "@/lib/bgm"
 
+// Track label lookup for English strings
+const TRACK_LABELS: Record<string, string> = {
+  goodNightLofi: "Good Night Lofi",
+  lofiStudy: "Lofi Study",
+  chillStudyDesk: "Chill Study Desk",
+  christmasJazz: "Christmas Jazz",
+  silentNightPiano: "Silent Night (Piano)",
+  amazingGrace: "Amazing Grace",
+  silentNightOrchestra: "Silent Night (Orchestra)",
+  santasTreasure: "Santa's Treasure",
+  longStroll: "Long Stroll",
+}
+
 export function BgmPanel() {
-  const t = useTranslations("Bgm")
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
   const [volume, setVolume] = useState(30)
@@ -41,6 +52,18 @@ export function BgmPanel() {
 
   const player = typeof window !== "undefined" ? getBgmPlayer() : null
   const currentTrack = BGM_TRACKS[currentTrackIndex]
+
+  // Get track label from lookup
+  const getTrackLabel = (labelKey: string) => {
+    return TRACK_LABELS[labelKey] || labelKey
+  }
+
+  // Get category label
+  const getCategoryLabel = (category: string) => {
+    if (category === 'lofi') return "Lo-fi"
+    if (category === 'christmas') return "Christmas"
+    return category
+  }
 
   // Format time as MM:SS
   const formatTime = (seconds: number) => {
@@ -257,26 +280,27 @@ export function BgmPanel() {
     [isPlaying, playTrack]
   )
 
-  // Get category label
-  const getCategoryLabel = (category: string) => {
-    if (category === 'lofi') return t('categoryLofi')
-    if (category === 'christmas') return t('categoryChristmas')
-    return category
-  }
-
   return (
-    <Card className="w-full glass-card border-0">
-      <CardContent className="pt-0.5 pb-3 px-3 space-y-2.5">
-        {/* Track Info */}
-        <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-lg bg-primary/10 hover-music-icon">
+    <Card className="w-full glass-card border-0 overflow-hidden">
+      <CardContent className="pt-3 pb-4 px-4 space-y-3">
+        {/* Track Info with visualizer effect */}
+        <div className="flex items-center gap-3">
+          <div className={`relative p-2.5 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 hover-music-icon ${isPlaying ? 'music-playing' : ''}`}>
             <Music className="h-5 w-5 text-primary" />
+            {/* Playing indicator bars */}
+            {isPlaying && (
+              <div className="absolute -right-0.5 -bottom-0.5 flex items-end gap-[2px]">
+                <span className="w-[3px] h-2 bg-primary rounded-full animate-music-bar-1" />
+                <span className="w-[3px] h-3 bg-primary rounded-full animate-music-bar-2" />
+                <span className="w-[3px] h-1.5 bg-primary rounded-full animate-music-bar-3" />
+              </div>
+            )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate hover-song-title">
-              {t(currentTrack.labelKey)}
+            <p className="text-sm font-semibold truncate hover-song-title">
+              {getTrackLabel(currentTrack.labelKey)}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground/80">
               {getCategoryLabel(currentTrack.category)}
             </p>
           </div>
@@ -287,7 +311,7 @@ export function BgmPanel() {
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 shrink-0"
-                aria-label={isMuted || volume === 0 ? t('unmute') : t('mute')}
+                aria-label={isMuted || volume === 0 ? "Unmute" : "Mute"}
               >
                 {isMuted || volume === 0 ? (
                   <VolumeX className="h-4 w-4" strokeWidth={2.5} />
@@ -303,7 +327,7 @@ export function BgmPanel() {
                   size="icon"
                   className="h-6 w-6 shrink-0"
                   onClick={handleMuteToggle}
-                  aria-label={isMuted || volume === 0 ? t('unmute') : t('mute')}
+                  aria-label={isMuted || volume === 0 ? "Unmute" : "Mute"}
                 >
                   {isMuted || volume === 0 ? (
                     <VolumeX className="h-3 w-3" />
@@ -317,7 +341,7 @@ export function BgmPanel() {
                   max={100}
                   step={1}
                   className="flex-1"
-                  aria-label={t('volume')}
+                  aria-label="Volume"
                 />
                 <span className="text-xs text-muted-foreground w-7 text-right">
                   {isMuted ? 0 : volume}
@@ -335,7 +359,7 @@ export function BgmPanel() {
             max={duration || 100}
             step={1}
             className="w-full hover-music-bar"
-            aria-label={t('progress')}
+            aria-label="Track progress"
           />
           <div className="flex justify-between text-xs text-muted-foreground mt-2">
             <span>{formatTime(currentTime)}</span>
@@ -352,7 +376,7 @@ export function BgmPanel() {
               size="icon"
               className={`h-7 w-7 hover:scale-110 transition-all duration-200 ${isShuffled ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
               onClick={handleShuffle}
-              aria-label={t('shuffle')}
+              aria-label="Shuffle"
               aria-pressed={isShuffled}
             >
               <Shuffle className="h-4 w-4" strokeWidth={2.5} />
@@ -362,7 +386,7 @@ export function BgmPanel() {
               size="icon"
               className={`h-7 w-7 hover:scale-110 transition-all duration-200 ${repeatMode !== 'off' ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
               onClick={handleRepeatToggle}
-              aria-label={t(repeatMode === 'off' ? 'repeatOff' : repeatMode === 'all' ? 'repeatAll' : 'repeatOne')}
+              aria-label={repeatMode === 'off' ? "Repeat off" : repeatMode === 'all' ? "Repeat all" : "Repeat one"}
             >
               {repeatMode === 'one' ? (
                 <Repeat1 className="h-4 w-4" strokeWidth={2.5} />
@@ -379,21 +403,25 @@ export function BgmPanel() {
               size="icon"
               className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200"
               onClick={handlePrevious}
-              aria-label={t('previous')}
+              aria-label="Previous track"
             >
               <SkipBack className="h-4 w-4" strokeWidth={2.5} />
             </Button>
 
             <Button
               size="icon"
-              className="h-10 w-10 rounded-full glow-primary hover-glow hover:scale-110 transition-transform duration-200"
+              className={`h-11 w-11 rounded-full transition-all duration-300 ${
+                isPlaying
+                  ? 'bg-gradient-to-br from-primary to-primary/80 glow-primary shadow-lg shadow-primary/25'
+                  : 'bg-gradient-to-br from-primary to-primary/80 hover:shadow-lg hover:shadow-primary/30'
+              } hover:scale-110`}
               onClick={handlePlayPause}
-              aria-label={isPlaying ? t('pause') : t('play')}
+              aria-label={isPlaying ? "Pause" : "Play"}
             >
               {isPlaying ? (
-                <Pause className="h-4 w-4" strokeWidth={2.5} />
+                <Pause className="h-4 w-4 text-primary-foreground" strokeWidth={2.5} />
               ) : (
-                <Play className="h-4 w-4 ml-0.5" strokeWidth={2.5} />
+                <Play className="h-4 w-4 ml-0.5 text-primary-foreground" strokeWidth={2.5} />
               )}
             </Button>
 
@@ -402,7 +430,7 @@ export function BgmPanel() {
               size="icon"
               className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200"
               onClick={handleNext}
-              aria-label={t('next')}
+              aria-label="Next track"
             >
               <SkipForward className="h-4 w-4" strokeWidth={2.5} />
             </Button>
@@ -411,7 +439,7 @@ export function BgmPanel() {
           {/* Playlist */}
           <Popover>
               <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200" aria-label={t('playlist')}>
+                <Button variant="ghost" size="icon" className="h-7 w-7 hover:scale-110 hover:text-primary transition-all duration-200" aria-label="Playlist">
                   <List className="h-4 w-4" strokeWidth={2.5} />
                 </Button>
               </PopoverTrigger>
@@ -434,7 +462,7 @@ export function BgmPanel() {
                     ) : (
                       <Music className="h-3.5 w-3.5 text-muted-foreground" />
                     )}
-                    <span className="truncate">{t(track.labelKey)}</span>
+                    <span className="truncate">{getTrackLabel(track.labelKey)}</span>
                   </button>
                 ))}
               </div>

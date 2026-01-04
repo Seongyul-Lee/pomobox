@@ -1,6 +1,5 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { TrendingUp, TrendingDown, Minus, Clock, Target, CalendarDays, RefreshCw } from "lucide-react"
 
 import { useWeekComparison } from "@/hooks/use-week-comparison"
@@ -25,8 +24,6 @@ function KPICard({
   trend,
   icon,
 }: KPICardProps) {
-  const t = useTranslations("Stats")
-
   const trendIcon = {
     up: <TrendingUp className="h-4 w-4" />,
     down: <TrendingDown className="h-4 w-4" />,
@@ -61,7 +58,7 @@ function KPICard({
       {/* Last Week + Trend */}
       <div className="flex items-center justify-between gap-2">
         <span className="text-sm text-muted-foreground">
-          {t("lastWeekLabel")}: {lastWeekValue}
+          Last week: {lastWeekValue}
         </span>
 
         {/* Trend Badge */}
@@ -118,7 +115,6 @@ function formatTime(minutes: number): string {
 
 export function WeekComparison() {
   const { data, isLoading, error, refetch } = useWeekComparison()
-  const t = useTranslations("Stats")
 
   if (error) {
     return (
@@ -129,7 +125,7 @@ export function WeekComparison() {
           className="flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm hover:bg-primary/90 transition-colors"
         >
           <RefreshCw className="h-4 w-4" />
-          {t("retry")}
+          Retry
         </button>
       </div>
     )
@@ -151,7 +147,7 @@ export function WeekComparison() {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {/* Total Time */}
       <KPICard
-        title={t("totalTime")}
+        title="Total Time"
         thisWeekValue={formatTime(thisWeek.totalMinutes)}
         lastWeekValue={formatTime(lastWeek.totalMinutes)}
         diff={formatTime(comparison.totalMinutes.diff)}
@@ -162,7 +158,7 @@ export function WeekComparison() {
 
       {/* Total Sessions */}
       <KPICard
-        title={t("totalSessions")}
+        title="Total Sessions"
         thisWeekValue={`${thisWeek.totalSessions}`}
         lastWeekValue={`${lastWeek.totalSessions}`}
         diff={`${Math.abs(comparison.totalSessions.diff)}`}
@@ -173,7 +169,7 @@ export function WeekComparison() {
 
       {/* Average per Day */}
       <KPICard
-        title={t("avgPerDay")}
+        title="Daily Average"
         thisWeekValue={formatTime(thisWeek.avgMinutesPerDay)}
         lastWeekValue={formatTime(lastWeek.avgMinutesPerDay)}
         diff={formatTime(comparison.avgMinutesPerDay.diff)}

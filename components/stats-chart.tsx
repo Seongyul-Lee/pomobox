@@ -12,7 +12,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts"
-import { useTranslations } from "next-intl"
 
 interface DailyData {
   date: string
@@ -25,7 +24,6 @@ interface StatsChartProps {
 }
 
 export function StatsChart({ data }: StatsChartProps) {
-  const t = useTranslations("Dashboard")
   const [mounted, setMounted] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -100,7 +98,7 @@ export function StatsChart({ data }: StatsChartProps) {
           <Bar
             yAxisId="left"
             dataKey="total_minutes"
-            name={t("focusMinutes")}
+            name="Focus Minutes"
             fill="hsl(var(--primary))"
             radius={[4, 4, 0, 0]}
           />
@@ -108,7 +106,7 @@ export function StatsChart({ data }: StatsChartProps) {
             yAxisId="right"
             type="monotone"
             dataKey="total_sessions"
-            name={t("sessions")}
+            name="Sessions"
             stroke="hsl(var(--chart-2))"
             strokeWidth={2}
             dot={{ r: 4 }}

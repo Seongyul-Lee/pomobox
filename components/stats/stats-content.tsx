@@ -1,14 +1,11 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { WeeklyStatsChart } from "@/components/stats/weekly-stats-chart"
 import { WeekComparison } from "@/components/stats/week-comparison"
 import { Rolling4WeekChart } from "@/components/stats/rolling-4week-chart"
 
 export function StatsContent() {
-  const t = useTranslations("Stats")
-
   return (
     <div className="space-y-6">
       {/* Section 1: Weekly Stats */}
@@ -16,7 +13,7 @@ export function StatsContent() {
         <Card>
           <CardHeader>
             <CardTitle id="weekly-stats-title" className="text-lg">
-              {t("weeklyStats")}
+              Weekly Stats
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -30,7 +27,7 @@ export function StatsContent() {
         <Card>
           <CardHeader>
             <CardTitle id="weekly-comparison-title" className="text-lg">
-              {t("weeklyComparison")}
+              This Week vs Last Week
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -44,7 +41,7 @@ export function StatsContent() {
         <Card>
           <CardHeader>
             <CardTitle id="rolling-stats-title" className="text-lg">
-              {t("rollingStats")}
+              Rolling 4-Week Stats
             </CardTitle>
           </CardHeader>
           <CardContent>

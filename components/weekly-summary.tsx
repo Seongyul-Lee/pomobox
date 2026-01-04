@@ -1,6 +1,5 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Clock, Target, TrendingUp, Calendar } from "lucide-react"
 
@@ -17,32 +16,30 @@ export function WeeklySummary({
   averagePerDay,
   daysActive,
 }: WeeklySummaryProps) {
-  const t = useTranslations("Dashboard")
-
   const stats = [
     {
-      title: t("totalFocusTime"),
+      title: "Total Focus Time",
       value: `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m`,
       icon: Clock,
-      description: t("thisWeek"),
+      description: "This week",
     },
     {
-      title: t("totalSessions"),
+      title: "Total Sessions",
       value: totalSessions.toString(),
       icon: Target,
-      description: t("completed"),
+      description: "Completed",
     },
     {
-      title: t("dailyAverage"),
+      title: "Daily Average",
       value: `${averagePerDay}m`,
       icon: TrendingUp,
-      description: t("perDay"),
+      description: "Per day",
     },
     {
-      title: t("activeDays"),
+      title: "Active Days",
       value: `${daysActive}/7`,
       icon: Calendar,
-      description: t("daysThisWeek"),
+      description: "Days this week",
     },
   ]
 

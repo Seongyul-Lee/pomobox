@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { useTranslations } from "next-intl"
 import { deleteAccount } from "@/app/actions/account"
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
@@ -20,18 +19,14 @@ import { Loader2, AlertTriangle, Lock } from "lucide-react"
 interface DeleteAccountDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  locale: string
   isOAuthUser: boolean
 }
 
 export function DeleteAccountDialog({
   open,
   onOpenChange,
-  locale,
   isOAuthUser,
 }: DeleteAccountDialogProps) {
-  const t = useTranslations("Account")
-  const tAuth = useTranslations("Auth")
   const router = useRouter()
   const { toast } = useToast()
   const [password, setPassword] = useState("")
@@ -42,8 +37,8 @@ export function DeleteAccountDialog({
     if (!isOAuthUser && !password) {
       toast({
         variant: "destructive",
-        title: tAuth("error"),
-        description: t("currentPasswordRequired"),
+        title: "Error",
+        description: "Please enter your current password",
       })
       return
     }
@@ -54,8 +49,8 @@ export function DeleteAccountDialog({
       if (result.error) {
         toast({
           variant: "destructive",
-          title: t("deleteAccount"),
-          description: t(result.error) || result.error,
+          title: "Delete Account",
+          description: result.error,
         })
         return
       }
@@ -64,11 +59,11 @@ export function DeleteAccountDialog({
       onOpenChange(false)
 
       toast({
-        title: t("deleteSuccess"),
-        description: t("deleteSuccessMessage"),
+        title: "Account deleted",
+        description: "Your account has been successfully deleted.",
       })
 
-      router.push(`/${locale}`)
+      router.push("/")
       router.refresh()
     })
   }
@@ -81,10 +76,10 @@ export function DeleteAccountDialog({
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10">
               <AlertTriangle className="h-5 w-5 text-destructive" />
             </div>
-            <DialogTitle>{t("deleteConfirmTitle")}</DialogTitle>
+            <DialogTitle>Delete Account?</DialogTitle>
           </div>
           <DialogDescription className="pt-2">
-            {t("deleteConfirmMessage")}
+            Are you sure you want to delete your account? This will permanently delete all your data including focus sessions, statistics, and settings.
           </DialogDescription>
         </DialogHeader>
 
@@ -95,7 +90,7 @@ export function DeleteAccountDialog({
               <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="password"
-                placeholder={t("enterPasswordToDelete")}
+                placeholder="Enter your password to confirm"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isPending}
@@ -111,7 +106,7 @@ export function DeleteAccountDialog({
             onClick={() => onOpenChange(false)}
             disabled={isPending}
           >
-            {t("cancel")}
+            Cancel
           </Button>
           <Button
             variant="destructive"
@@ -121,10 +116,10 @@ export function DeleteAccountDialog({
             {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t("deleting")}
+                Deleting...
               </>
             ) : (
-              t("confirm")
+              "Delete"
             )}
           </Button>
         </DialogFooter>

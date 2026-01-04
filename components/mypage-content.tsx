@@ -2,8 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/navigation"
+import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import {
@@ -49,16 +48,12 @@ function GoogleIcon({ className }: { className?: string }) {
 interface MypageContentProps {
   user: User
   isOAuthUser: boolean
-  locale: string
 }
 
 export function MypageContent({
   user,
   isOAuthUser,
-  locale,
 }: MypageContentProps) {
-  const t = useTranslations("Account")
-  const tAuth = useTranslations("Auth")
   const router = useRouter()
   const supabase = createClient()
 
@@ -68,7 +63,7 @@ export function MypageContent({
   const handleLogout = async () => {
     setLoggingOut(true)
     await supabase.auth.signOut()
-    router.push(`/${locale}`)
+    router.push("/")
     router.refresh()
   }
 
@@ -81,28 +76,28 @@ export function MypageContent({
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          {tAuth("backToTimer")}
+          Back to Timer
         </Link>
 
-        <h1 className="text-2xl font-bold mb-6">{t("mypage")}</h1>
+        <h1 className="text-2xl font-bold mb-6">My Account</h1>
 
         {/* 프로필 섹션 */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>{t("profile")}</CardTitle>
+            <CardTitle>Profile</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-3">
               <Mail className="h-5 w-5 text-muted-foreground" />
               <div className="flex-1">
-                <p className="text-sm text-muted-foreground">{t("email")}</p>
+                <p className="text-sm text-muted-foreground">Email</p>
                 <p className="font-medium text-foreground/80">{user.email}</p>
               </div>
               {/* OAuth 배지 */}
               {isOAuthUser && (
                 <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground">
                   <GoogleIcon className="h-3.5 w-3.5" />
-                  {t("loggedInViaGoogle")}
+                  Logged in via Google
                 </div>
               )}
             </div>
@@ -112,7 +107,7 @@ export function MypageContent({
         {/* 계정 관리 섹션 */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>{t("accountManagement")}</CardTitle>
+            <CardTitle>Account Management</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {/* 로그아웃 */}
@@ -127,7 +122,7 @@ export function MypageContent({
               ) : (
                 <LogOut className="h-4 w-4 text-foreground/80" />
               )}
-              <span className="text-foreground/80">{tAuth("logout")}</span>
+              <span className="text-foreground/80">Sign out</span>
             </Button>
 
             {/* 비밀번호 변경 (OAuth 사용자에게는 숨김) */}
@@ -135,7 +130,7 @@ export function MypageContent({
               <Link href="/update-password" className="block">
                 <Button variant="outline" className="w-full justify-start gap-2">
                   <Key className="h-4 w-4 text-foreground/80" />
-                  <span className="text-foreground/80">{t("changePassword")}</span>
+                  <span className="text-foreground/80">Change Password</span>
                 </Button>
               </Link>
             )}
@@ -145,8 +140,8 @@ export function MypageContent({
         {/* Danger Zone */}
         <Card className="border-destructive/50">
           <CardHeader>
-            <CardTitle className="text-destructive">{t("dangerZone")}</CardTitle>
-            <CardDescription>{t("deleteWarning")}</CardDescription>
+            <CardTitle className="text-destructive">Delete Account</CardTitle>
+            <CardDescription>This action cannot be undone. All your data will be permanently deleted.</CardDescription>
           </CardHeader>
           <CardContent>
             <Button
@@ -154,7 +149,7 @@ export function MypageContent({
               className="w-full"
               onClick={() => setDeleteDialogOpen(true)}
             >
-              {t("deleteAccount")}
+              Delete Account
             </Button>
           </CardContent>
         </Card>
@@ -163,7 +158,6 @@ export function MypageContent({
         <DeleteAccountDialog
           open={deleteDialogOpen}
           onOpenChange={setDeleteDialogOpen}
-          locale={locale}
           isOAuthUser={isOAuthUser}
         />
       </div>

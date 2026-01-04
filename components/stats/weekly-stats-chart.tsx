@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { useTranslations } from "next-intl"
 import {
   BarChart,
   Bar,
@@ -22,6 +21,17 @@ import { useWeeklyStats, type WeeklyStatsData } from "@/hooks/use-weekly-stats"
 import { cn } from "@/lib/utils"
 
 type ChartType = "bar" | "area" | "line"
+
+// Full day names for tooltip
+const FULL_DAY_NAMES: Record<string, string> = {
+  SUN: "Sunday",
+  MON: "Monday",
+  TUE: "Tuesday",
+  WED: "Wednesday",
+  THU: "Thursday",
+  FRI: "Friday",
+  SAT: "Saturday",
+}
 
 interface ChartSelectorProps {
   selected: ChartType
@@ -58,16 +68,11 @@ function ChartSelector({ selected, onChange }: ChartSelectorProps) {
   )
 }
 
-interface CustomTooltipProps extends TooltipProps<number, string> {
-  t: ReturnType<typeof useTranslations<"Days">>
-  tDashboard: ReturnType<typeof useTranslations<"Dashboard">>
-}
-
-function CustomTooltip({ active, payload, t, tDashboard }: CustomTooltipProps) {
+function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
   if (!active || !payload || !payload.length) return null
 
   const data = payload[0].payload as WeeklyStatsData
-  const fullDayName = t(data.dayName.toLowerCase() as "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun")
+  const fullDayName = FULL_DAY_NAMES[data.dayName] || data.dayName
 
   // Format date: "Monday, Jan 1"
   const dateObj = new Date(data.date)
@@ -76,16 +81,14 @@ function CustomTooltip({ active, payload, t, tDashboard }: CustomTooltipProps) {
   // Format time: "2h 30m"
   const hours = Math.floor(data.totalMinutes / 60)
   const minutes = data.totalMinutes % 60
-  const formattedTime = hours > 0
-    ? `${hours}h ${minutes}m`
-    : `${minutes}${tDashboard("minute")}`
+  const formattedTime = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`
 
   return (
     <div className="rounded-lg border bg-background/95 backdrop-blur-sm p-3 shadow-lg">
       <p className="font-medium text-sm">{formattedDate}</p>
       <div className="mt-1.5 space-y-0.5 text-sm text-muted-foreground">
         <p>{formattedTime}</p>
-        <p>{data.totalSessions} {tDashboard("sessions")}</p>
+        <p>{data.totalSessions} sessions</p>
       </div>
     </div>
   )
@@ -111,9 +114,6 @@ function SkeletonChart() {
 export function WeeklyStatsChart() {
   const [chartType, setChartType] = useState<ChartType>("bar")
   const { data, isLoading, error, refetch } = useWeeklyStats()
-  const t = useTranslations("Stats")
-  const tDays = useTranslations("Days")
-  const tDashboard = useTranslations("Dashboard")
 
   // Y축 최대값 계산 (데이터 최대값 + 20%)
   const maxMinutes = Math.max(...data.map((d) => d.totalMinutes), 1)
@@ -184,7 +184,7 @@ export function WeeklyStatsChart() {
               tickFormatter={(v) => `${v}`}
             />
             <Tooltip
-              content={<CustomTooltip t={tDays} tDashboard={tDashboard} />}
+              content={<CustomTooltip />}
               cursor={{ fill: "var(--muted)", opacity: 0.3 }}
             />
             <Bar dataKey="totalMinutes" radius={[4, 4, 0, 0]}>
@@ -222,7 +222,7 @@ export function WeeklyStatsChart() {
               tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
               tickFormatter={(v) => `${v}`}
             />
-            <Tooltip content={<CustomTooltip t={tDays} tDashboard={tDashboard} />} />
+            <Tooltip content={<CustomTooltip />} />
             <Area
               type="monotone"
               dataKey="totalMinutes"
@@ -250,7 +250,7 @@ export function WeeklyStatsChart() {
               tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
               tickFormatter={(v) => `${v}`}
             />
-            <Tooltip content={<CustomTooltip t={tDays} tDashboard={tDashboard} />} />
+            <Tooltip content={<CustomTooltip />} />
             <Line
               type="monotone"
               dataKey="totalMinutes"
@@ -269,7 +269,7 @@ export function WeeklyStatsChart() {
       {/* Header with Chart Selector */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {t("weeklyStats")}
+          Weekly Stats
         </p>
         <ChartSelector selected={chartType} onChange={setChartType} />
       </div>

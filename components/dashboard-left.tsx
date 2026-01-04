@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState, useCallback, useRef } from "react"
-import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Clock,
@@ -42,24 +41,26 @@ import {
   useTodayStats,
 } from "@/lib/queries/stats-queries"
 
-// 시간 포맷팅 (다국어 지원)
-function formatTimeWithLocale(minutes: number, tTime: (key: string) => string): string {
+// 시간 포맷팅
+function formatTime(minutes: number): string {
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
-  if (h === 0) return `${m}${tTime("minute")}`
-  if (m === 0) return `${h}${tTime("hour")}`
-  return `${h}${tTime("hour")} ${m}${tTime("minute")}`
+  if (h === 0) return `${m}m`
+  if (m === 0) return `${h}h`
+  return `${h}h ${m}m`
 }
+
+// Day labels
+const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+const FULL_DAY_LABELS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 // 로그인 필요 오버레이
 function LoginRequiredOverlay() {
-  const t = useTranslations("Dashboard")
-
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-[2px] rounded-xl">
       <div className="flex flex-col items-center gap-2 text-muted-foreground">
         <Lock className="h-6 w-6" />
-        <span className="text-sm font-medium">{t("loginRequired")}</span>
+        <span className="text-sm font-medium">Login Required</span>
       </div>
     </div>
   )
@@ -69,14 +70,10 @@ function LoginRequiredOverlay() {
 function CustomTooltip({
   active,
   payload,
-  t,
-  tTime,
 }: {
   active?: boolean
   payload?: Array<{ value: number; payload: { fullDay: string; minutes: number; sessions: number } }>
   label?: string
-  t: (key: string) => string
-  tTime: (key: string) => string
 }) {
   if (!active || !payload?.length) return null
 
@@ -94,15 +91,15 @@ function CustomTooltip({
         <>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-chart-2" />
-            <p className="text-lg font-bold text-foreground">{formatTimeWithLocale(minutes, tTime)}</p>
+            <p className="text-lg font-bold text-foreground">{formatTime(minutes)}</p>
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {sessions}{t("sessions")}
+            {sessions} sessions
           </p>
         </>
       ) : (
         <p className="text-sm text-muted-foreground">
-          {t("noActivity")}
+          No activity
         </p>
       )}
     </div>
@@ -123,9 +120,6 @@ function TodayCard({
   goalMinutes: number
   realtimeMinutes: number
 }) {
-  const t = useTranslations("Dashboard")
-  const tTime = useTranslations("Time")
-
   // 저장된 시간 + 실시간 경과 시간
   const displayMinutes = todayMinutes + realtimeMinutes
   const progress = Math.min((displayMinutes / goalMinutes) * 100, 100)
@@ -136,34 +130,34 @@ function TodayCard({
       <CardHeader className="pb-3">
         <CardTitle className="text-base font-medium flex items-center gap-2">
           <Target className="h-5 w-5 text-green-400 hover-dashboard-icon" />
-          <span className="hover-dashboard-title">{t("overview")}</span>
+          <span className="hover-dashboard-title">Overview</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-3 gap-3">
           <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10 hover-stat cursor-default">
             <Clock className="h-5 w-5 text-primary mb-1.5 hover-bounce" />
-            <p className="text-sm font-semibold">{formatTimeWithLocale(displayMinutes, tTime)}</p>
-            <p className="text-xs text-muted-foreground">{t("todayFocus")}</p>
+            <p className="text-sm font-semibold">{formatTime(displayMinutes)}</p>
+            <p className="text-xs text-muted-foreground">Today&apos;s Focus</p>
           </div>
           <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(72.3%_0.274_149.6/0.1)] hover-stat cursor-default">
             <Target className="h-5 w-5 text-green-400 mb-1.5 hover-bounce" />
-            <p className="text-sm font-semibold">{todaySessions}{t("sessions")}</p>
-            <p className="text-xs text-muted-foreground">{t("sessions")}</p>
+            <p className="text-sm font-semibold">{todaySessions} sessions</p>
+            <p className="text-xs text-muted-foreground">Sessions</p>
           </div>
           <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(64.5%_0.3075_16.4/0.1)] hover-stat cursor-default">
             <Flame className="h-5 w-5 text-rose-400 mb-1.5 hover-bounce" />
-            <p className="text-sm font-semibold">{streakDays}{t("days")}</p>
-            <p className="text-xs text-muted-foreground">{t("streak")}</p>
+            <p className="text-sm font-semibold">{streakDays} days</p>
+            <p className="text-xs text-muted-foreground">Streak</p>
           </div>
         </div>
 
         {/* 일일 목표 진행률 */}
         <div className="pt-1">
           <div className="flex items-center justify-between text-sm mb-2">
-            <span className="text-muted-foreground">{t("dailyGoal")}</span>
+            <span className="text-muted-foreground">Daily Goal</span>
             <span className={isGoalReached ? "text-green-500 font-medium" : "text-foreground"}>
-              {Math.round(progress)}% ({displayMinutes}/{goalMinutes}{tTime("minute")})
+              {Math.round(progress)}% ({displayMinutes}/{goalMinutes}m)
             </span>
           </div>
           <div className="h-2.5 bg-muted/30 rounded-full overflow-hidden">
@@ -176,7 +170,7 @@ function TodayCard({
           </div>
           {isGoalReached && (
             <p className="text-xs text-green-500 text-center mt-2 font-medium">
-              🎉 {t("goalReached")}
+              🎉 Goal Reached!
             </p>
           )}
         </div>
@@ -203,9 +197,6 @@ const WEEKLY_MOCK_SESSIONS = [1, 2, 4, 3, 4, 2, 1]
 
 // 주간 현황 카드
 function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; isLoggedIn: boolean; realtimeMinutes: number }) {
-  const t = useTranslations("Dashboard")
-  const tDays = useTranslations("Days")
-  const tTime = useTranslations("Time")
   const [chartMounted, setChartMounted] = useState(false)
   const [todayDayIndex, setTodayDayIndex] = useState<number | null>(null) // SSR 안전: 초기값 null
   const containerRef = useRef<HTMLDivElement>(null)
@@ -248,16 +239,6 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
   const totalSessions = isLoggedIn ? data.reduce((sum, d) => sum + d.totalSessions, 0) : mockTotalSessions
   const avgMinutes = Math.round(totalMinutes / 7)
 
-  // 일~토 순서로 7일 데이터 정렬 (오늘 기준으로 지난 7일을 요일별로 배치)
-  const dayLabels = [
-    tDays("sun"), tDays("mon"), tDays("tue"), tDays("wed"),
-    tDays("thu"), tDays("fri"), tDays("sat")
-  ]
-  const fullDayLabels = [
-    tDays("sunday"), tDays("monday"), tDays("tuesday"), tDays("wednesday"),
-    tDays("thursday"), tDays("friday"), tDays("saturday")
-  ]
-
   // 7일 모두 표시 (데이터 없는 날도 placeholder로)
   // 비로그인 시 Mock 데이터 사용 (블러 배경용)
   const chartData = Array.from({ length: 7 }, (_, dayIndex) => {
@@ -274,8 +255,8 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
       : WEEKLY_MOCK_SESSIONS[dayIndex]
 
     return {
-      day: dayLabels[dayIndex],
-      fullDay: fullDayLabels[dayIndex],
+      day: DAY_LABELS[dayIndex],
+      fullDay: FULL_DAY_LABELS[dayIndex],
       minutes,
       // 차트 표시용: 실제 분 값 (minPointSize로 최소 높이 보장)
       displayMinutes: minutes,
@@ -292,15 +273,15 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-medium flex items-center gap-2">
             <Calendar className="h-5 w-5 text-sky-400 hover-dashboard-icon" />
-            <span className="hover-dashboard-title">{t("weeklyStats")}</span>
+            <span className="hover-dashboard-title">Weekly Stats</span>
           </CardTitle>
         </div>
       </CardHeader>
       <CardContent className="relative">
         <div className={!isLoggedIn ? "blur-sm pointer-events-none select-none" : ""}>
           <div className="flex justify-between text-sm text-muted-foreground mb-2">
-            <span>{t("totalSessions")}: {totalSessions}{t("sessions")}</span>
-            <span>{t("dailyAvg")}: {formatTimeWithLocale(avgMinutes, tTime)}</span>
+            <span>Total Sessions: {totalSessions} sessions</span>
+            <span>Daily Avg: {formatTime(avgMinutes)}</span>
           </div>
           <div ref={containerRef} className="h-36">
             {chartMounted ? (
@@ -335,7 +316,7 @@ function WeeklyCard({ data, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; 
                 />
                 <YAxis hide />
                 <Tooltip
-                  content={<CustomTooltip t={t} tTime={tTime} />}
+                  content={<CustomTooltip />}
                   cursor={{ fill: "oklch(72% 0.25 293.5 / 0.12)", radius: 6 }}
                 />
                 <Bar
@@ -409,9 +390,6 @@ function TrendIndicator({ current, previous, label }: { current: number; previou
 
 // 주간 비교 카드
 function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtimeMinutes }: { thisWeekData: DayRecord[]; lastWeekData: DayRecord[]; isLoggedIn: boolean; realtimeMinutes: number }) {
-  const t = useTranslations("Dashboard")
-  const tTime = useTranslations("Time")
-
   // 이번 주 통계 (로그인 사용자만 실시간 시간 포함)
   const storedThisWeekMinutes = thisWeekData.reduce((sum, d) => sum + d.totalMinutes, 0)
   const thisWeekMinutes = storedThisWeekMinutes + (isLoggedIn ? realtimeMinutes : 0)
@@ -432,7 +410,7 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
       <CardHeader className="pb-3">
         <CardTitle className="text-base font-medium flex items-center gap-2">
           <TrendingUp className="h-5 w-5 text-emerald-400 hover-dashboard-icon" />
-          <span className="hover-dashboard-title">{t("weeklyComparison")}</span>
+          <span className="hover-dashboard-title">Weekly Comparison</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="relative">
@@ -441,12 +419,12 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
             {/* 시간 비교 */}
             <div className="space-y-3">
               <div className="flex flex-col items-center p-3 rounded-xl bg-primary/10 hover-stat cursor-default">
-                <p className="text-xs text-muted-foreground mb-1">{t("thisWeekLabel")}</p>
-                <p className="text-lg font-bold text-primary">{formatTimeWithLocale(thisWeekMinutes, tTime)}</p>
+                <p className="text-xs text-muted-foreground mb-1">This Week</p>
+                <p className="text-lg font-bold text-primary">{formatTime(thisWeekMinutes)}</p>
               </div>
               <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20 hover-stat cursor-default">
-                <p className="text-xs text-muted-foreground mb-1">{t("lastWeekLabel")}</p>
-                <p className="text-lg font-semibold">{formatTimeWithLocale(lastWeekMinutes, tTime)}</p>
+                <p className="text-xs text-muted-foreground mb-1">Last Week</p>
+                <p className="text-lg font-semibold">{formatTime(lastWeekMinutes)}</p>
               </div>
               {lastWeekMinutes > 0 && (
                 <div className={`text-center text-sm font-medium ${minutesDiff >= 0 ? "text-green-400" : "text-rose-400"}`}>
@@ -458,12 +436,12 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
             {/* 세션 비교 */}
             <div className="space-y-3">
               <div className="flex flex-col items-center p-3 rounded-xl bg-[oklch(72.3%_0.274_149.6/0.1)] hover-stat cursor-default">
-                <p className="text-xs text-muted-foreground mb-1">{t("thisWeekLabel")}</p>
-                <p className="text-lg font-bold text-green-400">{thisWeekSessions}{t("sessions")}</p>
+                <p className="text-xs text-muted-foreground mb-1">This Week</p>
+                <p className="text-lg font-bold text-green-400">{thisWeekSessions} sessions</p>
               </div>
               <div className="flex flex-col items-center p-3 rounded-xl bg-muted/20 hover-stat cursor-default">
-                <p className="text-xs text-muted-foreground mb-1">{t("lastWeekLabel")}</p>
-                <p className="text-lg font-semibold">{lastWeekSessions}{t("sessions")}</p>
+                <p className="text-xs text-muted-foreground mb-1">Last Week</p>
+                <p className="text-lg font-semibold">{lastWeekSessions} sessions</p>
               </div>
               {lastWeekSessions > 0 && (
                 <div className={`text-center text-sm font-medium ${sessionsDiff >= 0 ? "text-green-400" : "text-rose-400"}`}>
@@ -481,8 +459,6 @@ function WeeklyComparisonCard({ thisWeekData, lastWeekData, isLoggedIn, realtime
 
 // 월간 현황 카드 (핵심 지표 4개 + 전월 대비)
 function MonthlyCard({ data, prevData, isLoggedIn, realtimeMinutes }: { data: DayRecord[]; prevData: DayRecord[]; isLoggedIn: boolean; realtimeMinutes: number }) {
-  const t = useTranslations("Dashboard")
-  const tTime = useTranslations("Time")
   const [daysElapsed, setDaysElapsed] = useState(1) // SSR 안전: 기본값 1
 
   // 클라이언트에서만 경과 일수 계산 (hydration 안전)
@@ -509,7 +485,7 @@ function MonthlyCard({ data, prevData, isLoggedIn, realtimeMinutes }: { data: Da
       <CardHeader className="pb-3">
         <CardTitle className="text-base font-medium flex items-center gap-2">
           <TrendingUp className="h-5 w-5 text-primary hover-dashboard-icon" />
-          <span className="hover-dashboard-title">{t("monthlyStats")}</span>
+          <span className="hover-dashboard-title">Monthly Stats</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="relative">
@@ -517,27 +493,27 @@ function MonthlyCard({ data, prevData, isLoggedIn, realtimeMinutes }: { data: Da
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col items-center p-4 rounded-xl bg-primary/10 hover-stat cursor-default">
               <Clock className="h-5 w-5 text-primary mb-1.5 hover-bounce" />
-              <p className="text-base font-semibold">{formatTimeWithLocale(totalMinutes, tTime)}</p>
-              <p className="text-xs text-muted-foreground">{t("totalFocusTime")}</p>
-              <TrendIndicator current={totalMinutes} previous={prevTotalMinutes} label={t("vsLastMonth")} />
+              <p className="text-base font-semibold">{formatTime(totalMinutes)}</p>
+              <p className="text-xs text-muted-foreground">Total Focus Time</p>
+              <TrendIndicator current={totalMinutes} previous={prevTotalMinutes} label="vs last month" />
             </div>
             <div className="flex flex-col items-center p-4 rounded-xl bg-[oklch(72.3%_0.274_149.6/0.1)] hover-stat cursor-default">
               <Target className="h-5 w-5 text-green-400 mb-1.5 hover-bounce" />
-              <p className="text-base font-semibold">{totalSessions}{t("sessions")}</p>
-              <p className="text-xs text-muted-foreground">{t("totalSessions")}</p>
-              <TrendIndicator current={totalSessions} previous={prevTotalSessions} label={t("vsLastMonth")} />
+              <p className="text-base font-semibold">{totalSessions} sessions</p>
+              <p className="text-xs text-muted-foreground">Total Sessions</p>
+              <TrendIndicator current={totalSessions} previous={prevTotalSessions} label="vs last month" />
             </div>
             <div className="flex flex-col items-center p-4 rounded-xl bg-[oklch(68.5%_0.211_237.3/0.1)] hover-stat cursor-default">
               <Calendar className="h-5 w-5 text-sky-400 mb-1.5 hover-bounce" />
-              <p className="text-base font-semibold">{formatTimeWithLocale(avgMinutes, tTime)}</p>
-              <p className="text-xs text-muted-foreground">{t("dailyAvg")}</p>
-              <TrendIndicator current={avgMinutes} previous={prevAvgMinutes} label={t("vsLastMonth")} />
+              <p className="text-base font-semibold">{formatTime(avgMinutes)}</p>
+              <p className="text-xs text-muted-foreground">Daily Average</p>
+              <TrendIndicator current={avgMinutes} previous={prevAvgMinutes} label="vs last month" />
             </div>
             <div className="flex flex-col items-center p-4 rounded-xl bg-[oklch(76.9%_0.235_70.1/0.1)] hover-stat cursor-default">
               <Flame className="h-5 w-5 text-amber-400 mb-1.5 hover-bounce" />
-              <p className="text-base font-semibold">{activeDays}{t("days")}</p>
-              <p className="text-xs text-muted-foreground">{t("activeDays")}</p>
-              <TrendIndicator current={activeDays} previous={prevActiveDays} label={t("vsLastMonth")} />
+              <p className="text-base font-semibold">{activeDays} days</p>
+              <p className="text-xs text-muted-foreground">Active Days</p>
+              <TrendIndicator current={activeDays} previous={prevActiveDays} label="vs last month" />
             </div>
           </div>
         </div>

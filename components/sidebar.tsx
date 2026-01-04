@@ -3,9 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/navigation"
-import { routing } from "@/i18n/routing"
+import Link from "next/link"
 import { ListTodo, BarChart3, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -16,6 +14,7 @@ import { useSettingsStore, useTaskStore, type TimerSettings } from "@/lib/store"
 
 interface NavItem {
   id: string
+  label: string
   icon: React.ElementType
   href?: string
   onClick?: () => void
@@ -23,7 +22,6 @@ interface NavItem {
 }
 
 export function Sidebar() {
-  const t = useTranslations("Sidebar")
   const pathname = usePathname()
   const [settingsOpen, setSettingsOpen] = useState(false)
 
@@ -44,14 +42,12 @@ export function Sidebar() {
     volume: settingsStore.volume,
   }
 
-  // Check if current path matches (handles locale prefix)
-  const localePattern = new RegExp(`^/(${routing.locales.join("|")})`)
+  // Check if current path matches
   const isActive = (path: string) => {
-    const pathWithoutLocale = pathname.replace(localePattern, "")
     if (path === "/") {
-      return pathWithoutLocale === "" || pathWithoutLocale === "/"
+      return pathname === "/" || pathname === ""
     }
-    return pathWithoutLocale.startsWith(path)
+    return pathname.startsWith(path)
   }
 
   // Icon size for navigation items
@@ -60,17 +56,20 @@ export function Sidebar() {
   const navItems: NavItem[] = [
     {
       id: "task",
+      label: "Tasks",
       icon: ListTodo,
       onClick: toggleTaskPanel,
     },
     {
       id: "statistics",
+      label: "Statistics",
       icon: BarChart3,
       href: "/stats",
       isActive: isActive("/stats"),
     },
     {
       id: "settings",
+      label: "Settings",
       icon: Settings,
       onClick: () => setSettingsOpen(true),
     },
@@ -80,7 +79,7 @@ export function Sidebar() {
     <TooltipProvider delayDuration={200}>
       <nav
         role="navigation"
-        aria-label={t("ariaLabel")}
+        aria-label="Main Navigation"
         className={cn(
           "fixed left-0 top-0 z-50 h-screen w-16 md:w-20",
           "hidden md:flex flex-col items-center py-4",
@@ -95,7 +94,7 @@ export function Sidebar() {
                 href="/"
                 onClick={closeTaskPanel}
                 className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl hover:scale-105 transition-transform duration-200"
-                aria-label={t("home")}
+                aria-label="Home"
               >
                 <Image
                   src="/icon.svg"
@@ -108,7 +107,7 @@ export function Sidebar() {
               </Link>
             </TooltipTrigger>
             <TooltipContent side="right">
-              <p>{t("home")}</p>
+              <p>Home</p>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -133,14 +132,14 @@ export function Sidebar() {
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                         isCurrentActive && "bg-primary/15 text-primary"
                       )}
-                      aria-label={t(item.id)}
+                      aria-label={item.label}
                       aria-current={isCurrentActive ? "page" : undefined}
                     >
                       <Icon className={iconClass} aria-hidden="true" />
                     </Link>
                   </TooltipTrigger>
                   <TooltipContent side="right">
-                    <p>{t(item.id)}</p>
+                    <p>{item.label}</p>
                   </TooltipContent>
                 </Tooltip>
               )
@@ -159,13 +158,13 @@ export function Sidebar() {
                       "hover:bg-primary/10 hover:scale-105",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                     )}
-                    aria-label={t(item.id)}
+                    aria-label={item.label}
                   >
                     <Icon className={iconClass} />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  <p>{t(item.id)}</p>
+                  <p>{item.label}</p>
                 </TooltipContent>
               </Tooltip>
             )

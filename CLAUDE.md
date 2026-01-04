@@ -75,8 +75,22 @@
 | 도구 | SSOT | 핵심 규칙 |
 |------|------|----------|
 | Task Master | `.taskmaster/` | `status="pending,in-progress"` 필터 |
-| Context7 | `docs/context7-baseline.json` | 당일 캐시 재사용 |
-| Hook | `.claude/hooks/enforce-docs.js` | Edit/Write 시 baseline 확인 |
+| Context7 | `docs/context7-baseline.json` | Claude 판단에 따라 조회 |
+
+### Context7 사용 정책
+
+Claude가 필요성을 판단하여 `/docs` 실행:
+
+**조회 권장 상황:**
+- 외부 라이브러리 API 사용 시 (Radix UI, Recharts 등)
+- 프레임워크 최신 기능 활용 시 (Next.js App Router, Tailwind v4 등)
+- 에러 해결 시 공식 문서 참조 필요할 때
+
+**조회 불필요 상황:**
+- 단순 스타일링 (CSS, Tailwind 기본 클래스)
+- 기존 코드 리팩터링
+- 버그 수정 (로직 변경 없음)
+- 프로젝트 내부 코드만 수정
 
 ---
 

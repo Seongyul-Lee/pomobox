@@ -965,6 +965,23 @@
   }
 }
 
+/* ===== Guide Section Scroll Snap ===== */
+.guide-snap-container {
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
+}
+
+.guide-snap-section {
+  scroll-snap-align: start;
+}
+
+/* Ensure smooth scroll for guide sections */
+@media (prefers-reduced-motion: no-preference) {
+  .guide-snap-container {
+    scroll-behavior: smooth;
+  }
+}
+
 @layer utilities {
   .pt-safe {
     padding-top: env(safe-area-inset-top);

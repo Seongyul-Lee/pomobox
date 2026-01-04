@@ -2,6 +2,64 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2026-01-05
+
+콘텐츠 마케팅 최적화 및 SEO 강화
+
+### Features
+
+#### 메인 페이지 가이드 섹션 신규 추가
+- 스크롤 스냅 기반 5개 섹션 구성
+- "What is Pomodoro?" - 문제-해결 프레임워크 오프닝
+- "How to Use" - 5단계 사용법
+- "Why It Works" - 과학적 근거 포함 4가지 이점
+- "Why Pomobox?" - 3가지 기능 + Social Proof
+- "Who Benefits Most?" - 6개 타겟 그룹
+- FAQ - 4개 질문 + 상세 가이드 링크
+
+#### About 페이지 전면 개편
+- "What is Pomobox?" 섹션 확장 (80단어 → 400단어)
+- "Why Choose Pomobox?" 차별화 섹션 추가 (4가지 핵심 가치)
+- 기능 설명 강화 (기능 중심 → 혜택 중심)
+- Social Proof 섹션 추가 (Free/Open Source/Private)
+- FAQ 섹션 추가 (5개 질문)
+- Enhanced CTA (2개 버튼 + 설명)
+
+### SEO 개선
+
+#### 메타데이터 최적화
+- About 페이지: "Free Open-Source Pomodoro Timer" 키워드 추가
+- 가이드 페이지: "Complete Guide" 키워드 추가
+- 구체적 description 작성 (best practices, common mistakes, pro tips)
+
+#### 콘텐츠 품질 향상
+- 과학적 근거 추가 (Stanford 연구, 뇌과학 등)
+- 타겟 오디언스별 콘텐츠 (Students, Developers, Writers, Professionals)
+- 문제-해결 프레임워크로 사용자 공감 유도
+
+### UI/UX
+
+#### 스크롤 스냅 UX
+- `scroll-snap-type: y proximity` 적용
+- 각 섹션 75vh로 다음 섹션 미리보기 제공
+- 부드러운 스크롤 전환
+
+#### Internal Linking
+- 메인 가이드 → 상세 가이드 페이지 링크 추가
+- About → 가이드 페이지 링크 추가
+
+### 파일 변경
+
+| 파일 | 변경 내용 |
+|------|----------|
+| `components/pomodoro-guide-section.tsx` | **신규** - 스크롤 스냅 가이드 컴포넌트 |
+| `app/page.tsx` | PomodoroGuideSection 통합 |
+| `app/globals.css` | 스크롤 스냅 스타일 추가 |
+| `app/about/page.tsx` | 전면 재작성 |
+| `app/guide/what-is-pomodoro/page.tsx` | 메타데이터 개선 |
+
+---
+
 ## [2.1.1] - 2026-01-03
 
 UI/UX 디테일 개선

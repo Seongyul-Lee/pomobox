@@ -10,6 +10,7 @@ import { BgmMiniPlayer } from "@/components/bgm-mini-player"
 import { MainLayout } from "@/components/main-layout"
 import { MobileHeader } from "@/components/mobile-header"
 import { MobileNav } from "@/components/mobile-nav"
+import { PomodoroGuideSection } from "@/components/pomodoro-guide-section"
 
 // Static timer skeleton for fast LCP - shows default 25:00
 function TimerFallback() {
@@ -111,25 +112,8 @@ export default function Home() {
           </section>
         </MainLayout>
 
-        {/* SEO Section */}
-        <section className="mb-10 md:ml-16 lg:ml-20">
-          <div className="px-4 xl:px-8">
-            <div className="max-w-5xl mx-auto text-center">
-              <h2 className="text-lg xl:text-xl font-bold text-foreground mb-4">
-                What is the Pomodoro Technique?
-              </h2>
-              <p className="text-sm xl:text-base text-gray-400 mb-5 leading-relaxed">
-                The Pomodoro Technique is a time management method that involves 25 minutes of focus and 5 minutes of rest. Use Pomobox to overcome procrastination and boost productivity.
-              </p>
-              <Link
-                href="/guide/what-is-pomodoro"
-                className="text-primary hover:underline text-sm"
-              >
-                Read more about Pomodoro →
-              </Link>
-            </div>
-          </div>
-        </section>
+        {/* Pomodoro Guide Sections */}
+        <PomodoroGuideSection />
 
         {/* Footer */}
         <div className="w-full px-4 xl:px-8 pb-3 md:ml-16 lg:ml-20">

@@ -322,6 +322,80 @@
   filter: drop-shadow(0 0 10px rgb(167 139 250 / 60%));
 }
 
+/* ===== Timer Pulse Animation ===== */
+@keyframes timer-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.95;
+  }
+}
+
+@keyframes timer-glow-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px oklch(72% 0.25 280 / 40%));
+  }
+  50% {
+    filter: drop-shadow(0 0 35px oklch(72% 0.25 280 / 60%));
+  }
+}
+
+.timer-pulse {
+  animation: timer-pulse 4s ease-in-out infinite, timer-glow-pulse 2s ease-in-out infinite;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .timer-pulse {
+    animation: none;
+  }
+}
+
+/* ===== Music Visualizer Animations ===== */
+@keyframes music-bar-1 {
+  0%, 100% { height: 8px; }
+  50% { height: 16px; }
+}
+
+@keyframes music-bar-2 {
+  0%, 100% { height: 12px; }
+  25% { height: 6px; }
+  75% { height: 18px; }
+}
+
+@keyframes music-bar-3 {
+  0%, 100% { height: 6px; }
+  50% { height: 14px; }
+}
+
+.animate-music-bar-1 {
+  animation: music-bar-1 0.8s ease-in-out infinite;
+}
+
+.animate-music-bar-2 {
+  animation: music-bar-2 0.6s ease-in-out infinite;
+}
+
+.animate-music-bar-3 {
+  animation: music-bar-3 0.7s ease-in-out infinite;
+}
+
+.music-playing {
+  animation: music-icon-pulse 2s ease-in-out infinite;
+}
+
+@keyframes music-icon-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 oklch(72% 0.25 280 / 20%);
+  }
+  50% {
+    box-shadow: 0 0 0 8px oklch(72% 0.25 280 / 0%);
+  }
+}
+
 /* ===== Hover Effects (inspired by do-bit.com) ===== */
 /* 모바일(터치 기기)에서는 호버 효과 비활성화 */
 @media (hover: hover) {
@@ -743,6 +817,26 @@
 }
 
 /* ===== Mobile Responsive Layout ===== */
+
+/* 모바일 터치 피드백 및 스무스 스크롤 */
+@media (max-width: 1280px) {
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 터치 디바이스에서 버튼 탭 피드백 */
+  button, a, [role="button"] {
+    -webkit-tap-highlight-color: rgba(167, 139, 250, 0.2);
+    touch-action: manipulation;
+  }
+
+  /* 모바일에서 텍스트 선택 방지 (버튼 등) */
+  button, [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
 
 /* 모든 모바일 (너비 640px 이하): Sign in, 테마 토글 위치 */
 @media (max-width: 640px) {

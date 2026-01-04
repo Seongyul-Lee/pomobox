@@ -37,7 +37,12 @@ export function MainLayout({
   return (
     <div
       className={cn(
-        "flex-1 pt-16 pb-6",
+        "flex-1 pb-6",
+        // 모바일: 헤더(56px) + 여유 공간
+        // xl+: 기존 여백 유지
+        "pt-[72px] xl:pt-16",
+        // 모바일: 하단 네비게이션 바 공간 확보
+        "pb-20 xl:pb-6",
         "transition-[margin] duration-300 ease-in-out",
         // 모바일: 여백 없음
         // md+: 사이드바 여백 (64px)

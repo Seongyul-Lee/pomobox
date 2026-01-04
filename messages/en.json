@@ -564,7 +564,8 @@
     "timer": "Timer",
     "task": "Tasks",
     "statistics": "Statistics",
-    "settings": "Settings"
+    "settings": "Settings",
+    "user": "Account"
   },
   "Task": {
     "title": "Tasks",

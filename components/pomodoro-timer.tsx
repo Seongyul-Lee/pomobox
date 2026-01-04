@@ -1,27 +1,25 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef, useMemo } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { useSearchParams } from "next/navigation"
-import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
-import { SettingsDialog } from "./settings-dialog"
 import { playSound } from "@/lib/sounds"
 import { useUser } from "@/hooks/use-user"
 import { recordSessionComplete, incrementDailyMinutes } from "@/lib/supabase/stats"
 import { getLocalTodayStats, incrementLocalMinutes, saveLocalTodayStats } from "@/lib/storage/local-stats"
 import { incrementHistorySession } from "@/lib/storage/local-history"
 import { GoalProgress } from "./goal-progress"
-import { useTimerStore, useSettingsStore, type TimerSettings } from "@/lib/store"
+import { useTimerStore, useSettingsStore } from "@/lib/store"
 
 type TimerPhase = 'focus' | 'break' | 'longBreak'
 type TimerStatus = 'idle' | 'running' | 'paused'
 
 const TIMER_RADIUS = 140
+const TIMER_STROKE_WIDTH = 10
 const TIMER_CIRCUMFERENCE = 2 * Math.PI * TIMER_RADIUS
 
 export function PomodoroTimer() {
-  const t = useTranslations("Timer")
   const searchParams = useSearchParams()
   const { user } = useUser()
 
@@ -428,63 +426,20 @@ export function PomodoroTimer() {
     }
   }, [phase, settingsStore, completedSessions, isTransitioning, user])
 
-  const handleSettingsChange = (newSettings: TimerSettings) => {
-    // Zustand store 업데이트 (자동으로 localStorage에 저장됨)
-    settingsStore.updateSettings(newSettings)
-
-    if (status !== 'running') {
-      if (phase === 'focus') {
-        setTimeLeft(newSettings.focusDuration * 60)
-      } else if (phase === 'break') {
-        setTimeLeft(newSettings.breakDuration * 60)
-      }
-    }
-  }
-
   const getTypeLabel = () => {
-    if (phase === 'focus') return t('focusSession')
-    if (phase === 'longBreak') return t('longBreak')
-    return t('breakTime')
+    if (phase === 'focus') return "Focus Session"
+    if (phase === 'longBreak') return "Long Break"
+    return "Break Time"
   }
 
   const getTypeDescription = () => {
-    if (phase === 'focus') return t('focusDescription')
-    if (phase === 'longBreak') return t('longBreakDescription')
-    return t('breakDescription')
+    if (phase === 'focus') return "Stay focused on your work"
+    if (phase === 'longBreak') return "Take a longer break - you earned it!"
+    return "Take a short break"
   }
-
-  // 현재 settings 객체 구성 (SettingsDialog용) - 메모이제이션으로 불필요한 리렌더링 방지
-  const currentSettings: TimerSettings = useMemo(() => ({
-    focusDuration: settingsStore.focusDuration,
-    breakDuration: settingsStore.breakDuration,
-    dailyGoal: settingsStore.dailyGoal,
-    notificationsEnabled: settingsStore.notificationsEnabled,
-    soundEnabled: settingsStore.soundEnabled,
-    soundCategory: settingsStore.soundCategory,
-    soundType: settingsStore.soundType,
-    volume: settingsStore.volume,
-  }), [
-    settingsStore.focusDuration,
-    settingsStore.breakDuration,
-    settingsStore.dailyGoal,
-    settingsStore.notificationsEnabled,
-    settingsStore.soundEnabled,
-    settingsStore.soundCategory,
-    settingsStore.soundType,
-    settingsStore.volume,
-  ])
 
   return (
     <div className="relative flex flex-col items-center gap-6 sm:gap-8">
-      <div className="md:hidden absolute top-0 right-0 sm:top-4 sm:right-4">
-        <SettingsDialog
-          settings={currentSettings}
-          isRunning={status === 'running'}
-          onSettingsChange={handleSettingsChange}
-          buttonClassName="hover-rotate-settings"
-        />
-      </div>
-
       <div className="text-center">
         <p className="text-lg sm:text-xl md:text-2xl font-bold text-foreground uppercase tracking-wider mb-1 hover-title-outline">
           {getTypeLabel()}
@@ -503,7 +458,7 @@ export function PomodoroTimer() {
         >
           <Pause className="h-3 w-3 text-[oklch(100%_0_0)]" />
           <span className="text-xs font-medium text-[oklch(100%_0_0)] uppercase tracking-wide">
-            {status === 'paused' ? t('paused') : ''}
+            {status === 'paused' ? "Paused" : ''}
           </span>
         </div>
       </div>
@@ -514,38 +469,77 @@ export function PomodoroTimer() {
         aria-valuenow={Math.round(progress)}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-label={t('progressLabel', { phase: getTypeLabel(), progress: Math.round(progress) })}
+        aria-label={`${getTypeLabel()} progress: ${Math.round(progress)}%`}
       >
-        <svg className="w-52 h-52 sm:w-64 sm:h-64 md:w-72 md:h-72 -rotate-90 hover-ring" viewBox="0 0 300 300" aria-hidden="true">
-          <circle cx="150" cy="150" r={TIMER_RADIUS} fill="none" stroke="currentColor" strokeWidth="8" className="text-slate-300 dark:text-[oklch(100%_0_0/0.1)] transition-all duration-300" />
+        <svg className={`w-52 h-52 sm:w-64 sm:h-64 md:w-80 md:h-80 -rotate-90 hover-ring ${status === 'running' ? 'timer-pulse' : ''}`} viewBox="0 0 300 300" aria-hidden="true">
+          {/* Gradient definitions */}
+          <defs>
+            <linearGradient id="timerGradientFocus" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="oklch(72% 0.25 280)" />
+              <stop offset="50%" stopColor="oklch(65% 0.28 300)" />
+              <stop offset="100%" stopColor="oklch(72% 0.25 280)" />
+            </linearGradient>
+            <linearGradient id="timerGradientBreak" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="oklch(72% 0.20 145)" />
+              <stop offset="100%" stopColor="oklch(65% 0.25 160)" />
+            </linearGradient>
+            <linearGradient id="timerGradientLongBreak" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="oklch(70% 0.18 220)" />
+              <stop offset="100%" stopColor="oklch(65% 0.22 240)" />
+            </linearGradient>
+            <linearGradient id="timerGradientPaused" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="oklch(75% 0.18 85)" />
+              <stop offset="100%" stopColor="oklch(70% 0.20 70)" />
+            </linearGradient>
+            {/* Glow filter */}
+            <filter id="timerGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          {/* Background track */}
           <circle
             cx="150"
             cy="150"
             r={TIMER_RADIUS}
             fill="none"
             stroke="currentColor"
-            strokeWidth="8"
+            strokeWidth={TIMER_STROKE_WIDTH}
+            className="text-slate-200 dark:text-[oklch(100%_0_0/0.08)] transition-all duration-300"
+          />
+          {/* Progress arc with gradient */}
+          <circle
+            cx="150"
+            cy="150"
+            r={TIMER_RADIUS}
+            fill="none"
+            stroke={
+              status === 'paused'
+                ? 'url(#timerGradientPaused)'
+                : phase === 'focus'
+                ? 'url(#timerGradientFocus)'
+                : phase === 'longBreak'
+                ? 'url(#timerGradientLongBreak)'
+                : 'url(#timerGradientBreak)'
+            }
+            strokeWidth={TIMER_STROKE_WIDTH}
             strokeLinecap="round"
             strokeDasharray={TIMER_CIRCUMFERENCE}
             strokeDashoffset={TIMER_CIRCUMFERENCE - (progress / 100) * TIMER_CIRCUMFERENCE}
-            className={`transition-all duration-1000 ease-linear group-hover:stroke-10 ${
-              status === 'paused'
-                ? 'text-amber-500'
-                : phase === 'focus'
-                ? 'text-primary'
-                : phase === 'longBreak'
-                ? 'text-blue-500'
-                : 'text-green-500'
-            }`}
+            filter={status === 'running' ? 'url(#timerGlow)' : undefined}
+            className="transition-all duration-1000 ease-linear"
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
           <span
-            className="text-5xl sm:text-6xl font-mono font-bold tracking-tight tabular-nums text-foreground hover-timer-display"
+            className="text-5xl sm:text-6xl md:text-7xl font-mono font-bold tracking-tight tabular-nums text-foreground hover-timer-display"
             role="timer"
             aria-live="off"
             aria-atomic="true"
-            aria-label={t('timerRemaining', { minutes, seconds })}
+            aria-label={`${minutes} minutes ${seconds} seconds remaining`}
           >
             {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
           </span>
@@ -557,20 +551,20 @@ export function PomodoroTimer() {
           {status === 'running' ? (
             <Button size="lg" onClick={handlePause} variant="secondary" className="gap-2 px-6 sm:px-8 border-2 border-border dark:border-transparent hover:scale-105 transition-transform duration-200">
               <Pause className="h-5 w-5" />
-              {t('pause')}
+              Pause
             </Button>
           ) : status === 'paused' ? (
             <Button size="lg" onClick={handleResume} className="gap-2 px-6 sm:px-8 glow-primary hover-glow hover-shine">
               <Play className="h-5 w-5" />
-              {t('resume')}
+              Resume
             </Button>
           ) : (
             <Button size="lg" onClick={handleStart} className="gap-2 px-6 sm:px-8 glow-primary hover-glow hover-shine">
               <Play className="h-5 w-5" />
-              {t('start')}
+              Start
             </Button>
           )}
-          <Button size="lg" variant="outline" onClick={handleReset} aria-label={t('resetTimer')} className="hover:scale-105 hover:bg-muted/50 transition-all duration-200">
+          <Button size="lg" variant="outline" onClick={handleReset} aria-label="Reset timer" className="hover:scale-105 hover:bg-muted/50 transition-all duration-200">
             <RotateCcw className="h-5 w-5" />
           </Button>
         </div>
@@ -579,16 +573,16 @@ export function PomodoroTimer() {
           size="sm"
           variant="ghost"
           onClick={handleSkip}
-          aria-label={phase === 'focus' ? t('skipToBreakLabel') : t('backToFocusLabel')}
+          aria-label={phase === 'focus' ? "Skip current focus session and start break" : "Skip current break and return to focus session"}
           className="group gap-2 text-muted-foreground hover:text-foreground/60 border border-muted-foreground/30 rounded-xl hover:bg-muted/50 hover:scale-105 transition-all duration-200"
         >
           <SkipForward className="h-4 w-4 drop-shadow-md transition-transform duration-200 group-hover:translate-x-0.5" />
-          {phase === 'focus' ? t('skipToBreak') : t('backToFocus')}
+          {phase === 'focus' ? "Skip to Break" : "Back to Focus"}
         </Button>
       </div>
 
       <div className="text-muted-foreground text-sm font-medium hover-today-stats">
-        <span className="text-foreground">{t('today', { sessions, minutes: totalFocusMinutes })}</span>
+        <span className="text-foreground">Today: {sessions} sessions ({totalFocusMinutes} min)</span>
       </div>
 
       <GoalProgress

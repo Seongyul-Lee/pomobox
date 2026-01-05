@@ -33,5 +33,3 @@ export const ROUTES = {
   FAQ: '/faq',
   PRIVACY: '/privacy-policy',
 } as const
-
-export type RouteKey = keyof typeof ROUTES

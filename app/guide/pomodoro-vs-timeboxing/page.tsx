@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import {
-  ArrowLeft,
   Scale,
   Clock,
   Target,
@@ -15,11 +14,15 @@ import {
   Users,
   Briefcase,
   ArrowRight,
+  ArrowLeft,
   BarChart3,
   Calendar,
   Coffee,
   Lightbulb,
 } from "lucide-react"
+import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
+import { ArticleMeta } from "@/components/ui/article-meta"
+import { QuickAnswer } from "@/components/ui/definition-box"
 
 export const metadata: Metadata = {
   title: "Pomodoro vs Timeboxing: Which is Right for You? | Pomobox",
@@ -230,7 +233,7 @@ const jsonLd = [
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-20",
+    datePublished: "2025-01-05",
     dateModified: "2025-01-05",
     url: "https://pomobox.app/guide/pomodoro-vs-timeboxing",
   },
@@ -249,14 +252,10 @@ export default function PomodoroVsTimeboxingPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
       <div className="max-w-4xl mx-auto py-8 md:py-12 px-4 sm:px-6">
-        {/* Back Navigation */}
-        <Link
-          href="/guide/what-is-pomodoro"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8 group"
-        >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          Back to Pomodoro Guide
-        </Link>
+        <Breadcrumb
+          items={BREADCRUMB_PRESETS.guide("Pomodoro vs Timeboxing")}
+          className="mb-8"
+        />
 
         {/* Hero Section */}
         <header className="text-center mb-16">
@@ -267,9 +266,14 @@ export default function PomodoroVsTimeboxingPage() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-4">
             Pomodoro vs Timeboxing
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Two powerful time management techniques. Which one fits your workflow?
           </p>
+          <ArticleMeta
+            publishedDate="2025-01-05"
+            modifiedDate="2025-01-05"
+            readingTime="9 min"
+          />
 
           {/* Quick Comparison Visual */}
           <div className="mt-10 grid grid-cols-2 gap-4 max-w-lg mx-auto">
@@ -285,6 +289,13 @@ export default function PomodoroVsTimeboxingPage() {
             </div>
           </div>
         </header>
+
+        {/* Featured Snippet: Quick Answer */}
+        <QuickAnswer
+          question="What's the difference between Pomodoro and Timeboxing?"
+          answer="Pomodoro uses fixed 25-minute focus sessions with mandatory 5-minute breaks, designed for sustained deep work. Timeboxing allocates flexible time blocks to specific tasks on your calendar, ideal for project planning. Choose Pomodoro for daily focus, Timeboxing for schedule management—or combine both methods."
+          className="mb-16"
+        />
 
         {/* TL;DR */}
         <section className="mb-16">

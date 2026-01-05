@@ -26,6 +26,8 @@ import {
   Target,
   Clock,
 } from "lucide-react"
+import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
+import { ArticleMeta } from "@/components/ui/article-meta"
 
 export const metadata: Metadata = {
   title: "Pomobox FAQ: Features, Privacy & Productivity Tips | Pomobox",
@@ -212,14 +214,10 @@ export default function FAQPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
       <div className="max-w-4xl mx-auto py-8 md:py-12 px-4 sm:px-6">
-        {/* Back Navigation */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8 group"
-        >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          Back to Timer
-        </Link>
+        <Breadcrumb
+          items={BREADCRUMB_PRESETS.legal("FAQ")}
+          className="mb-8"
+        />
 
         {/* Hero Section */}
         <header className="text-center mb-16">
@@ -230,9 +228,13 @@ export default function FAQPage() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-4">
             Pomobox FAQ
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Everything you need to know about Pomobox and productivity
           </p>
+          <ArticleMeta
+            publishedDate="2025-01-05"
+            modifiedDate="2025-01-05"
+          />
 
           {/* Category Pills */}
           <div className="mt-8 flex flex-wrap justify-center gap-2">

@@ -11,20 +11,21 @@ import {
 const siteUrl = "https://pomobox.app"
 
 export const metadata: Metadata = {
-  title: "Contact Us",
-  description: "Get in touch with the Pomobox team",
+  title: "Contact Pomobox Support: Email & GitHub | Pomobox",
+  description: "Contact the Pomobox team for support, feedback & feature requests. Email us at pomoboxapp@gmail.com or open GitHub issues. We typically respond within 1-2 business days.",
+  keywords: ["pomobox contact", "pomobox support", "report bug", "feature request"],
   openGraph: {
     type: "website",
     locale: "en_US",
     url: `${siteUrl}/contact`,
     siteName: "Pomobox",
-    title: "Contact Us",
-    description: "Get in touch with the Pomobox team",
+    title: "Contact Pomobox Support",
+    description: "Get in touch for support, feedback, or feature requests. Email or GitHub. Response within 1-2 business days.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Contact Us",
-    description: "Get in touch with the Pomobox team",
+    title: "Contact Us | Pomobox",
+    description: "Pomobox support: email pomoboxapp@gmail.com or GitHub. 1-2 day response.",
   },
   alternates: {
     canonical: `${siteUrl}/contact`,

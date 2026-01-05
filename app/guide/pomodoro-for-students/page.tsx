@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import {
-  ArrowLeft,
   GraduationCap,
   Brain,
   Clock,
@@ -23,7 +22,10 @@ import {
   Languages,
   Microscope,
   ArrowRight,
+  ArrowLeft,
 } from "lucide-react"
+import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
+import { ArticleMeta } from "@/components/ui/article-meta"
 
 export const metadata: Metadata = {
   title: "Pomodoro for Students: Study Smarter, Not Harder | Pomobox",
@@ -174,7 +176,7 @@ const jsonLd = [
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-20",
+    datePublished: "2025-01-05",
     dateModified: "2025-01-05",
     url: "https://pomobox.app/guide/pomodoro-for-students",
     mainEntityOfPage: "https://pomobox.app/guide/pomodoro-for-students",
@@ -207,14 +209,10 @@ export default function PomodoroForStudentsPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
       <div className="max-w-4xl mx-auto py-8 md:py-12 px-4 sm:px-6">
-        {/* Back Navigation */}
-        <Link
-          href="/guide/what-is-pomodoro"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8 group"
-        >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          Back to Pomodoro Guide
-        </Link>
+        <Breadcrumb
+          items={BREADCRUMB_PRESETS.guide("Pomodoro for Students")}
+          className="mb-8"
+        />
 
         {/* Hero Section */}
         <header className="text-center mb-16">
@@ -225,9 +223,14 @@ export default function PomodoroForStudentsPage() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-4">
             Pomodoro for Students
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Study smarter, not harder. Master exams, essays, and research with time-boxed focus.
           </p>
+          <ArticleMeta
+            publishedDate="2025-01-05"
+            modifiedDate="2025-01-05"
+            readingTime="10 min"
+          />
 
           {/* Quick Stats */}
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-md mx-auto">

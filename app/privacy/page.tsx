@@ -18,20 +18,21 @@ import {
 const siteUrl = "https://pomobox.app"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Pomobox Privacy Policy - How we collect, use, and protect your data",
+  title: "Privacy Policy: Data Security & Your Rights | Pomobox",
+  description: "Learn how Pomobox protects your privacy. Local-first data storage, no tracking, no ads. GDPR & CCPA compliant. Your focus data stays yours. Read our transparent privacy practices.",
+  keywords: ["pomobox privacy", "data protection", "GDPR compliant", "privacy policy", "no tracking"],
   openGraph: {
     type: "article",
     locale: "en_US",
     url: `${siteUrl}/privacy`,
     siteName: "Pomobox",
-    title: "Privacy Policy",
-    description: "Pomobox Privacy Policy - How we collect, use, and protect your data",
+    title: "Pomobox Privacy Policy: Your Data, Your Control",
+    description: "Privacy-first Pomodoro timer. Local data storage, no tracking, GDPR & CCPA compliant. Learn how we protect your data.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Privacy Policy",
-    description: "Pomobox Privacy Policy - How we collect, use, and protect your data",
+    title: "Privacy Policy | Pomobox",
+    description: "How Pomobox protects your data. Local-first storage, no tracking, GDPR compliant.",
   },
   alternates: {
     canonical: `${siteUrl}/privacy`,

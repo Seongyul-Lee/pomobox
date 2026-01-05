@@ -2,6 +2,102 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.0] - 2026-01-05
+
+SEO 구조화 데이터 및 콘텐츠 신선도 강화
+
+### Phase 2: Breadcrumb & Organization 스키마
+
+#### 신규 컴포넌트
+- `components/ui/breadcrumb.tsx` - BreadcrumbList JSON-LD 스키마 포함 네비게이션
+  - 3가지 프리셋: `guide`, `blog`, `legal`
+  - 홈 아이콘 + 계층 구조 UI
+
+#### 적용 페이지 (7개)
+- Guide: what-is-pomodoro, pomodoro-for-students, pomodoro-for-developers, pomodoro-vs-timeboxing, how-to-avoid-distractions
+- Blog: pomodoro-history, science-of-focus
+
+#### Organization 스키마 (`app/layout.tsx`)
+```json
+{
+  "@type": "Organization",
+  "name": "Pomobox",
+  "url": "https://pomobox.app",
+  "logo": "https://pomobox.app/logo.png",
+  "contactPoint": { "email": "help.pomobox@gmail.com" }
+}
+```
+
+### Phase 3: 콘텐츠 신선도 & Featured Snippet
+
+#### 신규 컴포넌트
+- `components/ui/article-meta.tsx` - 발행일/수정일/읽기시간 표시
+- `components/ui/definition-box.tsx` - Featured Snippet 최적화
+  - `DefinitionBox`: "What is..." 쿼리 타겟
+  - `QuickAnswer`: 비교 쿼리 타겟
+
+#### E-E-A-T 신호 강화
+- About 페이지: Breadcrumb, ArticleMeta, AboutPage 스키마 추가
+- FAQ 페이지: Breadcrumb, ArticleMeta 추가
+
+#### SiteNavigationElement 스키마
+- 사이트 네비게이션 구조화 데이터 추가
+- Timer → Stats → Guides (5개) → Blog (2개) → About → FAQ
+
+### SEO 메타데이터 수정 (Phase 1)
+
+#### 키워드 캐니벌라이제이션 해결
+- About 페이지: "What is Pomodoro?" → "What Makes Pomobox Different?"
+- science-of-focus: "Science of Focus" → "Neuroscience Behind Pomodoro"
+
+#### Legal 페이지 메타데이터 확장
+- Privacy: 14자 → 54자 title, GDPR/CCPA 언급
+- Terms: 17자 → 47자 title
+- Contact: 10자 → 51자 title
+
+#### datePublished/dateModified 수정
+- 모든 guide/blog 페이지 날짜 논리 오류 수정
+
+### Sitemap 확장
+
+| 기존 | 신규 |
+|-----|-----|
+| 6개 URL | 14개 URL |
+
+- Core: `/`, `/stats`, `/dashboard`
+- Guide: 5개 페이지 (priority 0.8-0.9)
+- Blog: 2개 페이지 (priority 0.7)
+- Info: `/about`, `/faq`, `/contact`
+- Legal: `/privacy`, `/terms`
+
+### 추가된 스키마 마크업
+- WebApplication (기존)
+- Organization (신규)
+- SiteNavigationElement (신규)
+- BreadcrumbList (각 페이지)
+- AboutPage (about)
+- FAQPage (faq)
+- Article + HowTo (guide/blog)
+
+### 파일 변경
+
+| 파일 | 변경 내용 |
+|------|----------|
+| `components/ui/breadcrumb.tsx` | **신규** - Breadcrumb + BreadcrumbList 스키마 |
+| `components/ui/article-meta.tsx` | **신규** - 콘텐츠 신선도 표시 |
+| `components/ui/definition-box.tsx` | **신규** - Featured Snippet 최적화 |
+| `app/layout.tsx` | Organization + SiteNavigationElement 스키마 |
+| `app/sitemap.ts` | 6개 → 14개 URL 확장, priority/frequency 세분화 |
+| `app/about/page.tsx` | Breadcrumb, ArticleMeta, AboutPage 스키마 |
+| `app/faq/page.tsx` | Breadcrumb, ArticleMeta 추가 |
+| `app/guide/*.tsx` | Breadcrumb, ArticleMeta, DefinitionBox 추가 |
+| `app/blog/*.tsx` | Breadcrumb, ArticleMeta 추가 |
+| `app/privacy/page.tsx` | 메타데이터 확장 |
+| `app/terms/page.tsx` | 메타데이터 확장 |
+| `app/contact/page.tsx` | 메타데이터 확장 |
+
+---
+
 ## [2.3.0] - 2026-01-05
 
 정보성 콘텐츠 페이지 7개 신규 추가 및 SEO 최적화

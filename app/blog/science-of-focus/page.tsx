@@ -21,23 +21,25 @@ import {
   Waves,
   BatteryFull,
 } from "lucide-react"
+import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
+import { ArticleMeta } from "@/components/ui/article-meta"
 
 export const metadata: Metadata = {
-  title: "Science of Focus: Why Pomodoro Works | Pomobox",
-  description: "Neuroscience behind Pomodoro: attention cycles, cognitive load, ultradian rhythms, flow states. Research-backed explanations for better concentration.",
-  keywords: ["science of focus", "pomodoro neuroscience", "attention span research", "cognitive psychology", "ultradian rhythms", "flow state science"],
+  title: "Neuroscience Behind Pomodoro: Why It Works | Pomobox",
+  description: "Brain science explaining Pomodoro effectiveness: attention cycles, cognitive load theory, ultradian rhythms, and flow states. Research-backed productivity insights.",
+  keywords: ["pomodoro neuroscience", "brain science productivity", "attention span research", "cognitive psychology", "ultradian rhythms", "flow state science"],
   openGraph: {
     type: "article",
     locale: "en_US",
     url: "https://pomobox.app/blog/science-of-focus",
     siteName: "Pomobox",
-    title: "The Science of Focus: Why Pomodoro Works",
-    description: "Neuroscience research explaining why time-boxed focus sessions improve productivity: attention cycles, cognitive load theory, and flow states.",
+    title: "Neuroscience Behind Pomodoro: Why It Works",
+    description: "Brain science explaining why time-boxed focus sessions improve productivity: attention cycles, cognitive load theory, and flow states.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Science of Focus | Pomobox",
-    description: "The neuroscience behind Pomodoro: why time-boxed focus sessions work according to research.",
+    title: "Neuroscience Behind Pomodoro | Pomobox",
+    description: "Brain science explaining Pomodoro effectiveness: attention cycles, cognitive load, flow states.",
   },
   alternates: {
     canonical: "https://pomobox.app/blog/science-of-focus",
@@ -214,15 +216,15 @@ const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "The Science of Focus: Why Pomodoro Works (Research-Backed)",
-    description: "Neuroscience research explaining why time-boxed focus sessions improve productivity: attention cycles, cognitive load theory, ultradian rhythms, and flow states.",
+    headline: "Neuroscience Behind Pomodoro: Why It Works",
+    description: "Brain science explaining why time-boxed focus sessions improve productivity: attention cycles, cognitive load theory, ultradian rhythms, and flow states.",
     author: { "@type": "Organization", name: "Pomobox Team" },
     publisher: {
       "@type": "Organization",
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-20",
+    datePublished: "2025-01-05",
     dateModified: "2025-01-05",
     url: "https://pomobox.app/blog/science-of-focus",
     mainEntityOfPage: "https://pomobox.app/blog/science-of-focus",
@@ -242,14 +244,10 @@ export default function ScienceOfFocusPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
       <div className="max-w-4xl mx-auto py-8 md:py-12 px-4 sm:px-6">
-        {/* Back Navigation */}
-        <Link
-          href="/guide/what-is-pomodoro"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8 group"
-        >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          Back to Pomodoro Guide
-        </Link>
+        <Breadcrumb
+          items={BREADCRUMB_PRESETS.blog("Neuroscience Behind Pomodoro")}
+          className="mb-8"
+        />
 
         {/* Hero Section */}
         <header className="text-center mb-16">
@@ -258,11 +256,16 @@ export default function ScienceOfFocusPage() {
             Research-Backed
           </span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-4">
-            The Science of Focus
+            Neuroscience Behind Pomodoro
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Why Pomodoro works, according to neuroscience and cognitive psychology
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
+            Brain science explaining why time-boxed focus sessions work
           </p>
+          <ArticleMeta
+            publishedDate="2025-01-05"
+            modifiedDate="2025-01-05"
+            readingTime="10 min"
+          />
 
           {/* Key Stats */}
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-lg mx-auto">

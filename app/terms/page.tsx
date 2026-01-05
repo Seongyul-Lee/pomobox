@@ -17,20 +17,21 @@ import {
 const siteUrl = "https://pomobox.app"
 
 export const metadata: Metadata = {
-  title: "Terms of Service",
-  description: "Pomobox Terms of Service - Rules and guidelines for using our service",
+  title: "Terms of Service: Fair Use Policy | Pomobox",
+  description: "Pomobox Terms of Service: Free forever, no premium tiers. Understand usage rights, acceptable conduct, and your data ownership. Open-source app with transparent rules.",
+  keywords: ["pomobox terms", "terms of service", "user agreement", "fair use policy"],
   openGraph: {
     type: "article",
     locale: "en_US",
     url: `${siteUrl}/terms`,
     siteName: "Pomobox",
-    title: "Terms of Service",
-    description: "Pomobox Terms of Service - Rules and guidelines for using our service",
+    title: "Pomobox Terms of Service: Fair Use & User Agreement",
+    description: "Free forever, open-source Pomodoro timer. Understand your rights and our transparent usage policy.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Terms of Service",
-    description: "Pomobox Terms of Service - Rules and guidelines for using our service",
+    title: "Terms of Service | Pomobox",
+    description: "Pomobox terms: free forever, open-source, transparent usage policy.",
   },
   alternates: {
     canonical: `${siteUrl}/terms`,

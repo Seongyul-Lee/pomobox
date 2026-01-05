@@ -83,7 +83,7 @@ export const metadata: Metadata = {
   },
 }
 
-const jsonLd = {
+const jsonLdWebApp = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "Pomobox",
@@ -108,6 +108,73 @@ const jsonLd = {
   ],
 }
 
+const jsonLdOrganization = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Pomobox",
+  url: siteUrl,
+  logo: `${siteUrl}/logo.png`,
+  description: "Pomobox creates minimal, distraction-free productivity tools. Our flagship product is a Pomodoro timer designed for focused work.",
+  sameAs: [
+    "https://github.com/pomobox",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "help.pomobox@gmail.com",
+    contactType: "customer support",
+    availableLanguage: ["English"],
+  },
+}
+
+const jsonLdSiteNavigation = {
+  "@context": "https://schema.org",
+  "@type": "SiteNavigationElement",
+  name: "Main Navigation",
+  hasPart: [
+    {
+      "@type": "SiteNavigationElement",
+      name: "Timer",
+      url: siteUrl,
+    },
+    {
+      "@type": "SiteNavigationElement",
+      name: "Statistics",
+      url: `${siteUrl}/stats`,
+    },
+    {
+      "@type": "SiteNavigationElement",
+      name: "Guides",
+      url: `${siteUrl}/guide/what-is-pomodoro`,
+      hasPart: [
+        { "@type": "SiteNavigationElement", name: "What is Pomodoro?", url: `${siteUrl}/guide/what-is-pomodoro` },
+        { "@type": "SiteNavigationElement", name: "For Students", url: `${siteUrl}/guide/pomodoro-for-students` },
+        { "@type": "SiteNavigationElement", name: "For Developers", url: `${siteUrl}/guide/pomodoro-for-developers` },
+        { "@type": "SiteNavigationElement", name: "Pomodoro vs Timeboxing", url: `${siteUrl}/guide/pomodoro-vs-timeboxing` },
+        { "@type": "SiteNavigationElement", name: "Avoid Distractions", url: `${siteUrl}/guide/how-to-avoid-distractions` },
+      ],
+    },
+    {
+      "@type": "SiteNavigationElement",
+      name: "Blog",
+      url: `${siteUrl}/blog/pomodoro-history`,
+      hasPart: [
+        { "@type": "SiteNavigationElement", name: "Pomodoro History", url: `${siteUrl}/blog/pomodoro-history` },
+        { "@type": "SiteNavigationElement", name: "Science of Focus", url: `${siteUrl}/blog/science-of-focus` },
+      ],
+    },
+    {
+      "@type": "SiteNavigationElement",
+      name: "About",
+      url: `${siteUrl}/about`,
+    },
+    {
+      "@type": "SiteNavigationElement",
+      name: "FAQ",
+      url: `${siteUrl}/faq`,
+    },
+  ],
+}
+
 type Props = {
   children: React.ReactNode
 }
@@ -118,7 +185,15 @@ export default function RootLayout({ children }: Props) {
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebApp) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganization) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSiteNavigation) }}
         />
       </head>
       <body className={`${geist.variable} font-sans antialiased`}>

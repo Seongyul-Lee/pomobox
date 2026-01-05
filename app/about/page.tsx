@@ -16,7 +16,11 @@ import {
   Heart,
   Github,
   Globe,
+  Code2,
+  Users,
 } from "lucide-react"
+import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
+import { ArticleMeta } from "@/components/ui/article-meta"
 
 const siteUrl = "https://pomobox.app"
 
@@ -115,18 +119,39 @@ const FAQS = [
   },
 ]
 
+// JSON-LD Schema for AboutPage
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: "About Pomobox",
+  description: "Pomobox: Free, open-source Pomodoro timer with statistics, focus music & activity tracking.",
+  url: `${siteUrl}/about`,
+  mainEntity: {
+    "@type": "SoftwareApplication",
+    name: "Pomobox",
+    applicationCategory: "ProductivityApplication",
+    operatingSystem: "Web Browser",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "Pomobox",
+    url: siteUrl,
+  },
+}
+
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
       <div className="max-w-4xl mx-auto py-8 md:py-12 px-4 sm:px-6">
-        {/* Back Navigation */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8 group"
-        >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          Back to Pomobox
-        </Link>
+        <Breadcrumb
+          items={BREADCRUMB_PRESETS.legal("About")}
+          className="mb-8"
+        />
 
         {/* Hero Section */}
         <header className="text-center mb-16">
@@ -137,44 +162,48 @@ export default function AboutPage() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-4">
             About Pomobox
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Free, open-source productivity for everyone
           </p>
+          <ArticleMeta
+            publishedDate="2025-01-05"
+            modifiedDate="2025-01-05"
+          />
         </header>
 
-        {/* What is Pomobox */}
+        {/* What Makes Pomobox Different */}
         <section className="mb-16">
           <div className="p-6 md:p-8 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50">
             <h2 className="flex items-center gap-3 text-xl md:text-2xl font-semibold text-foreground mb-4">
               <span className="p-2 rounded-xl bg-primary/10">
                 <Zap className="h-5 w-5 text-primary" />
               </span>
-              What is Pomobox?
+              What Makes Pomobox Different?
             </h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                Pomobox is a <strong className="text-foreground">free, open-source Pomodoro timer</strong> designed for distraction-free productivity. Unlike generic timer apps, Pomobox combines three essential elements:
+                <strong className="text-foreground">Most timer apps stop at counting down.</strong> Pomobox goes further—combining a beautiful timer with the tools you need to understand and improve your productivity.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
                 <div className="p-4 rounded-xl bg-background/50 dark:bg-background/30 border border-border/30">
-                  <div className="text-lg font-bold text-primary mb-1">1</div>
-                  <h3 className="font-medium text-foreground text-sm mb-1">Focused Sessions</h3>
-                  <p className="text-xs text-muted-foreground">Click "Start" and eliminate distractions for 25 minutes. No friction.</p>
+                  <div className="text-lg font-bold text-primary mb-1">100%</div>
+                  <h3 className="font-medium text-foreground text-sm mb-1">Free & Open Source</h3>
+                  <p className="text-xs text-muted-foreground">No premium tiers, no hidden features. Our code is public on GitHub.</p>
                 </div>
                 <div className="p-4 rounded-xl bg-background/50 dark:bg-background/30 border border-border/30">
-                  <div className="text-lg font-bold text-primary mb-1">2</div>
-                  <h3 className="font-medium text-foreground text-sm mb-1">Real-Time Insights</h3>
-                  <p className="text-xs text-muted-foreground">Weekly and monthly statistics reveal your productivity patterns.</p>
+                  <div className="text-lg font-bold text-primary mb-1">Local</div>
+                  <h3 className="font-medium text-foreground text-sm mb-1">Privacy-First Design</h3>
+                  <p className="text-xs text-muted-foreground">Your data stays on your device. No tracking, no analytics, no ads.</p>
                 </div>
                 <div className="p-4 rounded-xl bg-background/50 dark:bg-background/30 border border-border/30">
-                  <div className="text-lg font-bold text-primary mb-1">3</div>
-                  <h3 className="font-medium text-foreground text-sm mb-1">Environmental Support</h3>
-                  <p className="text-xs text-muted-foreground">Lo-fi music, visual calendar, customizable durations.</p>
+                  <div className="text-lg font-bold text-primary mb-1">Deep</div>
+                  <h3 className="font-medium text-foreground text-sm mb-1">Meaningful Statistics</h3>
+                  <p className="text-xs text-muted-foreground">See your peak hours, weekly trends, and long-term progress.</p>
                 </div>
               </div>
               <p>
-                Whether you're a student studying for exams, a developer deep in code, a writer facing blank page anxiety, or a manager protecting time for strategic thinking—Pomobox adapts to your needs.
-                <strong className="text-foreground"> You own your data. No paywalls. No premium features hidden behind subscriptions.</strong>
+                Whether you're a student, developer, writer, or professional—Pomobox gives you the insights other apps don't.
+                <strong className="text-foreground"> New to the Pomodoro Technique? <Link href="/guide/what-is-pomodoro" className="text-primary hover:underline">Read our complete guide</Link>.</strong>
               </p>
             </div>
           </div>
@@ -357,6 +386,12 @@ export default function AboutPage() {
           </Link>
         </div>
       </div>
+
+      {/* JSON-LD Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </main>
   )
 }

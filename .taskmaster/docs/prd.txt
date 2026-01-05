@@ -2,7 +2,7 @@
 
 - 제품: pomobox (Pomodoro timer + 통계/설정)
 - 목표: 정확한 타이머 상태/통계 정책의 일관성 유지
-- 원칙: 최소 변경 + 근거 기반 + 롤백 가능성 유지 + 기능 구현 시 추후 연계되는 기능들을 생각하며 작업 + 대부분의 작업은 '/en'가 기준
+- 원칙: 최소 변경 + 근거 기반 + 롤백 가능성 유지 + 기능 구현 시 추후 연계되는 기능들을 생각하며 작업
 - 제약: 이유없이 하드코딩 금지
 
 ---
@@ -37,14 +37,14 @@
 ## [1차 기능 구현 - 완료]
 
 ### 페이지 구성
-- 메인 페이지 (`app/[locale]/page.tsx`): 타이머 + 대시보드 레이아웃
-- 로그인 페이지 (`app/[locale]/auth/login/page.tsx`): Email/Password + Google OAuth
-- 회원가입 페이지 (`app/[locale]/auth/signup/page.tsx`): Email 인증 방식
-- 비밀번호 찾기 (`app/[locale]/auth/forgot-password/page.tsx`)
-- 비밀번호 재설정 (`app/[locale]/update-password/page.tsx`)
-- Privacy 페이지 (`app/[locale]/privacy/page.tsx`)
-- 마이페이지 (`app/[locale]/mypage/page.tsx`): 계정 정보 및 삭제 기능
-- 가이드 페이지 (`app/[locale]/guide/what-is-pomodoro/page.tsx`): SEO용 포모도로 설명
+- 메인 페이지 (`app/page.tsx`): 타이머 + 대시보드 레이아웃
+- 로그인 페이지 (`app/auth/login/page.tsx`): Email/Password + Google OAuth
+- 회원가입 페이지 (`app/auth/signup/page.tsx`): Email 인증 방식
+- 비밀번호 찾기 (`app/auth/forgot-password/page.tsx`)
+- 비밀번호 재설정 (`app/update-password/page.tsx`)
+- Privacy 페이지 (`app/privacy/page.tsx`)
+- 마이페이지 (`app/mypage/page.tsx`): 계정 정보 및 삭제 기능
+- 가이드 페이지 (`app/guide/what-is-pomodoro/page.tsx`): SEO용 포모도로 설명
 
 ### 중앙 타이머 (`components/pomodoro-timer.tsx`)
 - 타이머 상태: idle → running → paused → completed
@@ -57,7 +57,6 @@
 ### Settings 다이얼로그 (`components/settings-dialog.tsx`)
 - Notifications: 브라우저 알림 On/Off
 - Sound: 카테고리별 알람 선택 (Melody 10종, Ambient 10종), 볼륨 슬라이더, 테스트 재생
-- Language: 4개 언어 (English, 한국어, 日本語, 简体中文)
 - Focus Duration: 15/25/45/60분
 - Break Duration: 5/10/15/30분
 - Daily Goal: 60/90/120/180/240분
@@ -77,7 +76,7 @@
 - **Check In**: 일일 출석 체크 버튼, 월 출석 일수, 스트릭 통계 (현재/최고), 주간 출석률
 - 범례: 출석만 (파란색), 활동 강도 (연한 녹색 → 진한 녹색)
 
-### 레이아웃 (`app/[locale]/page.tsx`, `app/globals.css`)
+### 레이아웃 (`app/page.tsx`, `app/globals.css`)
 - 3단 그리드: 좌측 대시보드 (570px) | 중앙 타이머 (auto) | 우측 대시보드 (570px)
 - 하단: SEO 섹션 + 광고 여백 (h-24) + 최소 푸터 (Copyright, Privacy Policy, Guide 링크)
 - QHD (2560px) 기준 설계, FHD (1920px) 미디어 쿼리로 축소 대응

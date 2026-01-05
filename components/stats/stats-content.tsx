@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { WeeklyStatsChart } from "@/components/stats/weekly-stats-chart"
 import { WeekComparison } from "@/components/stats/week-comparison"
 import { Rolling4WeekChart } from "@/components/stats/rolling-4week-chart"
+import { HourlyDistributionChart } from "@/components/stats/hourly-distribution-chart"
 import { ErrorBoundary } from "@/components/error-boundary"
 
 // Skeleton for chart loading states
@@ -81,6 +82,24 @@ export function StatsContent() {
             <CardContent>
               <Suspense fallback={<ChartSkeleton />}>
                 <Rolling4WeekChart />
+              </Suspense>
+            </CardContent>
+          </Card>
+        </ErrorBoundary>
+      </section>
+
+      {/* Section 4: Hourly Distribution */}
+      <section aria-labelledby="hourly-distribution-title">
+        <ErrorBoundary fallback={<SectionSkeleton />}>
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle id="hourly-distribution-title" className="text-lg font-bold">
+                Focus Hours
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Suspense fallback={<ChartSkeleton />}>
+                <HourlyDistributionChart />
               </Suspense>
             </CardContent>
           </Card>

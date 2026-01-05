@@ -71,5 +71,4 @@ Tailwind CSS는 **Mobile First**가 원칙:
 - 알람: 멜로디, 앰비언트
 - Focus/Break Duration
 - Daily Goal
-- Language (4개)
 - 스크롤 바 지원

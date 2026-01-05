@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -382,12 +382,15 @@ export function MobileHeader() {
     }
   }, [menuOpen])
 
-  // Close menu on escape key
+  // Close menu on escape key - use ref to avoid memory leak
+  const menuOpenRef = useRef(menuOpen)
+  useEffect(() => { menuOpenRef.current = menuOpen }, [menuOpen])
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === "Escape" && menuOpen) {
+    if (e.key === "Escape" && menuOpenRef.current) {
       setMenuOpen(false)
     }
-  }, [menuOpen])
+  }, [])
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown)

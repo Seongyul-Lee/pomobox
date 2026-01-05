@@ -63,34 +63,6 @@ export function DashboardRight() {
     lastDayOfMonth: 31,
   })
 
-  const loadData = useCallback(async () => {
-    if (user) {
-      // 로그인 사용자: Supabase에서 데이터 조회
-      try {
-        const [monthly, attendanceData, checkedIn, streak, weekly] = await Promise.all([
-          getMonthlyStats(user.id),
-          getAttendanceFromDB(user.id),
-          isCheckedInTodayDB(user.id),
-          getStreakStatsFromDB(user.id),
-          getWeeklyAttendanceRateFromDB(user.id),
-        ])
-
-        setMonthlyData(monthly)
-        setAttendance(attendanceData)
-        setIsCheckedIn(checkedIn)
-        setStreakStats(streak)
-        setWeeklyRate(weekly)
-      } catch (error) {
-        console.error("Failed to load data from Supabase:", error)
-        // 에러 시 로컬 데이터로 폴백
-        loadLocalData()
-      }
-    } else {
-      // 비로그인 사용자: localStorage에서 데이터 조회
-      loadLocalData()
-    }
-  }, [user])
-
   const loadLocalData = useCallback(() => {
     setMonthlyData(getCurrentMonthData())
     setAttendance(getAttendance())
@@ -98,6 +70,49 @@ export function DashboardRight() {
     setStreakStats(getStreakStats())
     setWeeklyRate(getWeeklyAttendanceRate())
   }, [])
+
+  const loadData = useCallback(async () => {
+    if (user) {
+      // 로그인 사용자: Supabase에서 데이터 조회
+      // Promise.allSettled로 개별 실패 처리 (일부 실패해도 나머지는 성공 데이터 사용)
+      const results = await Promise.allSettled([
+        getMonthlyStats(user.id),
+        getAttendanceFromDB(user.id),
+        isCheckedInTodayDB(user.id),
+        getStreakStatsFromDB(user.id),
+        getWeeklyAttendanceRateFromDB(user.id),
+      ])
+
+      const dataTypes = ['monthlyStats', 'attendance', 'checkedIn', 'streak', 'weekly']
+      results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          console.warn(`Failed to load ${dataTypes[index]}:`, result.reason)
+        }
+      })
+
+      // 개별 결과 처리 - 성공한 것만 적용, 실패한 것은 로컬 데이터로 대체
+      const [monthly, attendanceData, checkedIn, streak, weekly] = results
+
+      setMonthlyData(
+        monthly.status === 'fulfilled' ? monthly.value : getCurrentMonthData()
+      )
+      setAttendance(
+        attendanceData.status === 'fulfilled' ? attendanceData.value : getAttendance()
+      )
+      setIsCheckedIn(
+        checkedIn.status === 'fulfilled' ? checkedIn.value : isCheckedInToday()
+      )
+      setStreakStats(
+        streak.status === 'fulfilled' ? streak.value : getStreakStats()
+      )
+      setWeeklyRate(
+        weekly.status === 'fulfilled' ? weekly.value : getWeeklyAttendanceRate()
+      )
+    } else {
+      // 비로그인 사용자: localStorage에서 데이터 조회
+      loadLocalData()
+    }
+  }, [user, loadLocalData])
 
   // 클라이언트에서만 날짜 정보 계산 (hydration 안전)
   useEffect(() => {

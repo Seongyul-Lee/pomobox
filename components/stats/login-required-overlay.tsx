@@ -2,6 +2,7 @@
 
 import { LogIn } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ROUTES } from "@/lib/routes"
 
 interface LoginRequiredOverlayProps {
   className?: string
@@ -31,7 +32,7 @@ export function LoginRequiredOverlay({
     >
       {showLoginIcon && (
         <a
-          href="/auth/login"
+          href={ROUTES.AUTH.LOGIN}
           className={cn(
             // Base styles
             "group relative flex items-center justify-center",

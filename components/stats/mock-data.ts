@@ -7,18 +7,19 @@ import type { WeeklyStatsData } from "@/hooks/use-weekly-stats"
 import type { RollingWeekData } from "@/hooks/use-rolling-4week-stats"
 
 // 요일별 가상 데이터 (Weekly Pattern)
+// date 필드에 고유한 값을 사용하여 React key 중복 방지
 export const MOCK_WEEKLY_DATA: WeeklyStatsData[] = (() => {
   const today = new Date()
   const currentDayOfWeek = today.getDay() // 0 = Sunday
 
   return [
-    { dayName: "SUN", date: "", dayOfWeek: 0, totalMinutes: 85, totalSessions: 4, isToday: currentDayOfWeek === 0 },
-    { dayName: "MON", date: "", dayOfWeek: 1, totalMinutes: 120, totalSessions: 5, isToday: currentDayOfWeek === 1 },
-    { dayName: "TUE", date: "", dayOfWeek: 2, totalMinutes: 95, totalSessions: 4, isToday: currentDayOfWeek === 2 },
-    { dayName: "WED", date: "", dayOfWeek: 3, totalMinutes: 145, totalSessions: 6, isToday: currentDayOfWeek === 3 },
-    { dayName: "THU", date: "", dayOfWeek: 4, totalMinutes: 110, totalSessions: 5, isToday: currentDayOfWeek === 4 },
-    { dayName: "FRI", date: "", dayOfWeek: 5, totalMinutes: 75, totalSessions: 3, isToday: currentDayOfWeek === 5 },
-    { dayName: "SAT", date: "", dayOfWeek: 6, totalMinutes: 60, totalSessions: 3, isToday: currentDayOfWeek === 6 },
+    { dayName: "SUN", date: "mock-sun", dayOfWeek: 0, totalMinutes: 85, totalSessions: 4, isToday: currentDayOfWeek === 0 },
+    { dayName: "MON", date: "mock-mon", dayOfWeek: 1, totalMinutes: 120, totalSessions: 5, isToday: currentDayOfWeek === 1 },
+    { dayName: "TUE", date: "mock-tue", dayOfWeek: 2, totalMinutes: 95, totalSessions: 4, isToday: currentDayOfWeek === 2 },
+    { dayName: "WED", date: "mock-wed", dayOfWeek: 3, totalMinutes: 145, totalSessions: 6, isToday: currentDayOfWeek === 3 },
+    { dayName: "THU", date: "mock-thu", dayOfWeek: 4, totalMinutes: 110, totalSessions: 5, isToday: currentDayOfWeek === 4 },
+    { dayName: "FRI", date: "mock-fri", dayOfWeek: 5, totalMinutes: 75, totalSessions: 3, isToday: currentDayOfWeek === 5 },
+    { dayName: "SAT", date: "mock-sat", dayOfWeek: 6, totalMinutes: 60, totalSessions: 3, isToday: currentDayOfWeek === 6 },
   ]
 })()
 
@@ -94,6 +95,7 @@ export const MOCK_WEEK_COMPARISON = {
 }
 
 // Focus Hours 가상 데이터 (시간대별 분포)
+// Math.random() 제거 - hydration mismatch 방지를 위해 고정값 사용
 export interface MockHourlyData {
   hour: number
   total_minutes: number
@@ -101,31 +103,20 @@ export interface MockHourlyData {
   label: string
 }
 
-export const MOCK_HOURLY_DATA: MockHourlyData[] = Array.from({ length: 24 }, (_, hour) => {
-  // 집중 시간 패턴: 오전 9-12시, 오후 2-5시에 높음
-  let minutes = 0
+// 고정된 시간대별 분포 패턴 (오전 9-12시, 오후 2-5시에 높음)
+const HOURLY_MINUTES = [
+  0, 0, 0, 0, 0, 0,       // 00-05: 수면 시간
+  5, 35, 45,              // 06-08: 아침
+  95, 110, 85,            // 09-11: 오전 집중
+  40, 25,                 // 12-13: 점심
+  120, 130, 115, 100,     // 14-17: 오후 집중 (피크)
+  55, 60, 50, 45,         // 18-21: 저녁
+  15, 5                   // 22-23: 마무리
+]
 
-  if (hour >= 9 && hour <= 11) {
-    minutes = 80 + Math.floor(Math.random() * 40) // 80-120분
-  } else if (hour >= 14 && hour <= 17) {
-    minutes = 90 + Math.floor(Math.random() * 50) // 90-140분
-  } else if (hour >= 7 && hour <= 8) {
-    minutes = 30 + Math.floor(Math.random() * 20) // 30-50분
-  } else if (hour >= 19 && hour <= 21) {
-    minutes = 40 + Math.floor(Math.random() * 30) // 40-70분
-  } else if (hour >= 6 && hour <= 22) {
-    minutes = Math.floor(Math.random() * 20) // 0-20분
-  }
-
-  return {
-    hour,
-    total_minutes: minutes,
-    isPeak: false,
-    label: String(hour).padStart(2, "0"),
-  }
-})
-
-// 피크 시간 설정 (가장 높은 값)
-const maxIdx = MOCK_HOURLY_DATA.reduce((maxI, item, i, arr) =>
-  item.total_minutes > arr[maxI].total_minutes ? i : maxI, 0)
-MOCK_HOURLY_DATA[maxIdx].isPeak = true
+export const MOCK_HOURLY_DATA: MockHourlyData[] = HOURLY_MINUTES.map((minutes, hour) => ({
+  hour,
+  total_minutes: minutes,
+  isPeak: hour === 15, // 15시가 피크
+  label: String(hour).padStart(2, "0"),
+}))

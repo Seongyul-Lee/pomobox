@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import {
   BarChart,
   Bar,
@@ -153,28 +153,6 @@ export function WeeklyStatsChart({ useMockData = false }: WeeklyStatsChartProps)
     margin: { top: 10, right: 10, left: -20, bottom: 0 },
   }
 
-  // 커스텀 Dot 렌더링 함수 (Area/Line 공통)
-  const renderDot = useMemo(() => {
-    return (props: { cx?: number; cy?: number; payload?: WeeklyStatsData; index?: number }) => {
-      const { cx, cy, payload, index } = props
-      if (cx === undefined || cy === undefined || !payload) {
-        return <circle key={`dot-empty-${index}`} cx={0} cy={0} r={0} fill="transparent" />
-      }
-      const isToday = payload.isToday
-      return (
-        <circle
-          key={`dot-${payload.date}`}
-          cx={cx}
-          cy={cy}
-          r={isToday ? 6 : 4}
-          fill={isToday ? todayColor : chartColor}
-          stroke={isToday ? "var(--background)" : "none"}
-          strokeWidth={isToday ? 2 : 0}
-        />
-      )
-    }
-  }, [chartColor, todayColor])
-
   const renderChart = () => {
     switch (chartType) {
       case "bar":
@@ -239,7 +217,8 @@ export function WeeklyStatsChart({ useMockData = false }: WeeklyStatsChartProps)
               stroke={chartColor}
               strokeWidth={2}
               fill="url(#areaGradient)"
-              dot={renderDot}
+              dot={{ r: 4, fill: chartColor, strokeWidth: 0 }}
+              activeDot={{ r: 6, fill: todayColor, stroke: "var(--background)", strokeWidth: 2 }}
             />
           </AreaChart>
         )
@@ -266,8 +245,8 @@ export function WeeklyStatsChart({ useMockData = false }: WeeklyStatsChartProps)
               dataKey="totalMinutes"
               stroke={chartColor}
               strokeWidth={2}
-              dot={renderDot}
-              activeDot={{ r: 6, fill: chartColor }}
+              dot={{ r: 4, fill: chartColor, strokeWidth: 0 }}
+              activeDot={{ r: 6, fill: todayColor, stroke: "var(--background)", strokeWidth: 2 }}
             />
           </LineChart>
         )

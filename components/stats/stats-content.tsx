@@ -8,7 +8,7 @@ import { HourlyDistributionChart } from "@/components/stats/hourly-distribution-
 import { StatsHero } from "@/components/stats/stats-hero"
 import { TodayStats } from "@/components/stats/today-stats"
 import { ErrorBoundary } from "@/components/error-boundary"
-import { LoginRequiredOverlay } from "@/components/stats/login-required-overlay"
+import { LoginRequiredOverlay, UnifiedLoginPrompt } from "@/components/stats/login-required-overlay"
 import { useUser } from "@/hooks/use-user"
 
 // Skeleton for chart loading states
@@ -137,131 +137,116 @@ export function StatsContent() {
       </div>
 
       {/* Bento Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5">
-        {/* Weekly Pattern - Large Card (spans 7 columns) */}
-        <section
-          aria-labelledby="weekly-stats-title"
-          className="lg:col-span-7"
-        >
-          <ErrorBoundary fallback={<BentoSkeleton className="h-full" />}>
-            <BentoCard
-              gradient="from-chart-1/8 via-transparent to-transparent"
-              className="h-full"
-            >
-              <div className="relative p-5 lg:p-6">
-                <SectionHeader
-                  id="weekly-stats-title"
-                  title="Weekly Pattern"
-                  subtitle="Your focus rhythm this week"
-                />
-                <Suspense fallback={<ChartSkeleton height="h-[260px]" />}>
-                  <WeeklyStatsChart useMockData={showMockData} />
-                </Suspense>
-                {showMockData && (
-                  <LoginRequiredOverlay
-                    title="Unlock Weekly Insights"
-                    description="Sign in to track your weekly focus patterns"
+      <div className="relative">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5">
+          {/* Weekly Pattern - Large Card (spans 7 columns) */}
+          <section
+            aria-labelledby="weekly-stats-title"
+            className="lg:col-span-7"
+          >
+            <ErrorBoundary fallback={<BentoSkeleton className="h-full" />}>
+              <BentoCard
+                gradient="from-chart-1/8 via-transparent to-transparent"
+                className="h-full"
+              >
+                <div className="relative p-5 lg:p-6">
+                  <SectionHeader
+                    id="weekly-stats-title"
+                    title="Weekly Pattern"
+                    subtitle="Your focus rhythm this week"
                   />
-                )}
-              </div>
-            </BentoCard>
-          </ErrorBoundary>
-        </section>
+                  <Suspense fallback={<ChartSkeleton height="h-[260px]" />}>
+                    <WeeklyStatsChart useMockData={showMockData} />
+                  </Suspense>
+                  {showMockData && <LoginRequiredOverlay blurOnly />}
+                </div>
+              </BentoCard>
+            </ErrorBoundary>
+          </section>
 
-        {/* Monthly Trend - Medium Card (spans 5 columns) */}
-        <section
-          aria-labelledby="rolling-stats-title"
-          className="lg:col-span-5"
-        >
-          <ErrorBoundary fallback={<BentoSkeleton className="h-full" />}>
-            <BentoCard
-              gradient="from-chart-2/8 via-transparent to-transparent"
-              className="h-full"
-            >
-              <div className="relative p-5 lg:p-6">
-                <SectionHeader
-                  id="rolling-stats-title"
-                  title="Monthly Trend"
-                  subtitle="4-week progress overview"
-                />
-                <Suspense fallback={<ChartSkeleton height="h-[260px]" />}>
-                  <Rolling4WeekChart useMockData={showMockData} />
-                </Suspense>
-                {showMockData && (
-                  <LoginRequiredOverlay
-                    title="Unlock Monthly Trends"
-                    description="Sign in to see your progress over time"
+          {/* Monthly Trend - Medium Card (spans 5 columns) */}
+          <section
+            aria-labelledby="rolling-stats-title"
+            className="lg:col-span-5"
+          >
+            <ErrorBoundary fallback={<BentoSkeleton className="h-full" />}>
+              <BentoCard
+                gradient="from-chart-2/8 via-transparent to-transparent"
+                className="h-full"
+              >
+                <div className="relative p-5 lg:p-6">
+                  <SectionHeader
+                    id="rolling-stats-title"
+                    title="Monthly Trend"
+                    subtitle="4-week progress overview"
                   />
-                )}
-              </div>
-            </BentoCard>
-          </ErrorBoundary>
-        </section>
+                  <Suspense fallback={<ChartSkeleton height="h-[260px]" />}>
+                    <Rolling4WeekChart useMockData={showMockData} />
+                  </Suspense>
+                  {showMockData && <LoginRequiredOverlay blurOnly />}
+                </div>
+              </BentoCard>
+            </ErrorBoundary>
+          </section>
 
-        {/* Growth Analysis - Full Width */}
-        <section
-          aria-labelledby="weekly-comparison-title"
-          className="lg:col-span-12"
-        >
-          <ErrorBoundary fallback={<BentoSkeleton />}>
-            <BentoCard gradient="from-primary/5 via-transparent to-chart-4/5">
-              <div className="relative p-5 lg:p-6">
-                <SectionHeader
-                  id="weekly-comparison-title"
-                  title="Growth Analysis"
-                  subtitle="This week vs last week"
-                />
-                <Suspense
-                  fallback={
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
-                          className="h-32 bg-muted/20 rounded-xl animate-pulse"
-                        />
-                      ))}
-                    </div>
-                  }
-                >
-                  <WeekComparison useMockData={showMockData} />
-                </Suspense>
-                {showMockData && (
-                  <LoginRequiredOverlay
-                    title="Unlock Growth Analysis"
-                    description="Sign in to compare your weekly performance"
+          {/* Growth Analysis - Full Width */}
+          <section
+            aria-labelledby="weekly-comparison-title"
+            className="lg:col-span-12"
+          >
+            <ErrorBoundary fallback={<BentoSkeleton />}>
+              <BentoCard gradient="from-primary/5 via-transparent to-chart-4/5">
+                <div className="relative p-5 lg:p-6">
+                  <SectionHeader
+                    id="weekly-comparison-title"
+                    title="Growth Analysis"
+                    subtitle="This week vs last week"
                   />
-                )}
-              </div>
-            </BentoCard>
-          </ErrorBoundary>
-        </section>
+                  <Suspense
+                    fallback={
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {[1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            className="h-32 bg-muted/20 rounded-xl animate-pulse"
+                          />
+                        ))}
+                      </div>
+                    }
+                  >
+                    <WeekComparison useMockData={showMockData} />
+                  </Suspense>
+                  {showMockData && <LoginRequiredOverlay blurOnly />}
+                </div>
+              </BentoCard>
+            </ErrorBoundary>
+          </section>
 
-        {/* Focus Hours - Full Width with special treatment */}
-        <section
-          aria-labelledby="hourly-distribution-title"
-          className="lg:col-span-12"
-        >
-          <ErrorBoundary fallback={<BentoSkeleton />}>
-            <BentoCard gradient="from-chart-5/8 via-transparent to-chart-3/5">
-              <div className="relative p-5 lg:p-6">
-                <SectionHeader
-                  id="hourly-distribution-title"
-                  title="Focus Hours"
-                  subtitle="When you're most productive"
-                />
-                <Suspense fallback={<ChartSkeleton height="h-[280px]" />}>
-                  <HourlyDistributionChart useMockData={showMockData} />
-                </Suspense>
-                {showMockData && (
-                  <LoginRequiredOverlay
-                    title="Discover Peak Hours"
-                    description="Sign in to find when you're most productive"
+          {/* Focus Hours - Full Width with special treatment */}
+          <section
+            aria-labelledby="hourly-distribution-title"
+            className="lg:col-span-12"
+          >
+            <ErrorBoundary fallback={<BentoSkeleton />}>
+              <BentoCard gradient="from-chart-5/8 via-transparent to-chart-3/5">
+                <div className="relative p-5 lg:p-6">
+                  <SectionHeader
+                    id="hourly-distribution-title"
+                    title="Focus Hours"
+                    subtitle="When you're most productive"
                   />
-                )}
-              </div>
-            </BentoCard>
-          </ErrorBoundary>
-        </section>
+                  <Suspense fallback={<ChartSkeleton height="h-[280px]" />}>
+                    <HourlyDistributionChart useMockData={showMockData} />
+                  </Suspense>
+                  {showMockData && <LoginRequiredOverlay blurOnly />}
+                </div>
+              </BentoCard>
+            </ErrorBoundary>
+          </section>
+        </div>
+
+        {/* Single unified login prompt - positioned over the grid */}
+        {showMockData && <UnifiedLoginPrompt />}
       </div>
     </div>
   )

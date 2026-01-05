@@ -11,6 +11,7 @@ import { MainLayout } from "@/components/main-layout"
 import { MobileHeader } from "@/components/mobile-header"
 import { MobileNav } from "@/components/mobile-nav"
 import { PomodoroGuideSection } from "@/components/pomodoro-guide-section"
+import { AdSenseVerticalBanner } from "@/components/adsense-vertical-banner"
 
 // Static timer skeleton for fast LCP - shows default 25:00
 function TimerFallback() {
@@ -92,11 +93,7 @@ export default function Home() {
               </Suspense>
             </>
           }
-          adArea={
-            <div className="h-[600px] rounded-xl bg-muted/30 border border-border/50 flex items-center justify-center">
-              <span className="text-xs text-muted-foreground">Ad</span>
-            </div>
-          }
+          adArea={<AdSenseVerticalBanner />}
         >
           {/* Center: Timer */}
           <section className="flex flex-col items-center justify-start pt-8 xl:pt-12">

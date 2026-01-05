@@ -248,8 +248,9 @@
         "dependencies": [
           "109"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T13:06:52.012Z"
       },
       {
         "id": "111",
@@ -261,8 +262,9 @@
         "dependencies": [
           "110"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T13:11:00.703Z"
       },
       {
         "id": "112",
@@ -275,8 +277,9 @@
           "111",
           "107"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T14:00:00.000Z"
       },
       {
         "id": "113",
@@ -289,8 +292,9 @@
           "99",
           "107"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T14:15:00.000Z"
       },
       {
         "id": "114",
@@ -302,8 +306,9 @@
         "dependencies": [
           "113"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T13:41:11.525Z"
       },
       {
         "id": "115",
@@ -315,8 +320,9 @@
         "dependencies": [
           "107"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T13:49:54.415Z"
       },
       {
         "id": "116",
@@ -328,8 +334,9 @@
         "dependencies": [
           "102"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T13:23:56.349Z"
       },
       {
         "id": "117",
@@ -385,9 +392,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-05T12:57:06.827Z",
+      "lastModified": "2026-01-05T13:49:54.415Z",
       "taskCount": 25,
-      "completedCount": 14,
+      "completedCount": 21,
       "tags": [
         "master"
       ]

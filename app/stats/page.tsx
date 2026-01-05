@@ -3,13 +3,24 @@ import { Suspense } from "react"
 import { StatsContent } from "@/components/stats/stats-content"
 
 export const metadata: Metadata = {
-  title: "Statistics | Pomobox",
-  description: "View your focus statistics and productivity patterns. Track weekly patterns, growth analysis, and monthly trends.",
+  title: "Track Focus & Productivity Statistics",
+  description: "Visualize your focus patterns with detailed charts and heatmaps. Track weekly progress, monthly trends, and productivity growth. Discover your peak hours to optimize study and work sessions.",
   openGraph: {
-    title: "Statistics | Pomobox",
-    description: "View your focus statistics and productivity patterns. Track weekly patterns, growth analysis, and monthly trends.",
+    title: "Track Focus & Productivity Statistics | Pomobox",
+    description: "Visualize your focus patterns with detailed charts and heatmaps. Track weekly progress, monthly trends, and productivity growth.",
     type: "website",
+    url: "https://pomobox.app/stats",
+    locale: "en_US",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Track Focus & Productivity Statistics | Pomobox",
+    description: "Visualize your focus patterns with charts and heatmaps. Discover peak hours & boost productivity.",
+  },
+  alternates: {
+    canonical: "https://pomobox.app/stats",
+  },
+  keywords: ["statistics", "productivity", "focus tracking", "pomodoro", "session tracking"],
 }
 
 // Loading skeleton for initial page load
@@ -27,6 +38,37 @@ function StatsLoadingSkeleton() {
 }
 
 export default function StatsPage() {
+  // JSON-LD 구조화 데이터: WebPage + BreadcrumbList
+  const webPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Focus Statistics",
+    description: "View your focus statistics and productivity patterns. Track weekly progress, monthly trends, and productivity growth.",
+    url: "https://pomobox.app/stats",
+    isPartOf: {
+      "@type": "WebApplication",
+      name: "Pomobox",
+      applicationCategory: "ProductivityApplication",
+    },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://pomobox.app",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Statistics",
+          item: "https://pomobox.app/stats",
+        },
+      ],
+    },
+  }
+
   return (
     <main
       role="main"
@@ -54,6 +96,12 @@ export default function StatsPage() {
           </Suspense>
         </div>
       </main>
+
+      {/* JSON-LD structured data - static content, safe usage */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}
+      />
     </main>
   )
 }

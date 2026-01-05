@@ -298,22 +298,22 @@ export function DashboardRight() {
             <div className="p-1.5 rounded-lg bg-rose-500/10 mb-1 xl:mb-1.5 group-hover:scale-110 transition-transform">
               <Flame className="h-4 w-4 xl:h-5 xl:w-5 text-rose-500 dark:text-rose-400" />
             </div>
-            <p className="text-sm xl:text-lg font-bold text-[oklch(0.25_0.03_265)] dark:text-foreground">{streakStats.current}<span className="text-xs font-normal ml-0.5"> days</span></p>
-            <p className="text-[10px] xl:text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">Current Streak</p>
+            <p className="text-sm xl:text-lg font-bold text-foreground">{streakStats.current}<span className="text-xs font-normal ml-0.5"> days</span></p>
+            <p className="text-[10px] xl:text-xs text-muted-foreground">Current Streak</p>
           </div>
           <div className="group flex flex-col items-center p-2.5 xl:p-3.5 rounded-xl bg-gradient-to-br from-amber-500/15 to-amber-500/5 dark:from-amber-500/12 dark:to-amber-500/5 border border-amber-500/10 hover:border-amber-500/25 hover-stat cursor-default transition-all duration-200">
             <div className="p-1.5 rounded-lg bg-amber-500/10 mb-1 xl:mb-1.5 group-hover:scale-110 transition-transform">
               <Flame className="h-4 w-4 xl:h-5 xl:w-5 text-amber-500 dark:text-amber-400" />
             </div>
-            <p className="text-sm xl:text-lg font-bold text-[oklch(0.25_0.03_265)] dark:text-foreground">{streakStats.best}<span className="text-xs font-normal ml-0.5"> days</span></p>
-            <p className="text-[10px] xl:text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">Best Streak</p>
+            <p className="text-sm xl:text-lg font-bold text-foreground">{streakStats.best}<span className="text-xs font-normal ml-0.5"> days</span></p>
+            <p className="text-[10px] xl:text-xs text-muted-foreground">Best Streak</p>
           </div>
           <div className="group flex flex-col items-center p-2.5 xl:p-3.5 rounded-xl bg-gradient-to-br from-sky-500/15 to-sky-500/5 dark:from-sky-500/12 dark:to-sky-500/5 border border-sky-500/10 hover:border-sky-500/25 hover-stat cursor-default transition-all duration-200">
             <div className="p-1.5 rounded-lg bg-sky-500/10 mb-1 xl:mb-1.5 group-hover:scale-110 transition-transform">
               <Target className="h-4 w-4 xl:h-5 xl:w-5 text-sky-500 dark:text-sky-400" />
             </div>
-            <p className="text-sm xl:text-lg font-bold text-[oklch(0.25_0.03_265)] dark:text-foreground">{weeklyRate.rate}<span className="text-xs font-normal ml-0.5">%</span></p>
-            <p className="text-[10px] xl:text-xs text-[oklch(0.4_0.02_260)] dark:text-muted-foreground">Weekly Rate</p>
+            <p className="text-sm xl:text-lg font-bold text-foreground">{weeklyRate.rate}<span className="text-xs font-normal ml-0.5">%</span></p>
+            <p className="text-[10px] xl:text-xs text-muted-foreground">Weekly Rate</p>
           </div>
         </div>
 
@@ -323,7 +323,7 @@ export function DashboardRight() {
             <div
               key={i}
               className={`text-xs xl:text-sm text-center py-1 xl:py-2 font-semibold ${
-                i === 0 ? "text-rose-500 dark:text-rose-400" : i === 6 ? "text-blue-500 dark:text-blue-400" : "text-[oklch(0.4_0.02_260)] dark:text-muted-foreground"
+                i === 0 ? "text-rose-500 dark:text-rose-400" : i === 6 ? "text-blue-500 dark:text-blue-400" : "text-muted-foreground"
               }`}
             >
               {day}
@@ -353,7 +353,7 @@ export function DashboardRight() {
                     <button
                       type="button"
                       onClick={() => handleDayClick(day)}
-                      className={`aspect-square rounded-md xl:rounded-lg flex items-center justify-center text-xs xl:text-base font-semibold transition-all cursor-pointer hover:scale-105 hover:brightness-110 text-[oklch(0.25_0.03_265)] dark:text-foreground ${
+                      className={`aspect-square rounded-md xl:rounded-lg flex items-center justify-center text-xs xl:text-base font-semibold transition-all cursor-pointer hover:scale-105 hover:brightness-110 text-foreground ${
                         isSelected
                           ? `${getIntensityClass(day, isToday)} ring-2 ring-amber-400`
                           : isToday

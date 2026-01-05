@@ -161,7 +161,7 @@ export function StatsHero() {
             {/* Growth indicator */}
             {growthPercent !== 0 && (
               <p className={`text-sm font-medium flex items-center gap-1.5 ${
-                isGrowing ? "text-[oklch(59%_0.2_145)]" : "text-[oklch(59%_0.2_25)]"
+                isGrowing ? "text-success" : "text-destructive"
               }`}>
                 <Zap className="h-3.5 w-3.5" />
                 {isGrowing ? "+" : ""}{growthPercent}% vs last week

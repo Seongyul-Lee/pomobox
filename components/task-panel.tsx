@@ -178,41 +178,53 @@ function TaskListContent({
   } = useTasks(userId)
   const { addTask: addTaskMutation, toggleComplete, removeTask } = useTaskMutations(userId)
 
-  // 마이그레이션 완료 플래그
-  const [migrationDone, setMigrationDone] = useState(false)
+  // 마이그레이션 실행 중/완료 플래그 (useRef로 중복 실행 방지)
+  const migrationRef = useRef<'idle' | 'running' | 'done'>('idle')
 
-  // 로그인 시 localStorage → Supabase 마이그레이션
+  // 로그인 시 localStorage → Supabase 마이그레이션 (1회만 실행)
   useEffect(() => {
-    if (user && localTasks.length > 0 && !migrationDone) {
-      const migrateLocalTasks = async () => {
-        try {
-          // 각 로컬 Task를 Supabase로 마이그레이션
-          for (const task of localTasks) {
-            await addTaskMutation.mutateAsync({
-              title: task.title,
-              description: task.description,
-              is_completed: task.isCompleted,
-              priority: task.priority,
-            })
-          }
-          // 마이그레이션 완료 후 localStorage 정리
-          clearLocalTasks()
-          setMigrationDone(true)
-          toast({
-            title: "Migration Complete",
-            description: "Your tasks have been synced to your account.",
-          })
-        } catch {
-          toast({
-            title: "Migration Failed",
-            description: "Failed to sync your tasks. Please try again.",
-            variant: "destructive",
+    // 마이그레이션 조건: 로그인됨 + 로컬 Task 존재 + 마이그레이션 미실행
+    if (!user || localTasks.length === 0 || migrationRef.current !== 'idle') {
+      return
+    }
+
+    // 마이그레이션 시작 표시 (중복 실행 방지)
+    migrationRef.current = 'running'
+
+    // 마이그레이션할 Task 스냅샷 캡처 (의존성 문제 방지)
+    const tasksToMigrate = [...localTasks]
+
+    const migrateLocalTasks = async () => {
+      try {
+        // 각 로컬 Task를 Supabase로 마이그레이션
+        for (const task of tasksToMigrate) {
+          await addTaskMutation.mutateAsync({
+            title: task.title,
+            description: task.description,
+            is_completed: task.isCompleted,
+            priority: task.priority,
           })
         }
+        // 마이그레이션 완료 후 localStorage 정리
+        clearLocalTasks()
+        migrationRef.current = 'done'
+        toast({
+          title: "Migration Complete",
+          description: "Your tasks have been synced to your account.",
+        })
+      } catch {
+        // 에러 발생 시 다시 시도할 수 있도록 idle로 복원
+        migrationRef.current = 'idle'
+        toast({
+          title: "Migration Failed",
+          description: "Failed to sync your tasks. Please try again.",
+          variant: "destructive",
+        })
       }
-      migrateLocalTasks()
     }
-  }, [user, localTasks, migrationDone, addTaskMutation, clearLocalTasks, toast])
+    migrateLocalTasks()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   // 에러 토스트
   useEffect(() => {

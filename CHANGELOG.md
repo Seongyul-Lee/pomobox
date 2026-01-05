@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.0] - 2026-01-05
+
+정보성 콘텐츠 페이지 7개 신규 추가 및 SEO 최적화
+
+### Features
+
+#### Guide 페이지 4개 신규 추가
+- `/guide/pomodoro-for-students` - 학생 타겟 가이드 (시험 준비, 에세이 작성, 노트 정리, 과목별 전략)
+- `/guide/pomodoro-for-developers` - 개발자 타겟 (딥코딩, 디버깅, 코드리뷰, 작업 추정)
+- `/guide/pomodoro-vs-timeboxing` - 비교 콘텐츠 (기능 비교표, 장단점, 하이브리드 접근법)
+- `/guide/how-to-avoid-distractions` - 집중력 가이드 (디지털, 환경, 내부 방해요소 대응)
+
+#### Blog 페이지 2개 신규 추가
+- `/blog/pomodoro-history` - 포모도로 역사/배경 (Francesco Cirillo, 타임라인, 진화 과정)
+- `/blog/science-of-focus` - 과학적 근거 (신경과학, 주의력 연구, 울트라디안 리듬)
+
+#### FAQ 전용 페이지 추가
+- `/faq` - 4개 카테고리 28개 FAQ (앱 기능, 기술/데이터, 생산성 팁, 계정/지원)
+- 기존 what-is-pomodoro FAQ와 차별화된 주제 구성
+
+### SEO 최적화
+
+#### 메타 태그 최적화
+- 모든 페이지 title 50-60자 내로 조정
+- description 150-160자 최적화
+- 주요 키워드 title/H1/description 배치
+
+#### 구조화 데이터 (JSON-LD)
+- Article 스키마 (모든 콘텐츠 페이지)
+- FAQPage 스키마 (모든 페이지 FAQ 섹션)
+- HowTo 스키마 (Students, Distractions 가이드)
+
+#### 내부 링크 강화
+- 모든 페이지 간 상호 링크 구축
+- 메인 페이지 푸터에 FAQ 링크 추가
+- what-is-pomodoro 페이지에 Students 가이드 링크 추가
+
+### 콘텐츠 특징
+- 각 페이지 2000+ 단어 상세 콘텐츠
+- 데이터 기반 통계 및 연구 인용
+- Featured Snippet 타겟 FAQ 섹션
+- 적극적 CTA 및 타이머 연결
+
+### 파일 변경
+
+| 파일 | 변경 내용 |
+|------|----------|
+| `app/guide/pomodoro-for-students/page.tsx` | **신규** - 학생 타겟 가이드 |
+| `app/guide/pomodoro-for-developers/page.tsx` | **신규** - 개발자 타겟 가이드 |
+| `app/guide/pomodoro-vs-timeboxing/page.tsx` | **신규** - 비교 콘텐츠 |
+| `app/guide/how-to-avoid-distractions/page.tsx` | **신규** - 집중력 가이드 |
+| `app/blog/pomodoro-history/page.tsx` | **신규** - 역사/배경 |
+| `app/blog/science-of-focus/page.tsx` | **신규** - 과학적 근거 |
+| `app/faq/page.tsx` | **신규** - FAQ 전용 페이지 |
+| `app/page.tsx` | 푸터에 FAQ 링크 추가 |
+| `app/guide/what-is-pomodoro/page.tsx` | Students 가이드 링크 추가 |
+
+---
+
 ## [2.2.0] - 2026-01-05
 
 콘텐츠 마케팅 최적화 및 SEO 강화

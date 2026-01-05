@@ -139,6 +139,10 @@ export default function Home() {
             <Link href="/terms" className="hover:text-foreground hover:underline">
               Terms
             </Link>
+            <span className="mx-2">·</span>
+            <Link href="/faq" className="hover:text-foreground hover:underline">
+              FAQ
+            </Link>
           </div>
         </div>
 

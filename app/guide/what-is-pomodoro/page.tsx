@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import {
   ArrowLeft,
+  ArrowRight,
   Timer,
   Brain,
   Zap,
@@ -403,13 +404,20 @@ export default function WhatIsPomodoroPage() {
         </section>
 
         {/* Footer Navigation */}
-        <div className="pt-8 border-t border-border/50">
+        <div className="pt-8 border-t border-border/50 flex flex-wrap justify-between gap-4">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors group"
           >
             <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
             Back to Timer
+          </Link>
+          <Link
+            href="/guide/pomodoro-for-students"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors group"
+          >
+            For Students
+            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
       </div>

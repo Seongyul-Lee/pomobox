@@ -54,11 +54,12 @@ export async function saveSession(
 }
 
 /**
- * 일일 통계 업데이트 (upsert)
+ * 일일 통계 업데이트 - 세션 카운트만 증가 (분은 incrementDailyMinutes에서 처리)
+ * @param userId - 사용자 ID
+ * @param dailyGoalMinutes - 일일 목표 (goal_achieved 계산용)
  */
 export async function updateDailyStats(
   userId: string,
-  durationMinutes: number,
   dailyGoalMinutes: number = 120
 ) {
   const supabase = createClient()
@@ -73,15 +74,16 @@ export async function updateDailyStats(
     .maybeSingle()
 
   const newTotalSessions = (existing?.total_sessions || 0) + 1
-  const newTotalMinutes = (existing?.total_minutes || 0) + durationMinutes
-  const goalAchieved = newTotalMinutes >= dailyGoalMinutes
+  // 분은 이미 incrementDailyMinutes에서 저장됨 - 여기서는 기존 값 유지
+  const currentMinutes = existing?.total_minutes || 0
+  const goalAchieved = currentMinutes >= dailyGoalMinutes
 
   // upsert 데이터 준비 (기존 레코드가 있으면 id 포함하여 update)
   const upsertData: Record<string, unknown> = {
     user_id: userId,
     date: today,
     total_sessions: newTotalSessions,
-    total_minutes: newTotalMinutes,
+    total_minutes: currentMinutes,
     goal_achieved: goalAchieved,
   }
   if (existing?.id) {
@@ -94,7 +96,7 @@ export async function updateDailyStats(
     .select()
 
   if (error) {
-    console.error("Failed to update daily stats:", error, { userId, durationMinutes, existing })
+    console.error("Failed to update daily stats:", error, { userId, existing })
     throw error
   }
 
@@ -197,7 +199,10 @@ export async function incrementDailyMinutes(
 }
 
 /**
- * 세션 완료 시 호출 (저장 + 일일 통계 업데이트)
+ * 세션 완료 시 호출 (focus_sessions 저장 + 세션 카운트 증가)
+ * @param userId - 사용자 ID
+ * @param durationMinutes - 세션 집중 시간 (focus_sessions 테이블용)
+ * @param dailyGoalMinutes - 일일 목표 (goal_achieved 계산용)
  */
 export async function recordSessionComplete(
   userId: string,
@@ -205,8 +210,10 @@ export async function recordSessionComplete(
   dailyGoalMinutes: number = 120
 ) {
   try {
+    // focus_sessions에 실제 집중 시간 저장 (시간대별 분포 차트용)
     await saveSession(userId, durationMinutes, "focus")
-    await updateDailyStats(userId, durationMinutes, dailyGoalMinutes)
+    // daily_stats 세션 카운트만 증가 (분은 incrementDailyMinutes에서 처리)
+    await updateDailyStats(userId, dailyGoalMinutes)
   } catch (error) {
     console.error("Failed to record session:", error)
     // 에러가 발생해도 로컬 상태는 유지됨

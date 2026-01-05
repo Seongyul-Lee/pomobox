@@ -255,8 +255,8 @@ export function PomodoroTimer() {
         if (remainingMinutes > 0) {
           incrementDailyMinutes(user.id, remainingMinutes, settingsStore.dailyGoal).catch(console.error)
         }
-        // 세션 완료 기록 (세션 카운트 증가)
-        recordSessionComplete(user.id, 0) // duration=0으로 세션만 기록
+        // 세션 완료 기록 (세션 카운트 + 실제 집중 시간 기록)
+        recordSessionComplete(user.id, settingsStore.focusDuration, settingsStore.dailyGoal)
       } else {
         // 비로그인 사용자: 첫 세션 완료 시 로그인 유도 다이얼로그 표시
         if (typeof window !== "undefined" && !localStorage.getItem(LOGIN_PROMPT_KEY)) {

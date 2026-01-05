@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Timer Accuracy', () => {
-  // Timer display locator - targets the main timer span
+  // Timer display locator - targets the main timer span (use first() to avoid strict mode violation with mobile layout)
   const getTimerDisplay = (page: import('@playwright/test').Page) =>
-    page.locator('.hover-timer-display')
+    page.locator('.hover-timer-display').first()
 
   test('should complete 10-second timer accurately with clock manipulation', async ({ page }) => {
     // Install mock clock before navigation
@@ -71,8 +71,8 @@ test.describe('Timer Accuracy', () => {
     await page.clock.install()
     await page.goto('/?testDuration=5')
 
-    // Verify initial session count (use specific span selector to avoid matching dashboard panels)
-    await expect(page.locator('span.text-foreground').filter({ hasText: /Today: 0 sessions/ })).toBeVisible()
+    // Verify initial session count (use first() to avoid strict mode violation with responsive layout)
+    await expect(page.locator('span.text-foreground').filter({ hasText: /Today: 0 sessions/ }).first()).toBeVisible()
 
     // Start and complete timer
     await page.getByRole('button', { name: 'Start', exact: true }).click()
@@ -80,7 +80,7 @@ test.describe('Timer Accuracy', () => {
 
     // Wait for transition and check session count
     await expect(page.getByText('Break Time')).toBeVisible({ timeout: 2000 })
-    await expect(page.locator('span.text-foreground').filter({ hasText: /Today: 1 session/ })).toBeVisible()
+    await expect(page.locator('span.text-foreground').filter({ hasText: /Today: 1 session/ }).first()).toBeVisible()
   })
 
   test('timer should update browser title', async ({ page }) => {

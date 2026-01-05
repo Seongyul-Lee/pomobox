@@ -6,8 +6,6 @@ import { DashboardRight } from "@/components/dashboard-right"
 import { BgmPanel } from "@/components/bgm-panel"
 import { BgmMiniPlayer } from "@/components/bgm-mini-player"
 import { MainLayout } from "@/components/main-layout"
-import { MobileHeader } from "@/components/mobile-header"
-import { MobileNav } from "@/components/mobile-nav"
 import { PomodoroGuideSection } from "@/components/pomodoro-guide-section"
 import { AdSenseVerticalBanner } from "@/components/adsense-vertical-banner"
 
@@ -61,9 +59,6 @@ export default function Home() {
 
   return (
       <main className="relative min-h-screen flex flex-col text-foreground pt-safe">
-        {/* Mobile Header (< xl) */}
-        <MobileHeader />
-
         {/* Fixed Header Controls (desktop only) */}
         <ThemeToggle />
 
@@ -134,9 +129,6 @@ export default function Home() {
             </Link>
           </div>
         </div>
-
-        {/* Mobile Navigation (< xl) */}
-        <MobileNav />
 
         {/* JSON-LD 구조화 데이터 */}
         <script

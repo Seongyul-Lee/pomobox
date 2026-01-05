@@ -273,19 +273,19 @@ export function DashboardRight() {
                 <Circle className="h-5 w-5 xl:h-6 xl:w-6 text-primary/60" />
               </div>
             )}
-            <div className="break-keep">
-              <p className="text-sm xl:text-base font-semibold whitespace-nowrap">
-                {isCheckedIn === null ? "Loading..." : isCheckedIn ? "Checked in!" : "Start your day!"}
+            <div className="break-keep min-w-0">
+              <p className="text-xs sm:text-sm xl:text-base font-semibold whitespace-nowrap">
+                {isCheckedIn === null ? "Loading..." : isCheckedIn ? "Checked in!" : "Check in!"}
               </p>
-              <p className="text-xs xl:text-sm text-muted-foreground whitespace-nowrap">
-                Monthly Attendance: <span className="font-medium text-foreground/80">{monthAttendanceCount} days</span>
+              <p className="text-[10px] sm:text-xs xl:text-sm text-muted-foreground whitespace-nowrap">
+                <span className="hidden sm:inline">Monthly: </span><span className="font-medium text-foreground/80">{monthAttendanceCount} days</span>
               </p>
             </div>
           </div>
           {isCheckedIn === false && (
             <Button
               onClick={handleCheckIn}
-              className="h-8 xl:h-9 px-4 xl:px-5 text-xs xl:text-sm font-medium bg-gradient-to-r from-primary to-primary/90 glow-primary hover-glow hover-shine hover:scale-105 transition-transform"
+              className="h-7 sm:h-8 xl:h-9 px-3 sm:px-4 xl:px-5 text-[10px] sm:text-xs xl:text-sm font-medium bg-gradient-to-r from-primary to-primary/90 glow-primary hover-glow hover-shine hover:scale-105 transition-transform shrink-0"
             >
               Check In
             </Button>
@@ -293,27 +293,27 @@ export function DashboardRight() {
         </div>
 
         {/* 스트릭 통계 - 개선된 디자인 */}
-        <div className="grid grid-cols-3 gap-2 xl:gap-3">
-          <div className="group flex flex-col items-center p-2.5 xl:p-3.5 rounded-xl bg-gradient-to-br from-rose-500/15 to-rose-500/5 dark:from-rose-500/12 dark:to-rose-500/5 border border-rose-500/10 hover:border-rose-500/25 hover-stat cursor-default transition-all duration-200">
-            <div className="p-1.5 rounded-lg bg-rose-500/10 mb-1 xl:mb-1.5 group-hover:scale-110 transition-transform">
-              <Flame className="h-4 w-4 xl:h-5 xl:w-5 text-rose-500 dark:text-rose-400" />
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 xl:gap-3">
+          <div className="group flex flex-col items-center p-2 sm:p-2.5 xl:p-3.5 rounded-xl bg-gradient-to-br from-rose-500/15 to-rose-500/5 dark:from-rose-500/12 dark:to-rose-500/5 border border-rose-500/10 hover:border-rose-500/25 hover-stat cursor-default transition-all duration-200">
+            <div className="p-1 sm:p-1.5 rounded-lg bg-rose-500/10 mb-0.5 sm:mb-1 xl:mb-1.5 group-hover:scale-110 transition-transform">
+              <Flame className="h-3.5 w-3.5 sm:h-4 sm:w-4 xl:h-5 xl:w-5 text-rose-500 dark:text-rose-400" />
             </div>
-            <p className="text-sm xl:text-lg font-bold text-foreground">{streakStats.current}<span className="text-xs font-normal ml-0.5"> days</span></p>
-            <p className="text-[10px] xl:text-xs text-muted-foreground">Current Streak</p>
+            <p className="text-xs sm:text-sm xl:text-lg font-bold text-foreground">{streakStats.current}<span className="text-[10px] sm:text-xs font-normal ml-0.5">d</span></p>
+            <p className="text-[9px] sm:text-[10px] xl:text-xs text-muted-foreground">Streak</p>
           </div>
-          <div className="group flex flex-col items-center p-2.5 xl:p-3.5 rounded-xl bg-gradient-to-br from-amber-500/15 to-amber-500/5 dark:from-amber-500/12 dark:to-amber-500/5 border border-amber-500/10 hover:border-amber-500/25 hover-stat cursor-default transition-all duration-200">
-            <div className="p-1.5 rounded-lg bg-amber-500/10 mb-1 xl:mb-1.5 group-hover:scale-110 transition-transform">
-              <Flame className="h-4 w-4 xl:h-5 xl:w-5 text-amber-500 dark:text-amber-400" />
+          <div className="group flex flex-col items-center p-2 sm:p-2.5 xl:p-3.5 rounded-xl bg-gradient-to-br from-amber-500/15 to-amber-500/5 dark:from-amber-500/12 dark:to-amber-500/5 border border-amber-500/10 hover:border-amber-500/25 hover-stat cursor-default transition-all duration-200">
+            <div className="p-1 sm:p-1.5 rounded-lg bg-amber-500/10 mb-0.5 sm:mb-1 xl:mb-1.5 group-hover:scale-110 transition-transform">
+              <Flame className="h-3.5 w-3.5 sm:h-4 sm:w-4 xl:h-5 xl:w-5 text-amber-500 dark:text-amber-400" />
             </div>
-            <p className="text-sm xl:text-lg font-bold text-foreground">{streakStats.best}<span className="text-xs font-normal ml-0.5"> days</span></p>
-            <p className="text-[10px] xl:text-xs text-muted-foreground">Best Streak</p>
+            <p className="text-xs sm:text-sm xl:text-lg font-bold text-foreground">{streakStats.best}<span className="text-[10px] sm:text-xs font-normal ml-0.5">d</span></p>
+            <p className="text-[9px] sm:text-[10px] xl:text-xs text-muted-foreground">Best</p>
           </div>
-          <div className="group flex flex-col items-center p-2.5 xl:p-3.5 rounded-xl bg-gradient-to-br from-sky-500/15 to-sky-500/5 dark:from-sky-500/12 dark:to-sky-500/5 border border-sky-500/10 hover:border-sky-500/25 hover-stat cursor-default transition-all duration-200">
-            <div className="p-1.5 rounded-lg bg-sky-500/10 mb-1 xl:mb-1.5 group-hover:scale-110 transition-transform">
-              <Target className="h-4 w-4 xl:h-5 xl:w-5 text-sky-500 dark:text-sky-400" />
+          <div className="group flex flex-col items-center p-2 sm:p-2.5 xl:p-3.5 rounded-xl bg-gradient-to-br from-sky-500/15 to-sky-500/5 dark:from-sky-500/12 dark:to-sky-500/5 border border-sky-500/10 hover:border-sky-500/25 hover-stat cursor-default transition-all duration-200">
+            <div className="p-1 sm:p-1.5 rounded-lg bg-sky-500/10 mb-0.5 sm:mb-1 xl:mb-1.5 group-hover:scale-110 transition-transform">
+              <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 xl:h-5 xl:w-5 text-sky-500 dark:text-sky-400" />
             </div>
-            <p className="text-sm xl:text-lg font-bold text-foreground">{weeklyRate.rate}<span className="text-xs font-normal ml-0.5">%</span></p>
-            <p className="text-[10px] xl:text-xs text-muted-foreground">Weekly Rate</p>
+            <p className="text-xs sm:text-sm xl:text-lg font-bold text-foreground">{weeklyRate.rate}<span className="text-[10px] sm:text-xs font-normal ml-0.5">%</span></p>
+            <p className="text-[9px] sm:text-[10px] xl:text-xs text-muted-foreground">Weekly</p>
           </div>
         </div>
 
@@ -396,62 +396,64 @@ export function DashboardRight() {
 
         {/* 선택된 날짜 상세 정보 - 모바일 컴팩트 */}
         {selectedDayInfo && selectedDay && (
-          <div className="p-3 xl:p-4 rounded-xl bg-[oklch(76.9%_0.235_70.1/0.1)] border border-[oklch(76.9%_0.235_70.1/0.2)] animate-in fade-in duration-200">
-            <div className="flex items-center justify-between mb-2 xl:mb-3">
-              <p className="text-sm xl:text-base font-medium">
-                {month + 1}/{selectedDay} ({FULL_DAY_LABELS[selectedDayInfo.dayOfWeek]})
+          <div className="p-2 sm:p-3 xl:p-4 rounded-xl bg-[oklch(76.9%_0.235_70.1/0.1)] border border-[oklch(76.9%_0.235_70.1/0.2)] animate-in fade-in duration-200">
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2 xl:mb-3">
+              <p className="text-xs sm:text-sm xl:text-base font-medium">
+                <span className="hidden sm:inline">{month + 1}/{selectedDay} ({FULL_DAY_LABELS[selectedDayInfo.dayOfWeek]})</span>
+                <span className="sm:hidden">{month + 1}/{selectedDay} ({DAY_LABELS[selectedDayInfo.dayOfWeek]})</span>
               </p>
               <button
                 type="button"
                 onClick={() => setSelectedDay(null)}
-                className="text-muted-foreground hover:text-foreground text-xs xl:text-sm"
+                className="text-muted-foreground hover:text-foreground text-[10px] sm:text-xs xl:text-sm"
               >
                 ✕
               </button>
             </div>
-            <div className="grid grid-cols-3 gap-2 xl:gap-3">
-              <div className="flex flex-col items-center p-1.5 xl:p-2 rounded-lg bg-background/50">
-                <Clock className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-primary mb-0.5 xl:mb-1" />
-                <p className="text-xs xl:text-sm font-semibold">{formatTime(selectedDayInfo.minutes)}</p>
-                <p className="text-[10px] xl:text-xs text-muted-foreground">Focus Time</p>
+            <div className="grid grid-cols-3 gap-1.5 sm:gap-2 xl:gap-3">
+              <div className="flex flex-col items-center p-1 sm:p-1.5 xl:p-2 rounded-lg bg-background/50">
+                <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 xl:h-4 xl:w-4 text-primary mb-0.5 xl:mb-1" />
+                <p className="text-[10px] sm:text-xs xl:text-sm font-semibold">{formatTime(selectedDayInfo.minutes)}</p>
+                <p className="text-[8px] sm:text-[10px] xl:text-xs text-muted-foreground">Focus</p>
               </div>
-              <div className="flex flex-col items-center p-1.5 xl:p-2 rounded-lg bg-background/50">
-                <Target className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-green-400 mb-0.5 xl:mb-1" />
-                <p className="text-xs xl:text-sm font-semibold">{selectedDayInfo.sessions} sessions</p>
-                <p className="text-[10px] xl:text-xs text-muted-foreground"> sessions</p>
+              <div className="flex flex-col items-center p-1 sm:p-1.5 xl:p-2 rounded-lg bg-background/50">
+                <Target className="h-3 w-3 sm:h-3.5 sm:w-3.5 xl:h-4 xl:w-4 text-green-400 mb-0.5 xl:mb-1" />
+                <p className="text-[10px] sm:text-xs xl:text-sm font-semibold">{selectedDayInfo.sessions}</p>
+                <p className="text-[8px] sm:text-[10px] xl:text-xs text-muted-foreground">Sessions</p>
               </div>
-              <div className="flex flex-col items-center p-1.5 xl:p-2 rounded-lg bg-background/50">
+              <div className="flex flex-col items-center p-1 sm:p-1.5 xl:p-2 rounded-lg bg-background/50">
                 {selectedDayInfo.attended ? (
                   <>
-                    <CheckCircle2 className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-blue-400 mb-0.5 xl:mb-1" />
-                    <p className="text-xs xl:text-sm font-semibold text-blue-400">O</p>
+                    <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 xl:h-4 xl:w-4 text-blue-400 mb-0.5 xl:mb-1" />
+                    <p className="text-[10px] sm:text-xs xl:text-sm font-semibold text-blue-400">✓</p>
                   </>
                 ) : (
                   <>
-                    <Circle className="h-3.5 w-3.5 xl:h-4 xl:w-4 text-muted-foreground mb-0.5 xl:mb-1" />
-                    <p className="text-xs xl:text-sm font-semibold text-muted-foreground">-</p>
+                    <Circle className="h-3 w-3 sm:h-3.5 sm:w-3.5 xl:h-4 xl:w-4 text-muted-foreground mb-0.5 xl:mb-1" />
+                    <p className="text-[10px] sm:text-xs xl:text-sm font-semibold text-muted-foreground">-</p>
                   </>
                 )}
-                <p className="text-[10px] xl:text-xs text-muted-foreground">Check In</p>
+                <p className="text-[8px] sm:text-[10px] xl:text-xs text-muted-foreground">Check</p>
               </div>
             </div>
           </div>
         )}
 
         {/* 범례 - 모바일 컴팩트 */}
-        <div className="flex items-center justify-between text-[10px] xl:text-sm text-muted-foreground pt-1 xl:pt-2">
+        <div className="flex items-center justify-between text-[9px] sm:text-[10px] xl:text-sm text-muted-foreground pt-1 xl:pt-2">
           <div className="flex items-center gap-1 xl:gap-2">
-            <div className="w-3 h-3 xl:w-4 xl:h-4 rounded-sm bg-blue-500/40 ring-1 ring-blue-400/50" />
-            <span>Attendance Only</span>
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 xl:w-4 xl:h-4 rounded-sm bg-blue-500/40 ring-1 ring-blue-400/50" />
+            <span className="hidden sm:inline">Attendance Only</span>
+            <span className="sm:hidden">Check-in</span>
           </div>
-          <div className="flex items-center gap-1 xl:gap-2">
-            <span>Less</span>
-            <div className="w-2.5 h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-muted/20" />
-            <div className="w-2.5 h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500/30" />
-            <div className="w-2.5 h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500/50" />
-            <div className="w-2.5 h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500/70" />
-            <div className="w-2.5 h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500" />
-            <span>More</span>
+          <div className="flex items-center gap-0.5 sm:gap-1 xl:gap-2">
+            <span className="hidden sm:inline">Less</span>
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-muted/20" />
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500/30" />
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500/50" />
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500/70" />
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 xl:w-3.5 xl:h-3.5 rounded-sm bg-green-500" />
+            <span className="hidden sm:inline">More</span>
           </div>
         </div>
       </CardContent>

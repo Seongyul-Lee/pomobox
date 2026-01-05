@@ -153,12 +153,12 @@ export function SettingsDialog({
         </DialogHeader>
         <div className="space-y-6 py-4 overflow-y-auto flex-1 -mr-5.75 pr-5.75 settings-scrollbar">
           {/* Notifications */}
-          <div className="flex items-center justify-between group">
-            <div className="flex items-center gap-2 hover-section-label cursor-default">
-              <Bell className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              <div>
-                <p className="font-medium">Notifications</p>
-                <p className="text-sm text-muted-foreground">Get notified when timer ends</p>
+          <div className="flex items-center justify-between group gap-2">
+            <div className="flex items-center gap-2 hover-section-label cursor-default min-w-0">
+              <Bell className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+              <div className="min-w-0">
+                <p className="font-medium text-sm sm:text-base">Notifications</p>
+                <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Get notified when timer ends</p>
               </div>
             </div>
             <Switch
@@ -167,25 +167,25 @@ export function SettingsDialog({
                 setLocalSettings({ ...localSettings, notificationsEnabled: checked })
               }
               aria-label="Toggle notifications"
-              className="hover-toggle"
+              className="hover-toggle shrink-0"
             />
           </div>
 
           {/* Sound */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between group">
-              <div className="flex items-center gap-2 hover-section-label cursor-default">
-                <Volume2 className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                <div>
-                  <p className="font-medium">Sound</p>
-                  <p className="text-sm text-muted-foreground">Play sound when timer ends</p>
+            <div className="flex items-center justify-between group gap-2">
+              <div className="flex items-center gap-2 hover-section-label cursor-default min-w-0">
+                <Volume2 className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+                <div className="min-w-0">
+                  <p className="font-medium text-sm sm:text-base">Sound</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Play sound when timer ends</p>
                 </div>
               </div>
               <Switch
                 checked={localSettings.soundEnabled}
                 onCheckedChange={handleSoundToggle}
                 aria-label="Toggle sound"
-                className="hover-toggle"
+                className="hover-toggle shrink-0"
               />
             </div>
 
@@ -272,8 +272,8 @@ export function SettingsDialog({
 
           {/* Focus Duration */}
           <div>
-            <p className="font-medium mb-3">Focus Duration</p>
-            <div className="grid grid-cols-4 gap-2">
+            <p className="font-medium text-sm sm:text-base mb-2 sm:mb-3">Focus Duration</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {FOCUS_OPTIONS.map((option) => (
                 <Button
                   key={option.value}
@@ -281,9 +281,9 @@ export function SettingsDialog({
                   size="sm"
                   disabled={isRunning}
                   onClick={() => setLocalSettings({ ...localSettings, focusDuration: option.value })}
-                  className="hover:scale-105 transition-transform duration-150"
+                  className="hover:scale-105 transition-transform duration-150 text-xs sm:text-sm"
                 >
-                  {option.value} min
+                  {option.value}m
                 </Button>
               ))}
             </div>
@@ -291,8 +291,8 @@ export function SettingsDialog({
 
           {/* Break Duration */}
           <div>
-            <p className="font-medium mb-3">Break Duration</p>
-            <div className="grid grid-cols-4 gap-2">
+            <p className="font-medium text-sm sm:text-base mb-2 sm:mb-3">Break Duration</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {BREAK_OPTIONS.map((option) => (
                 <Button
                   key={option.value}
@@ -300,9 +300,9 @@ export function SettingsDialog({
                   size="sm"
                   disabled={isRunning}
                   onClick={() => setLocalSettings({ ...localSettings, breakDuration: option.value })}
-                  className="hover:scale-105 transition-transform duration-150"
+                  className="hover:scale-105 transition-transform duration-150 text-xs sm:text-sm"
                 >
-                  {option.value} min
+                  {option.value}m
                 </Button>
               ))}
             </div>
@@ -310,40 +310,40 @@ export function SettingsDialog({
 
           {/* Daily Goal */}
           <div>
-            <p className="font-medium mb-3">Daily Goal (min)</p>
-            <div className="grid grid-cols-5 gap-2">
+            <p className="font-medium text-sm sm:text-base mb-2 sm:mb-3">Daily Goal</p>
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               {GOAL_OPTIONS.map((option) => (
                 <Button
                   key={option.value}
                   variant={localSettings.dailyGoal === option.value ? "default" : "outline"}
                   size="sm"
                   onClick={() => setLocalSettings({ ...localSettings, dailyGoal: option.value })}
-                  className="hover:scale-105 transition-transform duration-150"
+                  className="hover:scale-105 transition-transform duration-150 text-xs sm:text-sm"
                 >
-                  {option.value}
+                  {option.value}m
                 </Button>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground mt-2">Set your daily focus time target</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1.5 sm:mt-2">Daily focus time target</p>
           </div>
 
           <Button
             onClick={handleSave}
-            className="w-full hover-glow"
+            className="w-full hover-glow text-sm sm:text-base"
             disabled={isSaved || isRunning}
           >
             {isSaved ? (
               <>
-                <Check className="mr-2 h-4 w-4" />
+                <Check className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Saved!
               </>
             ) : (
-              "Save Changes"
+              "Save"
             )}
           </Button>
           {isRunning && (
-            <p className="text-sm text-muted-foreground">
-              Stop the timer to change durations.
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Stop timer to change durations.
             </p>
           )}
         </div>

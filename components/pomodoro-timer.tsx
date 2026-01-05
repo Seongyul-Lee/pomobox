@@ -443,8 +443,8 @@ export function PomodoroTimer() {
   }
 
   const getTypeDescription = () => {
-    if (phase === 'focus') return "Stay focused on your work"
-    if (phase === 'longBreak') return "Take a longer break - you earned it!"
+    if (phase === 'focus') return "Stay focused"
+    if (phase === 'longBreak') return "Take a longer break"
     return "Take a short break"
   }
 
@@ -584,15 +584,19 @@ export function PomodoroTimer() {
           variant="ghost"
           onClick={handleSkip}
           aria-label={phase === 'focus' ? "Skip current focus session and start break" : "Skip current break and return to focus session"}
-          className="group gap-2 text-muted-foreground hover:text-foreground/60 border border-muted-foreground/30 rounded-xl hover:bg-muted/50 hover:scale-105 transition-all duration-200"
+          className="group gap-1.5 sm:gap-2 text-muted-foreground hover:text-foreground/60 border border-muted-foreground/30 rounded-xl hover:bg-muted/50 hover:scale-105 transition-all duration-200"
         >
           <SkipForward className="h-4 w-4 drop-shadow-md transition-transform duration-200 group-hover:translate-x-0.5" />
-          {phase === 'focus' ? "Skip to Break" : "Back to Focus"}
+          <span className="hidden sm:inline">{phase === 'focus' ? "Skip to Break" : "Back to Focus"}</span>
+          <span className="sm:hidden">{phase === 'focus' ? "Skip" : "Focus"}</span>
         </Button>
       </div>
 
-      <div className="text-muted-foreground text-sm font-medium hover-today-stats">
-        <span className="text-foreground">Today: {sessions} sessions ({totalFocusMinutes} min)</span>
+      <div className="text-muted-foreground text-xs sm:text-sm font-medium hover-today-stats">
+        <span className="text-foreground">
+          <span className="hidden sm:inline">Today: {sessions} sessions ({totalFocusMinutes} min)</span>
+          <span className="sm:hidden">{sessions} sessions · {totalFocusMinutes}m</span>
+        </span>
       </div>
 
       <GoalProgress

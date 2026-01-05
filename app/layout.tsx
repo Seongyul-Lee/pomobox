@@ -6,6 +6,8 @@ import { Toaster } from "@/components/ui/toaster"
 import { AdSenseScript } from "@/components/adsense-script"
 import { Sidebar } from "@/components/sidebar"
 import { TaskPanel } from "@/components/task-panel"
+import { MobileHeader } from "@/components/mobile-header"
+import { MobileNav } from "@/components/mobile-nav"
 import { Providers } from "./providers"
 import "./globals.css"
 
@@ -201,11 +203,15 @@ export default function RootLayout({ children }: Props) {
       <body className={`${geist.variable} font-sans antialiased`}>
         <AdSenseScript />
         <Providers>
+          {/* Mobile Header (< xl) */}
+          <MobileHeader />
           {/* Global Sidebar (md+) */}
           <Sidebar />
           {/* Global Task Panel */}
           <TaskPanel />
           {children}
+          {/* Mobile Navigation (< xl) */}
+          <MobileNav />
           <Analytics />
           <Toaster />
         </Providers>

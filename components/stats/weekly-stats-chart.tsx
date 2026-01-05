@@ -278,7 +278,22 @@ export function WeeklyStatsChart() {
       {isLoading ? (
         <SkeletonChart />
       ) : (
-        <div className="h-[200px] xl:h-[300px]">
+        <div
+          className="h-[200px] xl:h-[300px]"
+          role="img"
+          aria-label={`Weekly focus time chart. ${data.map(d => `${FULL_DAY_NAMES[d.dayName]}: ${Math.floor(d.totalMinutes / 60)} hours ${d.totalMinutes % 60} minutes`).join(', ')}`}
+        >
+          {/* Screen reader accessible data summary */}
+          <div className="sr-only">
+            <h3>Weekly Focus Summary</h3>
+            <ul>
+              {data.map(d => (
+                <li key={d.date}>
+                  {FULL_DAY_NAMES[d.dayName]}: {Math.floor(d.totalMinutes / 60)}h {d.totalMinutes % 60}m ({d.totalSessions} sessions)
+                </li>
+              ))}
+            </ul>
+          </div>
           <ResponsiveContainer width="100%" height="100%">
             {renderChart()}
           </ResponsiveContainer>

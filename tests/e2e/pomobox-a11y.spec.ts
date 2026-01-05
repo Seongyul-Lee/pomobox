@@ -120,4 +120,86 @@ test.describe('Accessibility (A11y) Tests', () => {
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).not.toBeVisible();
   });
+
+  test('should not have accessibility issues on stats page', async ({ page }) => {
+    await page.goto('/stats');
+
+    // Wait for stats page to load
+    await expect(page.getByRole('heading', { name: /statistics/i })).toBeVisible();
+
+    // Run accessibility scan
+    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+
+    expect(accessibilityScanResults.violations).toEqual([]);
+  });
+
+  test('stats page charts should have proper ARIA labels', async ({ page }) => {
+    await page.goto('/stats');
+
+    // Wait for page to load
+    await expect(page.getByRole('heading', { name: /statistics/i })).toBeVisible();
+
+    // Check for chart sections with proper aria-labelledby
+    const sections = page.locator('section[aria-labelledby]');
+    const sectionCount = await sections.count();
+    expect(sectionCount).toBeGreaterThan(0);
+
+    // Check that chart containers have role="img" and aria-label
+    const chartContainers = page.locator('[role="img"]');
+    const chartCount = await chartContainers.count();
+    // Charts may not be visible if no data, so just check structure exists
+    if (chartCount > 0) {
+      for (let i = 0; i < chartCount; i++) {
+        const ariaLabel = await chartContainers.nth(i).getAttribute('aria-label');
+        expect(ariaLabel).toBeTruthy();
+      }
+    }
+  });
+
+  test('Task panel should have proper accessibility attributes', async ({ page, browserName }) => {
+    // Skip on mobile viewports where Task panel becomes a dialog
+    test.skip(browserName === 'webkit', 'Task panel behavior differs on Safari');
+
+    await page.goto('/');
+    await page.setViewportSize({ width: 1440, height: 900 });
+
+    // Open Task panel by clicking Tasks button in sidebar
+    const tasksButton = page.getByRole('button', { name: /tasks/i });
+    await tasksButton.click();
+
+    // Wait for panel to be visible
+    await page.waitForTimeout(500);
+
+    // Check for complementary role
+    const taskPanel = page.locator('aside[role="complementary"]');
+    await expect(taskPanel).toBeVisible();
+
+    // Check aria-label
+    const ariaLabel = await taskPanel.getAttribute('aria-label');
+    expect(ariaLabel).toBe('Task panel');
+
+    // Check that Escape closes the panel
+    await page.keyboard.press('Escape');
+    await expect(taskPanel).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  test('sidebar navigation should have proper accessibility', async ({ page }) => {
+    await page.goto('/');
+    await page.setViewportSize({ width: 1440, height: 900 });
+
+    // Check for navigation role
+    const nav = page.locator('nav[role="navigation"]');
+    await expect(nav).toBeVisible();
+
+    // Check aria-label
+    const ariaLabel = await nav.getAttribute('aria-label');
+    expect(ariaLabel).toBe('Main Navigation');
+
+    // Check that links/buttons have aria-labels
+    const statsLink = page.locator('nav a[aria-label="Statistics"]');
+    await expect(statsLink).toBeVisible();
+
+    const settingsButton = page.locator('nav button[aria-label="Settings"]');
+    await expect(settingsButton).toBeVisible();
+  });
 });

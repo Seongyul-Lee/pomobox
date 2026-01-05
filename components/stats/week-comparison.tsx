@@ -42,22 +42,27 @@ function KPICard({
     same: "bg-muted/50",
   }
 
+  const trendDescription = trend === "up" ? "increased" : trend === "down" ? "decreased" : "unchanged"
+
   return (
-    <div className="rounded-xl border bg-background/50 backdrop-blur-sm p-4 space-y-3">
+    <article
+      className="rounded-xl border bg-background/50 backdrop-blur-sm p-4 space-y-3"
+      aria-label={`${title}: ${thisWeekValue} this week, ${trendDescription} from ${lastWeekValue} last week`}
+    >
       {/* Header */}
       <div className="flex items-center gap-2 text-muted-foreground">
-        {icon}
+        <span aria-hidden="true">{icon}</span>
         <span className="text-sm font-medium">{title}</span>
       </div>
 
       {/* This Week Value */}
-      <div className="text-2xl font-bold tracking-tight">
+      <div className="text-2xl font-bold tracking-tight" aria-hidden="true">
         {thisWeekValue}
       </div>
 
       {/* Last Week + Trend */}
       <div className="flex items-center justify-between gap-2">
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm text-muted-foreground" aria-hidden="true">
           Last week: {lastWeekValue}
         </span>
 
@@ -68,6 +73,7 @@ function KPICard({
             trendBg[trend],
             trendColor[trend]
           )}
+          aria-hidden="true"
         >
           {trendIcon[trend]}
           <span>
@@ -76,7 +82,7 @@ function KPICard({
           </span>
         </div>
       </div>
-    </div>
+    </article>
   )
 }
 

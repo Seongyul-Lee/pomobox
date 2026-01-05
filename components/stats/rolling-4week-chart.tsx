@@ -115,8 +115,30 @@ export function Rolling4WeekChart() {
     return hours >= 1 ? `${Math.round(hours)}h` : `${value}m`
   }
 
+  // Format time for accessibility
+  const formatTimeA11y = (minutes: number) => {
+    const hours = Math.floor(minutes / 60)
+    const mins = minutes % 60
+    return `${hours} hours ${mins} minutes`
+  }
+
   return (
-    <div className="h-[200px] xl:h-[300px]">
+    <div
+      className="h-[200px] xl:h-[300px]"
+      role="img"
+      aria-label={`Monthly trend chart showing focus time for the last 4 weeks. ${data.map(d => `${d.weekLabel}: ${formatTimeA11y(d.totalMinutes)}`).join(', ')}`}
+    >
+      {/* Screen reader accessible data summary */}
+      <div className="sr-only">
+        <h3>Monthly Trend Summary</h3>
+        <ul>
+          {data.map(d => (
+            <li key={d.weekLabel}>
+              {d.weekLabel}: {formatTimeA11y(d.totalMinutes)} ({d.totalSessions} sessions)
+            </li>
+          ))}
+        </ul>
+      </div>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}

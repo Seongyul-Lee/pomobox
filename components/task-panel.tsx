@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react"
 import { X, Plus, Trash2, Check } from "lucide-react"
+import * as FocusScope from "@radix-ui/react-focus-scope"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -447,9 +448,11 @@ function DesktopTaskPanel() {
       )}
     >
       {/* Fixed width inner container to prevent content reflow */}
-      <div className="w-[360px] h-full">
-        <TaskListContent onClose={closeTaskPanel} inputRef={inputRef} />
-      </div>
+      <FocusScope.Root trapped={isOpen} loop>
+        <div className="w-[360px] h-full">
+          <TaskListContent onClose={closeTaskPanel} inputRef={inputRef} />
+        </div>
+      </FocusScope.Root>
     </aside>
   )
 }

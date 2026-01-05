@@ -70,20 +70,13 @@
           },
           {
             "id": 98.3,
-            "title": "다국어 키 추가",
-            "description": "messages/en,ko,ja,zh-CN.json에 Task 섹션 추가 (title, close, addPlaceholder, emptyState 등)",
-            "status": "done",
-            "parentId": "undefined"
-          },
-          {
-            "id": 98.4,
             "title": "애니메이션 개선",
             "description": "translate → width 애니메이션으로 변경 (사이드바 겹침 문제 해결)",
             "status": "done",
             "parentId": "undefined"
           },
           {
-            "id": 98.5,
+            "id": 98.4,
             "title": "코드 정리",
             "description": "MAX_TASKS를 task-store.ts에서 export하여 중복 제거, defaultIconClass/isolate 미사용 코드 제거",
             "status": "done",
@@ -96,7 +89,7 @@
         "id": "99",
         "title": "메인 페이지 Dynamic Layout 리팩터링",
         "description": "Task 패널 활성화 여부에 따라 중앙 타이머 위치가 유동적으로 조정되는 레이아웃 구현",
-        "details": "1. `app/[locale]/page.tsx` 수정:\n   - 기존 3단 그리드 구조 변경:\n     ```tsx\n     // Before: [좌측 대시보드 | 중앙 타이머 | 우측 대시보드]\n     // After: [사이드바] - [Task 패널(가변)] - [중앙 타이머 영역(Flex)] - [우측 위젯] - [광고]\n     ```\n\n2. 레이아웃 구조 (Flexbox 기반):\n   - Container: `flex flex-row min-h-screen`\n   - Sidebar: `w-[80px] fixed left-0 top-0 h-screen z-50`\n   - Task Panel: `w-0 xl:w-[360px] transition-all duration-300` (isTaskPanelOpen에 따라)\n   - Center Area: `flex-1 flex justify-center items-start` (타이머 중앙 정렬)\n   - Right Widget: `hidden xl:flex xl:w-[570px]` (BGM + Calendar)\n   - Ad Area: `hidden 2xl:block 2xl:w-[200px]` (2560px 이상에서만 표시)\n\n3. 동적 여백 계산:\n   - Task 패널 열림 시: ml-[80px + 360px] (좌측 여백)\n   - Task 패널 닫힘 시: ml-[80px] (사이드바 너비만큼)\n   - Tailwind 동적 클래스: clsx/cn 유틸리티 사용\n\n4. 기존 컴포넌트 배치:\n   - PomodoroTimer: Center Area 내부\n   - DashboardRight: Right Widget 영역 (BGM + Calendar 통합)\n   - DashboardLeft: 삭제 (통계는 /stats 페이지로 이동)\n\n5. 상태 연동:\n   - useTaskStore()의 isTaskPanelOpen 구독\n   - 상태 변경 시 레이아웃 리렌더링 (자동)\n\n6. 반응형 대응:\n   - xl 미만: Task 패널 하단 시트, 사이드바 숨김, 타이머 중앙 고정\n   - xl 이상: 완전한 Dynamic Layout 적용\n   - 2xl 이상: 광고 영역 추가 표시\n\n7. 성능 최적화:\n   - Task 패널 애니메이션: transform 대신 width 사용 (GPU 가속 불필요)\n   - 레이아웃 리플로우 최소화 (will-change: width)\n\n참고: Tailwind CSS v4 Flexbox 레이아웃, clsx 유틸리티",
+        "details": "1. `app/page.tsx` 수정:\n   - 기존 3단 그리드 구조 변경:\n     ```tsx\n     // Before: [좌측 대시보드 | 중앙 타이머 | 우측 대시보드]\n     // After: [사이드바] - [Task 패널(가변)] - [중앙 타이머 영역(Flex)] - [우측 위젯] - [광고]\n     ```\n\n2. 레이아웃 구조 (Flexbox 기반):\n   - Container: `flex flex-row min-h-screen`\n   - Sidebar: `w-[80px] fixed left-0 top-0 h-screen z-50`\n   - Task Panel: `w-0 xl:w-[360px] transition-all duration-300` (isTaskPanelOpen에 따라)\n   - Center Area: `flex-1 flex justify-center items-start` (타이머 중앙 정렬)\n   - Right Widget: `hidden xl:flex xl:w-[570px]` (BGM + Calendar)\n   - Ad Area: `hidden 2xl:block 2xl:w-[200px]` (2560px 이상에서만 표시)\n\n3. 동적 여백 계산:\n   - Task 패널 열림 시: ml-[80px + 360px] (좌측 여백)\n   - Task 패널 닫힘 시: ml-[80px] (사이드바 너비만큼)\n   - Tailwind 동적 클래스: clsx/cn 유틸리티 사용\n\n4. 기존 컴포넌트 배치:\n   - PomodoroTimer: Center Area 내부\n   - DashboardRight: Right Widget 영역 (BGM + Calendar 통합)\n   - DashboardLeft: 삭제 (통계는 /stats 페이지로 이동)\n\n5. 상태 연동:\n   - useTaskStore()의 isTaskPanelOpen 구독\n   - 상태 변경 시 레이아웃 리렌더링 (자동)\n\n6. 반응형 대응:\n   - xl 미만: Task 패널 하단 시트, 사이드바 숨김, 타이머 중앙 고정\n   - xl 이상: 완전한 Dynamic Layout 적용\n   - 2xl 이상: 광고 영역 추가 표시\n\n7. 성능 최적화:\n   - Task 패널 애니메이션: transform 대신 width 사용 (GPU 가속 불필요)\n   - 레이아웃 리플로우 최소화 (will-change: width)\n\n참고: Tailwind CSS v4 Flexbox 레이아웃, clsx 유틸리티",
         "testStrategy": "1. Task 패널 토글 시 중앙 타이머 위치 부드럽게 이동 확인\n2. Task 패널 닫힘 상태: 타이머가 사이드바와 우측 위젯 사이 정중앙 위치 확인\n3. Task 패널 열림 상태: 타이머가 줄어든 공간 내에서 정중앙 위치 확인\n4. xl 미만: Task 패널 하단 시트, 타이머 중앙 고정 확인\n5. 2xl 이상: 광고 영역 표시 확인\n6. 애니메이션 부드러움 확인 (300ms 트랜지션)\n7. 레이아웃 리플로우 없음 확인 (Performance 탭)\n8. 모든 테마에서 정상 표시 확인",
         "priority": "high",
         "dependencies": [
@@ -153,8 +146,8 @@
         "id": "103",
         "title": "통계 페이지 (/stats) 기본 구조 및 라우팅 구현",
         "description": "통계 전용 페이지 생성 및 사이드바 내비게이션 연동",
-        "details": "1. `app/[locale]/stats/page.tsx` 생성:\n   - 서버 컴포넌트로 구현 (메타데이터 SEO)\n   - 레이아웃: 사이드바 + 통계 컨텐츠 영역\n   - 제목: \"Focus Statistics\" (다국어 지원)\n\n2. 메타데이터:\n   ```typescript\n   export async function generateMetadata({ params }: Props): Promise<Metadata> {\n     const { locale } = await params\n     return {\n       title: 'Statistics | Pomobox',\n       description: 'View your focus statistics and patterns',\n       openGraph: { ... },\n     }\n   }\n   ```\n\n3. 페이지 레이아웃:\n   - 상단: 페이지 제목 + 설명\n   - 중단: 3개 섹션 (Weekly Stats, This Week vs Last Week, Rolling 4-Week)\n   - 하단: 푸터 (메인 페이지와 동일)\n\n4. 사이드바 Statistics 버튼 활성화:\n   - `components/sidebar.tsx` 수정:\n   - usePathname() 훅으로 현재 경로 확인\n   - pathname === '/stats' 일 때 active 스타일 적용\n\n5. 반응형:\n   - md 미만: 사이드바 숨김, 상단에 뒤로가기 버튼 추가\n   - xl 이상: 사이드바 고정, 통계 컨텐츠 중앙 배치\n\n6. 접근성:\n   - main role, 시맨틱 HTML (section, h2, h3)\n   - 스크린 리더 지원\n\n참고: Next.js 15 App Router 메타데이터 API, next-intl 다국어",
-        "testStrategy": "1. `/stats` 경로 접속 시 페이지 정상 렌더링 확인\n2. 사이드바 Statistics 버튼 active 스타일 확인\n3. 메타데이터 (title, description) 확인\n4. 모바일: 뒤로가기 버튼 표시 확인\n5. 데스크탑: 사이드바 고정 확인\n6. 다국어 전환 시 제목/설명 변경 확인",
+        "details": "1. `app/stats/page.tsx` 생성:\n   - 서버 컴포넌트로 구현 (메타데이터 SEO)\n   - 레이아웃: 사이드바 + 통계 컨텐츠 영역\n   - 제목: \"Focus Statistics\"\n\n2. 메타데이터:\n   ```typescript\n   export const metadata: Metadata = {\n     title: 'Statistics | Pomobox',\n     description: 'View your focus statistics and patterns',\n     openGraph: { ... },\n   }\n   ```\n\n3. 페이지 레이아웃:\n   - 상단: 페이지 제목 + 설명\n   - 중단: 3개 섹션 (Weekly Stats, This Week vs Last Week, Rolling 4-Week)\n   - 하단: 푸터 (메인 페이지와 동일)\n\n4. 사이드바 Statistics 버튼 활성화:\n   - `components/sidebar.tsx` 수정:\n   - usePathname() 훅으로 현재 경로 확인\n   - pathname === '/stats' 일 때 active 스타일 적용\n\n5. 반응형:\n   - md 미만: 사이드바 숨김, 상단에 뒤로가기 버튼 추가\n   - xl 이상: 사이드바 고정, 통계 컨텐츠 중앙 배치\n\n6. 접근성:\n   - main role, 시맨틱 HTML (section, h2, h3)\n   - 스크린 리더 지원\n\n참고: Next.js 15 App Router 메타데이터 API",
+        "testStrategy": "1. `/stats` 경로 접속 시 페이지 정상 렌더링 확인\n2. 사이드바 Statistics 버튼 active 스타일 확인\n3. 메타데이터 (title, description) 확인\n4. 모바일: 뒤로가기 버튼 표시 확인\n5. 데스크탑: 사이드바 고정 확인",
         "priority": "high",
         "dependencies": [
           "96"
@@ -182,7 +175,7 @@
         "title": "This Week vs Last Week 비교 KPI 컴포넌트 구현",
         "description": "이번 주와 지난주 통계 비교 스코어카드 (성장 분석)",
         "details": "1. `components/stats/week-comparison.tsx` 생성:\n   - 컨셉: \"지난주보다 성장했는가?\" (Growth & Gap)\n   - UI 형태: KPI 스코어카드 (차트보다는 숫자 강조)\n\n2. 데이터 조회:\n   - useRecentDaysStats(userId, 7) - 이번 주\n   - useLastWeekStats(userId) - 지난주 (7일 전 ~ 13일 전)\n   - 프론트엔드에서 집계 계산\n\n3. KPI 항목:\n   - Total Time:\n     * 이번 주: \"12h 30m\" (큰 폰트)\n     * 지난주: \"10h 15m\" (작은 폰트, 회색)\n     * 증감: \"▲ 2h 15m (+22%)\" (녹색/빨간색)\n   - Total Sessions:\n     * 이번 주: \"25 sessions\"\n     * 지난주: \"20 sessions\"\n     * 증감: \"▲ 5 (+25%)\" (녹색)\n   - Average per Day:\n     * 이번 주: \"1h 47m/day\"\n     * 지난주: \"1h 28m/day\"\n     * 증감: \"▲ 19m (+22%)\" (녹색)\n\n4. 증감 표시:\n   - 증가: ▲ (녹색, oklch 색상)\n   - 감소: ▼ (빨간색, oklch 색상)\n   - 동일: - (회색)\n\n5. 레이아웃:\n   - Grid: 2열 (md 이상) / 1열 (md 미만)\n   - 각 KPI: Card 컴포넌트 (Glassmorphism)\n   - 아이콘: TrendingUp, TrendingDown (Lucide React)\n\n6. 로딩/에러:\n   - 로딩: 스켈레톤 KPI 카드\n   - 에러: 에러 메시지 표시\n\n참고: 비교 텍스트는 다국어 지원 (\"지난주 동시간 대비 30분 더 집중했습니다.\")",
-        "testStrategy": "1. 이번 주/지난주 데이터 정확히 계산 확인\n2. 증가 시 ▲ 녹색, 감소 시 ▼ 빨간색 확인\n3. 퍼센트 계산 정확도 확인 (소수점 1자리)\n4. 데이터 없는 주: \"No data\" 표시 확인\n5. 로딩 중 스켈레톤 카드 확인\n6. 반응형: 모바일 1열, 데스크탑 2열 확인\n7. 다국어 전환 시 텍스트 변경 확인",
+        "testStrategy": "1. 이번 주/지난주 데이터 정확히 계산 확인\n2. 증가 시 ▲ 녹색, 감소 시 ▼ 빨간색 확인\n3. 퍼센트 계산 정확도 확인 (소수점 1자리)\n4. 데이터 없는 주: \"No data\" 표시 확인\n5. 로딩 중 스켈레톤 카드 확인\n6. 반응형: 모바일 1열, 데스크탑 2열 확인",
         "priority": "high",
         "dependencies": [
           "103"
@@ -209,7 +202,7 @@
         "id": "107",
         "title": "통계 페이지 레이아웃 통합 및 스타일링",
         "description": "/stats 페이지에 3개 통계 컴포넌트 통합 및 전체 레이아웃 조정",
-        "details": "1. `app/[locale]/stats/page.tsx` 수정:\n   - 3개 섹션 배치:\n     * Weekly Stats (상단, 전체 너비)\n     * This Week vs Last Week (중단, 2열 그리드)\n     * Rolling 4-Week (하단, 전체 너비)\n\n2. 레이아웃 구조:\n   ```tsx\n   <main className=\"flex-1 pt-16 pb-6 siderail-margin\">\n     <div className=\"max-w-7xl mx-auto px-4 xl:px-8\">\n       <header className=\"mb-8\">\n         <h1>{t('statistics')}</h1>\n         <p className=\"text-muted-foreground\">{t('statsDescription')}</p>\n       </header>\n       \n       <section className=\"mb-8\">\n         <h2>Weekly Pattern</h2>\n         <WeeklyStatsChart />\n       </section>\n       \n       <section className=\"mb-8\">\n         <h2>Growth Analysis</h2>\n         <WeekComparison />\n       </section>\n       \n       <section>\n         <h2>Monthly Trend</h2>\n         <Rolling4WeekChart />\n       </section>\n     </div>\n   </main>\n   ```\n\n3. 섹션 스타일:\n   - 각 섹션: Card 컴포넌트 (Glassmorphism)\n   - 제목: text-lg font-bold mb-4\n   - 간격: mb-8 (섹션 사이)\n\n4. 반응형:\n   - md 미만: 1열 세로 배치, 패딩 감소\n   - xl 이상: max-w-7xl 제한, 넓은 패딩\n\n5. 로딩 상태:\n   - Suspense 경계 추가 (React 19)\n   - Fallback: 3개 스켈레톤 섹션\n\n6. 에러 경계:\n   - ErrorBoundary 추가\n   - 에러 시 \"통계를 불러올 수 없습니다\" 메시지\n\n참고: Tailwind 그리드 시스템, Card UI 컴포넌트 재사용",
+        "details": "1. `app/stats/page.tsx` 수정:\n   - 3개 섹션 배치:\n     * Weekly Stats (상단, 전체 너비)\n     * This Week vs Last Week (중단, 2열 그리드)\n     * Rolling 4-Week (하단, 전체 너비)\n\n2. 레이아웃 구조:\n   ```tsx\n   <main className=\"flex-1 pt-16 pb-6 siderail-margin\">\n     <div className=\"max-w-7xl mx-auto px-4 xl:px-8\">\n       <header className=\"mb-8\">\n         <h1>Statistics</h1>\n         <p className=\"text-muted-foreground\">Track your focus patterns and progress</p>\n       </header>\n       \n       <section className=\"mb-8\">\n         <h2>Weekly Pattern</h2>\n         <WeeklyStatsChart />\n       </section>\n       \n       <section className=\"mb-8\">\n         <h2>Growth Analysis</h2>\n         <WeekComparison />\n       </section>\n       \n       <section>\n         <h2>Monthly Trend</h2>\n         <Rolling4WeekChart />\n       </section>\n     </div>\n   </main>\n   ```\n\n3. 섹션 스타일:\n   - 각 섹션: Card 컴포넌트 (Glassmorphism)\n   - 제목: text-lg font-bold mb-4\n   - 간격: mb-8 (섹션 사이)\n\n4. 반응형:\n   - md 미만: 1열 세로 배치, 패딩 감소\n   - xl 이상: max-w-7xl 제한, 넓은 패딩\n\n5. 로딩 상태:\n   - Suspense 경계 추가 (React 19)\n   - Fallback: 3개 스켈레톤 섹션\n\n6. 에러 경계:\n   - ErrorBoundary 추가\n   - 에러 시 \"통계를 불러올 수 없습니다\" 메시지\n\n참고: Tailwind 그리드 시스템, Card UI 컴포넌트 재사용",
         "testStrategy": "1. 3개 섹션 모두 정상 렌더링 확인\n2. Glassmorphism 효과 일관성 확인\n3. 반응형: 모바일 1열, 데스크탑 적절한 간격 확인\n4. 로딩 중 Suspense Fallback 확인\n5. 에러 발생 시 ErrorBoundary 메시지 확인\n6. 3개 테마 모두에서 정상 표시 확인",
         "priority": "medium",
         "dependencies": [
@@ -217,8 +210,9 @@
           "105",
           "106"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T12:54:31.274Z"
       },
       {
         "id": "108",
@@ -228,8 +222,9 @@
         "testStrategy": "1. 비로그인 상태에서 첫 Focus 세션 완료 시 다이얼로그 표시 확인\n2. localStorage에 'hasShownLoginPrompt' 플래그 저장 확인\n3. 두 번째 세션 완료 시 다이얼로그 표시 안 됨 확인\n4. \"로그인\" 버튼 클릭 시 `/auth/login` 이동 확인\n5. \"나중에\" 버튼 클릭 시 다이얼로그 닫힘 확인\n6. Esc 키로 닫기 확인\n7. 로그인 사용자는 다이얼로그 표시 안 됨 확인",
         "priority": "low",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T12:57:06.827Z"
       },
       {
         "id": "109",
@@ -239,8 +234,9 @@
         "testStrategy": "1. Supabase Studio에서 함수 생성 확인\n2. SQL 직접 실행으로 함수 호출 테스트:\n   SELECT * FROM get_focus_distribution_by_hour(\n     'user-uuid',\n     '2026-01-01',\n     '2026-01-07',\n     'Asia/Seoul'\n   )\n3. 결과: [{ hour: 9, total_minutes: 125 }, ...] 형태 확인\n4. session_type='break' 데이터 제외 확인\n5. 타임존 변환 정확도 확인 (UTC → 사용자 타임존)\n6. 빈 결과: [] 반환 확인",
         "priority": "medium",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T12:49:58.558Z"
       },
       {
         "id": "110",
@@ -272,8 +268,8 @@
         "id": "112",
         "title": "통계 페이지에 시간대별 집중도 섹션 추가",
         "description": "/stats 페이지에 Hourly Distribution 차트 통합",
-        "details": "1. `app/[locale]/stats/page.tsx` 수정:\n   - 4번째 섹션으로 Hourly Distribution 추가\n   - 위치: Rolling 4-Week 차트 아래\n\n2. 레이아웃:\n   ```tsx\n   <section className=\"mb-8\">\n     <h2>Focus Distribution by Time</h2>\n     <p className=\"text-sm text-muted-foreground mb-4\">\n       {t('hourlyDistributionDescription')}\n     </p>\n     <HourlyDistributionChart />\n   </section>\n   ```\n\n3. 다국어 키 추가:\n   - messages/en.json: \"Focus Distribution by Time\", \"When do you focus the most?\"\n   - messages/ko.json: \"시간대별 집중도\", \"언제 가장 집중하시나요?\"\n   - messages/ja.json, messages/zh.json 동일\n\n4. 스타일:\n   - 섹션 간격: mb-8\n   - Card 컴포넌트 (Glassmorphism)\n\n5. 로딩/에러:\n   - Suspense 경계 추가\n   - 에러 시 섹션 전체 에러 메시지 표시\n\n참고: 기존 통계 섹션과 동일한 스타일 일관성 유지",
-        "testStrategy": "1. /stats 페이지에 시간대별 집중도 섹션 표시 확인\n2. 차트 정상 렌더링 확인\n3. 다국어 전환 시 제목/설명 변경 확인\n4. Glassmorphism 효과 일관성 확인\n5. 로딩 중 Suspense Fallback 확인\n6. 에러 시 에러 메시지 확인",
+        "details": "1. `app/stats/page.tsx` 수정:\n   - 4번째 섹션으로 Hourly Distribution 추가\n   - 위치: Rolling 4-Week 차트 아래\n\n2. 레이아웃:\n   ```tsx\n   <section className=\"mb-8\">\n     <h2>Focus Distribution by Time</h2>\n     <p className=\"text-sm text-muted-foreground mb-4\">\n       When do you focus the most?\n     </p>\n     <HourlyDistributionChart />\n   </section>\n   ```\n\n3. 스타일:\n   - 섹션 간격: mb-8\n   - Card 컴포넌트 (Glassmorphism)\n\n4. 로딩/에러:\n   - Suspense 경계 추가\n   - 에러 시 섹션 전체 에러 메시지 표시\n\n참고: 기존 통계 섹션과 동일한 스타일 일관성 유지",
+        "testStrategy": "1. /stats 페이지에 시간대별 집중도 섹션 표시 확인\n2. 차트 정상 렌더링 확인\n3. Glassmorphism 효과 일관성 확인\n4. 로딩 중 Suspense Fallback 확인\n5. 에러 시 에러 메시지 확인",
         "priority": "medium",
         "dependencies": [
           "111",
@@ -286,7 +282,7 @@
         "id": "113",
         "title": "대시보드 좌측 패널 삭제 및 메인 레이아웃 최종 조정",
         "description": "기존 DashboardLeft 컴포넌트 제거 및 메인 페이지 레이아웃 단순화",
-        "details": "1. `app/[locale]/page.tsx` 수정:\n   - DashboardLeft 컴포넌트 import 및 렌더링 제거\n   - 기존 3단 그리드 → 2단 레이아웃 (중앙 타이머 + 우측 위젯)\n\n2. 최종 레이아웃 구조:\n   ```tsx\n   <div className=\"flex flex-row min-h-screen\">\n     <Sidebar /> {/* 80px 고정 */}\n     <TaskPanel /> {/* 0 → 360px 가변 */}\n     <div className=\"flex-1 flex justify-center items-start\">\n       <PomodoroTimer /> {/* 중앙 정렬 */}\n     </div>\n     <aside className=\"hidden xl:flex xl:w-[570px]\">\n       <DashboardRight /> {/* BGM + Calendar */}\n     </aside>\n     <div className=\"hidden 2xl:block 2xl:w-[200px]\">\n       {/* Google AdSense 수직 배너 */}\n     </div>\n   </div>\n   ```\n\n3. 파일 정리:\n   - `components/dashboard-left.tsx` 삭제 (또는 주석 처리)\n   - `components/weekly-summary.tsx` 삭제 (통계 페이지로 이동됨)\n   - `components/stats-chart.tsx` 삭제 (통계 페이지로 대체됨)\n\n4. 반응형:\n   - xl 미만: Task 패널 하단 시트, 타이머 중앙, BGM/Calendar 하단 배치\n   - xl 이상: 완전한 Dynamic Layout\n   - 2xl 이상: 광고 영역 추가\n\n5. 성능:\n   - 불필요한 컴포넌트 렌더링 방지\n   - 레이아웃 리플로우 최소화\n\n참고: Dead code 제거, Bundle size 감소",
+        "details": "1. `app/page.tsx` 수정:\n   - DashboardLeft 컴포넌트 import 및 렌더링 제거\n   - 기존 3단 그리드 → 2단 레이아웃 (중앙 타이머 + 우측 위젯)\n\n2. 최종 레이아웃 구조:\n   ```tsx\n   <div className=\"flex flex-row min-h-screen\">\n     <Sidebar /> {/* 80px 고정 */}\n     <TaskPanel /> {/* 0 → 360px 가변 */}\n     <div className=\"flex-1 flex justify-center items-start\">\n       <PomodoroTimer /> {/* 중앙 정렬 */}\n     </div>\n     <aside className=\"hidden xl:flex xl:w-[570px]\">\n       <DashboardRight /> {/* BGM + Calendar */}\n     </aside>\n     <div className=\"hidden 2xl:block 2xl:w-[200px]\">\n       {/* Google AdSense 수직 배너 */}\n     </div>\n   </div>\n   ```\n\n3. 파일 정리:\n   - `components/dashboard-left.tsx` 삭제 (또는 주석 처리)\n   - `components/weekly-summary.tsx` 삭제 (통계 페이지로 이동됨)\n   - `components/stats-chart.tsx` 삭제 (통계 페이지로 대체됨)\n\n4. 반응형:\n   - xl 미만: Task 패널 하단 시트, 타이머 중앙, BGM/Calendar 하단 배치\n   - xl 이상: 완전한 Dynamic Layout\n   - 2xl 이상: 광고 영역 추가\n\n5. 성능:\n   - 불필요한 컴포넌트 렌더링 방지\n   - 레이아웃 리플로우 최소화\n\n참고: Dead code 제거, Bundle size 감소",
         "testStrategy": "1. DashboardLeft 컴포넌트 렌더링 안 됨 확인\n2. 메인 페이지 레이아웃 단순화 확인 (타이머 + BGM/Calendar만)\n3. Task 패널 토글 시 타이머 위치 조정 확인\n4. xl 미만: 모바일 레이아웃 정상 확인\n5. `pnpm build` 후 Bundle size 감소 확인\n6. 3개 테마 모두에서 정상 표시 확인",
         "priority": "low",
         "dependencies": [
@@ -300,7 +296,7 @@
         "id": "114",
         "title": "Google AdSense 수직 배너 영역 구현 (데스크탑 전용)",
         "description": "2xl 이상 해상도에서 우측 끝에 AdSense 배너 표시",
-        "details": "1. `components/adsense-vertical-banner.tsx` 생성:\n   - Google AdSense 수직 배너 (160x600 또는 300x600)\n   - 위치: 화면 우측 끝, fixed position\n   - 배경: 투명 또는 약간의 패딩\n\n2. AdSense 스크립트:\n   ```tsx\n   <ins\n     className=\"adsbygoogle\"\n     style={{ display: 'inline-block', width: '160px', height: '600px' }}\n     data-ad-client=\"ca-pub-XXXXXXXXXXXXXXXX\"\n     data-ad-slot=\"XXXXXXXXXX\"\n   />\n   <script>\n     (adsbygoogle = window.adsbygoogle || []).push({});\n   </script>\n   ```\n\n3. 조건부 렌더링:\n   - 2xl 이상에서만 표시 (Tailwind: `hidden 2xl:block`)\n   - 너비: 200px (배너 160px + 좌우 패딩 20px)\n\n4. 메인 페이지 통합:\n   - `app/[locale]/page.tsx`의 최우측 영역에 배치\n   - z-index: 낮게 설정 (타이머 위에 겹치지 않도록)\n\n5. 성능:\n   - Lazy Loading: Intersection Observer 사용\n   - AdSense 스크립트는 페이지 로드 후 비동기 로드\n\n6. Privacy:\n   - AdSense는 GDPR/CCPA 준수 (Google 자동 처리)\n   - Privacy Policy에 광고 사용 명시 (기존에 있음)\n\n참고: Google AdSense 공식 문서, Next.js Script 컴포넌트",
+        "details": "1. `components/adsense-vertical-banner.tsx` 생성:\n   - Google AdSense 수직 배너 (160x600 또는 300x600)\n   - 위치: 화면 우측 끝, fixed position\n   - 배경: 투명 또는 약간의 패딩\n\n2. AdSense 스크립트:\n   ```tsx\n   <ins\n     className=\"adsbygoogle\"\n     style={{ display: 'inline-block', width: '160px', height: '600px' }}\n     data-ad-client=\"ca-pub-XXXXXXXXXXXXXXXX\"\n     data-ad-slot=\"XXXXXXXXXX\"\n   />\n   <script>\n     (adsbygoogle = window.adsbygoogle || []).push({});\n   </script>\n   ```\n\n3. 조건부 렌더링:\n   - 2xl 이상에서만 표시 (Tailwind: `hidden 2xl:block`)\n   - 너비: 200px (배너 160px + 좌우 패딩 20px)\n\n4. 메인 페이지 통합:\n   - `app/page.tsx`의 최우측 영역에 배치\n   - z-index: 낮게 설정 (타이머 위에 겹치지 않도록)\n\n5. 성능:\n   - Lazy Loading: Intersection Observer 사용\n   - AdSense 스크립트는 페이지 로드 후 비동기 로드\n\n6. Privacy:\n   - AdSense는 GDPR/CCPA 준수 (Google 자동 처리)\n   - Privacy Policy에 광고 사용 명시 (기존에 있음)\n\n참고: Google AdSense 공식 문서, Next.js Script 컴포넌트",
         "testStrategy": "1. 2xl 이상: 우측 끝에 AdSense 배너 표시 확인\n2. 2xl 미만: 배너 숨김 확인\n3. AdSense 스크립트 로드 확인 (Network 탭)\n4. 배너가 타이머와 겹치지 않음 확인\n5. Lazy Loading 동작 확인 (스크롤 시 로드)\n6. Privacy Policy에 광고 사용 명시 확인",
         "priority": "low",
         "dependencies": [
@@ -313,8 +309,8 @@
         "id": "115",
         "title": "통계 페이지 SEO 메타데이터 및 구조화 데이터 추가",
         "description": "/stats 페이지에 검색 엔진 최적화를 위한 메타데이터 및 JSON-LD 추가",
-        "details": "1. `app/[locale]/stats/page.tsx`의 generateMetadata 확장:\n   ```typescript\n   export async function generateMetadata({ params }: Props): Promise<Metadata> {\n     const { locale } = await params\n     const t = await getTranslations('Metadata')\n     \n     return {\n       title: t('statsTitle'), // \"Statistics | Pomobox\"\n       description: t('statsDescription'),\n       openGraph: {\n         title: t('statsTitle'),\n         description: t('statsDescription'),\n         url: `https://pomobox.app/${locale}/stats`,\n         images: [{ url: '/og-stats.png' }],\n       },\n       twitter: {\n         card: 'summary_large_image',\n         title: t('statsTitle'),\n         description: t('statsDescription'),\n       },\n     }\n   }\n   ```\n\n2. JSON-LD 구조화 데이터 (WebPage):\n   ```json\n   {\n     \"@context\": \"https://schema.org\",\n     \"@type\": \"WebPage\",\n     \"name\": \"Focus Statistics\",\n     \"description\": \"View your focus statistics and patterns\",\n     \"url\": \"https://pomobox.app/en/stats\",\n     \"breadcrumb\": {\n       \"@type\": \"BreadcrumbList\",\n       \"itemListElement\": [\n         { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Home\", \"item\": \"https://pomobox.app/en\" },\n         { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Statistics\", \"item\": \"https://pomobox.app/en/stats\" }\n       ]\n     }\n   }\n   ```\n\n3. 다국어 메타데이터:\n   - messages/en.json: statsTitle, statsDescription\n   - messages/ko.json: \"통계 | 포모박스\", \"집중 통계와 패턴 분석\"\n   - messages/ja.json, messages/zh.json 동일\n\n4. OG 이미지 생성:\n   - `public/og-stats.png` (1200x630)\n   - 내용: 통계 차트 샘플 + \"Focus Statistics\" 텍스트\n\n5. Canonical URL:\n   - `<link rel=\"canonical\" href=\"https://pomobox.app/en/stats\" />`\n\n참고: Next.js Metadata API, Schema.org WebPage",
-        "testStrategy": "1. /stats 페이지 head에 title, description 메타태그 확인\n2. Open Graph 메타태그 확인 (og:title, og:description, og:image)\n3. JSON-LD 스크립트 확인 (View Page Source)\n4. Google Rich Results Test 통과 확인\n5. 다국어 URL별 메타데이터 확인 (/en/stats, /ko/stats)\n6. og-stats.png 이미지 로드 확인",
+        "details": "1. `app/stats/page.tsx`의 metadata export 추가:\n   ```typescript\n   export const metadata: Metadata = {\n     title: 'Statistics | Pomobox',\n     description: 'View your focus statistics and patterns',\n     openGraph: {\n       title: 'Statistics | Pomobox',\n       description: 'View your focus statistics and patterns',\n       url: 'https://pomobox.app/stats',\n       images: [{ url: '/og-stats.png' }],\n     },\n     twitter: {\n       card: 'summary_large_image',\n       title: 'Statistics | Pomobox',\n       description: 'View your focus statistics and patterns',\n     },\n   }\n   ```\n\n2. JSON-LD 구조화 데이터 (WebPage):\n   ```json\n   {\n     \"@context\": \"https://schema.org\",\n     \"@type\": \"WebPage\",\n     \"name\": \"Focus Statistics\",\n     \"description\": \"View your focus statistics and patterns\",\n     \"url\": \"https://pomobox.app/stats\",\n     \"breadcrumb\": {\n       \"@type\": \"BreadcrumbList\",\n       \"itemListElement\": [\n         { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Home\", \"item\": \"https://pomobox.app\" },\n         { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Statistics\", \"item\": \"https://pomobox.app/stats\" }\n       ]\n     }\n   }\n   ```\n\n3. OG 이미지 생성:\n   - `public/og-stats.png` (1200x630)\n   - 내용: 통계 차트 샘플 + \"Focus Statistics\" 텍스트\n\n4. Canonical URL:\n   - `<link rel=\"canonical\" href=\"https://pomobox.app/stats\" />`\n\n참고: Next.js Metadata API, Schema.org WebPage",
+        "testStrategy": "1. /stats 페이지 head에 title, description 메타태그 확인\n2. Open Graph 메타태그 확인 (og:title, og:description, og:image)\n3. JSON-LD 스크립트 확인 (View Page Source)\n4. Google Rich Results Test 통과 확인\n5. og-stats.png 이미지 로드 확인",
         "priority": "low",
         "dependencies": [
           "107"
@@ -350,16 +346,13 @@
       },
       {
         "id": "118",
-        "title": "다국어 메시지 추가 및 번역 (Task/Stats 관련)",
-        "description": "Task 패널 및 통계 페이지의 모든 텍스트를 4개 언어로 번역",
+        "title": "[취소됨] 다국어 메시지 추가 및 번역 - 영어 단일 언어로 전환됨",
+        "description": "[취소] 프로젝트가 영어 단일 언어로 전환되어 더 이상 필요 없음",
         "details": "1. `messages/en.json` 추가:\n   ```json\n   {\n     \"Task\": {\n       \"title\": \"Tasks\",\n       \"addPlaceholder\": \"Add a new task...\",\n       \"noTasks\": \"No tasks yet. Start adding!\",\n       \"taskLimit\": \"Maximum 30 tasks reached\",\n       \"deleteConfirm\": \"Are you sure you want to delete this task?\"\n     },\n     \"Statistics\": {\n       \"weeklyPattern\": \"Weekly Pattern\",\n       \"growthAnalysis\": \"Growth Analysis\",\n       \"monthlyTrend\": \"Monthly Trend\",\n       \"focusDistribution\": \"Focus Distribution by Time\",\n       \"hourlyDistributionDescription\": \"When do you focus the most?\",\n       \"thisWeek\": \"This Week\",\n       \"lastWeek\": \"Last Week\",\n       \"increase\": \"Increase\",\n       \"decrease\": \"Decrease\"\n     }\n   }\n   ```\n\n2. `messages/ko.json` 번역:\n   - Task.title: \"작업 목록\"\n   - Task.addPlaceholder: \"새 작업 추가...\"\n   - Statistics.weeklyPattern: \"주간 패턴\"\n   - Statistics.focusDistribution: \"시간대별 집중도\"\n   - 등...\n\n3. `messages/ja.json` 번역:\n   - Task.title: \"タスク\"\n   - Statistics.weeklyPattern: \"週間パターン\"\n   - 등...\n\n4. `messages/zh.json` 번역:\n   - Task.title: \"任务列表\"\n   - Statistics.weeklyPattern: \"周模式\"\n   - 등...\n\n5. 컴포넌트 통합:\n   - task-panel.tsx: useTranslations('Task')\n   - stats/weekly-stats-chart.tsx: useTranslations('Statistics')\n   - 모든 하드코딩된 텍스트를 t() 함수로 대체\n\n참고: next-intl useTranslations 훅",
         "testStrategy": "1. 언어 전환 시 Task 패널 텍스트 변경 확인 (en/ko/ja/zh)\n2. 통계 페이지 제목/설명 번역 확인\n3. 툴팁 텍스트 번역 확인\n4. 빈 상태 메시지 번역 확인\n5. `pnpm build` 후 번역 누락 없음 확인\n6. 번역 품질 검토 (네이티브 스피커 확인)",
-        "priority": "medium",
-        "dependencies": [
-          "98",
-          "107"
-        ],
-        "status": "pending",
+        "priority": "low",
+        "dependencies": [],
+        "status": "cancelled",
         "subtasks": []
       },
       {
@@ -392,9 +385,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-03T08:34:07.269Z",
+      "lastModified": "2026-01-05T12:57:06.827Z",
       "taskCount": 25,
-      "completedCount": 11,
+      "completedCount": 14,
       "tags": [
         "master"
       ]

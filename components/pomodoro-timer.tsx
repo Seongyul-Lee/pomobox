@@ -10,7 +10,10 @@ import { recordSessionComplete, incrementDailyMinutes } from "@/lib/supabase/sta
 import { getLocalTodayStats, incrementLocalMinutes, saveLocalTodayStats } from "@/lib/storage/local-stats"
 import { incrementHistorySession } from "@/lib/storage/local-history"
 import { GoalProgress } from "./goal-progress"
+import { LoginPromptDialog } from "./login-prompt-dialog"
 import { useTimerStore, useSettingsStore } from "@/lib/store"
+
+const LOGIN_PROMPT_KEY = "hasShownLoginPrompt"
 
 type TimerPhase = 'focus' | 'break' | 'longBreak'
 type TimerStatus = 'idle' | 'running' | 'paused'
@@ -42,6 +45,7 @@ export function PomodoroTimer() {
   const [longBreakCount, setLongBreakCount] = useState(0)
   const [targetEndAtMs, setTargetEndAtMs] = useState<number | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false)
 
   // Focus 세션 시작 시간 (경과 시간 계산용)
   const focusSessionStartRef = useRef<number | null>(null)
@@ -253,6 +257,12 @@ export function PomodoroTimer() {
         }
         // 세션 완료 기록 (세션 카운트 증가)
         recordSessionComplete(user.id, 0) // duration=0으로 세션만 기록
+      } else {
+        // 비로그인 사용자: 첫 세션 완료 시 로그인 유도 다이얼로그 표시
+        if (typeof window !== "undefined" && !localStorage.getItem(LOGIN_PROMPT_KEY)) {
+          setShowLoginPrompt(true)
+          localStorage.setItem(LOGIN_PROMPT_KEY, "true")
+        }
       }
 
       // lastSavedMinuteRef 초기화
@@ -590,6 +600,11 @@ export function PomodoroTimer() {
         goalMinutes={settingsStore.dailyGoal}
       />
 
+      {/* Login Prompt Dialog for non-logged-in users */}
+      <LoginPromptDialog
+        open={showLoginPrompt}
+        onOpenChange={setShowLoginPrompt}
+      />
     </div>
   )
 }

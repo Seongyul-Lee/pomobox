@@ -119,7 +119,7 @@ export function TodayStats() {
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-2xl",
+        "group relative overflow-hidden rounded-2xl h-full",
         "border border-border/30",
         "bg-gradient-to-br from-chart-2/8 via-transparent to-primary/8",
         "transition-all duration-500",
@@ -144,109 +144,104 @@ export function TodayStats() {
         />
       </div>
 
-      <div className="relative z-10 p-6 lg:p-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-          {/* Progress Ring with Center Content */}
+      <div className="relative z-10 p-5 lg:p-6 flex flex-col h-full">
+        {/* Header Row - Today badge + Date */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-chart-2/15 group-hover:bg-chart-2/20 transition-colors">
+              <Sun className="h-4 w-4 text-chart-2" />
+            </div>
+            <h3 className="text-sm font-semibold text-foreground">Today</h3>
+          </div>
+          <span className="text-xs text-muted-foreground">{formattedDate}</span>
+        </div>
+
+        {/* Main Content - Ring + Time */}
+        <div className="flex items-center gap-5 flex-1">
+          {/* Progress Ring - Compact */}
           <div className="relative flex-shrink-0">
-            <ProgressRing progress={goalProgress} size={120} strokeWidth={10} />
+            <ProgressRing progress={goalProgress} size={100} strokeWidth={8} />
 
             {/* Center content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               {isGoalMet ? (
-                <Sparkles className="h-6 w-6 text-chart-2 animate-pulse" />
+                <Sparkles className="h-5 w-5 text-chart-2 animate-pulse" />
               ) : (
                 <span
-                  className="text-2xl font-bold tracking-tight"
+                  className="text-xl font-bold tracking-tight"
                   style={{ fontVariantNumeric: "tabular-nums" }}
                 >
                   {goalProgress}%
                 </span>
               )}
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">
-                {isGoalMet ? "Goal Met!" : "of goal"}
+              <span className="text-[9px] uppercase tracking-wider text-muted-foreground mt-0.5">
+                {isGoalMet ? "Done!" : "goal"}
               </span>
             </div>
           </div>
 
-          {/* Stats Content */}
+          {/* Time Display + Stats */}
           <div className="flex-1 min-w-0">
-            {/* Header */}
-            <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-lg bg-chart-2/10">
-                <Sun className="h-4 w-4 text-chart-2" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-foreground">Today</h3>
-                <p className="text-[10px] text-muted-foreground">{formattedDate}</p>
-              </div>
-            </div>
-
             {/* Main Time Display */}
-            <div className="flex items-baseline gap-1 mb-4">
+            <div className="flex items-baseline gap-1 mb-3">
               {hours > 0 ? (
                 <>
                   <span
-                    className="text-4xl lg:text-5xl font-bold tracking-tighter bg-gradient-to-r from-chart-2 via-primary to-chart-4 bg-clip-text text-transparent"
+                    className="text-4xl font-bold tracking-tighter bg-gradient-to-r from-chart-2 via-primary to-chart-4 bg-clip-text text-transparent"
                     style={{ fontVariantNumeric: "tabular-nums" }}
                   >
                     {hours}
                   </span>
-                  <span className="text-xl lg:text-2xl font-medium text-muted-foreground">h</span>
+                  <span className="text-lg font-medium text-muted-foreground">h</span>
                   {minutes > 0 && (
                     <>
                       <span
-                        className="text-2xl lg:text-3xl font-bold tracking-tighter ml-1"
+                        className="text-2xl font-bold tracking-tighter ml-0.5"
                         style={{ fontVariantNumeric: "tabular-nums" }}
                       >
                         {minutes}
                       </span>
-                      <span className="text-lg font-medium text-muted-foreground">m</span>
+                      <span className="text-sm font-medium text-muted-foreground">m</span>
                     </>
                   )}
                 </>
               ) : (
                 <>
                   <span
-                    className="text-4xl lg:text-5xl font-bold tracking-tighter bg-gradient-to-r from-chart-2 via-primary to-chart-4 bg-clip-text text-transparent"
+                    className="text-4xl font-bold tracking-tighter bg-gradient-to-r from-chart-2 via-primary to-chart-4 bg-clip-text text-transparent"
                     style={{ fontVariantNumeric: "tabular-nums" }}
                   >
                     {minutes}
                   </span>
-                  <span className="text-xl lg:text-2xl font-medium text-muted-foreground">m</span>
+                  <span className="text-lg font-medium text-muted-foreground">m</span>
                 </>
               )}
             </div>
 
-            {/* Mini Stats */}
-            <div className="flex flex-wrap gap-4 lg:gap-6">
-              <div className="flex items-center gap-2">
-                <div className="p-1 rounded bg-primary/10">
-                  <Target className="h-3.5 w-3.5 text-primary" />
-                </div>
-                <div>
-                  <span
-                    className="text-lg font-semibold"
-                    style={{ fontVariantNumeric: "tabular-nums" }}
-                  >
-                    {totalSessions}
-                  </span>
-                  <span className="text-xs text-muted-foreground ml-1">sessions</span>
-                </div>
+            {/* Mini Stats - Inline */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5">
+                <Target className="h-3.5 w-3.5 text-primary/70" />
+                <span
+                  className="text-sm font-semibold"
+                  style={{ fontVariantNumeric: "tabular-nums" }}
+                >
+                  {totalSessions}
+                </span>
+                <span className="text-xs text-muted-foreground">sessions</span>
               </div>
 
-              <div className="flex items-center gap-2">
-                <div className="p-1 rounded bg-chart-4/10">
-                  <Timer className="h-3.5 w-3.5 text-chart-4" />
-                </div>
-                <div>
-                  <span
-                    className="text-lg font-semibold"
-                    style={{ fontVariantNumeric: "tabular-nums" }}
-                  >
-                    {totalSessions > 0 ? Math.round(totalMinutes / totalSessions) : 0}
-                  </span>
-                  <span className="text-xs text-muted-foreground ml-1">min/session</span>
-                </div>
+              <div className="w-px h-3 bg-border/50" />
+
+              <div className="flex items-center gap-1.5">
+                <Timer className="h-3.5 w-3.5 text-chart-4/70" />
+                <span
+                  className="text-sm font-semibold"
+                  style={{ fontVariantNumeric: "tabular-nums" }}
+                >
+                  {totalSessions > 0 ? Math.round(totalMinutes / totalSessions) : 0}
+                </span>
+                <span className="text-xs text-muted-foreground">min/sess</span>
               </div>
             </div>
           </div>

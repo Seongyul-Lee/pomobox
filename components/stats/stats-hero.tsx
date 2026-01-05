@@ -94,19 +94,19 @@ export function StatsHero() {
 
   return (
     <div
-      className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-background to-chart-2/10 border border-border/50"
+      className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-background to-chart-2/10 border border-border/50 transition-all duration-500 ease-out hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10"
       role="region"
       aria-label={`This week's focus summary: ${timeFormatted.display} total focus time`}
     >
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Gradient orbs */}
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-chart-2/10 blur-3xl" />
+        {/* Gradient orbs - animate on hover */}
+        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl transition-all duration-700 group-hover:bg-primary/20 group-hover:scale-110" />
+        <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-chart-2/10 blur-3xl transition-all duration-700 group-hover:bg-chart-2/20 group-hover:scale-105" />
 
-        {/* Grid pattern */}
+        {/* Grid pattern - subtle fade in on hover */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.03] transition-opacity duration-500 group-hover:opacity-[0.05]"
           style={{
             backgroundImage: `
               linear-gradient(to right, currentColor 1px, transparent 1px),
@@ -115,6 +115,9 @@ export function StatsHero() {
             backgroundSize: "40px 40px",
           }}
         />
+
+        {/* Hover glow overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-chart-2/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       </div>
 
       <div className="relative z-10 px-6 py-8 lg:px-10 lg:py-10">

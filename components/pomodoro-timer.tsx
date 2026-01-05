@@ -1,22 +1,18 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react"
 import { playSound } from "@/lib/sounds"
 import { useUser } from "@/hooks/use-user"
 import { recordSessionComplete, incrementDailyMinutes } from "@/lib/supabase/stats"
-import { getLocalTodayStats, incrementLocalMinutes, saveLocalTodayStats } from "@/lib/storage/local-stats"
-import { incrementHistorySession } from "@/lib/storage/local-history"
+import { getLocalTodayStats } from "@/lib/storage/local-stats"
 import { GoalProgress } from "./goal-progress"
 import { LoginPromptDialog } from "./login-prompt-dialog"
 import { useTimerStore, useSettingsStore } from "@/lib/store"
 
 const LOGIN_PROMPT_KEY = "hasShownLoginPrompt"
-
-type TimerPhase = 'focus' | 'break' | 'longBreak'
-type TimerStatus = 'idle' | 'running' | 'paused'
 
 const TIMER_RADIUS = 140
 const TIMER_STROKE_WIDTH = 10
@@ -27,7 +23,7 @@ export function PomodoroTimer() {
   const { user } = useUser()
 
   // Zustand stores
-  const syncSessionState = useTimerStore(state => state.syncSessionState)
+  const timerStore = useTimerStore()
   const settingsStore = useSettingsStore()
 
   // Test-only: ?testDuration=10 sets focus duration to 10 seconds
@@ -35,35 +31,53 @@ export function PomodoroTimer() {
     ? parseInt(searchParams.get('testDuration')!, 10)
     : null
 
-  // 로컬 상태 (Zustand와 동기화)
-  const [phase, setPhase] = useState<TimerPhase>('focus')
-  const [timeLeft, setTimeLeft] = useState(settingsStore.focusDuration * 60)
-  const [status, setStatus] = useState<TimerStatus>('idle')
-  const [sessions, setSessions] = useState(0)
-  const [completedSessions, setCompletedSessions] = useState(0)
-  const [totalFocusMinutes, setTotalFocusMinutes] = useState(0)
-  const [longBreakCount, setLongBreakCount] = useState(0)
-  const [targetEndAtMs, setTargetEndAtMs] = useState<number | null>(null)
-  const [isTransitioning, setIsTransitioning] = useState(false)
+  // 로컬 UI 상태 (영속화 불필요)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
+  const [localTotalMinutes, setLocalTotalMinutes] = useState(0)
+  const [localSessions, setLocalSessions] = useState(0)
 
-  // Focus 세션 시작 시간 (경과 시간 계산용)
-  const focusSessionStartRef = useRef<number | null>(null)
-  // 마지막으로 저장된 분 (1분 단위 증분 저장용)
-  const lastSavedMinuteRef = useRef<number>(0)
+  // Store에서 상태 추출
+  const {
+    phase,
+    status,
+    timeLeft,
+    sessions,
+    completedSessions,
+    targetEndAtMs,
+    _hasHydrated,
+    start,
+    pause,
+    resume,
+    skip,
+    reset,
+    tick,
+    updateSettings,
+    checkAndSaveMinute,
+  } = timerStore
 
-  // localStorage에서 오늘 통계 복원
+  // 설정 동기화는 providers.tsx의 initSettingsSubscription()이 자동 처리
+  // (settings-store → timer-store 자동 구독)
+
+  // localStorage에서 오늘 통계 복원 (초기 로드 시)
   useEffect(() => {
-    setTimeLeft(settingsStore.focusDuration * 60)
-
     const localStats = getLocalTodayStats()
-    setTotalFocusMinutes(localStats.totalMinutes)
-    setSessions(localStats.totalSessions)
-  }, [settingsStore.focusDuration])
+    setLocalTotalMinutes(localStats.totalMinutes)
+    setLocalSessions(localStats.totalSessions)
+  }, [])
 
-  const getDuration = () => {
+  // testDuration 적용 (테스트 모드)
+  useEffect(() => {
+    if (testDurationSec !== null && testDurationSec > 0 && phase === 'focus' && status === 'idle') {
+      updateSettings({
+        focusDuration: testDurationSec / 60, // 초 → 분 변환
+        breakDuration: settingsStore.breakDuration,
+      })
+    }
+  }, [testDurationSec, phase, status, settingsStore.breakDuration, updateSettings])
+
+  // 타이머 계산
+  const getDuration = useCallback(() => {
     if (phase === 'focus') {
-      // Test mode: use testDuration (in seconds) if provided
       if (testDurationSec !== null && testDurationSec > 0) {
         return testDurationSec
       }
@@ -71,14 +85,7 @@ export function PomodoroTimer() {
     }
     if (phase === 'longBreak') return 15 * 60
     return settingsStore.breakDuration * 60
-  }
-
-  // Initialize timeLeft when testDuration is provided
-  useEffect(() => {
-    if (testDurationSec !== null && testDurationSec > 0 && phase === 'focus' && status === 'idle') {
-      setTimeLeft(testDurationSec)
-    }
-  }, [testDurationSec, phase, status])
+  }, [phase, testDurationSec, settingsStore.focusDuration, settingsStore.breakDuration])
 
   const duration = getDuration()
   const minutes = Math.floor(timeLeft / 60)
@@ -100,31 +107,76 @@ export function PomodoroTimer() {
     }
   }, [settingsStore.notificationsEnabled])
 
-  // Initialize / clear target end time for time-based timer
-  useEffect(() => {
-    if (status === 'running' && targetEndAtMs === null) {
-      setTargetEndAtMs(Date.now() + timeLeft * 1000)
-      return
-    }
-    if (status !== 'running' && targetEndAtMs !== null) {
-      setTargetEndAtMs(null)
-    }
-  }, [status, targetEndAtMs, timeLeft])
-
-  // Tick: recompute remaining time from wall-clock (prevents background drift)
+  // Tick: 매초 시간 업데이트 + 부수효과 처리
   useEffect(() => {
     if (status !== 'running' || targetEndAtMs === null) return
 
-    const updateTimeLeft = () => {
-      const remainingSeconds = Math.max(0, Math.ceil((targetEndAtMs - Date.now()) / 1000))
-      setTimeLeft(remainingSeconds)
+    const updateTimer = () => {
+      tick()
+
+      // timeLeft가 0이 되면 부수효과 처리
+      const currentTimeLeft = useTimerStore.getState().timeLeft
+      const currentPhase = useTimerStore.getState().phase
+      const currentStatus = useTimerStore.getState().status
+
+      // 세션 완료 시 알림/사운드/통계
+      if (currentTimeLeft === 0 && currentStatus === 'idle') {
+        // 알림
+        if (settingsStore.notificationsEnabled && Notification.permission === "granted") {
+          const message = currentPhase === 'break' || currentPhase === 'longBreak'
+            ? "Ready for another session?"
+            : "Time for a break"
+          new Notification(
+            currentPhase === 'break' || currentPhase === 'longBreak'
+              ? "Break time over!"
+              : "Focus session complete!",
+            { body: message, icon: "/icon.png" }
+          )
+        }
+
+        // 사운드
+        if (settingsStore.soundEnabled) {
+          playSound(settingsStore.soundType, settingsStore.volume / 100)
+        }
+
+        // 로컬 통계 갱신
+        const localStats = getLocalTodayStats()
+        setLocalTotalMinutes(localStats.totalMinutes)
+        setLocalSessions(localStats.totalSessions)
+
+        // 목표 달성 시 confetti
+        const previousTotal = localTotalMinutes
+        const newTotal = localStats.totalMinutes
+        if (previousTotal < settingsStore.dailyGoal && newTotal >= settingsStore.dailyGoal) {
+          import("canvas-confetti").then(({ default: confetti }) => {
+            confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 },
+            })
+          })
+        }
+
+        // Supabase 저장 (로그인 사용자만)
+        if (user && currentPhase === 'break') {
+          recordSessionComplete(user.id, settingsStore.focusDuration, settingsStore.dailyGoal)
+        }
+
+        // 비로그인 사용자: 첫 세션 완료 시 로그인 유도
+        if (!user && currentPhase === 'break') {
+          if (typeof window !== "undefined" && !localStorage.getItem(LOGIN_PROMPT_KEY)) {
+            setShowLoginPrompt(true)
+            localStorage.setItem(LOGIN_PROMPT_KEY, "true")
+          }
+        }
+      }
     }
 
-    updateTimeLeft()
-    const id = window.setInterval(updateTimeLeft, 1000)
+    updateTimer()
+    const id = window.setInterval(updateTimer, 1000)
 
     const handleVisibilityChange = () => {
-      if (!document.hidden) updateTimeLeft()
+      if (!document.hidden) updateTimer()
     }
     document.addEventListener("visibilitychange", handleVisibilityChange)
 
@@ -132,232 +184,62 @@ export function PomodoroTimer() {
       window.clearInterval(id)
       document.removeEventListener("visibilitychange", handleVisibilityChange)
     }
-  }, [status, targetEndAtMs])
-
-  // Zustand store와 세션 상태 동기화 (대시보드 실시간 업데이트용)
-  useEffect(() => {
-    // Focus phase일 때 sessionStartTime 전달 (running/paused 모두)
-    // Pause 시에도 sessionStartTime을 유지해야 대시보드 시간이 초기화되지 않음
-    const sessionStartTime = phase === 'focus'
-      ? focusSessionStartRef.current
-      : null
-
-    syncSessionState({
-      sessionStartTime,
-      isRunning: status === 'running',
-      isFocusPhase: phase === 'focus',
-    })
-  }, [status, phase, syncSessionState])
+  }, [status, targetEndAtMs, tick, settingsStore, user, localTotalMinutes])
 
   // 1분마다 자동 저장 (Focus 세션 중에만)
   useEffect(() => {
-    if (status !== 'running' || phase !== 'focus' || focusSessionStartRef.current === null) {
-      return
-    }
+    if (status !== 'running' || phase !== 'focus') return
 
-    const checkAndSave = () => {
-      if (focusSessionStartRef.current === null) return
+    const intervalId = setInterval(() => {
+      checkAndSaveMinute()
 
-      const elapsedMs = Date.now() - focusSessionStartRef.current
-      const elapsedMinutes = Math.floor(elapsedMs / 60000)
-
-      // 새로운 분이 경과했으면 저장
-      if (elapsedMinutes > lastSavedMinuteRef.current) {
-        const minutesToSave = elapsedMinutes - lastSavedMinuteRef.current
-        lastSavedMinuteRef.current = elapsedMinutes
-
-        // localStorage 저장 (모든 사용자)
-        incrementLocalMinutes(minutesToSave)
-
-        // Supabase 저장 (로그인 사용자만)
-        if (user) {
-          incrementDailyMinutes(user.id, minutesToSave, settingsStore.dailyGoal).catch(err => {
-            console.error("Failed to save to Supabase:", err)
-          })
+      // Supabase 저장 (로그인 사용자만)
+      const { lastSavedMinute, focusSessionStartMs } = useTimerStore.getState()
+      if (user && focusSessionStartMs) {
+        const elapsedMs = Date.now() - focusSessionStartMs
+        const elapsedMinutes = Math.floor(elapsedMs / 60000)
+        if (elapsedMinutes > lastSavedMinute) {
+          const minutesToSave = elapsedMinutes - lastSavedMinute
+          incrementDailyMinutes(user.id, minutesToSave, settingsStore.dailyGoal).catch(console.error)
         }
       }
-    }
 
-    // 5초마다 체크 (1초는 과하고, 1분은 느림)
-    const intervalId = setInterval(checkAndSave, 5000)
+      // 로컬 통계 갱신
+      const localStats = getLocalTodayStats()
+      setLocalTotalMinutes(localStats.totalMinutes)
+    }, 5000) // 5초마다 체크
 
     return () => clearInterval(intervalId)
-  }, [status, phase, user, settingsStore.dailyGoal])
+  }, [status, phase, checkAndSaveMinute, user, settingsStore.dailyGoal])
 
-  // Phase transition when timer hits 0
-  useEffect(() => {
-    if (!(timeLeft === 0 && status === 'running')) return
-    if (isTransitioning) return // Prevent duplicate transition
-
-    setIsTransitioning(true)
-    setStatus('idle')
-    setTargetEndAtMs(null)
-
-    // Notifications and sound
-    if (settingsStore.notificationsEnabled && Notification.permission === "granted") {
-      const message = phase === 'focus'
-        ? "Time for a break"
-        : "Ready for another session?"
-      new Notification(
-        phase === 'focus' ? "Focus session complete!" : "Break time over!",
-        { body: message, icon: "/icon.png" }
-      )
-    }
-
-    if (settingsStore.soundEnabled) {
-      playSound(settingsStore.soundType, settingsStore.volume / 100)
-    }
-
-    if (phase === 'focus') {
-      const newCompleted = completedSessions + 1
-      setCompletedSessions(newCompleted)
-
-      const newSessions = sessions + 1
-      setSessions(newSessions)
-
-      // 남은 분 계산 (이미 1분마다 저장했으므로 중복 방지)
-      const remainingMinutes = settingsStore.focusDuration - lastSavedMinuteRef.current
-
-      // localStorage에 남은 분 저장 + 세션 카운트 증가
-      if (remainingMinutes > 0) {
-        incrementLocalMinutes(remainingMinutes)
-      }
-      // 세션 카운트 증가 (daily_stats)
-      const localStats = getLocalTodayStats()
-      saveLocalTodayStats({
-        ...localStats,
-        totalSessions: localStats.totalSessions + 1,
-      })
-
-      // 히스토리에 세션 완료 기록
-      incrementHistorySession()
-
-      // localStorage에서 최신 값 읽어와서 state 동기화
-      const updatedStats = getLocalTodayStats()
-      const newTotal = updatedStats.totalMinutes
-      setTotalFocusMinutes(newTotal)
-
-      // 목표 달성 시 confetti 애니메이션 (동적 import)
-      const previousTotal = totalFocusMinutes
-      if (previousTotal < settingsStore.dailyGoal && newTotal >= settingsStore.dailyGoal) {
-        import("canvas-confetti").then(({ default: confetti }) => {
-          confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-          })
-        })
-      }
-
-      // 로그인 사용자: Supabase에 남은 분 저장 + 세션 완료 기록
-      if (user) {
-        // 남은 분 저장
-        if (remainingMinutes > 0) {
-          incrementDailyMinutes(user.id, remainingMinutes, settingsStore.dailyGoal).catch(console.error)
-        }
-        // 세션 완료 기록 (세션 카운트 + 실제 집중 시간 기록)
-        recordSessionComplete(user.id, settingsStore.focusDuration, settingsStore.dailyGoal)
-      } else {
-        // 비로그인 사용자: 첫 세션 완료 시 로그인 유도 다이얼로그 표시
-        if (typeof window !== "undefined" && !localStorage.getItem(LOGIN_PROMPT_KEY)) {
-          setShowLoginPrompt(true)
-          localStorage.setItem(LOGIN_PROMPT_KEY, "true")
-        }
-      }
-
-      // lastSavedMinuteRef 초기화
-      lastSavedMinuteRef.current = 0
-
-      // Focus 세션 종료
-      focusSessionStartRef.current = null
-
-      // Long Break every 4 completed sessions (not skipped)
-      if (newCompleted % 4 === 0) {
-        setPhase('longBreak')
-        setTimeLeft(15 * 60)
-        setLongBreakCount(prev => prev + 1)
-      } else {
-        setPhase('break')
-        setTimeLeft(settingsStore.breakDuration * 60)
-      }
-    } else {
-      // 휴식 완료 → Focus로 전환
-      setPhase('focus')
-
-      const focusDuration = testDurationSec !== null && testDurationSec > 0
-        ? testDurationSec
-        : settingsStore.focusDuration * 60
-      setTimeLeft(focusDuration)
-    }
-
-    setIsTransitioning(false) // Reset flag after transition
-  }, [timeLeft, status, phase, settingsStore, completedSessions, totalFocusMinutes, sessions, isTransitioning, testDurationSec, user])
-
+  // 액션 핸들러
   const handleStart = useCallback(() => {
-    if (isTransitioning) return
-
-    // Focus 세션 시작 시 시작 시간 설정 (상태 변경 전에 설정해야 useEffect에서 참조 가능)
-    if (phase === 'focus') {
-      focusSessionStartRef.current = Date.now()
-    }
-
-    setStatus('running')
-  }, [isTransitioning, phase])
+    start()
+  }, [start])
 
   const handlePause = useCallback(() => {
-    if (isTransitioning) return
-    setStatus('paused')
-    setTargetEndAtMs(null)
-  }, [isTransitioning])
+    pause()
+  }, [pause])
 
   const handleResume = useCallback(() => {
-    if (isTransitioning) return
-    setStatus('running')
-  }, [isTransitioning])
+    resume()
+  }, [resume])
 
   const handleReset = useCallback(() => {
-    if (isTransitioning) return
+    // CLAUDE.md 정책: "Skip/Reset은 통계에 반영하지 않음"
+    // 통계 저장 없이 상태만 초기화
+    reset()
+  }, [reset])
 
-    // Focus 세션 중 Reset 시: 이미 저장된 분 이후 남은 분만 저장
-    if (phase === 'focus' && focusSessionStartRef.current !== null) {
-      const elapsedMs = Date.now() - focusSessionStartRef.current
-      const elapsedMinutes = Math.floor(elapsedMs / 60000)
-      const remainingMinutes = elapsedMinutes - lastSavedMinuteRef.current
-
-      // 남은 분이 있으면 저장 (세션 카운트는 증가 안함)
-      if (remainingMinutes > 0) {
-        incrementLocalMinutes(remainingMinutes)
-
-        if (user) {
-          incrementDailyMinutes(user.id, remainingMinutes, settingsStore.dailyGoal).catch(console.error)
-        }
-      }
-
-      // localStorage에서 최신 값 읽어와서 state 동기화
-      const updatedStats = getLocalTodayStats()
-      setTotalFocusMinutes(updatedStats.totalMinutes)
-    }
-
-    // lastSavedMinuteRef 초기화
-    lastSavedMinuteRef.current = 0
-
-    // ref 초기화
-    focusSessionStartRef.current = null
-
-    setStatus('idle')
-    setTargetEndAtMs(null)
-    setPhase('focus')
-
-    const focusDuration = testDurationSec !== null && testDurationSec > 0
-      ? testDurationSec
-      : settingsStore.focusDuration * 60
-    setTimeLeft(focusDuration)
-  }, [settingsStore.focusDuration, settingsStore.dailyGoal, isTransitioning, testDurationSec, phase, user])
+  const handleSkip = useCallback(() => {
+    // CLAUDE.md 정책: "Skip/Reset은 통계에 반영하지 않음"
+    // 통계 저장 없이 상태만 초기화
+    skip()
+  }, [skip])
 
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      // Ignore shortcuts in Input, Textarea, Dialog
       const target = e.target as HTMLElement
       if (
         target.tagName === 'INPUT' ||
@@ -368,7 +250,6 @@ export function PomodoroTimer() {
       }
 
       if (e.code === 'Space') {
-        // 버튼에 포커스된 경우 기본 동작(버튼 클릭) 허용
         if (target.tagName === 'BUTTON' || target.closest('button')) {
           return
         }
@@ -389,53 +270,6 @@ export function PomodoroTimer() {
     return () => window.removeEventListener('keydown', handleKeyPress)
   }, [status, handlePause, handleResume, handleStart])
 
-  const handleSkip = useCallback(() => {
-    if (isTransitioning) return
-
-    // Focus 세션 스킵 시: 이미 저장된 분 이후 남은 분만 저장
-    if (phase === 'focus' && focusSessionStartRef.current !== null) {
-      const elapsedMs = Date.now() - focusSessionStartRef.current
-      const elapsedMinutes = Math.floor(elapsedMs / 60000)
-      const remainingMinutes = elapsedMinutes - lastSavedMinuteRef.current
-
-      // 남은 분이 있으면 저장 (세션 카운트는 증가 안함)
-      if (remainingMinutes > 0) {
-        incrementLocalMinutes(remainingMinutes)
-
-        if (user) {
-          incrementDailyMinutes(user.id, remainingMinutes, settingsStore.dailyGoal).catch(console.error)
-        }
-      }
-
-      // localStorage에서 최신 값 읽어와서 state 동기화
-      const updatedStats = getLocalTodayStats()
-      setTotalFocusMinutes(updatedStats.totalMinutes)
-    }
-
-    // lastSavedMinuteRef 초기화
-    lastSavedMinuteRef.current = 0
-
-    setStatus('idle')
-    setTargetEndAtMs(null)
-
-    if (phase === 'focus') {
-      // Skip increments completedSessions but NOT sessions
-      const newCompleted = completedSessions + 1
-      setCompletedSessions(newCompleted)
-
-      // Focus 종료
-      focusSessionStartRef.current = null
-
-      // Always go to Short Break when skipping Focus
-      setPhase('break')
-      setTimeLeft(settingsStore.breakDuration * 60)
-    } else {
-      // 휴식 → Focus로 전환
-      setPhase('focus')
-      setTimeLeft(settingsStore.focusDuration * 60)
-    }
-  }, [phase, settingsStore, completedSessions, isTransitioning, user])
-
   const getTypeLabel = () => {
     if (phase === 'focus') return "Focus Session"
     if (phase === 'longBreak') return "Long Break"
@@ -446,6 +280,19 @@ export function PomodoroTimer() {
     if (phase === 'focus') return "Stay focused"
     if (phase === 'longBreak') return "Take a longer break"
     return "Take a short break"
+  }
+
+  // 복원 전 로딩 상태 (hydration 완료 대기)
+  if (!_hasHydrated) {
+    return (
+      <div className="relative flex flex-col items-center gap-6 sm:gap-8">
+        <div className="text-center">
+          <p className="text-lg sm:text-xl md:text-2xl font-bold text-foreground uppercase tracking-wider mb-1">
+            Loading...
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -482,7 +329,6 @@ export function PomodoroTimer() {
         aria-label={`${getTypeLabel()} progress: ${Math.round(progress)}%`}
       >
         <svg className={`w-52 h-52 sm:w-64 sm:h-64 md:w-80 md:h-80 -rotate-90 hover-ring ${status === 'running' ? 'timer-pulse' : ''}`} viewBox="0 0 300 300" aria-hidden="true">
-          {/* Gradient definitions */}
           <defs>
             <linearGradient id="timerGradientFocus" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="oklch(72% 0.25 280)" />
@@ -501,7 +347,6 @@ export function PomodoroTimer() {
               <stop offset="0%" stopColor="oklch(75% 0.18 85)" />
               <stop offset="100%" stopColor="oklch(70% 0.20 70)" />
             </linearGradient>
-            {/* Glow filter */}
             <filter id="timerGlow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
               <feMerge>
@@ -510,7 +355,6 @@ export function PomodoroTimer() {
               </feMerge>
             </filter>
           </defs>
-          {/* Background track */}
           <circle
             cx="150"
             cy="150"
@@ -520,7 +364,6 @@ export function PomodoroTimer() {
             strokeWidth={TIMER_STROKE_WIDTH}
             className="text-slate-200 dark:text-[oklch(100%_0_0/0.08)] transition-all duration-300"
           />
-          {/* Progress arc with gradient */}
           <circle
             cx="150"
             cy="150"
@@ -594,17 +437,16 @@ export function PomodoroTimer() {
 
       <div className="text-muted-foreground text-xs sm:text-sm font-medium hover-today-stats">
         <span className="text-foreground">
-          <span className="hidden sm:inline">Today: {sessions} sessions ({totalFocusMinutes} min)</span>
-          <span className="sm:hidden">{sessions} sessions · {totalFocusMinutes}m</span>
+          <span className="hidden sm:inline">Today: {localSessions} sessions ({localTotalMinutes} min)</span>
+          <span className="sm:hidden">{localSessions} sessions · {localTotalMinutes}m</span>
         </span>
       </div>
 
       <GoalProgress
-        currentMinutes={totalFocusMinutes}
+        currentMinutes={localTotalMinutes}
         goalMinutes={settingsStore.dailyGoal}
       />
 
-      {/* Login Prompt Dialog for non-logged-in users */}
       <LoginPromptDialog
         open={showLoginPrompt}
         onOpenChange={setShowLoginPrompt}

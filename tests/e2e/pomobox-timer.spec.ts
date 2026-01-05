@@ -78,28 +78,34 @@ test.describe('Timer Operations', () => {
     expect(longBreakCount).toBe('1');
   });
 
-  test('should reset to initial state after page refresh (Stateless)', async ({ page }) => {
+  test('should restore paused timer after page refresh (Persistence)', async ({ page }) => {
     // Start timer
     await page.getByRole('button', { name: 'Start', exact: true }).click();
 
     // Wait for timer to tick
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
 
     // Pause timer
     await page.getByRole('button', { name: /pause/i }).click();
 
+    // Get paused time
+    const timerDisplay = page.locator('text=/\\d{2}:\\d{2}/').first();
+    const pausedTime = await timerDisplay.textContent();
+
     // Reload page
     await page.reload();
 
-    // Verify timer reset to initial state (Stateless policy)
-    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
+    // Wait for hydration
+    await page.waitForTimeout(500);
 
-    // Verify time reset to 25:00
-    const timerDisplay = page.locator('text=/\\d{2}:\\d{2}/').first();
+    // Verify timer is restored in paused state (Persistence policy)
+    await expect(page.getByRole('button', { name: /resume/i })).toBeVisible();
+
+    // Verify time is preserved (should be same as paused time)
     const restoredTime = await timerDisplay.textContent();
-    expect(restoredTime).toBe('25:00');
+    expect(restoredTime).toBe(pausedTime);
 
-    // Verify phase reset to Focus (use first() to avoid strict mode violation)
+    // Verify phase is still Focus
     await expect(page.locator('text=/Focus Session/i').first()).toBeVisible();
   });
 

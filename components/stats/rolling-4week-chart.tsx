@@ -16,6 +16,12 @@ import {
   useRolling4WeekStats,
   type RollingWeekData,
 } from "@/hooks/use-rolling-4week-stats"
+import { MOCK_ROLLING_4WEEK_DATA } from "./mock-data"
+
+interface Rolling4WeekChartProps {
+  /** Mock 모드: 가상 데이터를 표시 (비로그인 사용자용) */
+  useMockData?: boolean
+}
 
 // Skeleton heights for loading state (hydration mismatch prevention)
 const SKELETON_HEIGHTS = [50, 70, 60, 80]
@@ -62,8 +68,11 @@ function SkeletonChart() {
   )
 }
 
-export function Rolling4WeekChart() {
-  const { data, isLoading, error, refetch } = useRolling4WeekStats()
+export function Rolling4WeekChart({ useMockData = false }: Rolling4WeekChartProps) {
+  const { data: realData, isLoading, error, refetch } = useRolling4WeekStats()
+
+  // Mock 모드면 가상 데이터 사용
+  const data = useMockData ? MOCK_ROLLING_4WEEK_DATA : realData
 
   // Y-axis max calculation (max value + 20%)
   const maxMinutes = Math.max(...data.map((d) => d.totalMinutes), 1)
@@ -72,7 +81,8 @@ export function Rolling4WeekChart() {
   // Check if all weeks have no data
   const hasAnyData = data.some((d) => d.totalMinutes > 0)
 
-  if (error) {
+  // Mock 모드에서는 에러 무시
+  if (error && !useMockData) {
     return (
       <div className="h-[200px] xl:h-[300px] flex flex-col items-center justify-center gap-4 text-muted-foreground">
         <p className="text-sm">{error.message}</p>
@@ -87,7 +97,8 @@ export function Rolling4WeekChart() {
     )
   }
 
-  if (isLoading) {
+  // Mock 모드에서는 로딩 무시
+  if (isLoading && !useMockData) {
     return <SkeletonChart />
   }
 

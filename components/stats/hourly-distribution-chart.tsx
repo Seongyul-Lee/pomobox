@@ -14,6 +14,12 @@ import { Clock, RefreshCw } from "lucide-react"
 
 import { useFocusDistributionQuery, type HourlyDistribution } from "@/lib/queries/stats-queries"
 import { useUser } from "@/hooks/use-user"
+import { MOCK_HOURLY_DATA, type MockHourlyData } from "./mock-data"
+
+interface HourlyDistributionChartProps {
+  /** Mock 모드: 가상 데이터를 표시 (비로그인 사용자용) */
+  useMockData?: boolean
+}
 
 /**
  * 빈 시간대 0분으로 채우기 (0-23시)
@@ -124,7 +130,7 @@ function EmptyState() {
   )
 }
 
-export function HourlyDistributionChart() {
+export function HourlyDistributionChart({ useMockData = false }: HourlyDistributionChartProps) {
   const { user } = useUser()
   const { startDate, endDate } = useMemo(() => getDateRange(), [])
 
@@ -136,6 +142,11 @@ export function HourlyDistributionChart() {
 
   // 차트 데이터 전처리
   const chartData = useMemo<ChartDataPoint[]>(() => {
+    // Mock 모드면 가상 데이터 사용
+    if (useMockData) {
+      return MOCK_HOURLY_DATA as ChartDataPoint[]
+    }
+
     if (!rawData || rawData.length === 0) return []
 
     const filledData = fillMissingHours(rawData)
@@ -146,7 +157,7 @@ export function HourlyDistributionChart() {
       isPeak: d.total_minutes === maxMinutes && maxMinutes > 0,
       label: String(d.hour).padStart(2, "0"),
     }))
-  }, [rawData])
+  }, [rawData, useMockData])
 
   // Y축 최대값 계산
   const yAxisMax = useMemo(() => {
@@ -165,8 +176,8 @@ export function HourlyDistributionChart() {
     return chartData.reduce((sum, d) => sum + d.total_minutes, 0)
   }, [chartData])
 
-  // 에러 상태
-  if (error) {
+  // Mock 모드에서는 에러 무시
+  if (error && !useMockData) {
     return (
       <div className="h-[200px] xl:h-[300px] flex flex-col items-center justify-center gap-4 text-muted-foreground">
         <p className="text-sm">Failed to load data</p>
@@ -181,13 +192,13 @@ export function HourlyDistributionChart() {
     )
   }
 
-  // 로딩 상태
-  if (isLoading) {
+  // Mock 모드에서는 로딩 무시
+  if (isLoading && !useMockData) {
     return <SkeletonChart />
   }
 
-  // 데이터 없음
-  if (!chartData.length || totalMinutes === 0) {
+  // 데이터 없음 (Mock 모드에서는 무시)
+  if ((!chartData.length || totalMinutes === 0) && !useMockData) {
     return <EmptyState />
   }
 

@@ -4,6 +4,12 @@ import { TrendingUp, TrendingDown, Minus, Clock, Target, CalendarDays, RefreshCw
 
 import { useWeekComparison } from "@/hooks/use-week-comparison"
 import { cn } from "@/lib/utils"
+import { MOCK_WEEK_COMPARISON } from "./mock-data"
+
+interface WeekComparisonProps {
+  /** Mock 모드: 가상 데이터를 표시 (비로그인 사용자용) */
+  useMockData?: boolean
+}
 
 interface KPICardProps {
   title: string
@@ -154,10 +160,11 @@ function formatTime(minutes: number): string {
   }
 }
 
-export function WeekComparison() {
-  const { data, isLoading, error, refetch } = useWeekComparison()
+export function WeekComparison({ useMockData = false }: WeekComparisonProps) {
+  const { data: realData, isLoading, error, refetch } = useWeekComparison()
 
-  if (error) {
+  // Mock 모드에서는 에러 무시
+  if (error && !useMockData) {
     return (
       <div className="h-[200px] flex flex-col items-center justify-center gap-4 text-muted-foreground">
         <p className="text-sm">{error.message}</p>
@@ -172,7 +179,8 @@ export function WeekComparison() {
     )
   }
 
-  if (isLoading || !data) {
+  // Mock 모드에서는 로딩 무시
+  if ((isLoading || !realData) && !useMockData) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <SkeletonKPICard />
@@ -182,6 +190,8 @@ export function WeekComparison() {
     )
   }
 
+  // Mock 모드면 가상 데이터 사용
+  const data = useMockData ? MOCK_WEEK_COMPARISON : realData!
   const { thisWeek, lastWeek, comparison } = data
 
   return (

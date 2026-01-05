@@ -8,6 +8,8 @@ import { HourlyDistributionChart } from "@/components/stats/hourly-distribution-
 import { StatsHero } from "@/components/stats/stats-hero"
 import { TodayStats } from "@/components/stats/today-stats"
 import { ErrorBoundary } from "@/components/error-boundary"
+import { LoginRequiredOverlay } from "@/components/stats/login-required-overlay"
+import { useUser } from "@/hooks/use-user"
 
 // Skeleton for chart loading states
 function ChartSkeleton({ height = "h-64" }: { height?: string }) {
@@ -90,6 +92,11 @@ function SectionHeader({
 }
 
 export function StatsContent() {
+  const { isLoggedIn, loading: authLoading } = useUser()
+
+  // 비로그인 사용자에게는 Mock 데이터 + 오버레이 표시
+  const showMockData = !isLoggedIn && !authLoading
+
   return (
     <div className="space-y-6 lg:space-y-8">
       {/* Hero Section - This Week + Today */}
@@ -141,15 +148,21 @@ export function StatsContent() {
               gradient="from-chart-1/8 via-transparent to-transparent"
               className="h-full"
             >
-              <div className="p-5 lg:p-6">
+              <div className="relative p-5 lg:p-6">
                 <SectionHeader
                   id="weekly-stats-title"
                   title="Weekly Pattern"
                   subtitle="Your focus rhythm this week"
                 />
                 <Suspense fallback={<ChartSkeleton height="h-[260px]" />}>
-                  <WeeklyStatsChart />
+                  <WeeklyStatsChart useMockData={showMockData} />
                 </Suspense>
+                {showMockData && (
+                  <LoginRequiredOverlay
+                    title="Unlock Weekly Insights"
+                    description="Sign in to track your weekly focus patterns"
+                  />
+                )}
               </div>
             </BentoCard>
           </ErrorBoundary>
@@ -165,15 +178,21 @@ export function StatsContent() {
               gradient="from-chart-2/8 via-transparent to-transparent"
               className="h-full"
             >
-              <div className="p-5 lg:p-6">
+              <div className="relative p-5 lg:p-6">
                 <SectionHeader
                   id="rolling-stats-title"
                   title="Monthly Trend"
                   subtitle="4-week progress overview"
                 />
                 <Suspense fallback={<ChartSkeleton height="h-[260px]" />}>
-                  <Rolling4WeekChart />
+                  <Rolling4WeekChart useMockData={showMockData} />
                 </Suspense>
+                {showMockData && (
+                  <LoginRequiredOverlay
+                    title="Unlock Monthly Trends"
+                    description="Sign in to see your progress over time"
+                  />
+                )}
               </div>
             </BentoCard>
           </ErrorBoundary>
@@ -186,7 +205,7 @@ export function StatsContent() {
         >
           <ErrorBoundary fallback={<BentoSkeleton />}>
             <BentoCard gradient="from-primary/5 via-transparent to-chart-4/5">
-              <div className="p-5 lg:p-6">
+              <div className="relative p-5 lg:p-6">
                 <SectionHeader
                   id="weekly-comparison-title"
                   title="Growth Analysis"
@@ -204,8 +223,14 @@ export function StatsContent() {
                     </div>
                   }
                 >
-                  <WeekComparison />
+                  <WeekComparison useMockData={showMockData} />
                 </Suspense>
+                {showMockData && (
+                  <LoginRequiredOverlay
+                    title="Unlock Growth Analysis"
+                    description="Sign in to compare your weekly performance"
+                  />
+                )}
               </div>
             </BentoCard>
           </ErrorBoundary>
@@ -218,15 +243,21 @@ export function StatsContent() {
         >
           <ErrorBoundary fallback={<BentoSkeleton />}>
             <BentoCard gradient="from-chart-5/8 via-transparent to-chart-3/5">
-              <div className="p-5 lg:p-6">
+              <div className="relative p-5 lg:p-6">
                 <SectionHeader
                   id="hourly-distribution-title"
                   title="Focus Hours"
                   subtitle="When you're most productive"
                 />
                 <Suspense fallback={<ChartSkeleton height="h-[280px]" />}>
-                  <HourlyDistributionChart />
+                  <HourlyDistributionChart useMockData={showMockData} />
                 </Suspense>
+                {showMockData && (
+                  <LoginRequiredOverlay
+                    title="Discover Peak Hours"
+                    description="Sign in to find when you're most productive"
+                  />
+                )}
               </div>
             </BentoCard>
           </ErrorBoundary>

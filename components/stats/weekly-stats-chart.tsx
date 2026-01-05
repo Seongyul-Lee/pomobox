@@ -19,8 +19,14 @@ import { BarChart3, TrendingUp, Activity, RefreshCw } from "lucide-react"
 
 import { useWeeklyStats, type WeeklyStatsData } from "@/hooks/use-weekly-stats"
 import { cn } from "@/lib/utils"
+import { MOCK_WEEKLY_DATA } from "./mock-data"
 
 type ChartType = "bar" | "area" | "line"
+
+interface WeeklyStatsChartProps {
+  /** Mock 모드: 가상 데이터를 표시 (비로그인 사용자용) */
+  useMockData?: boolean
+}
 
 // Full day names for tooltip
 const FULL_DAY_NAMES: Record<string, string> = {
@@ -111,15 +117,19 @@ function SkeletonChart() {
   )
 }
 
-export function WeeklyStatsChart() {
-  const [chartType, setChartType] = useState<ChartType>("bar")
-  const { data, isLoading, error, refetch } = useWeeklyStats()
+export function WeeklyStatsChart({ useMockData = false }: WeeklyStatsChartProps) {
+  const [chartType, setChartType] = useState<ChartType>("area")
+  const { data: realData, isLoading, error, refetch } = useWeeklyStats()
+
+  // Mock 모드면 가상 데이터 사용
+  const data = useMockData ? MOCK_WEEKLY_DATA : realData
 
   // Y축 최대값 계산 (데이터 최대값 + 20%)
   const maxMinutes = Math.max(...data.map((d) => d.totalMinutes), 1)
   const yAxisMax = Math.ceil(maxMinutes * 1.2)
 
-  if (error) {
+  // Mock 모드에서는 에러 무시
+  if (error && !useMockData) {
     return (
       <div className="h-[200px] xl:h-[300px] flex flex-col items-center justify-center gap-4 text-muted-foreground">
         <p className="text-sm">{error.message}</p>
@@ -275,7 +285,7 @@ export function WeeklyStatsChart() {
       </div>
 
       {/* Chart */}
-      {isLoading ? (
+      {isLoading && !useMockData ? (
         <SkeletonChart />
       ) : (
         <div

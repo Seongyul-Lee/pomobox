@@ -30,6 +30,7 @@ import {
 } from "lucide-react"
 import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
 import { ArticleMeta } from "@/components/ui/article-meta"
+import { MobileGuideNav } from "@/components/ui/mobile-guide-nav"
 
 export const metadata: Metadata = {
   title: "How to Avoid Distractions: Complete Focus Guide | Pomobox",
@@ -280,7 +281,10 @@ const jsonLd = [
 
 export default function HowToAvoidDistractionsPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
+    <main className="min-h-screen pt-14 xl:pt-0 bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
+      {/* Mobile Navigation */}
+      <MobileGuideNav />
+
       <div className="max-w-4xl mx-auto py-8 md:py-12 px-4 sm:px-6">
         <Breadcrumb
           items={BREADCRUMB_PRESETS.guide("How to Avoid Distractions")}

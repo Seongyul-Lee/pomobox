@@ -26,13 +26,15 @@ export const metadata: Metadata = {
 // Loading skeleton for initial page load
 function StatsLoadingSkeleton() {
   return (
-    <div className="space-y-8">
-      {[1, 2, 3].map((i) => (
-        <div key={i} className="glass-card rounded-xl p-6">
-          <div className="h-6 w-40 bg-muted/50 rounded animate-pulse mb-4" />
-          <div className="h-64 bg-muted/50 rounded-lg animate-pulse" />
-        </div>
-      ))}
+    <div className="space-y-6">
+      {/* Hero skeleton */}
+      <div className="h-40 bg-muted/10 rounded-3xl animate-pulse" />
+      {/* Bento grid skeleton */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div className="lg:col-span-7 h-80 bg-muted/10 rounded-2xl animate-pulse" />
+        <div className="lg:col-span-5 h-80 bg-muted/10 rounded-2xl animate-pulse" />
+        <div className="lg:col-span-12 h-48 bg-muted/10 rounded-2xl animate-pulse" />
+      </div>
     </div>
   )
 }
@@ -74,19 +76,27 @@ export default function StatsPage() {
       role="main"
       className="min-h-screen bg-background text-foreground"
     >
-      {/* Mobile header with back button (md 미만) */}
-      <header className="md:hidden sticky top-0 z-40 flex items-center justify-between px-4 py-3 bg-background/80 backdrop-blur-sm border-b">
-        <h1 className="text-lg font-semibold">Statistics</h1>
+      {/* Mobile header (md 미만) */}
+      <header className="md:hidden sticky top-0 z-40 flex items-center justify-between px-4 py-3 bg-background/80 backdrop-blur-sm border-b border-border/50">
+        <h1 className="text-lg font-semibold tracking-tight">Statistics</h1>
       </header>
 
       {/* Main content area */}
-      <main className="flex-1 pt-4 md:pt-8 pb-6 md:ml-20">
-        <div className="max-w-7xl mx-auto px-4 xl:px-8">
-          {/* Page header */}
-          <header className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold">Statistics</h1>
-            <p className="text-muted-foreground mt-1">
-              Track your focus patterns and progress
+      <div className="flex-1 pt-4 md:pt-8 pb-12 md:ml-20">
+        <div className="max-w-6xl mx-auto px-4 xl:px-8">
+          {/* Page header - Editorial style */}
+          <header className="mb-10">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="h-px flex-1 bg-gradient-to-r from-border via-border to-transparent max-w-16" />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Analytics
+              </span>
+            </div>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+              Statistics
+            </h1>
+            <p className="text-muted-foreground mt-2 text-sm md:text-base max-w-xl">
+              Discover your focus patterns and track your productivity journey
             </p>
           </header>
 
@@ -95,7 +105,7 @@ export default function StatsPage() {
             <StatsContent />
           </Suspense>
         </div>
-      </main>
+      </div>
 
       {/* JSON-LD structured data - static content, safe usage */}
       <script

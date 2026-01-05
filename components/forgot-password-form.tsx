@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/navigation"
+import Link from "next/link"
 import { sendPasswordResetEmail } from "@/app/actions/account"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,13 +15,7 @@ import {
 import { useToast } from "@/hooks/use-toast"
 import { ArrowLeft, Loader2, Mail, CheckCircle } from "lucide-react"
 
-interface ForgotPasswordFormProps {
-  locale: string
-}
-
-export function ForgotPasswordForm({ locale }: ForgotPasswordFormProps) {
-  const t = useTranslations("Account")
-  const tAuth = useTranslations("Auth")
+export function ForgotPasswordForm() {
   const { toast } = useToast()
 
   const [email, setEmail] = useState("")
@@ -33,12 +26,12 @@ export function ForgotPasswordForm({ locale }: ForgotPasswordFormProps) {
     e.preventDefault()
 
     startTransition(async () => {
-      const result = await sendPasswordResetEmail(email, locale)
+      const result = await sendPasswordResetEmail(email)
 
       if (result.error) {
         toast({
           variant: "destructive",
-          title: tAuth("error"),
+          title: "Error",
           description: result.error,
         })
         return
@@ -55,14 +48,14 @@ export function ForgotPasswordForm({ locale }: ForgotPasswordFormProps) {
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
             <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
           </div>
-          <CardTitle>{t("resetEmailSent")}</CardTitle>
-          <CardDescription>{t("resetEmailSentDescription")}</CardDescription>
+          <CardTitle>Reset email sent</CardTitle>
+          <CardDescription>Check your inbox for the password reset link</CardDescription>
         </CardHeader>
         <CardContent>
           <Link href="/auth/login">
             <Button variant="outline" className="w-full">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              {tAuth("login")}
+              Sign in
             </Button>
           </Link>
         </CardContent>
@@ -73,8 +66,8 @@ export function ForgotPasswordForm({ locale }: ForgotPasswordFormProps) {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>{t("resetPassword")}</CardTitle>
-        <CardDescription>{t("resetPasswordDescription")}</CardDescription>
+        <CardTitle>Reset Password</CardTitle>
+        <CardDescription>Enter your email and we'll send you a reset link</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -82,7 +75,7 @@ export function ForgotPasswordForm({ locale }: ForgotPasswordFormProps) {
             <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="email"
-              placeholder={tAuth("email")}
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -95,10 +88,10 @@ export function ForgotPasswordForm({ locale }: ForgotPasswordFormProps) {
             {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t("sending")}
+                Sending...
               </>
             ) : (
-              t("sendResetLink")
+              "Send Reset Link"
             )}
           </Button>
 
@@ -108,7 +101,7 @@ export function ForgotPasswordForm({ locale }: ForgotPasswordFormProps) {
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               <ArrowLeft className="inline-block mr-1 h-3 w-3" />
-              {tAuth("login")}
+              Sign in
             </Link>
           </div>
         </form>

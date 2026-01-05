@@ -23,8 +23,8 @@ test.describe('Authentication Pages', () => {
       await expect(passwordInput).toHaveAttribute('required', '');
       await expect(passwordInput).toHaveAttribute('minlength', '8');
 
-      // 로그인 버튼
-      const loginButton = page.getByRole('button', { name: /log\s*in|sign\s*in|로그인/i });
+      // 로그인 버튼 (폼 내부의 submit 버튼)
+      const loginButton = page.locator('form button[type="submit"]');
       await expect(loginButton).toBeVisible();
 
       // Google 로그인 버튼
@@ -40,30 +40,38 @@ test.describe('Authentication Pages', () => {
       await expect(backLink).toBeVisible();
     });
 
-    test('should show validation error for empty email', async ({ page }) => {
+    test('should show validation error for empty email', async ({ page, browserName }) => {
       const emailInput = page.getByPlaceholder(/email/i);
       const passwordInput = page.getByPlaceholder(/password/i);
-      const loginButton = page.getByRole('button', { name: /log\s*in|sign\s*in|로그인/i });
+      const loginButton = page.locator('form button[type="submit"]');
 
       // 비밀번호만 입력
       await passwordInput.fill('testpassword123');
       await loginButton.click();
 
-      // HTML5 validation - 이메일 필드에 포커스
-      await expect(emailInput).toBeFocused();
+      // HTML5 validation - 이메일 필드에 포커스 (Firefox는 focus 동작이 다름)
+      if (browserName === 'chromium') {
+        await expect(emailInput).toBeFocused();
+      }
+      // 폼이 제출되지 않았는지 확인 (모든 브라우저)
+      await expect(page).toHaveURL(/\/auth\/login/);
     });
 
-    test('should show validation error for empty password', async ({ page }) => {
+    test('should show validation error for empty password', async ({ page, browserName }) => {
       const emailInput = page.getByPlaceholder(/email/i);
       const passwordInput = page.getByPlaceholder(/password/i);
-      const loginButton = page.getByRole('button', { name: /log\s*in|sign\s*in|로그인/i });
+      const loginButton = page.locator('form button[type="submit"]');
 
       // 이메일만 입력
       await emailInput.fill('test@example.com');
       await loginButton.click();
 
-      // HTML5 validation - 비밀번호 필드에 포커스
-      await expect(passwordInput).toBeFocused();
+      // HTML5 validation - 비밀번호 필드에 포커스 (Firefox는 focus 동작이 다름)
+      if (browserName === 'chromium') {
+        await expect(passwordInput).toBeFocused();
+      }
+      // 폼이 제출되지 않았는지 확인 (모든 브라우저)
+      await expect(page).toHaveURL(/\/auth\/login/);
     });
 
     test('should navigate to signup page', async ({ page }) => {
@@ -84,7 +92,7 @@ test.describe('Authentication Pages', () => {
     test('should disable inputs and show loading state during submission', async ({ page }) => {
       const emailInput = page.getByPlaceholder(/email/i);
       const passwordInput = page.getByPlaceholder(/password/i);
-      const loginButton = page.getByRole('button', { name: /log\s*in|sign\s*in|로그인/i });
+      const loginButton = page.locator('form button[type="submit"]');
 
       await emailInput.fill('test@example.com');
       await passwordInput.fill('wrongpassword');
@@ -124,13 +132,13 @@ test.describe('Authentication Pages', () => {
       const googleButton = page.getByRole('button', { name: /google/i });
       await expect(googleButton).toBeVisible();
 
-      // 로그인 링크 (텍스트: "Sign in")
-      const loginLink = page.getByRole('link', { name: /sign\s*in|로그인/i });
+      // 로그인 링크 ("Already have an account?" 옆의 링크)
+      const loginLink = page.getByText('Already have an account?').getByRole('link');
       await expect(loginLink).toBeVisible();
     });
 
     test('should navigate to login page', async ({ page }) => {
-      const loginLink = page.getByRole('link', { name: /sign\s*in|로그인/i });
+      const loginLink = page.getByText('Already have an account?').getByRole('link');
       await loginLink.click();
 
       await expect(page).toHaveURL(/\/auth\/login/);
@@ -145,8 +153,8 @@ test.describe('Authentication Pages', () => {
       await passwordInput.fill('short'); // 8자 미만
       await signupButton.click();
 
-      // HTML5 minlength validation - webkit handles focus differently
-      if (browserName !== 'webkit') {
+      // HTML5 minlength validation - chromium만 focus 확인 (webkit, firefox는 동작이 다름)
+      if (browserName === 'chromium') {
         await expect(passwordInput).toBeFocused();
       }
 
@@ -165,8 +173,8 @@ test.describe('Authentication Pages', () => {
       await page.getByRole('link', { name: /sign\s*up|회원가입/i }).click();
       await expect(page).toHaveURL(/\/auth\/signup/);
 
-      // 다시 로그인으로 이동 (텍스트: "Sign in")
-      await page.getByRole('link', { name: /sign\s*in|로그인/i }).click();
+      // 다시 로그인으로 이동 ("Already have an account?" 옆의 링크)
+      await page.getByText('Already have an account?').getByRole('link').click();
       await expect(page).toHaveURL(/\/auth\/login/);
 
       // 타이머로 돌아가기

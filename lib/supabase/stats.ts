@@ -390,6 +390,43 @@ export async function getPreviousMonthStats(userId: string): Promise<DayRecord[]
   return result
 }
 
+// ============================================
+// 시간대별 집중도 분석 (RPC)
+// ============================================
+
+export interface HourlyDistribution {
+  hour: number // 0-23
+  total_minutes: number
+}
+
+/**
+ * 시간대별 집중도 조회 (Supabase RPC)
+ * - DB에서 시간대별 집계 후 결과만 반환
+ * - 타임존 자동 감지 (Intl API)
+ */
+export async function getFocusDistributionByHour(
+  userId: string,
+  startDate: string, // YYYY-MM-DD
+  endDate: string,
+  userTimezone: string = Intl.DateTimeFormat().resolvedOptions().timeZone
+): Promise<HourlyDistribution[]> {
+  const supabase = createClient()
+
+  const { data, error } = await supabase.rpc("get_focus_distribution_by_hour", {
+    p_user_id: userId,
+    p_start_date: startDate,
+    p_end_date: endDate,
+    p_user_timezone: userTimezone,
+  })
+
+  if (error) {
+    console.error("Failed to get focus distribution:", error)
+    throw error
+  }
+
+  return data || []
+}
+
 /**
  * 전체 통계 (연속 출석 일수 포함)
  */

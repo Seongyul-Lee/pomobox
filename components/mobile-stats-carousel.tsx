@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
-import { useTranslations } from "next-intl"
 import { useUser } from "@/hooks/use-user"
 import { useRealtimeFocusMinutes } from "@/hooks/use-realtime-focus"
 import {
@@ -33,7 +32,6 @@ const CARD_IDS = ["today", "weekly", "comparison", "monthly"] as const
 type CardId = (typeof CARD_IDS)[number]
 
 export function MobileStatsCarousel() {
-  const t = useTranslations("Dashboard")
   const { user } = useUser()
   const realtimeMinutes = useRealtimeFocusMinutes()
   const [goalMinutes, setGoalMinutes] = useState(120)
@@ -131,10 +129,10 @@ export function MobileStatsCarousel() {
 
   // 카드 라벨
   const cardLabels: Record<CardId, string> = {
-    today: t("overview"),
-    weekly: t("weeklyStats"),
-    comparison: t("weeklyComparison"),
-    monthly: t("monthlyStats"),
+    today: "Overview",
+    weekly: "Weekly Stats",
+    comparison: "Weekly Comparison",
+    monthly: "Monthly Stats",
   }
 
   return (

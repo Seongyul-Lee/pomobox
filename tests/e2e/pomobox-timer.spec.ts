@@ -99,8 +99,8 @@ test.describe('Timer Operations', () => {
     const restoredTime = await timerDisplay.textContent();
     expect(restoredTime).toBe('25:00');
 
-    // Verify phase reset to Focus
-    await expect(page.locator('text=/Focus Session/i')).toBeVisible();
+    // Verify phase reset to Focus (use first() to avoid strict mode violation)
+    await expect(page.locator('text=/Focus Session/i').first()).toBeVisible();
   });
 
 });
@@ -218,19 +218,19 @@ test.describe('Statistics Regression Tests', () => {
     await page.getByRole('button').filter({ hasText: /skip to break/i }).click();
 
     // Verify we're in Break phase
-    await expect(page.locator('text=/Break Time/i')).toBeVisible();
+    await expect(page.locator('text=/Break Time/i').first()).toBeVisible();
 
-    // Get current stats
-    const initialStats = await page.locator('text=/Today:.*sessions/').textContent();
+    // Get current stats (use first() to avoid strict mode violation)
+    const initialStats = await page.locator('text=/Today:.*sessions/').first().textContent();
 
     // Skip Break (button text is "Back to Focus" in Break phase)
     await page.getByRole('button').filter({ hasText: /back to focus/i }).click();
 
     // Verify we're back to Focus
-    await expect(page.locator('text=/Focus Session/i')).toBeVisible();
+    await expect(page.locator('text=/Focus Session/i').first()).toBeVisible();
 
     // Verify statistics didn't change
-    const finalStats = await page.locator('text=/Today:.*sessions/').textContent();
+    const finalStats = await page.locator('text=/Today:.*sessions/').first().textContent();
     expect(finalStats).toBe(initialStats);
   });
 
@@ -295,8 +295,8 @@ test.describe('Statistics Regression Tests', () => {
     await page.waitForTimeout(500);
     await page.getByRole('button').filter({ hasText: /back to focus/i }).click();
 
-    // Get current stats
-    const initialStats = await page.locator('text=/Today:.*sessions/').textContent();
+    // Get current stats (use first() to avoid strict mode violation)
+    const initialStats = await page.locator('text=/Today:.*sessions/').first().textContent();
 
     // Start timer
     await page.getByRole('button', { name: 'Start', exact: true }).click();
@@ -308,10 +308,10 @@ test.describe('Statistics Regression Tests', () => {
 
     // Verify we're back to Focus idle
     await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
-    await expect(page.locator('text=/Focus Session/i')).toBeVisible();
+    await expect(page.locator('text=/Focus Session/i').first()).toBeVisible();
 
     // Verify statistics didn't change
-    const finalStats = await page.locator('text=/Today:.*sessions/').textContent();
+    const finalStats = await page.locator('text=/Today:.*sessions/').first().textContent();
     expect(finalStats).toBe(initialStats);
   });
 });

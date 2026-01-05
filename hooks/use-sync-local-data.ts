@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { useTranslations } from "next-intl"
 import { createClient } from "@/lib/supabase/client"
 import { migrateLocalToSupabase, isSynced } from "@/lib/sync/migrate-local-data"
 import { useToast } from "@/hooks/use-toast"
@@ -12,7 +11,6 @@ import { useToast } from "@/hooks/use-toast"
  * - 이미 마이그레이션된 경우 스킵
  */
 export function useSyncLocalData() {
-  const t = useTranslations("Sync")
   const { toast } = useToast()
   const hasRunRef = useRef(false)
 
@@ -40,18 +38,18 @@ export function useSyncLocalData() {
 
       if (result.success && result.migratedRecords > 0) {
         toast({
-          title: t("syncComplete"),
-          description: t("syncCompleteDescription", { count: result.migratedRecords }),
+          title: "Sync complete",
+          description: `${result.migratedRecords} records have been synced to your account.`,
         })
       } else if (!result.success) {
         toast({
-          title: t("syncFailed"),
-          description: t("syncFailedDescription"),
+          title: "Sync failed",
+          description: "Failed to sync your data. Please try again later.",
           variant: "destructive",
         })
       }
     }
 
     syncData()
-  }, [t, toast])
+  }, [toast])
 }

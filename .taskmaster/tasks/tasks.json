@@ -2,336 +2,404 @@
   "master": {
     "tasks": [
       {
-        "id": 96,
+        "id": "96",
         "title": "좌측 사이드바 (Global Navigation) UI 구현",
         "description": "메인 페이지 좌측에 고정되는 앱 내비게이션 사이드바 컴포넌트 생성",
         "details": "PRD 2차 기능 요구사항에 따라 좌측 사이드바 구현:\n\n1. `components/sidebar.tsx` 생성:\n   - 위치: 화면 좌측 고정 (fixed position, z-index 50)\n   - 너비: 64px ~ 80px (데스크탑 기준)\n   - 배경: Glassmorphism 효과 (glass-card 클래스 재사용)\n   - 반응형: md 미만에서는 숨김 처리\n\n2. 상단 영역:\n   - pomobox 심볼 아이콘 (32x32px SVG 또는 이미지)\n   - 클릭 시 메인 페이지로 이동 (href=\"/\")\n\n3. 중단 영역 (메뉴 버튼들):\n   - Timer: 메인 타이머 화면 이동 (href=\"/\")\n   - Task: Task 패널 토글 (onClick 핸들러, Zustand 상태 연동)\n   - Statistics: 통계 페이지 이동 (href=\"/stats\")\n   - Settings: 설정 다이얼로그 호출\n   - 각 버튼: 56x56px 크기, 아이콘 + 툴팁 (Radix UI Tooltip 사용)\n   - 활성 상태: 현재 경로에 따라 active 스타일 (oklch 색상)\n\n4. 하단 영역:\n   - User Profile: 로그인 시 사용자 아바타 (32x32px 원형)\n     - 클릭 시 UserMenu 드롭다운 (마이페이지/로그아웃)\n   - Sign in: 비로그인 시 로그인 버튼 표시\n\n5. 접근성:\n   - role=\"navigation\", aria-label=\"Main Navigation\"\n   - 키보드 네비게이션 (Tab, Enter, Space)\n   - 각 버튼에 aria-label 추가\n\n6. 스타일링:\n   - Tailwind oklch 색상 시스템 사용\n   - 호버/포커스 상태: 밝은 배경 + 스케일 효과\n   - 다크 모드 대응 (3개 테마 모두 지원)\n\n참고: Lucide React 아이콘 사용 (Timer, ListTodo, BarChart3, Settings, User)",
         "testStrategy": "1. `pnpm lint && pnpm build` 통과 확인\n2. 데스크탑(xl 이상): 사이드바 좌측에 고정 표시 확인\n3. 모바일(md 미만): 사이드바 숨김 확인\n4. Timer/Statistics 버튼 클릭 시 페이지 이동 확인\n5. Settings 버튼 클릭 시 다이얼로그 오픈 확인\n6. Task 버튼 클릭 시 Task 패널 토글 확인 (다음 작업에서 구현)\n7. 로그인/비로그인 상태 UI 전환 확인\n8. 키보드 네비게이션 (Tab/Enter) 동작 확인\n9. 3개 테마 모두에서 Glassmorphism 효과 확인",
         "priority": "high",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-02T15:57:51.495Z"
       },
       {
-        "id": 97,
+        "id": "97",
         "title": "Task 패널 상태 관리 (Zustand Store) 구현",
         "description": "Task 패널 열기/닫기 상태와 Task 데이터를 관리하는 Zustand Store 생성",
         "details": "1. `lib/store/task-store.ts` 생성:\n   - State:\n     * isTaskPanelOpen: boolean (기본값 false)\n     * tasks: Task[] (최대 30개 제한)\n   - Actions:\n     * toggleTaskPanel(): void\n     * openTaskPanel(): void\n     * closeTaskPanel(): void\n     * addTask(task: Task): void\n     * updateTask(id: string, updates: Partial<Task>): void\n     * deleteTask(id: string): void\n     * toggleTaskComplete(id: string): void\n   - Persist: localStorage에 tasks 배열 저장 (비로그인 사용자용)\n\n2. Task 타입 정의:\n   ```typescript\n   interface Task {\n     id: string // UUID\n     title: string // 최대 200자\n     description?: string // 선택적\n     isCompleted: boolean\n     priority: number // 0-2 (낮음/중간/높음)\n     createdAt: string // ISO 8601\n     updatedAt: string\n   }\n   ```\n\n3. Zustand Persist Middleware:\n   - localStorage key: 'pomobox-tasks'\n   - SSR 안전 처리 (typeof window !== 'undefined')\n   - 30개 초과 시 가장 오래된 완료 항목부터 자동 삭제\n\n4. 낙관적 업데이트 (Optimistic Update):\n   - 로컬 상태 즉시 업데이트\n   - 로그인 사용자는 백그라운드에서 Supabase 동기화\n\n참고: uuid 라이브러리 없이 crypto.randomUUID() 사용",
         "testStrategy": "1. 브라우저 DevTools > Application > Local Storage에서 'pomobox-tasks' 키 확인\n2. Task 추가 시 localStorage 즉시 업데이트 확인\n3. 30개 초과 시 자동 삭제 로직 확인\n4. 브라우저 새로고침 시 상태 복원 확인\n5. toggleTaskPanel() 호출 시 상태 전환 확인\n6. SSR 환경(서버 사이드)에서 에러 없음 확인",
         "priority": "high",
         "dependencies": [
-          96
+          "96"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 97.1,
+            "title": "Task 목록 아이템 텍스트 줄바꿈 처리",
+            "description": "truncate 제거, whitespace-normal break-all 적용, items-center→items-start 정렬, 체크박스 mt-0.5 추가",
+            "status": "done",
+            "parentId": "undefined"
+          },
+          {
+            "id": 97.2,
+            "title": "Task 입력창 글자 수 제한 및 카운터 추가",
+            "description": "maxLength 100, 실시간 카운터 (0/100) 표시, 90자 이상 text-red-500 경고 색상",
+            "status": "done",
+            "parentId": "undefined"
+          }
+        ],
+        "updatedAt": "2026-01-03T12:00:00.000Z"
       },
       {
-        "id": 98,
+        "id": "98",
         "title": "Task 패널 슬라이드 UI 구현",
         "description": "메인 페이지 좌측에서 열리는 Task 관리 슬라이드 패널 컴포넌트 생성",
         "details": "1. `components/task-panel.tsx` 생성:\n   - 위치: 사이드바 바로 옆 (좌측에서 슬라이드)\n   - 너비: 0 (닫힘) → 360px (열림)\n   - 애니메이션: transition-all duration-300 ease-in-out\n   - 배경: Glassmorphism 효과 (glass-card 클래스)\n   - 높이: 화면 전체 (h-screen, fixed position)\n\n2. Header 영역:\n   - 제목: \"Tasks\" (다국어 지원)\n   - 닫기 버튼 (X 아이콘, onClick: closeTaskPanel())\n   - Task 개수 표시 (0/30)\n\n3. Input 영역:\n   - 빠른 추가 인풋 (Enter 키로 즉시 추가)\n   - placeholder: \"Add a new task...\" (다국어)\n   - 아이콘: Plus (Lucide React)\n\n4. Task 목록 영역:\n   - 스크롤 가능 (max-h-[calc(100vh-200px)], overflow-y-auto)\n   - 각 Task 아이템:\n     * 체크박스 (완료/미완료 토글)\n     * 제목 (클릭 시 수정 모드 전환)\n     * 삭제 버튼 (Trash2 아이콘)\n     * 완료된 항목: 텍스트 회색 + line-through\n   - 빈 상태: \"No tasks yet. Start adding!\" (다국어)\n\n5. 상태 관리:\n   - useTaskStore() 훅 사용\n   - 로컬 상태: 편집 중인 Task ID, 인풋 값\n\n6. 반응형:\n   - md 미만: Task 패널 하단 시트로 전환 (Radix UI Sheet 사용)\n   - md 이상: 좌측 슬라이드 패널\n\n7. 접근성:\n   - role=\"complementary\", aria-label=\"Task Panel\"\n   - 포커스 트랩 (열릴 때 첫 번째 인풋으로 포커스)\n   - Esc 키로 닫기\n\n참고: Radix UI Checkbox, Radix UI Sheet (모바일용)",
         "testStrategy": "1. Task 버튼 클릭 시 패널 슬라이드 인/아웃 애니메이션 확인\n2. 인풋에서 Enter 키로 Task 추가 확인\n3. 체크박스 클릭 시 완료/미완료 토글 확인\n4. 삭제 버튼 클릭 시 Task 제거 확인\n5. 30개 제한 도달 시 경고 토스트 표시 확인\n6. 모바일(md 미만): 하단 시트로 표시 확인\n7. Esc 키로 패널 닫기 확인\n8. 포커스 트랩 동작 확인 (Tab 순환)\n9. 다국어 전환 시 텍스트 변경 확인",
         "priority": "high",
         "dependencies": [
-          97
+          "97"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 98.1,
+            "title": "TaskPanel 컴포넌트 생성",
+            "description": "components/task-panel.tsx - 데스크탑 슬라이드 패널(360px) + 모바일 하단 시트(Radix Dialog)",
+            "status": "done",
+            "parentId": "undefined"
+          },
+          {
+            "id": 98.2,
+            "title": "Sidebar 연동",
+            "description": "toggleTaskPanel/closeTaskPanel 연결, Timer 버튼 제거 (Logo와 중복), 페이지 이동 시 패널 닫기",
+            "status": "done",
+            "parentId": "undefined"
+          },
+          {
+            "id": 98.3,
+            "title": "애니메이션 개선",
+            "description": "translate → width 애니메이션으로 변경 (사이드바 겹침 문제 해결)",
+            "status": "done",
+            "parentId": "undefined"
+          },
+          {
+            "id": 98.4,
+            "title": "코드 정리",
+            "description": "MAX_TASKS를 task-store.ts에서 export하여 중복 제거, defaultIconClass/isolate 미사용 코드 제거",
+            "status": "done",
+            "parentId": "undefined"
+          }
+        ],
+        "updatedAt": "2026-01-02T17:04:21.248Z"
       },
       {
-        "id": 99,
+        "id": "99",
         "title": "메인 페이지 Dynamic Layout 리팩터링",
         "description": "Task 패널 활성화 여부에 따라 중앙 타이머 위치가 유동적으로 조정되는 레이아웃 구현",
-        "details": "1. `app/[locale]/page.tsx` 수정:\n   - 기존 3단 그리드 구조 변경:\n     ```tsx\n     // Before: [좌측 대시보드 | 중앙 타이머 | 우측 대시보드]\n     // After: [사이드바] - [Task 패널(가변)] - [중앙 타이머 영역(Flex)] - [우측 위젯] - [광고]\n     ```\n\n2. 레이아웃 구조 (Flexbox 기반):\n   - Container: `flex flex-row min-h-screen`\n   - Sidebar: `w-[80px] fixed left-0 top-0 h-screen z-50`\n   - Task Panel: `w-0 xl:w-[360px] transition-all duration-300` (isTaskPanelOpen에 따라)\n   - Center Area: `flex-1 flex justify-center items-start` (타이머 중앙 정렬)\n   - Right Widget: `hidden xl:flex xl:w-[570px]` (BGM + Calendar)\n   - Ad Area: `hidden 2xl:block 2xl:w-[200px]` (2560px 이상에서만 표시)\n\n3. 동적 여백 계산:\n   - Task 패널 열림 시: ml-[80px + 360px] (좌측 여백)\n   - Task 패널 닫힘 시: ml-[80px] (사이드바 너비만큼)\n   - Tailwind 동적 클래스: clsx/cn 유틸리티 사용\n\n4. 기존 컴포넌트 배치:\n   - PomodoroTimer: Center Area 내부\n   - DashboardRight: Right Widget 영역 (BGM + Calendar 통합)\n   - DashboardLeft: 삭제 (통계는 /stats 페이지로 이동)\n\n5. 상태 연동:\n   - useTaskStore()의 isTaskPanelOpen 구독\n   - 상태 변경 시 레이아웃 리렌더링 (자동)\n\n6. 반응형 대응:\n   - xl 미만: Task 패널 하단 시트, 사이드바 숨김, 타이머 중앙 고정\n   - xl 이상: 완전한 Dynamic Layout 적용\n   - 2xl 이상: 광고 영역 추가 표시\n\n7. 성능 최적화:\n   - Task 패널 애니메이션: transform 대신 width 사용 (GPU 가속 불필요)\n   - 레이아웃 리플로우 최소화 (will-change: width)\n\n참고: Tailwind CSS v4 Flexbox 레이아웃, clsx 유틸리티",
+        "details": "1. `app/page.tsx` 수정:\n   - 기존 3단 그리드 구조 변경:\n     ```tsx\n     // Before: [좌측 대시보드 | 중앙 타이머 | 우측 대시보드]\n     // After: [사이드바] - [Task 패널(가변)] - [중앙 타이머 영역(Flex)] - [우측 위젯] - [광고]\n     ```\n\n2. 레이아웃 구조 (Flexbox 기반):\n   - Container: `flex flex-row min-h-screen`\n   - Sidebar: `w-[80px] fixed left-0 top-0 h-screen z-50`\n   - Task Panel: `w-0 xl:w-[360px] transition-all duration-300` (isTaskPanelOpen에 따라)\n   - Center Area: `flex-1 flex justify-center items-start` (타이머 중앙 정렬)\n   - Right Widget: `hidden xl:flex xl:w-[570px]` (BGM + Calendar)\n   - Ad Area: `hidden 2xl:block 2xl:w-[200px]` (2560px 이상에서만 표시)\n\n3. 동적 여백 계산:\n   - Task 패널 열림 시: ml-[80px + 360px] (좌측 여백)\n   - Task 패널 닫힘 시: ml-[80px] (사이드바 너비만큼)\n   - Tailwind 동적 클래스: clsx/cn 유틸리티 사용\n\n4. 기존 컴포넌트 배치:\n   - PomodoroTimer: Center Area 내부\n   - DashboardRight: Right Widget 영역 (BGM + Calendar 통합)\n   - DashboardLeft: 삭제 (통계는 /stats 페이지로 이동)\n\n5. 상태 연동:\n   - useTaskStore()의 isTaskPanelOpen 구독\n   - 상태 변경 시 레이아웃 리렌더링 (자동)\n\n6. 반응형 대응:\n   - xl 미만: Task 패널 하단 시트, 사이드바 숨김, 타이머 중앙 고정\n   - xl 이상: 완전한 Dynamic Layout 적용\n   - 2xl 이상: 광고 영역 추가 표시\n\n7. 성능 최적화:\n   - Task 패널 애니메이션: transform 대신 width 사용 (GPU 가속 불필요)\n   - 레이아웃 리플로우 최소화 (will-change: width)\n\n참고: Tailwind CSS v4 Flexbox 레이아웃, clsx 유틸리티",
         "testStrategy": "1. Task 패널 토글 시 중앙 타이머 위치 부드럽게 이동 확인\n2. Task 패널 닫힘 상태: 타이머가 사이드바와 우측 위젯 사이 정중앙 위치 확인\n3. Task 패널 열림 상태: 타이머가 줄어든 공간 내에서 정중앙 위치 확인\n4. xl 미만: Task 패널 하단 시트, 타이머 중앙 고정 확인\n5. 2xl 이상: 광고 영역 표시 확인\n6. 애니메이션 부드러움 확인 (300ms 트랜지션)\n7. 레이아웃 리플로우 없음 확인 (Performance 탭)\n8. 모든 테마에서 정상 표시 확인",
         "priority": "high",
         "dependencies": [
-          98
+          "98"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-02T18:12:17.988Z"
       },
       {
-        "id": 100,
+        "id": "100",
         "title": "Task Supabase CRUD 함수 구현",
         "description": "tasks 테이블에 대한 CRUD 함수 작성 (lib/supabase/tasks.ts)",
         "details": "1. `lib/supabase/tasks.ts` 생성:\n   - 기존 tasks 테이블 사용 (20251229090000_initial_schema.sql에 정의됨)\n   - RLS 정책 이미 적용되어 있음 (user_id 기반)\n\n2. CRUD 함수:\n   ```typescript\n   // 조회\n   export async function fetchTasks(userId: string): Promise<Task[]>\n   \n   // 생성\n   export async function createTask(userId: string, task: Omit<Task, 'id' | 'userId' | 'createdAt' | 'updatedAt'>): Promise<Task>\n   \n   // 수정\n   export async function updateTask(userId: string, taskId: string, updates: Partial<Task>): Promise<Task>\n   \n   // 삭제\n   export async function deleteTask(userId: string, taskId: string): Promise<void>\n   \n   // 완료 토글\n   export async function toggleTaskComplete(userId: string, taskId: string): Promise<Task>\n   ```\n\n3. Task 타입 (Supabase 스키마 기반):\n   ```typescript\n   interface Task {\n     id: string\n     user_id: string\n     title: string\n     description?: string\n     estimated_pomodoros: number\n     completed_pomodoros: number\n     is_completed: boolean\n     priority: number\n     due_date?: string\n     created_at: string\n     updated_at: string\n   }\n   ```\n\n4. 에러 처리:\n   - try-catch로 모든 함수 감싸기\n   - Supabase 에러 로깅 (console.error)\n   - 에러 발생 시 throw (React Query에서 처리)\n\n5. 정렬 기준:\n   - fetchTasks: priority DESC, created_at DESC (우선순위 높은 순)\n   - 완료된 항목은 하단에 표시 (is_completed ASC)\n\n참고: Supabase Client v2 API 사용",
         "testStrategy": "1. Supabase Studio에서 tasks 테이블 데이터 확인\n2. fetchTasks() 호출 시 RLS 정책 적용 확인 (본인 데이터만 조회)\n3. createTask() 호출 시 created_at, updated_at 자동 생성 확인\n4. updateTask() 호출 시 updated_at 자동 갱신 확인 (Trigger)\n5. deleteTask() 호출 시 soft delete 아닌 hard delete 확인\n6. 에러 케이스: 잘못된 userId로 호출 시 RLS 에러 확인",
         "priority": "medium",
         "dependencies": [
-          97
+          "97"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-03T07:56:08.087Z"
       },
       {
-        "id": 101,
+        "id": "101",
         "title": "Task React Query 훅 구현 (낙관적 업데이트)",
         "description": "Task CRUD를 위한 React Query 훅 작성 (useTasks, useTaskMutations)",
         "details": "1. `lib/queries/task-queries.ts` 생성:\n\n2. Query 훅:\n   ```typescript\n   export function useTasks(userId: string | null) {\n     return useQuery({\n       queryKey: ['tasks', userId],\n       queryFn: () => userId ? fetchTasks(userId) : [],\n       enabled: !!userId,\n       staleTime: 5 * 60 * 1000, // 5분\n     })\n   }\n   ```\n\n3. Mutation 훅 (낙관적 업데이트):\n   ```typescript\n   export function useTaskMutations(userId: string | null) {\n     const queryClient = useQueryClient()\n     \n     const addTask = useMutation({\n       mutationFn: (task: Omit<Task, 'id' | 'userId'>) => createTask(userId!, task),\n       onMutate: async (newTask) => {\n         // Optimistic Update: 즉시 UI 업데이트\n         await queryClient.cancelQueries(['tasks', userId])\n         const previous = queryClient.getQueryData(['tasks', userId])\n         queryClient.setQueryData(['tasks', userId], (old) => [...old, { id: 'temp', ...newTask }])\n         return { previous }\n       },\n       onError: (err, newTask, context) => {\n         // Rollback on error\n         queryClient.setQueryData(['tasks', userId], context.previous)\n       },\n       onSettled: () => {\n         // Refetch after mutation\n         queryClient.invalidateQueries(['tasks', userId])\n       },\n     })\n     \n     // updateTask, deleteTask, toggleComplete도 동일한 패턴\n   }\n   ```\n\n4. 캐싱 전략:\n   - staleTime: 5분 (통계보다 짧음, 실시간성 중요)\n   - cacheTime: 10분\n   - refetchOnWindowFocus: true\n\n5. 로딩/에러 상태:\n   - isLoading: 스켈레톤 UI 표시\n   - isError: 에러 토스트 표시\n\n참고: TanStack Query v5 Optimistic Updates 패턴",
         "testStrategy": "1. React Query DevTools에서 'tasks' 쿼리 캐싱 확인\n2. Task 추가 시 즉시 UI 업데이트 확인 (낙관적 업데이트)\n3. 네트워크 오류 시 롤백 확인\n4. 5분 후 자동 재조회 확인 (staleTime)\n5. 다른 탭에서 포커스 복귀 시 재조회 확인\n6. 로딩 스켈레톤 표시 확인",
         "priority": "medium",
         "dependencies": [
-          100
+          "100"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-03T08:17:01.058Z"
       },
       {
-        "id": 102,
+        "id": "102",
         "title": "Task 패널 Supabase 동기화 통합",
         "description": "로그인 사용자의 Task를 Supabase와 자동 동기화하도록 Task 패널 컴포넌트 수정",
         "details": "1. `components/task-panel.tsx` 수정:\n   - useUser() 훅으로 로그인 상태 확인\n   - 로그인 사용자: useTasks(userId) + useTaskMutations(userId) 사용\n   - 비로그인 사용자: useTaskStore() (localStorage) 사용\n\n2. 동기화 로직:\n   - 로그인 시 localStorage의 tasks를 Supabase로 마이그레이션:\n     ```typescript\n     useEffect(() => {\n       if (user && localTasks.length > 0) {\n         // Batch insert to Supabase\n         localTasks.forEach(task => addTaskMutation.mutate(task))\n         // Clear localStorage after migration\n         clearLocalTasks()\n       }\n     }, [user])\n     ```\n\n3. UI 조건부 렌더링:\n   - 로그인: React Query 상태 (data, isLoading, isError) 사용\n   - 비로그인: Zustand 상태 (tasks) 사용\n\n4. 에러 처리:\n   - Supabase 에러 시 토스트 알림 (useToast 훅)\n   - 네트워크 오류 시 자동 재시도 (React Query 기본값)\n\n5. 로딩 상태:\n   - Skeleton UI: 3개의 회색 박스 (h-12, animate-pulse)\n\n6. 빈 상태:\n   - 로그인/비로그인 모두 동일한 빈 상태 UI\n\n참고: 기존 useTaskStore는 비로그인 사용자 전용으로 유지",
         "testStrategy": "1. 비로그인 상태에서 Task 추가 → localStorage 저장 확인\n2. 로그인 시 localStorage Task가 Supabase로 마이그레이션 확인\n3. 로그인 상태에서 Task 추가 → Supabase 즉시 저장 확인\n4. 네트워크 오류 시 에러 토스트 표시 확인\n5. 로딩 중 스켈레톤 UI 표시 확인\n6. 다른 기기에서 로그인 시 Task 동기화 확인",
         "priority": "medium",
         "dependencies": [
-          101,
-          98
+          "101",
+          "98"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-03T08:34:07.269Z"
       },
       {
-        "id": 103,
+        "id": "103",
         "title": "통계 페이지 (/stats) 기본 구조 및 라우팅 구현",
         "description": "통계 전용 페이지 생성 및 사이드바 내비게이션 연동",
-        "details": "1. `app/[locale]/stats/page.tsx` 생성:\n   - 서버 컴포넌트로 구현 (메타데이터 SEO)\n   - 레이아웃: 사이드바 + 통계 컨텐츠 영역\n   - 제목: \"Focus Statistics\" (다국어 지원)\n\n2. 메타데이터:\n   ```typescript\n   export async function generateMetadata({ params }: Props): Promise<Metadata> {\n     const { locale } = await params\n     return {\n       title: 'Statistics | Pomobox',\n       description: 'View your focus statistics and patterns',\n       openGraph: { ... },\n     }\n   }\n   ```\n\n3. 페이지 레이아웃:\n   - 상단: 페이지 제목 + 설명\n   - 중단: 3개 섹션 (Weekly Stats, This Week vs Last Week, Rolling 4-Week)\n   - 하단: 푸터 (메인 페이지와 동일)\n\n4. 사이드바 Statistics 버튼 활성화:\n   - `components/sidebar.tsx` 수정:\n   - usePathname() 훅으로 현재 경로 확인\n   - pathname === '/stats' 일 때 active 스타일 적용\n\n5. 반응형:\n   - md 미만: 사이드바 숨김, 상단에 뒤로가기 버튼 추가\n   - xl 이상: 사이드바 고정, 통계 컨텐츠 중앙 배치\n\n6. 접근성:\n   - main role, 시맨틱 HTML (section, h2, h3)\n   - 스크린 리더 지원\n\n참고: Next.js 15 App Router 메타데이터 API, next-intl 다국어",
-        "testStrategy": "1. `/stats` 경로 접속 시 페이지 정상 렌더링 확인\n2. 사이드바 Statistics 버튼 active 스타일 확인\n3. 메타데이터 (title, description) 확인\n4. 모바일: 뒤로가기 버튼 표시 확인\n5. 데스크탑: 사이드바 고정 확인\n6. 다국어 전환 시 제목/설명 변경 확인",
+        "details": "1. `app/stats/page.tsx` 생성:\n   - 서버 컴포넌트로 구현 (메타데이터 SEO)\n   - 레이아웃: 사이드바 + 통계 컨텐츠 영역\n   - 제목: \"Focus Statistics\"\n\n2. 메타데이터:\n   ```typescript\n   export const metadata: Metadata = {\n     title: 'Statistics | Pomobox',\n     description: 'View your focus statistics and patterns',\n     openGraph: { ... },\n   }\n   ```\n\n3. 페이지 레이아웃:\n   - 상단: 페이지 제목 + 설명\n   - 중단: 3개 섹션 (Weekly Stats, This Week vs Last Week, Rolling 4-Week)\n   - 하단: 푸터 (메인 페이지와 동일)\n\n4. 사이드바 Statistics 버튼 활성화:\n   - `components/sidebar.tsx` 수정:\n   - usePathname() 훅으로 현재 경로 확인\n   - pathname === '/stats' 일 때 active 스타일 적용\n\n5. 반응형:\n   - md 미만: 사이드바 숨김, 상단에 뒤로가기 버튼 추가\n   - xl 이상: 사이드바 고정, 통계 컨텐츠 중앙 배치\n\n6. 접근성:\n   - main role, 시맨틱 HTML (section, h2, h3)\n   - 스크린 리더 지원\n\n참고: Next.js 15 App Router 메타데이터 API",
+        "testStrategy": "1. `/stats` 경로 접속 시 페이지 정상 렌더링 확인\n2. 사이드바 Statistics 버튼 active 스타일 확인\n3. 메타데이터 (title, description) 확인\n4. 모바일: 뒤로가기 버튼 표시 확인\n5. 데스크탑: 사이드바 고정 확인",
         "priority": "high",
         "dependencies": [
-          96
+          "96"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-02T20:21:22.741Z"
       },
       {
-        "id": 104,
+        "id": "104",
         "title": "Weekly Stats 차트 컴포넌트 구현 (패턴 분석)",
         "description": "이번 주 집중 리듬 분석 차트 (Bar/Area/Line 선택 가능)",
         "details": "1. `components/stats/weekly-stats-chart.tsx` 생성:\n   - 컨셉: \"이번 주 나의 집중 리듬은?\" (Volume & Pattern)\n   - 데이터 범위: 이번 주 한정 (월요일 ~ 일요일)\n\n2. Chart Selector (상단 우측):\n   - 3개 버튼: Bar / Area / Line\n   - 활성 버튼: 밝은 배경 + 아이콘 색상 변경\n   - 로컬 상태 (useState)로 차트 타입 관리\n\n3. Main Chart (Recharts 사용):\n   - Bar Chart (기본값):\n     * X축: 요일 (Mon, Tue, Wed, ...)\n     * Y축: 집중 시간 (분 단위, 0 ~ max + 20%)\n     * 막대: 높이로 절대량 표현, oklch 색상\n     * 오늘 강조: 다른 색상 + 굵은 테두리\n   - Area Chart:\n     * fillOpacity: 0.3\n     * stroke: oklch 색상\n     * gradient fill (상단 → 하단 투명)\n   - Line Chart:\n     * stroke: 2px\n     * dot: 원형 포인트 (r=4)\n\n4. Tooltip (호버 시):\n   - 요일 + 날짜 (예: \"Monday, Jan 1\")\n   - 집중 시간 (예: \"2h 30m\")\n   - 세션 수 (예: \"5 sessions\")\n   - 배경: Glassmorphism 효과\n\n5. 데이터 조회:\n   - useRecentDaysStats(userId, 7) 훅 사용\n   - 로딩 중: 스켈레톤 차트 (회색 막대)\n   - 에러: 에러 메시지 + 재시도 버튼\n\n6. 반응형:\n   - md 미만: 차트 높이 200px\n   - xl 이상: 차트 높이 300px\n\n참고: Recharts v2.15+, 커스텀 툴팁 컴포넌트",
         "testStrategy": "1. Bar/Area/Line 버튼 클릭 시 차트 타입 전환 확인\n2. 오늘 요일 막대 강조 표시 확인\n3. 마우스 호버 시 툴팁 표시 확인 (요일, 시간, 세션)\n4. 데이터 없는 요일: 0분 막대 표시 확인\n5. 로딩 중 스켈레톤 차트 확인\n6. 에러 시 재시도 버튼 확인\n7. 반응형: 모바일/데스크탑 차트 크기 확인",
         "priority": "high",
         "dependencies": [
-          103
+          "103"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-02T20:52:15.457Z"
       },
       {
-        "id": 105,
+        "id": "105",
         "title": "This Week vs Last Week 비교 KPI 컴포넌트 구현",
         "description": "이번 주와 지난주 통계 비교 스코어카드 (성장 분석)",
         "details": "1. `components/stats/week-comparison.tsx` 생성:\n   - 컨셉: \"지난주보다 성장했는가?\" (Growth & Gap)\n   - UI 형태: KPI 스코어카드 (차트보다는 숫자 강조)\n\n2. 데이터 조회:\n   - useRecentDaysStats(userId, 7) - 이번 주\n   - useLastWeekStats(userId) - 지난주 (7일 전 ~ 13일 전)\n   - 프론트엔드에서 집계 계산\n\n3. KPI 항목:\n   - Total Time:\n     * 이번 주: \"12h 30m\" (큰 폰트)\n     * 지난주: \"10h 15m\" (작은 폰트, 회색)\n     * 증감: \"▲ 2h 15m (+22%)\" (녹색/빨간색)\n   - Total Sessions:\n     * 이번 주: \"25 sessions\"\n     * 지난주: \"20 sessions\"\n     * 증감: \"▲ 5 (+25%)\" (녹색)\n   - Average per Day:\n     * 이번 주: \"1h 47m/day\"\n     * 지난주: \"1h 28m/day\"\n     * 증감: \"▲ 19m (+22%)\" (녹색)\n\n4. 증감 표시:\n   - 증가: ▲ (녹색, oklch 색상)\n   - 감소: ▼ (빨간색, oklch 색상)\n   - 동일: - (회색)\n\n5. 레이아웃:\n   - Grid: 2열 (md 이상) / 1열 (md 미만)\n   - 각 KPI: Card 컴포넌트 (Glassmorphism)\n   - 아이콘: TrendingUp, TrendingDown (Lucide React)\n\n6. 로딩/에러:\n   - 로딩: 스켈레톤 KPI 카드\n   - 에러: 에러 메시지 표시\n\n참고: 비교 텍스트는 다국어 지원 (\"지난주 동시간 대비 30분 더 집중했습니다.\")",
-        "testStrategy": "1. 이번 주/지난주 데이터 정확히 계산 확인\n2. 증가 시 ▲ 녹색, 감소 시 ▼ 빨간색 확인\n3. 퍼센트 계산 정확도 확인 (소수점 1자리)\n4. 데이터 없는 주: \"No data\" 표시 확인\n5. 로딩 중 스켈레톤 카드 확인\n6. 반응형: 모바일 1열, 데스크탑 2열 확인\n7. 다국어 전환 시 텍스트 변경 확인",
+        "testStrategy": "1. 이번 주/지난주 데이터 정확히 계산 확인\n2. 증가 시 ▲ 녹색, 감소 시 ▼ 빨간색 확인\n3. 퍼센트 계산 정확도 확인 (소수점 1자리)\n4. 데이터 없는 주: \"No data\" 표시 확인\n5. 로딩 중 스켈레톤 카드 확인\n6. 반응형: 모바일 1열, 데스크탑 2열 확인",
         "priority": "high",
         "dependencies": [
-          103
+          "103"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-02T21:11:12.577Z"
       },
       {
-        "id": 106,
+        "id": "106",
         "title": "Rolling 4-Week 차트 컴포넌트 구현 (장기 흐름)",
         "description": "최근 4주간 주차별 집중 시간 추세 차트 (월요일 기준 주차)",
         "details": "1. `components/stats/rolling-4week-chart.tsx` 생성:\n   - 컨셉: 최근 한 달간의 추세 분석\n   - 기준: **주차 시작은 월요일** (ISO-8601 준수)\n\n2. 주차 계산 로직:\n   ```typescript\n   function getWeekLabel(date: Date): string {\n     const weekAgo = Math.floor((new Date() - date) / (7 * 24 * 60 * 60 * 1000))\n     if (weekAgo === 0) return 'This Week'\n     if (weekAgo === 1) return 'W-1'\n     if (weekAgo === 2) return 'W-2'\n     if (weekAgo === 3) return 'W-3'\n     return 'W-' + weekAgo\n   }\n   \n   function getMondayOfWeek(date: Date): Date {\n     const day = date.getDay()\n     const diff = (day === 0 ? -6 : 1 - day) // 일요일(0) → -6, 월요일(1) → 0\n     return new Date(date.getFullYear(), date.getMonth(), date.getDate() + diff)\n   }\n   ```\n\n3. 데이터 조회:\n   - useRecentDaysStats(userId, 28) - 최근 28일\n   - 프론트엔드에서 주차별 그룹핑:\n     ```typescript\n     const weeks = [\n       { label: 'W-3', totalMinutes: 0, totalSessions: 0 },\n       { label: 'W-2', totalMinutes: 0, totalSessions: 0 },\n       { label: 'W-1', totalMinutes: 0, totalSessions: 0 },\n       { label: 'This Week', totalMinutes: 0, totalSessions: 0 },\n     ]\n     ```\n\n4. Chart (Bar Chart):\n   - X축: 주차 라벨 (W-3, W-2, W-1, This Week)\n   - Y축: 집중 시간 (분 → 시간 단위로 표시)\n   - 막대: 높이로 주차별 총합 표현\n   - This Week: 강조 색상 (oklch)\n\n5. Empty State:\n   - 데이터 없는 주차: 연한 회색 빈 막대 (height: 20px)\n   - \"No Data\" 텍스트 표시 (X축 아래)\n\n6. Tooltip:\n   - 주차 라벨 + 날짜 범위 (예: \"W-2 (Dec 18 - Dec 24)\")\n   - 총 집중 시간 (예: \"8h 45m\")\n   - 총 세션 수 (예: \"18 sessions\")\n\n참고: ISO 8601 주차 기준 (월요일 시작), Recharts Bar Chart",
         "testStrategy": "1. 주차 계산 정확도 확인 (월요일 기준)\n2. This Week 강조 색상 확인\n3. 데이터 없는 주차: 빈 막대 + \"No Data\" 표시 확인\n4. 툴팁 날짜 범위 정확도 확인 (월 ~ 일)\n5. 4주 이전 데이터는 표시 안 됨 확인\n6. 로딩 중 스켈레톤 차트 확인\n7. 반응형: 차트 크기 조정 확인",
         "priority": "high",
         "dependencies": [
-          103
+          "103"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-02T21:37:08.854Z"
       },
       {
-        "id": 107,
+        "id": "107",
         "title": "통계 페이지 레이아웃 통합 및 스타일링",
         "description": "/stats 페이지에 3개 통계 컴포넌트 통합 및 전체 레이아웃 조정",
-        "details": "1. `app/[locale]/stats/page.tsx` 수정:\n   - 3개 섹션 배치:\n     * Weekly Stats (상단, 전체 너비)\n     * This Week vs Last Week (중단, 2열 그리드)\n     * Rolling 4-Week (하단, 전체 너비)\n\n2. 레이아웃 구조:\n   ```tsx\n   <main className=\"flex-1 pt-16 pb-6 siderail-margin\">\n     <div className=\"max-w-7xl mx-auto px-4 xl:px-8\">\n       <header className=\"mb-8\">\n         <h1>{t('statistics')}</h1>\n         <p className=\"text-muted-foreground\">{t('statsDescription')}</p>\n       </header>\n       \n       <section className=\"mb-8\">\n         <h2>Weekly Pattern</h2>\n         <WeeklyStatsChart />\n       </section>\n       \n       <section className=\"mb-8\">\n         <h2>Growth Analysis</h2>\n         <WeekComparison />\n       </section>\n       \n       <section>\n         <h2>Monthly Trend</h2>\n         <Rolling4WeekChart />\n       </section>\n     </div>\n   </main>\n   ```\n\n3. 섹션 스타일:\n   - 각 섹션: Card 컴포넌트 (Glassmorphism)\n   - 제목: text-lg font-bold mb-4\n   - 간격: mb-8 (섹션 사이)\n\n4. 반응형:\n   - md 미만: 1열 세로 배치, 패딩 감소\n   - xl 이상: max-w-7xl 제한, 넓은 패딩\n\n5. 로딩 상태:\n   - Suspense 경계 추가 (React 19)\n   - Fallback: 3개 스켈레톤 섹션\n\n6. 에러 경계:\n   - ErrorBoundary 추가\n   - 에러 시 \"통계를 불러올 수 없습니다\" 메시지\n\n참고: Tailwind 그리드 시스템, Card UI 컴포넌트 재사용",
+        "details": "1. `app/stats/page.tsx` 수정:\n   - 3개 섹션 배치:\n     * Weekly Stats (상단, 전체 너비)\n     * This Week vs Last Week (중단, 2열 그리드)\n     * Rolling 4-Week (하단, 전체 너비)\n\n2. 레이아웃 구조:\n   ```tsx\n   <main className=\"flex-1 pt-16 pb-6 siderail-margin\">\n     <div className=\"max-w-7xl mx-auto px-4 xl:px-8\">\n       <header className=\"mb-8\">\n         <h1>Statistics</h1>\n         <p className=\"text-muted-foreground\">Track your focus patterns and progress</p>\n       </header>\n       \n       <section className=\"mb-8\">\n         <h2>Weekly Pattern</h2>\n         <WeeklyStatsChart />\n       </section>\n       \n       <section className=\"mb-8\">\n         <h2>Growth Analysis</h2>\n         <WeekComparison />\n       </section>\n       \n       <section>\n         <h2>Monthly Trend</h2>\n         <Rolling4WeekChart />\n       </section>\n     </div>\n   </main>\n   ```\n\n3. 섹션 스타일:\n   - 각 섹션: Card 컴포넌트 (Glassmorphism)\n   - 제목: text-lg font-bold mb-4\n   - 간격: mb-8 (섹션 사이)\n\n4. 반응형:\n   - md 미만: 1열 세로 배치, 패딩 감소\n   - xl 이상: max-w-7xl 제한, 넓은 패딩\n\n5. 로딩 상태:\n   - Suspense 경계 추가 (React 19)\n   - Fallback: 3개 스켈레톤 섹션\n\n6. 에러 경계:\n   - ErrorBoundary 추가\n   - 에러 시 \"통계를 불러올 수 없습니다\" 메시지\n\n참고: Tailwind 그리드 시스템, Card UI 컴포넌트 재사용",
         "testStrategy": "1. 3개 섹션 모두 정상 렌더링 확인\n2. Glassmorphism 효과 일관성 확인\n3. 반응형: 모바일 1열, 데스크탑 적절한 간격 확인\n4. 로딩 중 Suspense Fallback 확인\n5. 에러 발생 시 ErrorBoundary 메시지 확인\n6. 3개 테마 모두에서 정상 표시 확인",
         "priority": "medium",
         "dependencies": [
-          104,
-          105,
-          106
+          "104",
+          "105",
+          "106"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T12:54:31.274Z"
       },
       {
-        "id": 108,
+        "id": "108",
         "title": "비로그인 사용자 로그인 유도 팝업 구현",
         "description": "첫 세션 완료 시 1회만 로그인 유도 다이얼로그 표시 (localStorage 플래그 사용)",
         "details": "1. `components/login-prompt-dialog.tsx` 생성:\n   - Radix UI Dialog 사용\n   - 트리거: 첫 Focus 세션 완료 시 자동 오픈\n\n2. 다이얼로그 내용:\n   - 제목: \"첫 세션 완료!\" (다국어)\n   - 설명: \"기록을 영구히 저장하고 싶다면 로그인하세요.\"\n   - 버튼:\n     * \"로그인\" (Primary) → `/auth/login`\n     * \"나중에\" (Secondary) → 다이얼로그 닫기\n\n3. 표시 조건:\n   - 비로그인 사용자만\n   - localStorage의 `hasShownLoginPrompt` 플래그 확인\n   - 플래그 없으면 첫 세션 완료 시 표시\n   - 표시 후 플래그 설정 (true)\n\n4. 통합 위치:\n   - `components/pomodoro-timer.tsx`의 `handleComplete()` 함수\n   - Focus 세션 완료 시 조건부 다이얼로그 오픈:\n     ```typescript\n     if (!user && !localStorage.getItem('hasShownLoginPrompt')) {\n       setShowLoginPrompt(true)\n       localStorage.setItem('hasShownLoginPrompt', 'true')\n     }\n     ```\n\n5. 스타일:\n   - Glassmorphism 배경\n   - 중앙 정렬, max-w-md\n   - 애니메이션: fade-in + scale-up\n\n6. 접근성:\n   - role=\"dialog\", aria-labelledby=\"dialog-title\"\n   - Esc 키로 닫기\n   - 포커스 트랩\n\n참고: Radix UI Dialog, localStorage API",
         "testStrategy": "1. 비로그인 상태에서 첫 Focus 세션 완료 시 다이얼로그 표시 확인\n2. localStorage에 'hasShownLoginPrompt' 플래그 저장 확인\n3. 두 번째 세션 완료 시 다이얼로그 표시 안 됨 확인\n4. \"로그인\" 버튼 클릭 시 `/auth/login` 이동 확인\n5. \"나중에\" 버튼 클릭 시 다이얼로그 닫힘 확인\n6. Esc 키로 닫기 확인\n7. 로그인 사용자는 다이얼로그 표시 안 됨 확인",
         "priority": "low",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T12:57:06.827Z"
       },
       {
-        "id": 109,
+        "id": "109",
         "title": "Supabase RPC 함수: get_focus_distribution_by_hour 생성",
         "description": "시간대별 집중도 데이터를 DB에서 집계하여 반환하는 PostgreSQL 함수 작성",
         "details": "1. `supabase/migrations/20260102000000_focus_distribution_rpc.sql` 생성:\n\n2. RPC 함수 정의:\n   ```sql\n   CREATE OR REPLACE FUNCTION get_focus_distribution_by_hour(\n     p_user_id UUID,\n     p_start_date DATE,\n     p_end_date DATE,\n     p_user_timezone TEXT DEFAULT 'UTC'\n   )\n   RETURNS TABLE(\n     hour INTEGER,\n     total_minutes INTEGER\n   ) AS $$\n   BEGIN\n     RETURN QUERY\n     SELECT\n       EXTRACT(HOUR FROM (completed_at AT TIME ZONE 'UTC' AT TIME ZONE p_user_timezone))::INTEGER AS hour,\n       SUM(duration_minutes)::INTEGER AS total_minutes\n     FROM focus_sessions\n     WHERE\n       user_id = p_user_id\n       AND session_type = 'focus' -- 휴식 시간 제외\n       AND DATE(completed_at AT TIME ZONE p_user_timezone) BETWEEN p_start_date AND p_end_date\n     GROUP BY hour\n     ORDER BY hour;\n   END;\n   $$ LANGUAGE plpgsql SECURITY DEFINER;\n   ```\n\n3. 권한 설정:\n   ```sql\n   GRANT EXECUTE ON FUNCTION get_focus_distribution_by_hour TO authenticated;\n   ```\n\n4. 마이그레이션 적용:\n   - Supabase CLI: `supabase db push`\n   - 또는 Supabase Studio에서 SQL 직접 실행\n\n5. 성능 최적화:\n   - focus_sessions 테이블의 기존 인덱스 활용 (idx_focus_sessions_user_completed)\n   - SECURITY DEFINER: RLS 우회하여 성능 향상 (user_id 체크는 함수 내부에서)\n\n참고: PostgreSQL AT TIME ZONE 구문, Supabase RPC",
         "testStrategy": "1. Supabase Studio에서 함수 생성 확인\n2. SQL 직접 실행으로 함수 호출 테스트:\n   SELECT * FROM get_focus_distribution_by_hour(\n     'user-uuid',\n     '2026-01-01',\n     '2026-01-07',\n     'Asia/Seoul'\n   )\n3. 결과: [{ hour: 9, total_minutes: 125 }, ...] 형태 확인\n4. session_type='break' 데이터 제외 확인\n5. 타임존 변환 정확도 확인 (UTC → 사용자 타임존)\n6. 빈 결과: [] 반환 확인",
         "priority": "medium",
         "dependencies": [],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T12:49:58.558Z"
       },
       {
-        "id": 110,
+        "id": "110",
         "title": "시간대별 집중도 조회 함수 및 React Query 훅 구현",
         "description": "RPC 함수 호출 래퍼와 React Query 훅 작성 (lib/supabase/stats.ts, lib/queries/stats-queries.ts)",
         "details": "1. `lib/supabase/stats.ts`에 RPC 호출 함수 추가:\n   ```typescript\n   export interface HourlyDistribution {\n     hour: number // 0-23\n     total_minutes: number\n   }\n   \n   export async function getFocusDistributionByHour(\n     userId: string,\n     startDate: string, // YYYY-MM-DD\n     endDate: string,\n     userTimezone: string = Intl.DateTimeFormat().resolvedOptions().timeZone\n   ): Promise<HourlyDistribution[]> {\n     const supabase = createClient()\n     \n     const { data, error } = await supabase.rpc('get_focus_distribution_by_hour', {\n       p_user_id: userId,\n       p_start_date: startDate,\n       p_end_date: endDate,\n       p_user_timezone: userTimezone,\n     })\n     \n     if (error) {\n       console.error('Failed to get focus distribution:', error)\n       throw error\n     }\n     \n     return data || []\n   }\n   ```\n\n2. `lib/queries/stats-queries.ts`에 React Query 훅 추가:\n   ```typescript\n   export function useFocusDistributionQuery(\n     userId: string | null,\n     startDate: string,\n     endDate: string\n   ) {\n     return useQuery({\n       queryKey: ['focusDistribution', userId, startDate, endDate],\n       queryFn: () => userId ? getFocusDistributionByHour(userId, startDate, endDate) : [],\n       enabled: !!userId,\n       staleTime: 10 * 60 * 1000, // 10분 (변동 적음)\n     })\n   }\n   ```\n\n3. 타임존 자동 감지:\n   - Intl.DateTimeFormat().resolvedOptions().timeZone 사용\n   - 예: \"Asia/Seoul\", \"America/New_York\"\n\n4. 에러 처리:\n   - Supabase RPC 에러 로깅\n   - React Query 에러 상태 반환\n\n참고: Supabase RPC API, Intl API",
         "testStrategy": "1. useFocusDistributionQuery 훅 호출 시 RPC 실행 확인\n2. React Query DevTools에서 쿼리 캐싱 확인\n3. 타임존 자동 감지 확인 (console.log)\n4. 데이터 형식: [{ hour: 9, total_minutes: 125 }] 확인\n5. 에러 시 isError 상태 확인\n6. 10분 내 재요청 없음 확인 (staleTime)",
         "priority": "medium",
         "dependencies": [
-          109
+          "109"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T13:06:52.012Z"
       },
       {
-        "id": 111,
+        "id": "111",
         "title": "시간대별 집중도 차트 컴포넌트 구현",
         "description": "24시간 라인 차트 또는 히트맵으로 시간대별 집중 패턴 시각화",
         "details": "1. `components/stats/hourly-distribution-chart.tsx` 생성:\n   - 목표: 사용자가 주로 어떤 시간대에 집중하는지 분석\n   - UI: 24시간 라인 차트 (기본값) 또는 히트맵 (옵션)\n\n2. 차트 타입 선택:\n   - 라인 차트 (추천): 시간 흐름 직관적, Recharts LineChart 사용\n   - 히트맵 (선택): 색상 강도로 집중도 표현 (Recharts BarChart + 색상 스케일)\n\n3. 라인 차트 구현:\n   - X축: 시간 (0-23시, 24개 포인트)\n   - Y축: 집중 시간 (분 단위)\n   - Line: smooth curve (type=\"monotone\")\n   - Dot: 데이터 포인트 강조 (r=3)\n   - Gradient: 선 아래 영역 채우기 (fillOpacity: 0.2)\n\n4. 데이터 전처리:\n   ```typescript\n   function fillMissingHours(data: HourlyDistribution[]): HourlyDistribution[] {\n     const result = Array.from({ length: 24 }, (_, i) => ({ hour: i, total_minutes: 0 }))\n     data.forEach(d => result[d.hour] = d)\n     return result\n   }\n   ```\n\n5. Tooltip:\n   - 시간대: \"09:00 - 10:00\"\n   - 집중 시간: \"2h 5m\"\n   - 배경: Glassmorphism\n\n6. 데이터 조회:\n   - useFocusDistributionQuery(userId, startDate, endDate)\n   - 기본 범위: 최근 30일\n   - 날짜 선택기: React Day Picker (선택적)\n\n7. Empty State:\n   - 데이터 없으면 \"아직 집중 기록이 없습니다\" 메시지\n\n8. 반응형:\n   - md 미만: 차트 높이 200px\n   - xl 이상: 차트 높이 300px\n\n참고: Recharts LineChart, Recharts BarChart (히트맵)",
         "testStrategy": "1. 0-23시 모든 시간대 표시 확인\n2. 데이터 없는 시간대: 0분으로 표시 확인\n3. 마우스 호버 시 툴팁 표시 확인\n4. 피크 시간대(가장 많이 집중한 시간) 시각적 강조 확인\n5. 로딩 중 스켈레톤 차트 확인\n6. 빈 데이터 시 Empty State 메시지 확인\n7. 반응형: 차트 크기 조정 확인",
         "priority": "medium",
         "dependencies": [
-          110
+          "110"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T13:11:00.703Z"
       },
       {
-        "id": 112,
+        "id": "112",
         "title": "통계 페이지에 시간대별 집중도 섹션 추가",
         "description": "/stats 페이지에 Hourly Distribution 차트 통합",
-        "details": "1. `app/[locale]/stats/page.tsx` 수정:\n   - 4번째 섹션으로 Hourly Distribution 추가\n   - 위치: Rolling 4-Week 차트 아래\n\n2. 레이아웃:\n   ```tsx\n   <section className=\"mb-8\">\n     <h2>Focus Distribution by Time</h2>\n     <p className=\"text-sm text-muted-foreground mb-4\">\n       {t('hourlyDistributionDescription')}\n     </p>\n     <HourlyDistributionChart />\n   </section>\n   ```\n\n3. 다국어 키 추가:\n   - messages/en.json: \"Focus Distribution by Time\", \"When do you focus the most?\"\n   - messages/ko.json: \"시간대별 집중도\", \"언제 가장 집중하시나요?\"\n   - messages/ja.json, messages/zh.json 동일\n\n4. 스타일:\n   - 섹션 간격: mb-8\n   - Card 컴포넌트 (Glassmorphism)\n\n5. 로딩/에러:\n   - Suspense 경계 추가\n   - 에러 시 섹션 전체 에러 메시지 표시\n\n참고: 기존 통계 섹션과 동일한 스타일 일관성 유지",
-        "testStrategy": "1. /stats 페이지에 시간대별 집중도 섹션 표시 확인\n2. 차트 정상 렌더링 확인\n3. 다국어 전환 시 제목/설명 변경 확인\n4. Glassmorphism 효과 일관성 확인\n5. 로딩 중 Suspense Fallback 확인\n6. 에러 시 에러 메시지 확인",
+        "details": "1. `app/stats/page.tsx` 수정:\n   - 4번째 섹션으로 Hourly Distribution 추가\n   - 위치: Rolling 4-Week 차트 아래\n\n2. 레이아웃:\n   ```tsx\n   <section className=\"mb-8\">\n     <h2>Focus Distribution by Time</h2>\n     <p className=\"text-sm text-muted-foreground mb-4\">\n       When do you focus the most?\n     </p>\n     <HourlyDistributionChart />\n   </section>\n   ```\n\n3. 스타일:\n   - 섹션 간격: mb-8\n   - Card 컴포넌트 (Glassmorphism)\n\n4. 로딩/에러:\n   - Suspense 경계 추가\n   - 에러 시 섹션 전체 에러 메시지 표시\n\n참고: 기존 통계 섹션과 동일한 스타일 일관성 유지",
+        "testStrategy": "1. /stats 페이지에 시간대별 집중도 섹션 표시 확인\n2. 차트 정상 렌더링 확인\n3. Glassmorphism 효과 일관성 확인\n4. 로딩 중 Suspense Fallback 확인\n5. 에러 시 에러 메시지 확인",
         "priority": "medium",
         "dependencies": [
-          111,
-          107
+          "111",
+          "107"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T14:00:00.000Z"
       },
       {
-        "id": 113,
+        "id": "113",
         "title": "대시보드 좌측 패널 삭제 및 메인 레이아웃 최종 조정",
         "description": "기존 DashboardLeft 컴포넌트 제거 및 메인 페이지 레이아웃 단순화",
-        "details": "1. `app/[locale]/page.tsx` 수정:\n   - DashboardLeft 컴포넌트 import 및 렌더링 제거\n   - 기존 3단 그리드 → 2단 레이아웃 (중앙 타이머 + 우측 위젯)\n\n2. 최종 레이아웃 구조:\n   ```tsx\n   <div className=\"flex flex-row min-h-screen\">\n     <Sidebar /> {/* 80px 고정 */}\n     <TaskPanel /> {/* 0 → 360px 가변 */}\n     <div className=\"flex-1 flex justify-center items-start\">\n       <PomodoroTimer /> {/* 중앙 정렬 */}\n     </div>\n     <aside className=\"hidden xl:flex xl:w-[570px]\">\n       <DashboardRight /> {/* BGM + Calendar */}\n     </aside>\n     <div className=\"hidden 2xl:block 2xl:w-[200px]\">\n       {/* Google AdSense 수직 배너 */}\n     </div>\n   </div>\n   ```\n\n3. 파일 정리:\n   - `components/dashboard-left.tsx` 삭제 (또는 주석 처리)\n   - `components/weekly-summary.tsx` 삭제 (통계 페이지로 이동됨)\n   - `components/stats-chart.tsx` 삭제 (통계 페이지로 대체됨)\n\n4. 반응형:\n   - xl 미만: Task 패널 하단 시트, 타이머 중앙, BGM/Calendar 하단 배치\n   - xl 이상: 완전한 Dynamic Layout\n   - 2xl 이상: 광고 영역 추가\n\n5. 성능:\n   - 불필요한 컴포넌트 렌더링 방지\n   - 레이아웃 리플로우 최소화\n\n참고: Dead code 제거, Bundle size 감소",
+        "details": "1. `app/page.tsx` 수정:\n   - DashboardLeft 컴포넌트 import 및 렌더링 제거\n   - 기존 3단 그리드 → 2단 레이아웃 (중앙 타이머 + 우측 위젯)\n\n2. 최종 레이아웃 구조:\n   ```tsx\n   <div className=\"flex flex-row min-h-screen\">\n     <Sidebar /> {/* 80px 고정 */}\n     <TaskPanel /> {/* 0 → 360px 가변 */}\n     <div className=\"flex-1 flex justify-center items-start\">\n       <PomodoroTimer /> {/* 중앙 정렬 */}\n     </div>\n     <aside className=\"hidden xl:flex xl:w-[570px]\">\n       <DashboardRight /> {/* BGM + Calendar */}\n     </aside>\n     <div className=\"hidden 2xl:block 2xl:w-[200px]\">\n       {/* Google AdSense 수직 배너 */}\n     </div>\n   </div>\n   ```\n\n3. 파일 정리:\n   - `components/dashboard-left.tsx` 삭제 (또는 주석 처리)\n   - `components/weekly-summary.tsx` 삭제 (통계 페이지로 이동됨)\n   - `components/stats-chart.tsx` 삭제 (통계 페이지로 대체됨)\n\n4. 반응형:\n   - xl 미만: Task 패널 하단 시트, 타이머 중앙, BGM/Calendar 하단 배치\n   - xl 이상: 완전한 Dynamic Layout\n   - 2xl 이상: 광고 영역 추가\n\n5. 성능:\n   - 불필요한 컴포넌트 렌더링 방지\n   - 레이아웃 리플로우 최소화\n\n참고: Dead code 제거, Bundle size 감소",
         "testStrategy": "1. DashboardLeft 컴포넌트 렌더링 안 됨 확인\n2. 메인 페이지 레이아웃 단순화 확인 (타이머 + BGM/Calendar만)\n3. Task 패널 토글 시 타이머 위치 조정 확인\n4. xl 미만: 모바일 레이아웃 정상 확인\n5. `pnpm build` 후 Bundle size 감소 확인\n6. 3개 테마 모두에서 정상 표시 확인",
         "priority": "low",
         "dependencies": [
-          99,
-          107
+          "99",
+          "107"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T14:15:00.000Z"
       },
       {
-        "id": 114,
+        "id": "114",
         "title": "Google AdSense 수직 배너 영역 구현 (데스크탑 전용)",
         "description": "2xl 이상 해상도에서 우측 끝에 AdSense 배너 표시",
-        "details": "1. `components/adsense-vertical-banner.tsx` 생성:\n   - Google AdSense 수직 배너 (160x600 또는 300x600)\n   - 위치: 화면 우측 끝, fixed position\n   - 배경: 투명 또는 약간의 패딩\n\n2. AdSense 스크립트:\n   ```tsx\n   <ins\n     className=\"adsbygoogle\"\n     style={{ display: 'inline-block', width: '160px', height: '600px' }}\n     data-ad-client=\"ca-pub-XXXXXXXXXXXXXXXX\"\n     data-ad-slot=\"XXXXXXXXXX\"\n   />\n   <script>\n     (adsbygoogle = window.adsbygoogle || []).push({});\n   </script>\n   ```\n\n3. 조건부 렌더링:\n   - 2xl 이상에서만 표시 (Tailwind: `hidden 2xl:block`)\n   - 너비: 200px (배너 160px + 좌우 패딩 20px)\n\n4. 메인 페이지 통합:\n   - `app/[locale]/page.tsx`의 최우측 영역에 배치\n   - z-index: 낮게 설정 (타이머 위에 겹치지 않도록)\n\n5. 성능:\n   - Lazy Loading: Intersection Observer 사용\n   - AdSense 스크립트는 페이지 로드 후 비동기 로드\n\n6. Privacy:\n   - AdSense는 GDPR/CCPA 준수 (Google 자동 처리)\n   - Privacy Policy에 광고 사용 명시 (기존에 있음)\n\n참고: Google AdSense 공식 문서, Next.js Script 컴포넌트",
+        "details": "1. `components/adsense-vertical-banner.tsx` 생성:\n   - Google AdSense 수직 배너 (160x600 또는 300x600)\n   - 위치: 화면 우측 끝, fixed position\n   - 배경: 투명 또는 약간의 패딩\n\n2. AdSense 스크립트:\n   ```tsx\n   <ins\n     className=\"adsbygoogle\"\n     style={{ display: 'inline-block', width: '160px', height: '600px' }}\n     data-ad-client=\"ca-pub-XXXXXXXXXXXXXXXX\"\n     data-ad-slot=\"XXXXXXXXXX\"\n   />\n   <script>\n     (adsbygoogle = window.adsbygoogle || []).push({});\n   </script>\n   ```\n\n3. 조건부 렌더링:\n   - 2xl 이상에서만 표시 (Tailwind: `hidden 2xl:block`)\n   - 너비: 200px (배너 160px + 좌우 패딩 20px)\n\n4. 메인 페이지 통합:\n   - `app/page.tsx`의 최우측 영역에 배치\n   - z-index: 낮게 설정 (타이머 위에 겹치지 않도록)\n\n5. 성능:\n   - Lazy Loading: Intersection Observer 사용\n   - AdSense 스크립트는 페이지 로드 후 비동기 로드\n\n6. Privacy:\n   - AdSense는 GDPR/CCPA 준수 (Google 자동 처리)\n   - Privacy Policy에 광고 사용 명시 (기존에 있음)\n\n참고: Google AdSense 공식 문서, Next.js Script 컴포넌트",
         "testStrategy": "1. 2xl 이상: 우측 끝에 AdSense 배너 표시 확인\n2. 2xl 미만: 배너 숨김 확인\n3. AdSense 스크립트 로드 확인 (Network 탭)\n4. 배너가 타이머와 겹치지 않음 확인\n5. Lazy Loading 동작 확인 (스크롤 시 로드)\n6. Privacy Policy에 광고 사용 명시 확인",
         "priority": "low",
         "dependencies": [
-          113
+          "113"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T13:41:11.525Z"
       },
       {
-        "id": 115,
+        "id": "115",
         "title": "통계 페이지 SEO 메타데이터 및 구조화 데이터 추가",
         "description": "/stats 페이지에 검색 엔진 최적화를 위한 메타데이터 및 JSON-LD 추가",
-        "details": "1. `app/[locale]/stats/page.tsx`의 generateMetadata 확장:\n   ```typescript\n   export async function generateMetadata({ params }: Props): Promise<Metadata> {\n     const { locale } = await params\n     const t = await getTranslations('Metadata')\n     \n     return {\n       title: t('statsTitle'), // \"Statistics | Pomobox\"\n       description: t('statsDescription'),\n       openGraph: {\n         title: t('statsTitle'),\n         description: t('statsDescription'),\n         url: `https://pomobox.app/${locale}/stats`,\n         images: [{ url: '/og-stats.png' }],\n       },\n       twitter: {\n         card: 'summary_large_image',\n         title: t('statsTitle'),\n         description: t('statsDescription'),\n       },\n     }\n   }\n   ```\n\n2. JSON-LD 구조화 데이터 (WebPage):\n   ```json\n   {\n     \"@context\": \"https://schema.org\",\n     \"@type\": \"WebPage\",\n     \"name\": \"Focus Statistics\",\n     \"description\": \"View your focus statistics and patterns\",\n     \"url\": \"https://pomobox.app/en/stats\",\n     \"breadcrumb\": {\n       \"@type\": \"BreadcrumbList\",\n       \"itemListElement\": [\n         { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Home\", \"item\": \"https://pomobox.app/en\" },\n         { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Statistics\", \"item\": \"https://pomobox.app/en/stats\" }\n       ]\n     }\n   }\n   ```\n\n3. 다국어 메타데이터:\n   - messages/en.json: statsTitle, statsDescription\n   - messages/ko.json: \"통계 | 포모박스\", \"집중 통계와 패턴 분석\"\n   - messages/ja.json, messages/zh.json 동일\n\n4. OG 이미지 생성:\n   - `public/og-stats.png` (1200x630)\n   - 내용: 통계 차트 샘플 + \"Focus Statistics\" 텍스트\n\n5. Canonical URL:\n   - `<link rel=\"canonical\" href=\"https://pomobox.app/en/stats\" />`\n\n참고: Next.js Metadata API, Schema.org WebPage",
-        "testStrategy": "1. /stats 페이지 head에 title, description 메타태그 확인\n2. Open Graph 메타태그 확인 (og:title, og:description, og:image)\n3. JSON-LD 스크립트 확인 (View Page Source)\n4. Google Rich Results Test 통과 확인\n5. 다국어 URL별 메타데이터 확인 (/en/stats, /ko/stats)\n6. og-stats.png 이미지 로드 확인",
+        "details": "1. `app/stats/page.tsx`의 metadata export 추가:\n   ```typescript\n   export const metadata: Metadata = {\n     title: 'Statistics | Pomobox',\n     description: 'View your focus statistics and patterns',\n     openGraph: {\n       title: 'Statistics | Pomobox',\n       description: 'View your focus statistics and patterns',\n       url: 'https://pomobox.app/stats',\n       images: [{ url: '/og-stats.png' }],\n     },\n     twitter: {\n       card: 'summary_large_image',\n       title: 'Statistics | Pomobox',\n       description: 'View your focus statistics and patterns',\n     },\n   }\n   ```\n\n2. JSON-LD 구조화 데이터 (WebPage):\n   ```json\n   {\n     \"@context\": \"https://schema.org\",\n     \"@type\": \"WebPage\",\n     \"name\": \"Focus Statistics\",\n     \"description\": \"View your focus statistics and patterns\",\n     \"url\": \"https://pomobox.app/stats\",\n     \"breadcrumb\": {\n       \"@type\": \"BreadcrumbList\",\n       \"itemListElement\": [\n         { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Home\", \"item\": \"https://pomobox.app\" },\n         { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Statistics\", \"item\": \"https://pomobox.app/stats\" }\n       ]\n     }\n   }\n   ```\n\n3. OG 이미지 생성:\n   - `public/og-stats.png` (1200x630)\n   - 내용: 통계 차트 샘플 + \"Focus Statistics\" 텍스트\n\n4. Canonical URL:\n   - `<link rel=\"canonical\" href=\"https://pomobox.app/stats\" />`\n\n참고: Next.js Metadata API, Schema.org WebPage",
+        "testStrategy": "1. /stats 페이지 head에 title, description 메타태그 확인\n2. Open Graph 메타태그 확인 (og:title, og:description, og:image)\n3. JSON-LD 스크립트 확인 (View Page Source)\n4. Google Rich Results Test 통과 확인\n5. og-stats.png 이미지 로드 확인",
         "priority": "low",
         "dependencies": [
-          107
+          "107"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T13:49:54.415Z"
       },
       {
-        "id": 116,
+        "id": "116",
         "title": "E2E 테스트: Task 패널 기능 검증",
         "description": "Playwright로 Task 추가/수정/삭제/완료 토글 시나리오 테스트 작성",
         "details": "1. `tests/e2e/task-panel.spec.ts` 생성:\n\n2. 테스트 시나리오:\n   ```typescript\n   test.describe('Task Panel', () => {\n     test('should open task panel when clicking Task button', async ({ page }) => {\n       await page.goto('/')\n       await page.click('[aria-label=\"Task\"]')\n       await expect(page.locator('[role=\"complementary\"]')).toBeVisible()\n     })\n     \n     test('should add a new task', async ({ page }) => {\n       await page.goto('/')\n       await page.click('[aria-label=\"Task\"]')\n       await page.fill('input[placeholder=\"Add a new task...\"]', 'My first task')\n       await page.press('input', 'Enter')\n       await expect(page.locator('text=My first task')).toBeVisible()\n     })\n     \n     test('should toggle task completion', async ({ page }) => {\n       // ... (체크박스 클릭 시 line-through 적용 확인)\n     })\n     \n     test('should delete a task', async ({ page }) => {\n       // ... (삭제 버튼 클릭 시 Task 제거 확인)\n     })\n     \n     test('should show warning when reaching 30 tasks limit', async ({ page }) => {\n       // ... (30개 추가 후 경고 토스트 확인)\n     })\n   })\n   ```\n\n3. 로그인/비로그인 분기:\n   - 비로그인: localStorage 저장 확인\n   - 로그인: Supabase 저장 확인 (API 호출 모니터링)\n\n4. 실행:\n   - `pnpm e2e` 또는 `pnpm e2e:ui`\n\n참고: Playwright Testing Library, @axe-core/playwright (접근성 테스트)",
         "testStrategy": "1. `pnpm e2e` 실행하여 모든 Task 패널 테스트 통과 확인\n2. 비로그인/로그인 상태 각각 테스트\n3. 모바일 뷰포트 (375x667) 테스트\n4. 데스크탑 뷰포트 (1920x1080) 테스트\n5. 접근성 테스트 (axe-core) 통과 확인\n6. 스크린샷 비교 (Visual Regression Test)",
         "priority": "medium",
         "dependencies": [
-          102
+          "102"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T13:23:56.349Z"
       },
       {
-        "id": 117,
+        "id": "117",
         "title": "E2E 테스트: 통계 페이지 렌더링 검증",
         "description": "Playwright로 /stats 페이지의 4개 통계 섹션 렌더링 테스트 작성",
         "details": "1. `tests/e2e/stats-page.spec.ts` 생성:\n\n2. 테스트 시나리오:\n   ```typescript\n   test.describe('Statistics Page', () => {\n     test('should render all 4 statistics sections', async ({ page }) => {\n       await page.goto('/stats')\n       await expect(page.locator('h2:has-text(\"Weekly Pattern\")')).toBeVisible()\n       await expect(page.locator('h2:has-text(\"Growth Analysis\")')).toBeVisible()\n       await expect(page.locator('h2:has-text(\"Monthly Trend\")')).toBeVisible()\n       await expect(page.locator('h2:has-text(\"Focus Distribution by Time\")')).toBeVisible()\n     })\n     \n     test('should show login required overlay for non-logged-in users', async ({ page }) => {\n       await page.goto('/stats')\n       await expect(page.locator('text=로그인 필요')).toBeVisible()\n     })\n     \n     test('should switch chart types in Weekly Stats', async ({ page }) => {\n       await page.goto('/stats')\n       await page.click('button:has-text(\"Area\")')\n       // ... (Area 차트 렌더링 확인)\n     })\n   })\n   ```\n\n3. 차트 렌더링 확인:\n   - SVG 요소 존재 확인\n   - 툴팁 호버 시 표시 확인\n\n4. 실행:\n   - `pnpm e2e` 또는 `pnpm e2e:ui`\n\n참고: Playwright locator API, SVG 요소 선택",
         "testStrategy": "1. `pnpm e2e` 실행하여 통계 페이지 테스트 통과 확인\n2. 4개 섹션 모두 렌더링 확인\n3. 차트 타입 전환 확인\n4. 로그인/비로그인 상태 분기 확인\n5. 반응형 레이아웃 확인 (모바일/데스크탑)\n6. 스크린샷 비교 테스트",
         "priority": "medium",
         "dependencies": [
-          112
+          "112"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T14:12:48.211Z"
       },
       {
-        "id": 118,
-        "title": "다국어 메시지 추가 및 번역 (Task/Stats 관련)",
-        "description": "Task 패널 및 통계 페이지의 모든 텍스트를 4개 언어로 번역",
+        "id": "118",
+        "title": "[취소됨] 다국어 메시지 추가 및 번역 - 영어 단일 언어로 전환됨",
+        "description": "[취소] 프로젝트가 영어 단일 언어로 전환되어 더 이상 필요 없음",
         "details": "1. `messages/en.json` 추가:\n   ```json\n   {\n     \"Task\": {\n       \"title\": \"Tasks\",\n       \"addPlaceholder\": \"Add a new task...\",\n       \"noTasks\": \"No tasks yet. Start adding!\",\n       \"taskLimit\": \"Maximum 30 tasks reached\",\n       \"deleteConfirm\": \"Are you sure you want to delete this task?\"\n     },\n     \"Statistics\": {\n       \"weeklyPattern\": \"Weekly Pattern\",\n       \"growthAnalysis\": \"Growth Analysis\",\n       \"monthlyTrend\": \"Monthly Trend\",\n       \"focusDistribution\": \"Focus Distribution by Time\",\n       \"hourlyDistributionDescription\": \"When do you focus the most?\",\n       \"thisWeek\": \"This Week\",\n       \"lastWeek\": \"Last Week\",\n       \"increase\": \"Increase\",\n       \"decrease\": \"Decrease\"\n     }\n   }\n   ```\n\n2. `messages/ko.json` 번역:\n   - Task.title: \"작업 목록\"\n   - Task.addPlaceholder: \"새 작업 추가...\"\n   - Statistics.weeklyPattern: \"주간 패턴\"\n   - Statistics.focusDistribution: \"시간대별 집중도\"\n   - 등...\n\n3. `messages/ja.json` 번역:\n   - Task.title: \"タスク\"\n   - Statistics.weeklyPattern: \"週間パターン\"\n   - 등...\n\n4. `messages/zh.json` 번역:\n   - Task.title: \"任务列表\"\n   - Statistics.weeklyPattern: \"周模式\"\n   - 등...\n\n5. 컴포넌트 통합:\n   - task-panel.tsx: useTranslations('Task')\n   - stats/weekly-stats-chart.tsx: useTranslations('Statistics')\n   - 모든 하드코딩된 텍스트를 t() 함수로 대체\n\n참고: next-intl useTranslations 훅",
         "testStrategy": "1. 언어 전환 시 Task 패널 텍스트 변경 확인 (en/ko/ja/zh)\n2. 통계 페이지 제목/설명 번역 확인\n3. 툴팁 텍스트 번역 확인\n4. 빈 상태 메시지 번역 확인\n5. `pnpm build` 후 번역 누락 없음 확인\n6. 번역 품질 검토 (네이티브 스피커 확인)",
-        "priority": "medium",
-        "dependencies": [
-          98,
-          107
-        ],
-        "status": "pending",
+        "priority": "low",
+        "dependencies": [],
+        "status": "cancelled",
         "subtasks": []
       },
       {
-        "id": 119,
+        "id": "119",
         "title": "성능 최적화: React Query Prefetching 적용",
         "description": "통계 페이지 방문 전 데이터 미리 가져오기 (Hover Prefetch)",
         "details": "1. `components/sidebar.tsx` 수정:\n   - Statistics 버튼에 onMouseEnter 이벤트 추가\n   - Prefetch 트리거:\n     ```typescript\n     const queryClient = useQueryClient()\n     \n     const handleStatisticsHover = () => {\n       if (!user) return\n       queryClient.prefetchQuery({\n         queryKey: ['recentDaysStats', user.id, 7],\n         queryFn: () => getRecentDaysStats(user.id, 7),\n       })\n       queryClient.prefetchQuery({\n         queryKey: ['lastWeekStats', user.id],\n         queryFn: () => getLastWeekStats(user.id),\n       })\n       // ... (다른 통계 쿼리도 동일)\n     }\n     ```\n\n2. Link 컴포넌트 Prefetch:\n   - Next.js Link의 prefetch prop 활용 (자동 프리페치)\n\n3. 조건:\n   - 로그인 사용자만\n   - 한 번만 프리페치 (플래그 사용)\n   - 네트워크 idle 상태에서만\n\n4. 성능 모니터링:\n   - React Query DevTools에서 프리페치 확인\n   - Network 탭에서 요청 타이밍 확인\n\n참고: React Query Prefetching, Next.js Link prefetch",
         "testStrategy": "1. Statistics 버튼 호버 시 프리페치 요청 확인 (Network 탭)\n2. /stats 페이지 방문 시 즉시 데이터 표시 확인 (로딩 없음)\n3. React Query DevTools에서 캐시 히트 확인\n4. 비로그인 사용자: 프리페치 안 됨 확인\n5. Lighthouse Performance 점수 향상 확인",
         "priority": "low",
         "dependencies": [
-          107
+          "107"
         ],
         "status": "pending",
         "subtasks": []
       },
       {
-        "id": 120,
+        "id": "120",
         "title": "접근성 개선: ARIA 라벨 및 키보드 네비게이션 점검",
         "description": "Task 패널, 사이드바, 통계 페이지의 접근성 개선 사항 적용",
         "details": "1. 사이드바 (components/sidebar.tsx):\n   - role=\"navigation\"\n   - aria-label=\"Main Navigation\"\n   - 각 버튼에 aria-label (\"Timer\", \"Task\", \"Statistics\", \"Settings\")\n   - 키보드 포커스 표시 (focus:ring-2)\n\n2. Task 패널 (components/task-panel.tsx):\n   - role=\"complementary\"\n   - aria-label=\"Task Panel\"\n   - 포커스 트랩 (radix-ui/react-focus-scope)\n   - Esc 키로 닫기\n   - 각 Task 아이템에 aria-label (\"Task: {title}\")\n\n3. 통계 차트:\n   - 차트 제목에 aria-label\n   - 툴팁에 role=\"tooltip\"\n   - 차트 데이터 테이블 대체 텍스트 (스크린 리더용)\n\n4. 키보드 네비게이션:\n   - Tab: 다음 요소\n   - Shift+Tab: 이전 요소\n   - Enter/Space: 버튼 활성화\n   - Esc: 다이얼로그/패널 닫기\n\n5. 색상 대비:\n   - WCAG AA 기준 (4.5:1 이상)\n   - oklch 색상 시스템에서 명도 확인\n\n6. 테스트:\n   - @axe-core/playwright 자동 테스트\n   - 스크린 리더 테스트 (NVDA, VoiceOver)\n\n참고: WCAG 2.1 AA 기준, Radix UI 접근성 패턴",
         "testStrategy": "1. Playwright axe-core 테스트 통과 확인\n2. 키보드만으로 모든 기능 사용 가능 확인\n3. Tab 순서 논리적 흐름 확인\n4. 포커스 표시 명확성 확인 (focus:ring)\n5. 스크린 리더로 Task 패널 사용 확인\n6. 색상 대비 확인 (Lighthouse Accessibility 점수 100)",
         "priority": "medium",
         "dependencies": [
-          98,
-          107
+          "98",
+          "107"
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-01-05T14:20:26.792Z"
       }
     ],
     "metadata": {
-      "created": "2026-01-01T18:30:02.731Z",
-      "updated": "2026-01-01T18:30:02.731Z",
-      "description": "Tasks for master context"
+      "version": "1.0.0",
+      "lastModified": "2026-01-05T14:20:26.793Z",
+      "taskCount": 25,
+      "completedCount": 23,
+      "tags": [
+        "master"
+      ]
     }
   }
 }

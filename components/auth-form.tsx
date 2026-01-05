@@ -2,8 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/navigation"
+import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,8 +14,6 @@ interface AuthFormProps {
 }
 
 export function AuthForm({ mode }: AuthFormProps) {
-  const t = useTranslations("Auth")
-  const tAccount = useTranslations("Account")
   const router = useRouter()
   const { toast } = useToast()
   const [email, setEmail] = useState("")
@@ -40,8 +37,8 @@ export function AuthForm({ mode }: AuthFormProps) {
         })
         if (error) throw error
         toast({
-          title: t("checkEmail"),
-          description: t("confirmationSent"),
+          title: "Check your email",
+          description: "We've sent you a confirmation link.",
         })
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -54,8 +51,8 @@ export function AuthForm({ mode }: AuthFormProps) {
       }
     } catch (error) {
       toast({
-        title: t("error"),
-        description: error instanceof Error ? error.message : t("unknownError"),
+        title: "Error",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive",
       })
     } finally {
@@ -75,8 +72,8 @@ export function AuthForm({ mode }: AuthFormProps) {
       if (error) throw error
     } catch (error) {
       toast({
-        title: t("error"),
-        description: error instanceof Error ? error.message : t("unknownError"),
+        title: "Error",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive",
       })
       setLoading(false)
@@ -88,7 +85,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       <form onSubmit={handleEmailAuth} className="space-y-4">
         <Input
           type="email"
-          placeholder={t("email")}
+          placeholder="Email"
           value={email}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
           required
@@ -96,7 +93,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         />
         <Input
           type="password"
-          placeholder={t("password")}
+          placeholder="Password"
           value={password}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
           required
@@ -105,7 +102,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         />
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {mode === "login" ? t("login") : t("signup")}
+          {mode === "login" ? "Sign in" : "Sign up"}
         </Button>
 
         {/* 비밀번호 찾기 링크 (로그인 모드에서만) */}
@@ -115,7 +112,7 @@ export function AuthForm({ mode }: AuthFormProps) {
               href="/auth/forgot-password"
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
-              {tAccount("forgotPassword")}
+              Forgot password?
             </Link>
           </div>
         )}
@@ -126,7 +123,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">{t("or")}</span>
+          <span className="bg-background px-2 text-muted-foreground">or</span>
         </div>
       </div>
 
@@ -156,7 +153,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
           />
         </svg>
-        {t("continueWithGoogle")}
+        Continue with Google
       </Button>
     </div>
   )

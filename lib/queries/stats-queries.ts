@@ -7,10 +7,12 @@ import {
   getMonthlyStats,
   getPreviousMonthStats,
   getTotalStatsFromDB,
+  getFocusDistributionByHour,
   incrementDailyMinutes,
   recordSessionComplete,
   type DailyStats,
   type DayRecord,
+  type HourlyDistribution,
 } from "@/lib/supabase/stats"
 
 // ============================================
@@ -27,6 +29,8 @@ export const statsKeys = {
   previousMonth: (userId: string) =>
     [...statsKeys.all, "previousMonth", userId] as const,
   total: (userId: string) => [...statsKeys.all, "total", userId] as const,
+  focusDistribution: (userId: string, startDate: string, endDate: string) =>
+    [...statsKeys.all, "focusDistribution", userId, startDate, endDate] as const,
 }
 
 // ============================================
@@ -110,6 +114,25 @@ export function useTotalStats(userId: string | null) {
   })
 }
 
+/**
+ * 시간대별 집중도 분포 조회 (RPC)
+ * - staleTime 10분: 변동이 적은 데이터
+ * - 타임존 자동 감지 (Intl API)
+ */
+export function useFocusDistributionQuery(
+  userId: string | null,
+  startDate: string,
+  endDate: string
+) {
+  return useQuery({
+    queryKey: statsKeys.focusDistribution(userId ?? "", startDate, endDate),
+    queryFn: () =>
+      userId ? getFocusDistributionByHour(userId, startDate, endDate) : [],
+    enabled: !!userId,
+    staleTime: 10 * 60 * 1000, // 10분 (변동 적음)
+  })
+}
+
 // ============================================
 // Mutation Hooks (데이터 변경)
 // ============================================
@@ -171,4 +194,4 @@ export function useRecordSession() {
 // ============================================
 // 타입 재export
 // ============================================
-export type { DailyStats, DayRecord }
+export type { DailyStats, DayRecord, HourlyDistribution }

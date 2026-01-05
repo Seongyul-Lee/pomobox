@@ -1,6 +1,5 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { Target } from "lucide-react"
 import { useRealtimeFocusMinutes } from "@/hooks/use-realtime-focus"
 
@@ -11,7 +10,6 @@ interface GoalProgressProps {
 }
 
 export function GoalProgress({ currentMinutes, goalMinutes }: GoalProgressProps) {
-  const t = useTranslations("Timer")
   const realtimeMinutes = useRealtimeFocusMinutes()
 
   // 저장된 시간 + 실시간 경과 시간
@@ -21,16 +19,18 @@ export function GoalProgress({ currentMinutes, goalMinutes }: GoalProgressProps)
 
   return (
     <div className="w-full max-w-xs">
-      <div className="flex items-center justify-between text-sm mb-1">
-        <div className="flex items-center gap-1.5 text-muted-foreground hover-goal-label">
-          <Target className="h-3.5 w-3.5" />
-          <span>{t("dailyGoal")}</span>
+      <div className="flex items-center justify-between text-xs sm:text-sm mb-1">
+        <div className="flex items-center gap-1 sm:gap-1.5 text-muted-foreground hover-goal-label">
+          <Target className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+          <span className="hidden sm:inline">Daily Goal</span>
+          <span className="sm:hidden">Goal</span>
         </div>
         <span className={`hover-goal-value ${isComplete ? "text-green-500 font-medium" : "text-muted-foreground"}`}>
-          {displayMinutes} / {goalMinutes}{t("min")}
+          <span className="hidden sm:inline">{displayMinutes} / {goalMinutes} min</span>
+          <span className="sm:hidden">{displayMinutes}/{goalMinutes}m</span>
         </span>
       </div>
-      <div className="h-2 bg-[oklch(0.88_0.01_255)] dark:bg-muted rounded-full overflow-hidden hover-progress-bar">
+      <div className="h-1.5 sm:h-2 bg-[oklch(0.88_0.01_255)] dark:bg-muted rounded-full overflow-hidden hover-progress-bar">
         <div
           className={`h-full transition-all duration-500 rounded-full ${
             isComplete
@@ -41,8 +41,9 @@ export function GoalProgress({ currentMinutes, goalMinutes }: GoalProgressProps)
         />
       </div>
       {isComplete && (
-        <p className="text-xs text-green-500 text-center mt-1 hover-hint-text">
-          {t("goalReached")}
+        <p className="text-[10px] sm:text-xs text-green-500 text-center mt-1 hover-hint-text">
+          <span className="hidden sm:inline">Goal reached! Great job!</span>
+          <span className="sm:hidden">🎉 Goal!</span>
         </p>
       )}
     </div>

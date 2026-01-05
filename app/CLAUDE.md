@@ -76,7 +76,7 @@ xl (1280px~2560px):
 ```bash
 # Playwright MCP
 browser_resize(2560, 1440)  # QHD
-browser_navigate("http://localhost:3000/en")
+browser_navigate("http://localhost:3000")
 browser_take_screenshot("qhd.png")
 ```
 
@@ -87,6 +87,6 @@ browser_take_screenshot("qhd.png")
 | 파일 | 역할 |
 |------|------|
 | `globals.css` | 전역 스타일, 반응형 미디어 쿼리 |
-| `[locale]/layout.tsx` | i18n 레이아웃 |
-| `[locale]/page.tsx` | 메인 페이지 |
+| `layout.tsx` | 루트 레이아웃 |
+| `page.tsx` | 메인 페이지 |
 | `providers.tsx` | 클라이언트 프로바이더 |

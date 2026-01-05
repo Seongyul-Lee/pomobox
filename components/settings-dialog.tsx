@@ -1,17 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useTranslations, useLocale } from "next-intl"
-import { useRouter, usePathname } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Switch } from "@/components/ui/switch"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Settings, Check, Bell, Volume2, Globe } from "lucide-react"
+import { Settings, Check, Bell, Volume2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { type SoundCategory, MELODY_SOUNDS, AMBIENT_SOUNDS, getSoundsByCategory, playSound, setVolume } from "@/lib/sounds"
-import { routing } from "@/i18n/routing"
+import { type SoundCategory, getSoundsByCategory, playSound, setVolume } from "@/lib/sounds"
 
 export interface TimerSettings {
   focusDuration: number
@@ -79,13 +76,7 @@ export function SettingsDialog({
   onOpenChange,
   hideTrigger = false,
 }: SettingsDialogProps) {
-  const t = useTranslations("Settings")
-  const tLanguages = useTranslations("Languages")
-  const locale = useLocale()
-  const router = useRouter()
-  const pathname = usePathname()
   const [localSettings, setLocalSettings] = useState<TimerSettings>(settings)
-  const [selectedLocale, setSelectedLocale] = useState(locale)
   const [isSaved, setIsSaved] = useState(false)
   const { toast } = useToast()
 
@@ -93,25 +84,15 @@ export function SettingsDialog({
     setLocalSettings(settings)
   }, [settings])
 
-  useEffect(() => {
-    setSelectedLocale(locale)
-  }, [locale])
-
   const handleSave = () => {
     if (isRunning) return
     onSettingsChange?.(localSettings)
     setIsSaved(true)
 
     toast({
-      title: t("settingsSaved"),
-      description: t("settingsUpdated"),
+      title: "Settings saved!",
+      description: "Your preferences have been updated.",
     })
-
-    // Apply language change if different
-    if (selectedLocale !== locale) {
-      const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}(-[A-Z]{2})?/, '') || '/'
-      router.push(`/${selectedLocale}${pathWithoutLocale}`)
-    }
 
     setTimeout(() => {
       setIsSaved(false)
@@ -120,14 +101,14 @@ export function SettingsDialog({
 
   const handleSoundToggle = (checked: boolean) => {
     if (checked && localSettings.volume === 0) {
-      setLocalSettings({ 
-        ...localSettings, 
+      setLocalSettings({
+        ...localSettings,
         soundEnabled: true,
         volume: 50
       })
     } else {
-      setLocalSettings({ 
-        ...localSettings, 
+      setLocalSettings({
+        ...localSettings,
         soundEnabled: checked
       })
     }
@@ -168,16 +149,16 @@ export function SettingsDialog({
       )}
       <DialogContent className="sm:max-w-md max-h-[85vh] flex flex-col" aria-describedby={undefined}>
         <DialogHeader>
-          <DialogTitle>{t("title")}</DialogTitle>
+          <DialogTitle>Settings</DialogTitle>
         </DialogHeader>
         <div className="space-y-6 py-4 overflow-y-auto flex-1 -mr-5.75 pr-5.75 settings-scrollbar">
           {/* Notifications */}
-          <div className="flex items-center justify-between group">
-            <div className="flex items-center gap-2 hover-section-label cursor-default">
-              <Bell className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              <div>
-                <p className="font-medium">{t("notifications")}</p>
-                <p className="text-sm text-muted-foreground">{t("notificationsDescription")}</p>
+          <div className="flex items-center justify-between group gap-2">
+            <div className="flex items-center gap-2 hover-section-label cursor-default min-w-0">
+              <Bell className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+              <div className="min-w-0">
+                <p className="font-medium text-sm sm:text-base">Notifications</p>
+                <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Get notified when timer ends</p>
               </div>
             </div>
             <Switch
@@ -186,25 +167,25 @@ export function SettingsDialog({
                 setLocalSettings({ ...localSettings, notificationsEnabled: checked })
               }
               aria-label="Toggle notifications"
-              className="hover-toggle"
+              className="hover-toggle shrink-0"
             />
           </div>
 
           {/* Sound */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between group">
-              <div className="flex items-center gap-2 hover-section-label cursor-default">
-                <Volume2 className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                <div>
-                  <p className="font-medium">{t("sound")}</p>
-                  <p className="text-sm text-muted-foreground">{t("soundDescription")}</p>
+            <div className="flex items-center justify-between group gap-2">
+              <div className="flex items-center gap-2 hover-section-label cursor-default min-w-0">
+                <Volume2 className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+                <div className="min-w-0">
+                  <p className="font-medium text-sm sm:text-base">Sound</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Play sound when timer ends</p>
                 </div>
               </div>
               <Switch
                 checked={localSettings.soundEnabled}
                 onCheckedChange={handleSoundToggle}
                 aria-label="Toggle sound"
-                className="hover-toggle"
+                className="hover-toggle shrink-0"
               />
             </div>
 
@@ -213,7 +194,7 @@ export function SettingsDialog({
               <div className="space-y-3 pl-1">
                 {/* Sound Category Selection */}
                 <div className="space-y-1.5">
-                  <span className="text-sm text-muted-foreground pb-0.5">{t("soundCategory")}</span>
+                  <span className="text-sm text-muted-foreground pb-0.5">Sound Category</span>
                   <div className="grid grid-cols-2 gap-2">
                     <Button
                       variant={localSettings.soundCategory === 'melody' ? 'default' : 'outline'}
@@ -221,7 +202,7 @@ export function SettingsDialog({
                       onClick={() => handleCategoryChange('melody')}
                       className="w-full"
                     >
-                      🎵 {t("melody")}
+                      Melody
                     </Button>
                     <Button
                       variant={localSettings.soundCategory === 'ambient' ? 'default' : 'outline'}
@@ -229,19 +210,19 @@ export function SettingsDialog({
                       onClick={() => handleCategoryChange('ambient')}
                       className="w-full"
                     >
-                      🔊 {t("ambient")}
+                      Ambient
                     </Button>
                   </div>
                   <p className="text-xs text-muted-foreground pt-0.5">
                     {localSettings.soundCategory === 'melody'
-                      ? t("melodyDescription")
-                      : t("ambientDescription")}
+                      ? "High-pitched melodic sounds"
+                      : "Deep bass & ambient sounds"}
                   </p>
                 </div>
 
                 {/* Sound Type Selection */}
                 <div className="space-y-2">
-                  <span className="text-sm text-muted-foreground" id="sound-type-label">{t("soundType")}</span>
+                  <span className="text-sm text-muted-foreground" id="sound-type-label">Sound</span>
                   <Select
                     value={localSettings.soundType}
                     onValueChange={(value) =>
@@ -249,7 +230,7 @@ export function SettingsDialog({
                     }
                   >
                     <SelectTrigger className="w-full" aria-labelledby="sound-type-label">
-                      <SelectValue placeholder={t("selectSound")} />
+                      <SelectValue placeholder="Select a sound" />
                     </SelectTrigger>
                     <SelectContent>
                       {getSoundsByCategory(localSettings.soundCategory).map((sound) => (
@@ -263,7 +244,7 @@ export function SettingsDialog({
 
                 {/* Volume Slider */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground" id="volume-label">{t("volume")}</span>
+                  <span className="text-sm text-muted-foreground" id="volume-label">Volume</span>
                   <span className="text-sm font-medium">{localSettings.volume}%</span>
                 </div>
                 <Slider
@@ -283,38 +264,16 @@ export function SettingsDialog({
                   onClick={handleVolumeTest}
                   className="w-full"
                 >
-                  {t("testSound")}
+                  Test Sound
                 </Button>
               </div>
             )}
           </div>
 
-          {/* Language */}
-          <div className="flex items-center justify-between group">
-            <div className="flex items-center gap-2 hover-section-label cursor-default">
-              <Globe className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              <div>
-                <p className="font-medium">{t("language")}</p>
-              </div>
-            </div>
-            <Select value={selectedLocale} onValueChange={setSelectedLocale}>
-              <SelectTrigger className="w-35" aria-label="Select language">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {routing.locales.map((loc) => (
-                  <SelectItem key={loc} value={loc}>
-                    {tLanguages(loc)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Focus Duration */}
           <div>
-            <p className="font-medium mb-3">{t("focusDuration")}</p>
-            <div className="grid grid-cols-4 gap-2">
+            <p className="font-medium text-sm sm:text-base mb-2 sm:mb-3">Focus Duration</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {FOCUS_OPTIONS.map((option) => (
                 <Button
                   key={option.value}
@@ -322,9 +281,9 @@ export function SettingsDialog({
                   size="sm"
                   disabled={isRunning}
                   onClick={() => setLocalSettings({ ...localSettings, focusDuration: option.value })}
-                  className="hover:scale-105 transition-transform duration-150"
+                  className="hover:scale-105 transition-transform duration-150 text-xs sm:text-sm"
                 >
-                  {t("min", { value: option.value })}
+                  {option.value}m
                 </Button>
               ))}
             </div>
@@ -332,8 +291,8 @@ export function SettingsDialog({
 
           {/* Break Duration */}
           <div>
-            <p className="font-medium mb-3">{t("breakDuration")}</p>
-            <div className="grid grid-cols-4 gap-2">
+            <p className="font-medium text-sm sm:text-base mb-2 sm:mb-3">Break Duration</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {BREAK_OPTIONS.map((option) => (
                 <Button
                   key={option.value}
@@ -341,9 +300,9 @@ export function SettingsDialog({
                   size="sm"
                   disabled={isRunning}
                   onClick={() => setLocalSettings({ ...localSettings, breakDuration: option.value })}
-                  className="hover:scale-105 transition-transform duration-150"
+                  className="hover:scale-105 transition-transform duration-150 text-xs sm:text-sm"
                 >
-                  {t("min", { value: option.value })}
+                  {option.value}m
                 </Button>
               ))}
             </div>
@@ -351,40 +310,40 @@ export function SettingsDialog({
 
           {/* Daily Goal */}
           <div>
-            <p className="font-medium mb-3">{t("dailyGoal")}</p>
-            <div className="grid grid-cols-5 gap-2">
+            <p className="font-medium text-sm sm:text-base mb-2 sm:mb-3">Daily Goal</p>
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               {GOAL_OPTIONS.map((option) => (
                 <Button
                   key={option.value}
                   variant={localSettings.dailyGoal === option.value ? "default" : "outline"}
                   size="sm"
                   onClick={() => setLocalSettings({ ...localSettings, dailyGoal: option.value })}
-                  className="hover:scale-105 transition-transform duration-150"
+                  className="hover:scale-105 transition-transform duration-150 text-xs sm:text-sm"
                 >
-                  {option.value}
+                  {option.value}m
                 </Button>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground mt-2">{t("dailyGoalDescription")}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1.5 sm:mt-2">Daily focus time target</p>
           </div>
 
           <Button
             onClick={handleSave}
-            className="w-full hover-glow"
+            className="w-full hover-glow text-sm sm:text-base"
             disabled={isSaved || isRunning}
           >
             {isSaved ? (
               <>
-                <Check className="mr-2 h-4 w-4" />
-                {t("saved")}
+                <Check className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                Saved!
               </>
             ) : (
-              t("saveChanges")
+              "Save"
             )}
           </Button>
           {isRunning && (
-            <p className="text-sm text-muted-foreground">
-              {t("stopTimerWarning")}
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Stop timer to change durations.
             </p>
           )}
         </div>

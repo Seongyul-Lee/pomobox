@@ -25,7 +25,6 @@ import {
 import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
 import { ArticleMeta } from "@/components/ui/article-meta"
 import { DefinitionBox } from "@/components/ui/definition-box"
-import { MobileGuideNav } from "@/components/ui/mobile-guide-nav"
 
 export const metadata: Metadata = {
   title: "What is the Pomodoro Technique? Complete Guide | Pomobox",
@@ -126,9 +125,6 @@ const jsonLd = [
 export default function WhatIsPomodoroPage() {
   return (
     <main className="min-h-screen pt-14 xl:pt-0 bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
-      {/* Mobile Navigation */}
-      <MobileGuideNav />
-
       <div className="max-w-4xl mx-auto py-8 md:py-12 px-4 sm:px-6">
         {/* Breadcrumb Navigation */}
         <Breadcrumb

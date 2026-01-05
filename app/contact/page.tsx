@@ -75,7 +75,7 @@ function ContactCard({
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6">
+      <div className="max-w-2xl mx-auto py-12 pt-20 md:pt-12 px-4 sm:px-6">
         {/* Back Navigation */}
         <Link
           href="/"

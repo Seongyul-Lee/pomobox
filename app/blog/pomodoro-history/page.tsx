@@ -202,7 +202,7 @@ const jsonLd = [
 
 export default function PomodoroHistoryPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
+    <main className="min-h-screen pt-14 xl:pt-0 bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
       <div className="max-w-4xl mx-auto py-8 md:py-12 px-4 sm:px-6">
         <Breadcrumb
           items={BREADCRUMB_PRESETS.blog("Pomodoro History")}

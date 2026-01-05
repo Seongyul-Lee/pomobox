@@ -23,7 +23,6 @@ import {
 import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
 import { ArticleMeta } from "@/components/ui/article-meta"
 import { QuickAnswer } from "@/components/ui/definition-box"
-import { MobileGuideNav } from "@/components/ui/mobile-guide-nav"
 
 export const metadata: Metadata = {
   title: "Pomodoro vs Timeboxing: Which is Right for You? | Pomobox",
@@ -252,9 +251,6 @@ const jsonLd = [
 export default function PomodoroVsTimeboxingPage() {
   return (
     <main className="min-h-screen pt-14 xl:pt-0 bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
-      {/* Mobile Navigation */}
-      <MobileGuideNav />
-
       <div className="max-w-4xl mx-auto py-8 md:py-12 px-4 sm:px-6">
         <Breadcrumb
           items={BREADCRUMB_PRESETS.guide("Pomodoro vs Timeboxing")}
@@ -301,14 +297,14 @@ export default function PomodoroVsTimeboxingPage() {
           className="mb-16"
         />
 
-        {/* TL;DR */}
+        {/* Quick Summary */}
         <section className="mb-16">
           <div className="p-6 md:p-8 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50">
             <h2 className="flex items-center gap-3 text-xl md:text-2xl font-semibold text-foreground mb-4">
               <span className="p-2 rounded-xl bg-primary/10">
                 <Sparkles className="h-5 w-5 text-primary" />
               </span>
-              TL;DR
+              Quick Summary
             </h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>

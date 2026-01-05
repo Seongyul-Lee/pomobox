@@ -124,30 +124,46 @@ const RESEARCH_FINDINGS = [
     finding: "Flow States Require Uninterrupted Time",
     study: "Csikszentmihalyi, Flow research (1990s)",
     result: "Flow state requires 10-15 minutes of uninterrupted focus to achieve. Interruptions reset this.",
-    implication: "Protected Pomodoro sessions enable flow entry; breaks should come after, not during.",
+    implication: "Protected Pomodoro sessions enable flow entry. Breaks should come after, not during.",
   },
 ]
 
 const OPTIMAL_DURATIONS = [
   {
     duration: "15-20 min",
+    label: "Quick Sprint",
+    intensity: 1,
+    color: "cyan",
+    icon: Zap,
     best_for: "Learning new material, high-anxiety tasks, low energy periods",
-    science: "Matches natural attention span limits; reduces start resistance for difficult tasks",
+    science: "Matches natural attention span limits and reduces start resistance for difficult tasks",
   },
   {
-    duration: "25 min (classic)",
+    duration: "25 min",
+    label: "Classic",
+    intensity: 2,
+    color: "primary",
+    icon: Timer,
     best_for: "General knowledge work, writing, coding, studying",
-    science: "Slightly exceeds attention span to build stamina; short enough to prevent fatigue",
+    science: "Slightly exceeds attention span to build stamina, yet short enough to prevent fatigue",
   },
   {
     duration: "45-50 min",
+    label: "Deep Dive",
+    intensity: 3,
+    color: "amber",
+    icon: Brain,
     best_for: "Deep creative work, complex problem-solving, experienced practitioners",
-    science: "Allows deeper immersion; requires higher focus capacity; aligns with ~90-min ultradian cycles when paired with longer breaks",
+    science: "Allows deeper immersion and requires higher focus capacity. Aligns with ~90-min ultradian cycles when paired with longer breaks",
   },
   {
     duration: "90 min",
+    label: "Ultra Focus",
+    intensity: 4,
+    color: "orange",
+    icon: Waves,
     best_for: "Flow-state work for experts, single long-form tasks",
-    science: "Full ultradian cycle; requires trained focus ability; needs substantial break (20-30 min) after",
+    science: "Full ultradian cycle that requires trained focus ability. Needs substantial break (20-30 min) after",
   },
 ]
 
@@ -168,7 +184,7 @@ const BREAK_SCIENCE = [
     icon: Brain,
     title: "Mental Defocusing",
     benefit: "Activates DMN for memory consolidation and creative incubation",
-    recommendation: "Avoid new information (no social media); let mind wander",
+    recommendation: "Avoid new information (no social media). Let mind wander",
   },
   {
     icon: Heart,
@@ -242,7 +258,7 @@ const jsonLd = [
 
 export default function ScienceOfFocusPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
+    <main className="min-h-screen pt-14 xl:pt-0 bg-gradient-to-b from-background via-muted/20 to-muted/40 dark:via-background dark:to-muted/10 text-foreground">
       <div className="max-w-4xl mx-auto py-8 md:py-12 px-4 sm:px-6">
         <Breadcrumb
           items={BREADCRUMB_PRESETS.blog("Neuroscience Behind Pomodoro")}
@@ -413,7 +429,125 @@ export default function ScienceOfFocusPage() {
             </h2>
           </div>
 
-          <div className="p-6 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50 overflow-x-auto">
+          {/* Mobile: Enhanced Card Layout */}
+          <div className="md:hidden space-y-4">
+            {OPTIMAL_DURATIONS.map((item, index) => {
+              const Icon = item.icon
+              const colorClasses = {
+                cyan: {
+                  bg: "from-cyan-500/10 to-cyan-500/5",
+                  border: "border-cyan-500/20",
+                  text: "text-cyan-500",
+                  bar: "bg-cyan-500",
+                  badge: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
+                },
+                primary: {
+                  bg: "from-primary/10 to-primary/5",
+                  border: "border-primary/20",
+                  text: "text-primary",
+                  bar: "bg-primary",
+                  badge: "bg-primary/15 text-primary border-primary/30",
+                },
+                amber: {
+                  bg: "from-amber-500/10 to-amber-500/5",
+                  border: "border-amber-500/20",
+                  text: "text-amber-500",
+                  bar: "bg-amber-500",
+                  badge: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+                },
+                orange: {
+                  bg: "from-orange-500/10 to-orange-500/5",
+                  border: "border-orange-500/20",
+                  text: "text-orange-500",
+                  bar: "bg-orange-500",
+                  badge: "bg-orange-500/15 text-orange-400 border-orange-500/30",
+                },
+              }
+              const colors = colorClasses[item.color as keyof typeof colorClasses]
+
+              return (
+                <div
+                  key={item.duration}
+                  className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${colors.bg} border ${colors.border}`}
+                >
+                  {/* Intensity Bar - Left Edge */}
+                  <div className="absolute left-0 top-0 bottom-0 w-1">
+                    <div
+                      className={`absolute bottom-0 w-full ${colors.bar} transition-all duration-500`}
+                      style={{ height: `${item.intensity * 25}%` }}
+                    />
+                    <div className="absolute inset-0 bg-muted/30" />
+                  </div>
+
+                  <div className="pl-4 pr-4 py-4">
+                    {/* Header: Duration + Label + Icon */}
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className={`text-2xl font-bold tracking-tight ${colors.text}`}>
+                            {item.duration}
+                          </span>
+                        </div>
+                        <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium border ${colors.badge}`}>
+                          <Icon className="h-3 w-3" />
+                          {item.label}
+                        </span>
+                      </div>
+
+                      {/* Intensity Indicator */}
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="flex gap-0.5">
+                          {[1, 2, 3, 4].map((level) => (
+                            <div
+                              key={level}
+                              className={`w-1.5 rounded-full transition-all ${
+                                level <= item.intensity
+                                  ? `${colors.bar} h-${2 + level}`
+                                  : "bg-muted/40 h-2"
+                              }`}
+                              style={{ height: level <= item.intensity ? `${8 + level * 4}px` : "8px" }}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[10px] text-muted-foreground font-medium">
+                          LV.{item.intensity}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Best For - Primary Info */}
+                    <div className="mb-3">
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <Target className={`h-3.5 w-3.5 ${colors.text}`} />
+                        <span className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                          Best For
+                        </span>
+                      </div>
+                      <p className="text-sm text-foreground/90 leading-relaxed pl-5">
+                        {item.best_for}
+                      </p>
+                    </div>
+
+                    {/* Science - Secondary Info */}
+                    <div className="pt-3 border-t border-border/30">
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <FlaskConical className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                          Science
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed pl-5">
+                        {item.science}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Desktop: Table Layout */}
+          <div className="hidden md:block p-6 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border/50">

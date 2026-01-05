@@ -8,7 +8,7 @@ import { HourlyDistributionChart } from "@/components/stats/hourly-distribution-
 import { StatsHero } from "@/components/stats/stats-hero"
 import { TodayStats } from "@/components/stats/today-stats"
 import { ErrorBoundary } from "@/components/error-boundary"
-import { LoginRequiredOverlay, UnifiedLoginPrompt } from "@/components/stats/login-required-overlay"
+import { LoginRequiredOverlay } from "@/components/stats/login-required-overlay"
 import { useUser } from "@/hooks/use-user"
 
 // Skeleton for chart loading states
@@ -158,7 +158,7 @@ export function StatsContent() {
                   <Suspense fallback={<ChartSkeleton height="h-[260px]" />}>
                     <WeeklyStatsChart useMockData={showMockData} />
                   </Suspense>
-                  {showMockData && <LoginRequiredOverlay blurOnly />}
+                  {showMockData && <LoginRequiredOverlay />}
                 </div>
               </BentoCard>
             </ErrorBoundary>
@@ -183,7 +183,7 @@ export function StatsContent() {
                   <Suspense fallback={<ChartSkeleton height="h-[260px]" />}>
                     <Rolling4WeekChart useMockData={showMockData} />
                   </Suspense>
-                  {showMockData && <LoginRequiredOverlay blurOnly />}
+                  {showMockData && <LoginRequiredOverlay />}
                 </div>
               </BentoCard>
             </ErrorBoundary>
@@ -216,7 +216,7 @@ export function StatsContent() {
                   >
                     <WeekComparison useMockData={showMockData} />
                   </Suspense>
-                  {showMockData && <LoginRequiredOverlay blurOnly />}
+                  {showMockData && <LoginRequiredOverlay />}
                 </div>
               </BentoCard>
             </ErrorBoundary>
@@ -238,15 +238,12 @@ export function StatsContent() {
                   <Suspense fallback={<ChartSkeleton height="h-[280px]" />}>
                     <HourlyDistributionChart useMockData={showMockData} />
                   </Suspense>
-                  {showMockData && <LoginRequiredOverlay blurOnly />}
+                  {showMockData && <LoginRequiredOverlay />}
                 </div>
               </BentoCard>
             </ErrorBoundary>
           </section>
         </div>
-
-        {/* Single unified login prompt - positioned over the grid */}
-        {showMockData && <UnifiedLoginPrompt />}
       </div>
     </div>
   )

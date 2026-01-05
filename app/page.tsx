@@ -104,7 +104,7 @@ export default function Home() {
           {/* 하단 광고 여백 - 모바일에서는 네비게이션 바 공간 확보 */}
           <div className="h-20 xl:h-24 mb-2" />
 
-          {/* Minimal Footer */}
+          {/* Minimal Footer - Desktop */}
           <div className="hidden xl:block text-center text-xs text-muted-foreground py-1">
             <span>© 2025 pomobox</span>
             <span className="mx-2">·</span>
@@ -127,6 +127,30 @@ export default function Home() {
             <Link href="/faq" className="hover:text-foreground hover:underline">
               FAQ
             </Link>
+          </div>
+
+          {/* Minimal Footer - Mobile */}
+          <div className="xl:hidden text-center text-xs text-muted-foreground py-2 pb-20">
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <Link href="/about" className="hover:text-foreground hover:underline">
+                About
+              </Link>
+              <span className="text-border">·</span>
+              <Link href="/contact" className="hover:text-foreground hover:underline">
+                Contact
+              </Link>
+              <span className="text-border">·</span>
+              <Link href="/privacy" className="hover:text-foreground hover:underline">
+                Privacy
+              </Link>
+              <span className="text-border">·</span>
+              <Link href="/terms" className="hover:text-foreground hover:underline">
+                Terms
+              </Link>
+            </div>
+            <div className="mt-2 text-muted-foreground/60">
+              © 2025 pomobox
+            </div>
           </div>
         </div>
 

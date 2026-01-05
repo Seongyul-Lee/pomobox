@@ -93,6 +93,7 @@ function MenuItem({ href, icon, label, isActive, accentColor = "primary", onClic
       text: "text-primary",
       iconBg: "bg-primary/15 dark:bg-primary/25",
       activeIconBg: "bg-primary/25 dark:bg-primary/35",
+      groupHoverIconBg: "group-hover:bg-primary/15 dark:group-hover:bg-primary/25",
       glow: "shadow-[0_0_20px_-5px] shadow-primary/30",
     },
     violet: {
@@ -101,6 +102,7 @@ function MenuItem({ href, icon, label, isActive, accentColor = "primary", onClic
       text: "text-violet-600 dark:text-violet-400",
       iconBg: "bg-violet-500/15 dark:bg-violet-400/25",
       activeIconBg: "bg-violet-500/25 dark:bg-violet-400/35",
+      groupHoverIconBg: "group-hover:bg-violet-500/15 dark:group-hover:bg-violet-400/25",
       glow: "shadow-[0_0_20px_-5px] shadow-violet-500/30",
     },
     amber: {
@@ -109,6 +111,7 @@ function MenuItem({ href, icon, label, isActive, accentColor = "primary", onClic
       text: "text-amber-600 dark:text-amber-400",
       iconBg: "bg-amber-500/15 dark:bg-amber-400/25",
       activeIconBg: "bg-amber-500/25 dark:bg-amber-400/35",
+      groupHoverIconBg: "group-hover:bg-amber-500/15 dark:group-hover:bg-amber-400/25",
       glow: "shadow-[0_0_20px_-5px] shadow-amber-500/30",
     },
   } as const
@@ -134,7 +137,7 @@ function MenuItem({ href, icon, label, isActive, accentColor = "primary", onClic
           "flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200",
           isActive
             ? colors.activeIconBg
-            : cn("bg-muted/50 group-hover:bg-muted", "group-hover:" + colors.iconBg)
+            : cn("bg-muted/50 group-hover:bg-muted", colors.groupHoverIconBg)
         )}
       >
         <span className={cn(

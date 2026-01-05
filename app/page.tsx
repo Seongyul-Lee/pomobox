@@ -2,8 +2,6 @@ import { Suspense } from "react"
 import Link from "next/link"
 import { PomodoroTimer } from "@/components/pomodoro-timer"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { Sidebar } from "@/components/sidebar"
-import { TaskPanel } from "@/components/task-panel"
 import { DashboardRight } from "@/components/dashboard-right"
 import { BgmPanel } from "@/components/bgm-panel"
 import { BgmMiniPlayer } from "@/components/bgm-mini-player"
@@ -65,12 +63,6 @@ export default function Home() {
       <main className="relative min-h-screen flex flex-col text-foreground pt-safe">
         {/* Mobile Header (< xl) */}
         <MobileHeader />
-
-        {/* Fixed Sidebar (md+) */}
-        <Sidebar />
-
-        {/* Task Panel (slides from left on desktop, bottom sheet on mobile) */}
-        <TaskPanel />
 
         {/* Fixed Header Controls (desktop only) */}
         <ThemeToggle />

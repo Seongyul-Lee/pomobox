@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/toaster"
 import { AdSenseScript } from "@/components/adsense-script"
+import { Sidebar } from "@/components/sidebar"
+import { TaskPanel } from "@/components/task-panel"
 import { Providers } from "./providers"
 import "./globals.css"
 
@@ -199,6 +201,10 @@ export default function RootLayout({ children }: Props) {
       <body className={`${geist.variable} font-sans antialiased`}>
         <AdSenseScript />
         <Providers>
+          {/* Global Sidebar (md+) */}
+          <Sidebar />
+          {/* Global Task Panel */}
+          <TaskPanel />
           {children}
           <Analytics />
           <Toaster />

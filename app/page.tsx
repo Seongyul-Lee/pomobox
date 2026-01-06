@@ -59,7 +59,7 @@ export default function Home() {
   }
 
   return (
-      <main className="relative min-h-screen flex flex-col text-foreground pt-safe">
+      <main className="relative min-h-screen flex flex-col text-foreground">
         {/* Fixed Header Controls (desktop only) */}
         <ThemeToggle />
 

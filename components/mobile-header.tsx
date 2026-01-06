@@ -410,7 +410,7 @@ export function MobileHeader() {
   return (
     <>
       {/* Header Bar */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 px-3 flex items-center justify-between bg-background/85 backdrop-blur-2xl border-b border-border/40">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 pt-safe h-14 px-3 flex items-center justify-between bg-background/85 backdrop-blur-2xl border-b border-border/40">
         {/* Left: Hamburger + Logo */}
         <div className="flex items-center gap-1.5">
           {/* Hamburger Button */}
@@ -489,7 +489,7 @@ export function MobileHeader() {
       <nav
         id="mobile-menu"
         className={cn(
-          "md:hidden fixed top-14 left-0 right-0 z-40",
+          "md:hidden fixed top-[calc(3.5rem+env(safe-area-inset-top,0px))] left-0 right-0 z-40",
           "bg-background/95 backdrop-blur-2xl",
           "border-b border-border/40",
           "transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",

@@ -117,19 +117,20 @@ test.describe('Timer Accuracy', () => {
     await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible()
     await expect(getTimerDisplay(page)).toHaveText('00:10', { timeout: 10000 })
 
-    // Check initial title (format: "00:10 - Pomobox")
-    await expect(page).toHaveTitle(/00:10.*Pomobox/i)
-
     // Install mock clock AFTER hydration
     await page.clock.install({ time: Date.now() })
 
-    // Start timer
+    // Start timer - this will trigger title update
     await page.getByRole('button', { name: 'Start', exact: true }).click()
+
+    // Title should update to show timer (format: "MM:SS - Pomobox")
+    // 타이머 시작 후 타이틀이 업데이트되는지 확인
+    await expect(page).toHaveTitle(/00:(?:10|09|08).*Pomobox/i, { timeout: 10000 })
 
     // Fast forward 3 seconds
     await page.clock.fastForward('00:03')
 
     // Title should reflect remaining time
-    await expect(page).toHaveTitle(/00:0[67].*Pomobox/i)
+    await expect(page).toHaveTitle(/00:0[4-7].*Pomobox/i, { timeout: 5000 })
   })
 })

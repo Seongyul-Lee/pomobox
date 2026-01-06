@@ -222,28 +222,29 @@ export function HourlyDistributionChart({ useMockData = false }: HourlyDistribut
         )}
       </div>
 
+      {/* Screen reader accessible data summary - placed outside role="img" to avoid nested-interactive */}
+      <div className="sr-only">
+        <h3>Hourly Focus Distribution</h3>
+        <p>Peak hour: {peakHour !== null ? formatHourRange(peakHour) : 'No data'}</p>
+        <p>Total focus time in last 30 days: {formatMinutes(totalMinutes)}</p>
+        <details>
+          <summary>Hourly breakdown</summary>
+          <ul>
+            {chartData.filter(d => d.total_minutes > 0).map(d => (
+              <li key={d.hour}>
+                {formatHourRange(d.hour)}: {formatMinutes(d.total_minutes)}
+              </li>
+            ))}
+          </ul>
+        </details>
+      </div>
+
       {/* Chart */}
       <div
         className="h-[200px] xl:h-[300px]"
         role="img"
         aria-label={`Hourly focus distribution chart showing peak productivity hours. Peak hour: ${peakHour !== null ? formatHourRange(peakHour) : 'none'}. Total focus time: ${formatMinutes(totalMinutes)}.`}
       >
-        {/* Screen reader accessible data summary */}
-        <div className="sr-only">
-          <h3>Hourly Focus Distribution</h3>
-          <p>Peak hour: {peakHour !== null ? formatHourRange(peakHour) : 'No data'}</p>
-          <p>Total focus time in last 30 days: {formatMinutes(totalMinutes)}</p>
-          <details>
-            <summary>Hourly breakdown</summary>
-            <ul>
-              {chartData.filter(d => d.total_minutes > 0).map(d => (
-                <li key={d.hour}>
-                  {formatHourRange(d.hour)}: {formatMinutes(d.total_minutes)}
-                </li>
-              ))}
-            </ul>
-          </details>
-        </div>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={chartData}

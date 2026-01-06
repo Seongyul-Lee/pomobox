@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query"
 import { migrateFromLocalStorage } from "@/lib/storage/idb"
 import { useSyncLocalData } from "@/hooks/use-sync-local-data"
+import { initSettingsSubscription } from "@/lib/store"
 
 // QueryClient 생성 함수
 function makeQueryClient() {
@@ -41,12 +42,14 @@ function getQueryClient() {
 /**
  * 앱 초기화 작업을 수행하는 내부 컴포넌트
  * - localStorage → IndexedDB 마이그레이션
+ * - settings-store → timer-store 자동 동기화 설정
  * - 로그인 사용자의 로컬 → Supabase 마이그레이션
  */
 function AppInitializer({ children }: { children: React.ReactNode }) {
-  // localStorage → IndexedDB 마이그레이션
+  // localStorage → IndexedDB 마이그레이션 + settings 구독 초기화
   useEffect(() => {
     migrateFromLocalStorage()
+    initSettingsSubscription()
   }, [])
 
   // 로그인 사용자의 로컬 → Supabase 마이그레이션

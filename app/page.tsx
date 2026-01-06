@@ -8,6 +8,7 @@ import { BgmMiniPlayer } from "@/components/bgm-mini-player"
 import { MainLayout } from "@/components/main-layout"
 import { PomodoroGuideSection } from "@/components/pomodoro-guide-section"
 import { AdSenseVerticalBanner } from "@/components/adsense-vertical-banner"
+import { AdSenseHorizontalBanner } from "@/components/adsense-horizontal-banner"
 
 // Static timer skeleton for fast LCP - shows default 25:00
 function TimerFallback() {
@@ -58,7 +59,7 @@ export default function Home() {
   }
 
   return (
-      <main className="relative min-h-screen flex flex-col text-foreground pt-safe">
+      <main className="relative min-h-screen flex flex-col text-foreground">
         {/* Fixed Header Controls (desktop only) */}
         <ThemeToggle />
 
@@ -101,8 +102,12 @@ export default function Home() {
 
         {/* Footer */}
         <div className="w-full px-4 xl:px-8 pb-3 md:ml-16 lg:ml-20">
-          {/* 하단 광고 여백 - 모바일에서는 네비게이션 바 공간 확보 */}
-          <div className="h-20 xl:h-24 mb-2" />
+          {/* 하단 광고 배너 - 데스크탑에서만 표시 */}
+          <div className="hidden xl:block">
+            <AdSenseHorizontalBanner />
+          </div>
+          {/* 모바일 여백 - 네비게이션 바 공간 확보 */}
+          <div className="xl:hidden h-4" />
 
           {/* Minimal Footer - Desktop */}
           <div className="hidden xl:block text-center text-xs text-muted-foreground py-1">

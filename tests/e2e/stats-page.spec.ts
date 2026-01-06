@@ -66,8 +66,9 @@ test.describe('Statistics Page', () => {
       const chartSelector = page.locator('[role="group"][aria-label="Chart type selector"]');
       const barButton = chartSelector.getByRole('button', { name: /bar/i });
 
-      // Bar 버튼 클릭 (비로그인 상태에서 오버레이가 있으므로 force: true)
-      await barButton.click({ force: true });
+      // 비로그인 상태에서 LoginRequiredOverlay가 버튼을 덮고 있으므로
+      // JavaScript로 버튼을 직접 클릭 (dispatchEvent)
+      await barButton.evaluate((el) => (el as HTMLElement).click());
 
       // aria-pressed 상태 확인
       await expect(barButton).toHaveAttribute('aria-pressed', 'true');
@@ -82,8 +83,9 @@ test.describe('Statistics Page', () => {
       const chartSelector = page.locator('[role="group"][aria-label="Chart type selector"]');
       const lineButton = chartSelector.getByRole('button', { name: /line/i });
 
-      // Line 버튼 클릭 (비로그인 상태에서 오버레이가 있으므로 force: true)
-      await lineButton.click({ force: true });
+      // 비로그인 상태에서 LoginRequiredOverlay가 버튼을 덮고 있으므로
+      // JavaScript로 버튼을 직접 클릭 (dispatchEvent)
+      await lineButton.evaluate((el) => (el as HTMLElement).click());
 
       // aria-pressed 상태 확인
       await expect(lineButton).toHaveAttribute('aria-pressed', 'true');

@@ -6,43 +6,43 @@ import { test, expect } from '@playwright/test';
  * - storageState를 사용하여 로그인된 상태로 테스트
  */
 test.describe('Statistics Dashboard (Authenticated)', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    // 페이지 로드 대기
-    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
-  });
-
-  test.describe('Dashboard Left - Statistics Cards', () => {
-    test('should render Today Overview card without blur', async ({ page }) => {
-      // 데스크탑 뷰에서만 보이는 대시보드 확인 (xl 브레이크포인트)
+  // /stats 페이지 테스트 - 통계 페이지 전용
+  test.describe('Stats Page - Statistics Cards', () => {
+    test.beforeEach(async ({ page }) => {
+      // 데스크탑 뷰포트 설정 (모바일 헤더가 hidden 상태 방지)
       await page.setViewportSize({ width: 1440, height: 900 });
-
-      // TodayCard 요소 확인 (로그인 상태에서 블러 없음)
-      const todayCard = page.locator('text=/Today|오늘/i').first();
-      await expect(todayCard).toBeVisible();
-
-      // 통계 요소들 확인
-      await expect(page.locator('text=/Focus|집중/i').first()).toBeVisible();
+      await page.goto('/stats');
+      // 페이지 로드 대기 - Analytics 섹션 확인
+      await expect(page.locator('text=Analytics').first()).toBeVisible();
     });
 
-    test('should render Weekly Stats chart', async ({ page }) => {
+    test('should render Weekly Pattern chart without blur', async ({ page }) => {
+      // 데스크탑 뷰
       await page.setViewportSize({ width: 1440, height: 900 });
 
-      // WeeklyCard 확인
-      const weeklyCard = page.locator('text=/Weekly|주간/i').first();
-      await expect(weeklyCard).toBeVisible();
+      // Weekly Pattern 섹션 확인 (로그인 상태에서 블러 없음)
+      const weeklyPattern = page.locator('text=Weekly Pattern').first();
+      await expect(weeklyPattern).toBeVisible();
 
-      // 차트 컨테이너 확인 (Recharts)
+      // 차트 컨테이너 확인 (Recharts) - ResizeObserver로 마운트되므로 대기 필요
       const chartContainer = page.locator('.recharts-responsive-container').first();
-      await expect(chartContainer).toBeVisible();
+      await expect(chartContainer).toBeVisible({ timeout: 10000 });
     });
 
-    test('should render Monthly Stats', async ({ page }) => {
+    test('should render Monthly Trend chart', async ({ page }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
 
-      // MonthlyCard 확인
-      const monthlyCard = page.locator('text=/Monthly|월간/i').first();
-      await expect(monthlyCard).toBeVisible();
+      // Monthly Trend 섹션 확인
+      const monthlyTrend = page.locator('text=Monthly Trend').first();
+      await expect(monthlyTrend).toBeVisible();
+    });
+
+    test('should render Growth Analysis section', async ({ page }) => {
+      await page.setViewportSize({ width: 1440, height: 900 });
+
+      // Growth Analysis 섹션 확인
+      const growthAnalysis = page.locator('text=Growth Analysis').first();
+      await expect(growthAnalysis).toBeVisible();
     });
 
     test('should not show login required overlay when authenticated', async ({ page }) => {
@@ -54,10 +54,16 @@ test.describe('Statistics Dashboard (Authenticated)', () => {
     });
   });
 
+  // 메인 페이지 테스트 - Dashboard Right (Activity Calendar, Check-in)
   test.describe('Dashboard Right - Activity Calendar', () => {
-    test('should render Activity Calendar', async ({ page }) => {
+    test.beforeEach(async ({ page }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto('/');
+      // 페이지 로드 대기
+      await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
+    });
 
+    test('should render Activity Calendar', async ({ page }) => {
       // Activity Calendar 확인 (첫 번째 요소 사용)
       const calendarTitle = page.locator('text=/Activity Calendar|활동 캘린더/i').first();
       await expect(calendarTitle).toBeVisible();
@@ -68,8 +74,6 @@ test.describe('Statistics Dashboard (Authenticated)', () => {
     });
 
     test('should show Check-in status or button', async ({ page }) => {
-      await page.setViewportSize({ width: 1440, height: 900 });
-
       // Check-in 관련 UI 요소 확인 (버튼, 상태 텍스트, 아이콘 등)
       // 로그인 상태에서 체크인 영역이 보여야 함
       const checkInSection = page.locator('text=/Check|출석|체크/i').first();
@@ -77,16 +81,12 @@ test.describe('Statistics Dashboard (Authenticated)', () => {
     });
 
     test('should display streak statistics', async ({ page }) => {
-      await page.setViewportSize({ width: 1440, height: 900 });
-
       // Streak 통계 확인 (현재 스트릭, 최대 스트릭)
       const streakText = page.locator('text=/Streak|스트릭|연속/i').first();
       await expect(streakText).toBeVisible();
     });
 
     test('should show day details on calendar click', async ({ page }) => {
-      await page.setViewportSize({ width: 1440, height: 900 });
-
       // 오늘 날짜 버튼 클릭
       const today = new Date().getDate();
       const todayButton = page.locator('button').filter({ hasText: new RegExp(`^${today}$`) }).first();
@@ -101,10 +101,14 @@ test.describe('Statistics Dashboard (Authenticated)', () => {
   });
 
   test.describe('Mobile View - Dashboard', () => {
-    test('should show timer on mobile viewport', async ({ page }) => {
-      // 모바일 뷰포트
+    test.beforeEach(async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 });
+      await page.goto('/');
+      // 페이지 로드 대기
+      await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
+    });
 
+    test('should show timer on mobile viewport', async ({ page }) => {
       // 타이머가 보여야 함
       await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
 
@@ -121,9 +125,14 @@ test.describe('Statistics Dashboard (Authenticated)', () => {
   });
 
   test.describe('Check-in Interaction', () => {
-    test('should display check-in area with proper state', async ({ page }) => {
+    test.beforeEach(async ({ page }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
+      await page.goto('/');
+      // 페이지 로드 대기
+      await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
+    });
 
+    test('should display check-in area with proper state', async ({ page }) => {
       // 체크인 영역이 존재하는지 확인
       // 버튼이 있거나, 이미 체크인 완료 상태일 수 있음
       const checkInArea = page.locator('text=/Check|출석|체크/i').first();

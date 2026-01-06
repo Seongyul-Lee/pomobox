@@ -10,15 +10,14 @@ declare global {
 }
 
 /**
- * AdSenseVerticalBanner - Google AdSense 수직 배너 (160x600)
+ * AdSenseHorizontalBanner - Google AdSense 가로 배너 (728x90 / 반응형)
  *
- * - 2xl 이상 해상도에서만 표시 (MainLayout에서 처리)
+ * - 푸터 상단에 표시
  * - NEXT_PUBLIC_ADS_ENABLED=true일 때만 렌더링
  * - Intersection Observer를 사용한 Lazy Loading
- * - AdSense 스크립트는 layout.tsx에서 로드됨
  * - localhost에서는 광고를 로드하지 않음 (400 에러 방지)
  */
-export function AdSenseVerticalBanner() {
+export function AdSenseHorizontalBanner() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
   const [hasLoaded, setHasLoaded] = useState(false)
@@ -60,7 +59,6 @@ export function AdSenseVerticalBanner() {
     if (!ADS_CONFIG.enabled) return
     if (!isVisible || hasLoaded || !isProduction) return
 
-    // AdSense 스크립트가 로드될 때까지 대기
     const checkAndPush = () => {
       if (typeof window !== "undefined" && window.adsbygoogle) {
         try {
@@ -72,7 +70,6 @@ export function AdSenseVerticalBanner() {
       }
     }
 
-    // 스크립트 로드 대기 (최대 5초)
     const timer = setTimeout(checkAndPush, 100)
     const maxWait = setTimeout(checkAndPush, 5000)
 
@@ -87,17 +84,16 @@ export function AdSenseVerticalBanner() {
     return null
   }
 
-  // 개발 환경 또는 광고 로드 전: 플레이스홀더 표시
   const showPlaceholder = !isProduction || !isVisible
 
   return (
     <div
       ref={containerRef}
-      className="flex flex-col items-center justify-start h-[600px]"
+      className="w-full flex justify-center py-4"
     >
       {showPlaceholder ? (
         // 개발 환경 또는 뷰포트 진입 전: 플레이스홀더
-        <div className="w-[160px] h-[600px] rounded-xl bg-muted/30 border border-border/50 flex items-center justify-center">
+        <div className="w-full max-w-[728px] h-[90px] rounded-lg bg-muted/30 border border-border/50 flex items-center justify-center">
           <span className="text-xs text-muted-foreground">Ad</span>
         </div>
       ) : (
@@ -106,11 +102,11 @@ export function AdSenseVerticalBanner() {
           className="adsbygoogle"
           style={{
             display: "inline-block",
-            width: "160px",
-            height: "600px",
+            width: "728px",
+            height: "90px",
           }}
           data-ad-client={ADS_CONFIG.publisherId}
-          data-ad-slot={ADS_CONFIG.slots.verticalBanner}
+          data-ad-slot={ADS_CONFIG.slots.horizontalBanner}
         />
       )}
     </div>

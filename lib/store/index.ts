@@ -14,6 +14,12 @@ export {
   selectIsRunning,
   selectIsFocusPhase,
   selectSessionStartTime,
+  selectHasHydrated,
+  selectTargetEndAtMs,
+  selectCompletedSessions,
+  selectLongBreakCount,
+  selectLastSavedMinute,
+  initSettingsSubscription,
 } from './timer-store'
 
 export {

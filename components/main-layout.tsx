@@ -38,9 +38,9 @@ export function MainLayout({
     <div
       className={cn(
         "flex-1 pb-6",
-        // 모바일: 헤더(56px) + 여유 공간
+        // 모바일: 헤더(56px) + safe-area-inset-top + 여유 공간
         // xl+: 기존 여백 유지
-        "pt-[72px] xl:pt-16",
+        "pt-[calc(72px+env(safe-area-inset-top,0px))] xl:pt-16",
         // 모바일: 하단 네비게이션 바 공간 확보
         "pb-20 xl:pb-6",
         "transition-[margin] duration-300 ease-in-out",

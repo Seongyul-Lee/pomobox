@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.0] - 2026-01-06
+
+타이머 상태 영속성 (Timer State Persistence)
+
+### 핵심 기능
+
+#### 타이머 상태 영속화
+- **페이지 이동 시 타이머 유지**: 다른 페이지 갔다가 돌아와도 타이머 계속 동작
+- **브라우저 새로고침 복원**: 새로고침해도 진행 중인 Focus 세션 복원
+- **탭 비활성화 대응**: wall-clock 기반 `targetEndAtMs`로 정확한 남은 시간 표시
+- **만료 세션 자동 완료**: 브라우저 종료 후 재접속 시 만료된 세션 자동 완료 처리
+
+#### 영속화 정책
+| 항목 | 정책 |
+|------|------|
+| 영속화 범위 | Focus 세션만 (Break/LongBreak 제외) |
+| 유효 기간 | 당일만 유효 (날짜 변경 시 초기화) |
+| 복원 동작 | 자동 재시작 |
+| 만료 세션 | 자동 완료 + 통계 기록 |
+
+### 수정된 파일
+
+| 파일 | 변경 내용 |
+|------|----------|
+| `lib/store/timer-store.ts` | Zustand persist 미들웨어 추가, onRehydrateStorage 복원 로직 |
+| `lib/store/index.ts` | 새 selector 및 initSettingsSubscription export |
+| `components/pomodoro-timer.tsx` | useState → useTimerStore 전환, 컴포넌트 단순화 |
+| `app/providers.tsx` | initSettingsSubscription() 호출 추가 |
+
+### 품질 개선
+
+#### Skip/Reset 통계 정책 준수
+- CLAUDE.md 정책: "Skip/Reset은 통계에 반영하지 않음"
+- Skip/Reset 시 경과 시간 저장 로직 제거
+
+#### settings-store 동기화 개선
+- settings-store를 SSOT로 유지
+- timer-store가 settings-store를 자동 구독
+- 컴포넌트에서 수동 동기화 코드 제거
+
+### E2E 테스트 추가
+
+**신규 파일**: `tests/e2e/timer-persistence.spec.ts`
+- 페이지 새로고침 시 running/paused 타이머 복원
+- Break 세션 비영속화 확인
+- 만료 세션 자동 완료 처리
+- 날짜 변경 시 초기화
+- Skip/Reset 정책 테스트
+
+**수정된 파일**: `tests/e2e/pomobox-timer.spec.ts`
+- Stateless → Persistence 정책 테스트로 변경
+
+---
+
 ## [2.4.0] - 2026-01-05
 
 SEO 구조화 데이터 및 콘텐츠 신선도 강화

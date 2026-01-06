@@ -24,7 +24,15 @@ export function PomodoroTimer() {
 
   // Zustand stores
   const timerStore = useTimerStore()
-  const settingsStore = useSettingsStore()
+  // 개별 셀렉터 사용 (무한 루프 방지)
+  const focusDuration = useSettingsStore((state) => state.focusDuration)
+  const breakDuration = useSettingsStore((state) => state.breakDuration)
+  const dailyGoal = useSettingsStore((state) => state.dailyGoal)
+  const notificationsEnabled = useSettingsStore((state) => state.notificationsEnabled)
+  const soundEnabled = useSettingsStore((state) => state.soundEnabled)
+  const soundType = useSettingsStore((state) => state.soundType)
+  const volume = useSettingsStore((state) => state.volume)
+  const setFocusDuration = useSettingsStore((state) => state.setFocusDuration)
 
   // Test-only: ?testDuration=10 sets focus duration to 10 seconds
   const testDurationSec = searchParams.get('testDuration')
@@ -66,14 +74,19 @@ export function PomodoroTimer() {
   }, [])
 
   // testDuration 적용 (테스트 모드)
+  // settings-store를 업데이트하여 SSOT 유지 (initSettingsSubscription이 timer-store에 반영)
   useEffect(() => {
     if (testDurationSec !== null && testDurationSec > 0 && phase === 'focus' && status === 'idle') {
+      const testDurationMin = testDurationSec / 60
+      // settings-store 업데이트 (SSOT)
+      setFocusDuration(testDurationMin)
+      // timer-store도 직접 업데이트 (즉시 반영용)
       updateSettings({
-        focusDuration: testDurationSec / 60, // 초 → 분 변환
-        breakDuration: settingsStore.breakDuration,
+        focusDuration: testDurationMin,
+        breakDuration,
       })
     }
-  }, [testDurationSec, phase, status, settingsStore.breakDuration, updateSettings])
+  }, [testDurationSec, phase, status, setFocusDuration, breakDuration, updateSettings])
 
   // 타이머 계산
   const getDuration = useCallback(() => {
@@ -81,11 +94,11 @@ export function PomodoroTimer() {
       if (testDurationSec !== null && testDurationSec > 0) {
         return testDurationSec
       }
-      return settingsStore.focusDuration * 60
+      return focusDuration * 60
     }
     if (phase === 'longBreak') return 15 * 60
-    return settingsStore.breakDuration * 60
-  }, [phase, testDurationSec, settingsStore.focusDuration, settingsStore.breakDuration])
+    return breakDuration * 60
+  }, [phase, testDurationSec, focusDuration, breakDuration])
 
   const duration = getDuration()
   const minutes = Math.floor(timeLeft / 60)
@@ -102,10 +115,10 @@ export function PomodoroTimer() {
 
   // Request notification permission
   useEffect(() => {
-    if (settingsStore.notificationsEnabled && Notification.permission === "default") {
+    if (notificationsEnabled && Notification.permission === "default") {
       Notification.requestPermission()
     }
-  }, [settingsStore.notificationsEnabled])
+  }, [notificationsEnabled])
 
   // Tick: 매초 시간 업데이트 + 부수효과 처리
   useEffect(() => {
@@ -122,7 +135,7 @@ export function PomodoroTimer() {
       // 세션 완료 시 알림/사운드/통계
       if (currentTimeLeft === 0 && currentStatus === 'idle') {
         // 알림
-        if (settingsStore.notificationsEnabled && Notification.permission === "granted") {
+        if (notificationsEnabled && Notification.permission === "granted") {
           const message = currentPhase === 'break' || currentPhase === 'longBreak'
             ? "Ready for another session?"
             : "Time for a break"
@@ -135,8 +148,8 @@ export function PomodoroTimer() {
         }
 
         // 사운드
-        if (settingsStore.soundEnabled) {
-          playSound(settingsStore.soundType, settingsStore.volume / 100)
+        if (soundEnabled) {
+          playSound(soundType, volume / 100)
         }
 
         // 로컬 통계 갱신
@@ -147,7 +160,7 @@ export function PomodoroTimer() {
         // 목표 달성 시 confetti
         const previousTotal = localTotalMinutes
         const newTotal = localStats.totalMinutes
-        if (previousTotal < settingsStore.dailyGoal && newTotal >= settingsStore.dailyGoal) {
+        if (previousTotal < dailyGoal && newTotal >= dailyGoal) {
           import("canvas-confetti").then(({ default: confetti }) => {
             confetti({
               particleCount: 100,
@@ -159,7 +172,7 @@ export function PomodoroTimer() {
 
         // Supabase 저장 (로그인 사용자만)
         if (user && currentPhase === 'break') {
-          recordSessionComplete(user.id, settingsStore.focusDuration, settingsStore.dailyGoal)
+          recordSessionComplete(user.id, focusDuration, dailyGoal)
         }
 
         // 비로그인 사용자: 첫 세션 완료 시 로그인 유도
@@ -184,7 +197,7 @@ export function PomodoroTimer() {
       window.clearInterval(id)
       document.removeEventListener("visibilitychange", handleVisibilityChange)
     }
-  }, [status, targetEndAtMs, tick, settingsStore, user, localTotalMinutes])
+  }, [status, targetEndAtMs, tick, notificationsEnabled, soundEnabled, soundType, volume, dailyGoal, focusDuration, user, localTotalMinutes])
 
   // 1분마다 자동 저장 (Focus 세션 중에만)
   useEffect(() => {
@@ -200,7 +213,7 @@ export function PomodoroTimer() {
         const elapsedMinutes = Math.floor(elapsedMs / 60000)
         if (elapsedMinutes > lastSavedMinute) {
           const minutesToSave = elapsedMinutes - lastSavedMinute
-          incrementDailyMinutes(user.id, minutesToSave, settingsStore.dailyGoal).catch(console.error)
+          incrementDailyMinutes(user.id, minutesToSave, dailyGoal).catch(console.error)
         }
       }
 
@@ -210,7 +223,7 @@ export function PomodoroTimer() {
     }, 5000) // 5초마다 체크
 
     return () => clearInterval(intervalId)
-  }, [status, phase, checkAndSaveMinute, user, settingsStore.dailyGoal])
+  }, [status, phase, checkAndSaveMinute, user, dailyGoal])
 
   // 액션 핸들러
   const handleStart = useCallback(() => {
@@ -444,7 +457,7 @@ export function PomodoroTimer() {
 
       <GoalProgress
         currentMinutes={localTotalMinutes}
-        goalMinutes={settingsStore.dailyGoal}
+        goalMinutes={dailyGoal}
       />
 
       <LoginPromptDialog

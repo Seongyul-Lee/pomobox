@@ -6,7 +6,6 @@ const baseUrl = "https://pomobox.app"
 const corePages = [
   { url: "", priority: 1.0, changeFrequency: "daily" as const },
   { url: "/stats", priority: 0.8, changeFrequency: "daily" as const },
-  { url: "/dashboard", priority: 0.7, changeFrequency: "daily" as const },
 ]
 
 // Guide pages (high-value SEO content)

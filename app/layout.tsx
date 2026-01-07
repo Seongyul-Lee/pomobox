@@ -29,12 +29,13 @@ const siteUrl = "https://pomobox.app"
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Pomobox - Minimal Pomodoro Timer for Focused Work",
+    default: "Minimal Pomodoro Timer | Pomobox",
     template: "%s | Pomobox",
   },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/icon-48.png", sizes: "48x48", type: "image/png" },
       { url: "/icon.png", sizes: "192x192", type: "image/png" },
     ],
     apple: [{ url: "/icon.png", sizes: "192x192", type: "image/png" }],
@@ -57,12 +58,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteUrl,
     siteName: "Pomobox",
-    title: "Pomobox - Minimal Pomodoro Timer for Focused Work",
+    title: "Minimal Pomodoro Timer | Pomobox",
     description: "A clean, distraction-free Pomodoro timer to boost your productivity. Track focus sessions, take smart breaks, and stay in flow.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pomobox - Minimal Pomodoro Timer for Focused Work",
+    title: "Minimal Pomodoro Timer | Pomobox",
     description: "A clean, distraction-free Pomodoro timer to boost your productivity. Track focus sessions, take smart breaks, and stay in flow.",
   },
   robots: {

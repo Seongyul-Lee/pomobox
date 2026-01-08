@@ -314,10 +314,10 @@ export function PomodoroTimer() {
   return (
     <div className="relative flex flex-col items-center gap-6 sm:gap-8">
       <div className="text-center relative">
-        <p className="mobile-timer-title sm:text-xl md:text-2xl sm:font-bold sm:text-foreground sm:uppercase sm:tracking-wider mb-0.5 sm:mb-1 hover-title-outline">
+        <p className="max-sm:text-[1.625rem] max-sm:leading-[1.2] max-sm:tracking-[0.02em] max-sm:font-semibold max-sm:bg-[linear-gradient(135deg,var(--timer-title-from)_0%,var(--timer-title-via)_50%,var(--timer-title-to)_100%)] max-sm:bg-clip-text max-sm:text-transparent sm:text-xl md:text-2xl sm:font-bold sm:text-foreground sm:uppercase sm:tracking-wider mb-0.5 sm:mb-1 hover-title-outline">
           {getTypeLabel()}
         </p>
-        <p className="mobile-timer-subtitle sm:text-xs sm:text-muted-foreground sm:mt-0 hover-phase-label">
+        <p className="max-sm:text-[0.8125rem] max-sm:tracking-[0.025em] max-sm:text-[var(--timer-subtitle)] max-sm:mt-1.5 sm:text-xs sm:text-muted-foreground sm:mt-0 hover-phase-label">
           {getTypeDescription()}
         </p>
         <div

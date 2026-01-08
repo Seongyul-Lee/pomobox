@@ -88,6 +88,12 @@
   --success-foreground: oklch(0.98 0.006 255);
   --warning: oklch(0.70 0.16 85);
   --warning-foreground: oklch(0.20 0.04 265);
+  /* Mobile timer title gradient */
+  --timer-title-from: oklch(0.35 0.12 270);
+  --timer-title-via: oklch(0.30 0.10 268);
+  --timer-title-to: oklch(0.25 0.08 265);
+  /* Mobile timer subtitle color */
+  --timer-subtitle: oklch(0.50 0.03 260);
 }
 
 .dark {
@@ -128,6 +134,12 @@
   --success-foreground: #f8fafc;
   --warning: #fbbf24;
   --warning-foreground: #0f0f1a;
+  /* Mobile timer title gradient */
+  --timer-title-from: oklch(0.88 0.12 280);
+  --timer-title-via: oklch(0.78 0.16 285);
+  --timer-title-to: oklch(0.88 0.12 280);
+  /* Mobile timer subtitle color */
+  --timer-subtitle: oklch(0.65 0.06 280);
 }
 
 .midnight {
@@ -170,6 +182,12 @@
   --sidebar-accent-foreground: oklch(0.95 0.025 280);
   --sidebar-border: oklch(0.95 0.025 280 / 12%);
   --sidebar-ring: oklch(0.60 0.22 280);
+  /* Mobile timer title gradient */
+  --timer-title-from: oklch(0.85 0.14 275);
+  --timer-title-via: oklch(0.75 0.18 285);
+  --timer-title-to: oklch(0.85 0.14 275);
+  /* Mobile timer subtitle color */
+  --timer-subtitle: oklch(0.68 0.08 280);
 }
 
 @layer base {
@@ -622,69 +640,6 @@
 .midnight .hover-title-outline:hover {
   text-shadow: 0 0 20px oklch(0.72 0.17 280 / 55%), 2px 2px 10px oklch(0.10 0.05 280 / 32%);
   -webkit-text-stroke: 0.5px oklch(0.72 0.17 280 / 32%);
-}
-
-/* Mobile Timer Title - Refined typography for small screens */
-@media (max-width: 639px) {
-  .mobile-timer-title {
-    font-size: 1.625rem !important;
-    line-height: 1.2 !important;
-    letter-spacing: 0.02em !important;
-    font-weight: 600 !important;
-    background: linear-gradient(
-      135deg,
-      oklch(0.35 0.12 270) 0%,
-      oklch(0.25 0.08 265) 100%
-    ) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    text-shadow: none !important;
-    color: transparent !important;
-  }
-
-  .dark .mobile-timer-title {
-    background: linear-gradient(
-      135deg,
-      oklch(0.88 0.12 280) 0%,
-      oklch(0.78 0.16 285) 50%,
-      oklch(0.88 0.12 280) 100%
-    ) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    color: transparent !important;
-    filter: drop-shadow(0 2px 8px oklch(0.72 0.17 280 / 25%));
-  }
-
-  .midnight .mobile-timer-title {
-    background: linear-gradient(
-      135deg,
-      oklch(0.85 0.14 275) 0%,
-      oklch(0.75 0.18 285) 50%,
-      oklch(0.85 0.14 275) 100%
-    ) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    color: transparent !important;
-    filter: drop-shadow(0 2px 10px oklch(0.72 0.17 280 / 35%));
-  }
-
-  .mobile-timer-subtitle {
-    font-size: 0.8125rem !important;
-    letter-spacing: 0.025em !important;
-    color: oklch(0.50 0.03 260) !important;
-    margin-top: 0.375rem !important;
-  }
-
-  .dark .mobile-timer-subtitle {
-    color: oklch(0.65 0.06 280) !important;
-  }
-
-  .midnight .mobile-timer-subtitle {
-    color: oklch(0.68 0.08 280) !important;
-  }
 }
 
 /* Daily Goal individual text hover */

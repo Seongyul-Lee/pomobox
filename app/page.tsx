@@ -100,63 +100,9 @@ export default function Home() {
         {/* Pomodoro Guide Sections */}
         <PomodoroGuideSection />
 
-        {/* Footer */}
-        <div className="w-full px-4 xl:px-8 pb-3 md:ml-16 lg:ml-20">
-          {/* 하단 광고 배너 - 데스크탑에서만 표시 */}
-          <div className="hidden xl:block">
-            <AdSenseHorizontalBanner />
-          </div>
-          {/* 모바일 여백 - 네비게이션 바 공간 확보 */}
-          <div className="xl:hidden h-4" />
-
-          {/* Minimal Footer - Desktop */}
-          <div className="hidden xl:block text-center text-xs text-muted-foreground py-1">
-            <span>© 2025 pomobox</span>
-            <span className="mx-2">·</span>
-            <Link href="/about" className="hover:text-foreground hover:underline">
-              About
-            </Link>
-            <span className="mx-2">·</span>
-            <Link href="/contact" className="hover:text-foreground hover:underline">
-              Contact
-            </Link>
-            <span className="mx-2">·</span>
-            <Link href="/privacy" className="hover:text-foreground hover:underline">
-              Privacy
-            </Link>
-            <span className="mx-2">·</span>
-            <Link href="/terms" className="hover:text-foreground hover:underline">
-              Terms
-            </Link>
-            <span className="mx-2">·</span>
-            <Link href="/faq" className="hover:text-foreground hover:underline">
-              FAQ
-            </Link>
-          </div>
-
-          {/* Minimal Footer - Mobile */}
-          <div className="xl:hidden text-center text-xs text-muted-foreground py-2 pb-20">
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              <Link href="/about" className="hover:text-foreground hover:underline">
-                About
-              </Link>
-              <span className="text-border">·</span>
-              <Link href="/contact" className="hover:text-foreground hover:underline">
-                Contact
-              </Link>
-              <span className="text-border">·</span>
-              <Link href="/privacy" className="hover:text-foreground hover:underline">
-                Privacy
-              </Link>
-              <span className="text-border">·</span>
-              <Link href="/terms" className="hover:text-foreground hover:underline">
-                Terms
-              </Link>
-            </div>
-            <div className="mt-2 text-muted-foreground/60">
-              © 2025 pomobox
-            </div>
-          </div>
+        {/* Ad Banner - Desktop only */}
+        <div className="hidden xl:block w-full px-4 xl:px-8 md:ml-16 lg:ml-20">
+          <AdSenseHorizontalBanner />
         </div>
 
         {/* JSON-LD 구조화 데이터 */}

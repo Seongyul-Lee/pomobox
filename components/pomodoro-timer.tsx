@@ -10,7 +10,7 @@ import { recordSessionComplete, incrementDailyMinutes } from "@/lib/supabase/sta
 import { getLocalTodayStats } from "@/lib/storage/local-stats"
 import { GoalProgress } from "./goal-progress"
 import { LoginPromptDialog } from "./login-prompt-dialog"
-import { useTimerStore, useSettingsStore } from "@/lib/store"
+import { useTimerStore, useSettingsStore, useUIStore } from "@/lib/store"
 
 const LOGIN_PROMPT_KEY = "hasShownLoginPrompt"
 
@@ -43,6 +43,9 @@ export function PomodoroTimer() {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [localTotalMinutes, setLocalTotalMinutes] = useState(0)
   const [localSessions, setLocalSessions] = useState(0)
+
+  // UI store for Settings Dialog
+  const openSettings = useUIStore((state) => state.openSettings)
 
   // Store에서 상태 추출
   const {
@@ -333,15 +336,16 @@ export function PomodoroTimer() {
         </div>
       </div>
 
-      <div
-        className="relative flex items-center justify-center group"
-        role="progressbar"
-        aria-valuenow={Math.round(progress)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label={`${getTypeLabel()} progress: ${Math.round(progress)}%`}
-      >
-        <svg className={`w-52 h-52 sm:w-64 sm:h-64 md:w-80 md:h-80 -rotate-90 hover-ring ${status === 'running' ? 'timer-pulse' : ''}`} viewBox="0 0 300 300" aria-hidden="true">
+      <div className="relative flex items-center justify-center group">
+        {/* Progress ring - non-interactive */}
+        <div
+          role="progressbar"
+          aria-valuenow={Math.round(progress)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`${getTypeLabel()} progress: ${Math.round(progress)}%`}
+        >
+          <svg className={`w-52 h-52 sm:w-64 sm:h-64 md:w-80 md:h-80 -rotate-90 hover-ring ${status === 'running' ? 'timer-pulse' : ''}`} viewBox="0 0 300 300" aria-hidden="true">
           <defs>
             <linearGradient id="timerGradientFocus" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="oklch(72% 0.25 280)" />
@@ -398,17 +402,24 @@ export function PomodoroTimer() {
             filter={status === 'running' ? 'url(#timerGlow)' : undefined}
             className="transition-all duration-1000 ease-linear"
           />
-        </svg>
+          </svg>
+        </div>
+        {/* Timer display button - interactive, outside progressbar */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <span
-            className="text-5xl sm:text-6xl md:text-7xl font-mono font-bold tracking-tight tabular-nums text-foreground hover-timer-display"
-            role="timer"
-            aria-live="off"
-            aria-atomic="true"
-            aria-label={`${minutes} minutes ${seconds} seconds remaining`}
+          <button
+            type="button"
+            onClick={openSettings}
+            className="text-5xl sm:text-6xl md:text-7xl font-mono font-bold tracking-tight tabular-nums text-foreground hover-timer-display cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg transition-all duration-200"
+            aria-label={`${minutes} minutes ${seconds} seconds remaining. Click to open settings.`}
           >
-            {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-          </span>
+            <span
+              role="timer"
+              aria-live="off"
+              aria-atomic="true"
+            >
+              {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+            </span>
+          </button>
         </div>
       </div>
 

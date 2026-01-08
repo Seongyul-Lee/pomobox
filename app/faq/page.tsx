@@ -27,7 +27,6 @@ import {
   Clock,
 } from "lucide-react"
 import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
-import { ArticleMeta } from "@/components/ui/article-meta"
 
 export const metadata: Metadata = {
   title: "Pomobox FAQ: Features, Privacy & Productivity Tips | Pomobox",
@@ -231,11 +230,6 @@ export default function FAQPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Everything you need to know about Pomobox and productivity
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-05"
-            modifiedDate="2025-01-05"
-          />
-
           {/* Category Pills */}
           <div className="mt-8 flex flex-wrap justify-center gap-2">
             {FAQ_CATEGORIES.map((cat) => {

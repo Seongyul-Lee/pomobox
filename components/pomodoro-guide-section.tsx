@@ -308,10 +308,10 @@ export function PomodoroGuideSection() {
               Learn best practices, common mistakes, and pro tips for your workflow.
             </p>
             <Link
-              href="/guide/what-is-pomodoro"
+              href="/learn"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 group"
             >
-              Read the Complete Guide
+              View All Guides
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>

@@ -25,7 +25,7 @@ export default async function UpdatePasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 pt-20 md:pt-4">
       <UpdatePasswordForm />
     </div>
   )

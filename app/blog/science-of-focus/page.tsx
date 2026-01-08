@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Script from "next/script"
 import Link from "next/link"
 import {
   ArrowLeft,
@@ -23,6 +24,7 @@ import {
 } from "lucide-react"
 import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
 import { ArticleMeta } from "@/components/ui/article-meta"
+import { SessionRecommender } from "@/components/ui/session-recommender"
 
 export const metadata: Metadata = {
   title: "Neuroscience Behind Pomodoro: Why It Works | Pomobox",
@@ -222,9 +224,9 @@ const FAQS = [
 ]
 
 const RELATED_CONTENT = [
-  { href: "/guide/what-is-pomodoro", title: "What is Pomodoro?", description: "Learn the technique" },
+  { href: "/blog/why-25-minutes", title: "Why 25 Minutes?", description: "Focus duration research" },
   { href: "/blog/pomodoro-history", title: "Pomodoro History", description: "Origins of the technique" },
-  { href: "/guide/how-to-avoid-distractions", title: "Avoid Distractions", description: "Protect your focus" },
+  { href: "/guide/what-is-pomodoro", title: "What is Pomodoro?", description: "Learn the technique" },
 ]
 
 // JSON-LD
@@ -240,8 +242,6 @@ const jsonLd = [
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-05",
-    dateModified: "2025-01-05",
     url: "https://pomobox.app/blog/science-of-focus",
     mainEntityOfPage: "https://pomobox.app/blog/science-of-focus",
   },
@@ -277,11 +277,7 @@ export default function ScienceOfFocusPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Brain science explaining why time-boxed focus sessions work
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-05"
-            modifiedDate="2025-01-05"
-            readingTime="10 min"
-          />
+          <ArticleMeta readingTime="12 min" />
 
           {/* Key Stats */}
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-lg mx-auto">
@@ -299,6 +295,26 @@ export default function ScienceOfFocusPage() {
             </div>
           </div>
         </header>
+
+        {/* Interactive Tool */}
+        <section className="mb-16">
+          <SessionRecommender />
+        </section>
+
+        {/* Extended Introduction */}
+        <section className="mb-16">
+          <div className="prose prose-lg dark:prose-invert max-w-none">
+            <p>
+              The connection between neuroscience and productivity has never been clearer than it is today. Decades of research into attention, memory, and cognitive performance have revealed fundamental truths about how the human brain processes information and maintains focus. What makes the Pomodoro Technique particularly compelling is not that it was designed with this science in mind—Francesco Cirillo developed it through trial and error in the 1980s—but that it accidentally aligns with principles that neuroscientists wouldn't fully articulate until years later. This convergence of empirical practice and scientific theory explains why the technique has endured while countless other productivity systems have faded into obscurity.
+            </p>
+            <p>
+              Understanding the neuroscience behind focused work doesn't just validate what Pomodoro practitioners have experienced intuitively—it also provides a framework for optimizing the technique for individual needs. Your brain has unique characteristics: your attention span might naturally be shorter or longer than average, your optimal work rhythm might favor longer deep-dive sessions or shorter sprints, and your recovery patterns during breaks might differ from textbook recommendations. By understanding the underlying principles, you can adapt the technique intelligently rather than following rules blindly.
+            </p>
+            <p>
+              This article synthesizes research from cognitive psychology, neuroscience, and attention studies to explain exactly why time-boxed focus sessions work at a biological level. We'll explore the brain systems involved in sustained attention, examine the research on optimal session durations, and provide evidence-based guidance for maximizing your cognitive performance. Whether you're new to structured focus techniques or a seasoned practitioner looking to deepen your understanding, the science presented here will transform how you approach your work.
+            </p>
+          </div>
+        </section>
 
         {/* Introduction */}
         <section className="mb-16">
@@ -414,6 +430,22 @@ export default function ScienceOfFocusPage() {
                 </p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Deep Dive: The Science of Session Length */}
+        <section className="mb-16">
+          <div className="prose prose-lg dark:prose-invert max-w-none">
+            <h2>Why Session Length Matters More Than You Think</h2>
+            <p>
+              The debate over optimal focus session duration has occupied researchers for decades, and the answer turns out to be more nuanced than a single number. The 25-minute Pomodoro interval, while effective for most people, represents just one point on a spectrum of productive session lengths. Understanding why different durations work for different situations requires examining the interplay between attention, fatigue, and the brain's natural rhythms.
+            </p>
+            <p>
+              At the neurochemical level, focused attention depends on a carefully balanced cocktail of neurotransmitters. Dopamine drives motivation and reward-seeking behavior, norepinephrine maintains alertness and attention, and acetylcholine facilitates memory formation and learning. During sustained focus, these neurotransmitters are actively consumed, and their production cannot instantly match demand. This creates a natural ceiling on how long peak performance can be maintained—typically somewhere between 20 and 50 minutes depending on task complexity and individual variation.
+            </p>
+            <p>
+              The concept of "attention debt" helps explain what happens when we push beyond these limits. Just as sleep debt accumulates when we don't get enough rest, attention debt builds when we force concentration past the point of efficient function. The brain compensates by becoming increasingly distractible, making more errors, and requiring more energy for diminishing returns. Strategic breaks don't just feel good—they're a neurological necessity for preventing this debt from accumulating.
+            </p>
           </div>
         </section>
 
@@ -726,10 +758,12 @@ export default function ScienceOfFocusPage() {
       </div>
 
       {/* JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <Script id="article-schema" type="application/ld+json" strategy="afterInteractive">
+        {JSON.stringify(jsonLd[0])}
+      </Script>
+      <Script id="faq-schema" type="application/ld+json" strategy="afterInteractive">
+        {JSON.stringify(jsonLd[1])}
+      </Script>
     </main>
   )
 }

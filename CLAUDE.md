@@ -126,9 +126,59 @@ pomobox에서 사용하는 Claude Code 플러그인 목록 (14개):
 
 **SEO/콘텐츠:**
 
-| 플러그인 | 사용 시점 | 호출 방법 |
-|----------|----------|----------|
-| `seo-technical-optimization:*` | 메타 태그, 스키마, 스니펫 최적화 | `/seo-technical-optimization:seo-*` |
+| 플러그인 | 용도 | 호출 방법 |
+|----------|------|----------|
+| `seo-technical-optimization:seo-keyword-strategist` | 키워드 밀도, LSI 키워드 제안 | `/seo-technical-optimization:seo-keyword-strategist` |
+| `seo-technical-optimization:seo-meta-optimizer` | 메타 타이틀/디스크립션 최적화 | `/seo-technical-optimization:seo-meta-optimizer` |
+| `seo-technical-optimization:seo-structure-architect` | 헤더 구조, 스키마 마크업 | `/seo-technical-optimization:seo-structure-architect` |
+| `seo-technical-optimization:seo-snippet-hunter` | 피처드 스니펫 최적화 | `/seo-technical-optimization:seo-snippet-hunter` |
+| `seo-analysis-monitoring:seo-authority-builder` | E-E-A-T 신호 분석 (YMYL용) | `/seo-analysis-monitoring:seo-authority-builder` |
+| `seo-analysis-monitoring:seo-cannibalization-detector` | 키워드 중복/자기잠식 탐지 | `/seo-analysis-monitoring:seo-cannibalization-detector` |
+| `seo-analysis-monitoring:seo-content-refresher` | 오래된 콘텐츠 갱신 항목 식별 | `/seo-analysis-monitoring:seo-content-refresher` |
+
+**SEO 워크플로우:**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  1️⃣ 작성 전: 키워드 전략 수립                                │
+│     └─ seo-keyword-strategist (키워드 밀도, LSI 키워드)      │
+├─────────────────────────────────────────────────────────────┤
+│  2️⃣ 작성 후: 콘텐츠 품질 검토 (선택)                         │
+│     └─ seo-authority-builder (E-E-A-T, YMYL인 경우)         │
+│     └─ seo-cannibalization-detector (유사 페이지 있을 때)    │
+├─────────────────────────────────────────────────────────────┤
+│  3️⃣ 최적화: 기술적 SEO 적용                                  │
+│     └─ seo-meta-optimizer (메타 타이틀/디스크립션)           │
+│     └─ seo-structure-architect (헤더 구조, 스키마)           │
+│     └─ seo-snippet-hunter (피처드 스니펫 노림)               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+| 상황 | 워크플로우 |
+|------|-----------|
+| 새 콘텐츠 작성 | `keyword-strategist` → 작성 → `meta-optimizer` + `structure-architect` |
+| 기존 콘텐츠 갱신 | `content-refresher` → 수정 → `meta-optimizer` |
+| YMYL 콘텐츠 | 위 + `authority-builder` 추가 |
+| 유사 페이지 다수 | `cannibalization-detector`로 중복 검토 |
+
+> pomobox는 생산성 도구(YMYL 아님)이므로 실질적으로 **2단계**(`keyword-strategist` → `meta-optimizer`/`structure-architect`)로 충분
+
+**SEO 워크플로우 프롬프트 템플릿:**
+
+```markdown
+CLAUDE.md의 SEO 워크플로우를 적용하여 블로그 페이지를 만들어줘.
+
+**주제**: [페이지 제목/주제]
+
+**타겟 키워드**: [주요 키워드 1~3개]
+
+**페이지 경로**: /blog/[slug]
+
+**YMYL 여부**: Yes/No (건강, 금융, 법률 관련 시 Yes)
+
+**추가 요구사항**: (선택)
+- [학술 연구 인용, 인포그래픽 등]
+```
 
 **사용 가이드:**
 
@@ -138,7 +188,7 @@ pomobox에서 사용하는 Claude Code 플러그인 목록 (14개):
 4. **기능 완료 후** → `code-review-ai:ai-review`
 5. **PR 생성 전** → `security-guidance` + `accessibility-compliance`
 6. **2차 완료 후** → `code-refactoring` + `codebase-cleanup`
-7. **콘텐츠 페이지** → `seo-technical-optimization`
+7. **콘텐츠 페이지** → SEO 워크플로우 참조
 
 ---
 

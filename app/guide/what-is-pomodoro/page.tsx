@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Script from "next/script"
 import {
   ArrowRight,
   ArrowLeft,
@@ -15,16 +16,17 @@ import {
   BarChart3,
   Calendar,
   ChevronDown,
-  Code,
   Sparkles,
   CheckCircle2,
-  Lightbulb,
   AlertTriangle,
   BookOpen,
+  Lightbulb,
+  TrendingUp,
 } from "lucide-react"
 import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
 import { ArticleMeta } from "@/components/ui/article-meta"
 import { DefinitionBox } from "@/components/ui/definition-box"
+import { MiniTimerDemo } from "@/components/ui/mini-timer-demo"
 
 export const metadata: Metadata = {
   title: "What is the Pomodoro Technique? Complete Guide | Pomobox",
@@ -47,29 +49,13 @@ export const metadata: Metadata = {
   },
 }
 
-// Data
+// Data - Reduced arrays, more prose content
 const STEPS = [
   { number: 1, icon: ListTodo, title: "Choose a Task", description: "Select what you'll work on—studying, coding, writing, or any focused task." },
   { number: 2, icon: Clock, title: "Set Timer (25 min)", description: "Commit to one pomodoro. The countdown creates urgency and focus." },
   { number: 3, icon: Target, title: "Work with Focus", description: "Full concentration until the timer rings. Note distractions, don't act on them." },
   { number: 4, icon: Coffee, title: "Take a Break (5 min)", description: "Step away. Stretch, hydrate, breathe. Let your brain rest." },
   { number: 5, icon: Repeat, title: "Repeat & Rest", description: "After 4 pomodoros, take a 15-30 minute break. Then start fresh." },
-]
-
-const BENEFITS = [
-  { icon: Brain, title: "Fights Procrastination", description: "25 minutes feels achievable, removing the mental barrier to start. Research shows 'planning fallacy' causes 40% of procrastination—Pomodoro counters this." },
-  { icon: Target, title: "Improves Deep Focus", description: "Time-boxing eliminates multitasking. Your brain enters flow state faster when it knows there's a defined endpoint." },
-  { icon: Clock, title: "Prevents Burnout", description: "Structured breaks are proven to maximize cognitive performance. Short rests prevent the fatigue that kills long-term productivity." },
-  { icon: Zap, title: "Builds Momentum", description: "Each completed pomodoro triggers dopamine release. Small wins create a positive feedback loop—turning 'I should work' into 'I want to keep going.'" },
-]
-
-const BEST_PRACTICES = [
-  { icon: ListTodo, title: "Plan Pomodoros Daily", description: "Review tasks each morning and estimate how many pomodoros each needs. Eliminates decision fatigue during sessions." },
-  { icon: BookOpen, title: "Keep an Interruption Log", description: "When distractions arise mid-session, jot them down quickly without breaking focus. Handle them during breaks." },
-  { icon: Coffee, title: "Use Breaks Strategically", description: "Physical breaks are 50% more restorative than scrolling. Stand up, stretch, walk, hydrate." },
-  { icon: Music, title: "Optimize Your Environment", description: "Background lo-fi or white noise masks distracting sounds. Close unrelated tabs and silence notifications." },
-  { icon: Clock, title: "Adjust Duration by Task", description: "Try 45 minutes for deep technical work, 15 minutes for admin tasks. Find what works for your work type." },
-  { icon: Target, title: "Batch Similar Tasks", description: "Group similar work together (all emails, all coding) to reduce mental switching costs." },
 ]
 
 const MISTAKES = [
@@ -94,33 +80,30 @@ const FAQS = [
   { question: "Does it work for different jobs?", answer: "Yes! Developers use longer sessions (45 min), managers shorter ones (15 min), freelancers track billable hours. The principle adapts to any field." },
 ]
 
-// JSON-LD 구조화 데이터
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: "What is the Pomodoro Technique?",
-    description: "Complete guide to the Pomodoro Technique: how it works, why it's effective, best practices, and how to use it for maximum productivity.",
-    author: { "@type": "Organization", name: "Pomobox Team" },
-    publisher: {
-      "@type": "Organization",
-      name: "Pomobox",
-      logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
-    },
-    datePublished: "2025-01-05",
-    dateModified: "2025-01-05",
-    url: "https://pomobox.app/guide/what-is-pomodoro",
+// JSON-LD Schemas
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "What is the Pomodoro Technique?",
+  description: "Complete guide to the Pomodoro Technique: how it works, why it's effective, best practices, and how to use it for maximum productivity.",
+  author: { "@type": "Organization", name: "Pomobox Team" },
+  publisher: {
+    "@type": "Organization",
+    name: "Pomobox",
+    logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
   },
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQS.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: { "@type": "Answer", text: faq.answer },
-    })),
-  },
-]
+  url: "https://pomobox.app/guide/what-is-pomodoro",
+}
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: { "@type": "Answer", text: faq.answer },
+  })),
+}
 
 export default function WhatIsPomodoroPage() {
   return (
@@ -133,7 +116,7 @@ export default function WhatIsPomodoroPage() {
         />
 
         {/* Hero Section */}
-        <header className="text-center mb-16">
+        <header className="text-center mb-12">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20 mb-6">
             <Sparkles className="h-3 w-3" />
             Complete Guide
@@ -145,9 +128,7 @@ export default function WhatIsPomodoroPage() {
             Master time-boxed productivity and transform how you work
           </p>
           <ArticleMeta
-            publishedDate="2025-01-05"
-            modifiedDate="2025-01-05"
-            readingTime="8 min"
+            readingTime="10 min"
           />
 
           {/* Quick Stats */}
@@ -167,6 +148,11 @@ export default function WhatIsPomodoroPage() {
           </div>
         </header>
 
+        {/* Interactive Timer Demo - NEW UNIQUE ELEMENT */}
+        <section className="mb-16">
+          <MiniTimerDemo />
+        </section>
+
         {/* Featured Snippet Optimized Definition */}
         <DefinitionBox
           term="the Pomodoro Technique"
@@ -174,24 +160,43 @@ export default function WhatIsPomodoroPage() {
           className="mb-16"
         />
 
-        {/* Introduction */}
+        {/* Extended Introduction - PROSE CONTENT */}
         <section className="mb-16">
           <div className="p-6 md:p-8 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50">
-            <h2 className="flex items-center gap-3 text-xl md:text-2xl font-semibold text-foreground mb-4">
+            <h2 className="flex items-center gap-3 text-xl md:text-2xl font-semibold text-foreground mb-6">
               <span className="p-2 rounded-xl bg-primary/10">
                 <Brain className="h-5 w-5 text-primary" />
               </span>
-              The Problem & Solution
+              The Modern Focus Crisis
             </h2>
-            <div className="space-y-4 text-muted-foreground leading-relaxed">
-              <p>
-                <strong className="text-foreground">The challenge:</strong> In today's digital world, the average person loses focus every 11 minutes. By lunchtime, you've been "working" for hours but completed almost nothing.
+            <div className="prose prose-neutral dark:prose-invert max-w-none">
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                We live in an age of unprecedented distraction. The average knowledge worker checks their email
+                <strong className="text-foreground"> 74 times per day</strong>, switches tasks every
+                <strong className="text-foreground"> 3 minutes</strong>, and takes approximately
+                <strong className="text-foreground"> 23 minutes</strong> to fully regain focus after each interruption.
+                By the end of a typical workday, despite being &quot;busy&quot; for 8 hours, many people have accomplished
+                less than 2 hours of truly focused work.
               </p>
-              <p>
-                <strong className="text-foreground">The Pomodoro Technique</strong> solves this by leveraging a psychological principle: when you commit to focusing for just 25 minutes, your brain stops fighting. The task feels manageable. Distractions lose their power.
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                This isn&apos;t a personal failing—it&apos;s a systemic problem. Our brains evolved for a world of
+                immediate physical threats and rewards, not for the abstract, long-term projects that define
+                modern work. When faced with a complex task, our ancient brain circuits rebel. They seek the
+                quick dopamine hit of a new notification, the comfort of a familiar distraction.
               </p>
-              <p>
-                Created by Francesco Cirillo in the 1980s using a tomato-shaped kitchen timer (pomodoro = tomato in Italian), this method has helped millions reclaim their focus.
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                The <strong className="text-foreground">Pomodoro Technique</strong> offers an elegant solution.
+                By committing to just 25 minutes of focused work—a duration that feels manageable even to the
+                most distraction-prone mind—you bypass the brain&apos;s resistance. The timer creates urgency.
+                The defined endpoint provides relief. And the structured breaks prevent the burnout that
+                derails longer work sessions.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Created by <strong className="text-foreground">Francesco Cirillo</strong> in the late 1980s
+                while he was a university student struggling to focus, the technique takes its name from the
+                tomato-shaped kitchen timer he used (pomodoro means &quot;tomato&quot; in Italian). What started
+                as a personal productivity hack has since been adopted by millions worldwide—from Silicon Valley
+                engineers to medical students, from novelists to accountants.
               </p>
             </div>
           </div>
@@ -233,67 +238,152 @@ export default function WhatIsPomodoroPage() {
           </div>
         </section>
 
-        {/* Why It Works */}
-        <section className="mb-16">
-          <div className="text-center mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-              <Zap className="h-3 w-3" />
-              Science-Backed
-            </span>
-            <h2 className="mt-4 text-2xl md:text-3xl font-bold text-foreground">
-              Why It Works
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {BENEFITS.map((benefit) => {
-              const Icon = benefit.icon
-              return (
-                <div
-                  key={benefit.title}
-                  className="p-5 md:p-6 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50 hover:border-primary/30 transition-colors"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 rounded-xl bg-primary/10">
-                      <Icon className="h-5 w-5 text-primary" />
-                    </div>
-                    <h3 className="font-semibold text-foreground">{benefit.title}</h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{benefit.description}</p>
-                </div>
-              )
-            })}
-          </div>
-        </section>
-
-        {/* Best Practices */}
+        {/* The Psychology - NEW PROSE SECTION */}
         <section className="mb-16">
           <div className="text-center mb-8">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20">
+              <Brain className="h-3 w-3" />
+              Deep Dive
+            </span>
+            <h2 className="mt-4 text-2xl md:text-3xl font-bold text-foreground">
+              The Psychology Behind 25 Minutes
+            </h2>
+          </div>
+
+          <div className="space-y-6">
+            {/* Prose block 1 */}
+            <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-violet-500/5 to-purple-500/5 border border-violet-500/10">
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground mb-4">
+                <Zap className="h-5 w-5 text-violet-500" />
+                Fighting Procrastination
+              </h3>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Procrastination isn&apos;t about laziness—it&apos;s about <strong className="text-foreground">emotional regulation</strong>.
+                When we face a daunting task, our brain experiences genuine discomfort. This discomfort triggers
+                avoidance behaviors: checking social media, reorganizing our desk, anything but the actual work.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                The Pomodoro Technique short-circuits this pattern. By committing to just 25 minutes, you reduce
+                the perceived threat. &quot;I only have to do this for 25 minutes&quot; is far less threatening than
+                &quot;I have to finish this entire project.&quot; Research shows that once we start a task, we&apos;re
+                far more likely to continue—a phenomenon psychologists call the <strong className="text-foreground">Zeigarnik effect</strong>.
+              </p>
+            </div>
+
+            {/* Prose block 2 */}
+            <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-amber-500/5 to-orange-500/5 border border-amber-500/10">
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground mb-4">
+                <TrendingUp className="h-5 w-5 text-amber-500" />
+                Building Momentum
+              </h3>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Each completed pomodoro triggers a small <strong className="text-foreground">dopamine release</strong> in
+                your brain—the same neurochemical that makes video games and social media so addictive. But instead
+                of hijacking your reward system for distraction, the Pomodoro Technique harnesses it for productivity.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                This creates a positive feedback loop. One completed pomodoro makes you want to start another.
+                Over time, the act of setting a timer becomes associated with the satisfaction of completion.
+                What once required willpower becomes automatic—a <strong className="text-foreground">habit</strong>.
+              </p>
+            </div>
+
+            {/* Prose block 3 */}
+            <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 border border-cyan-500/10">
+              <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground mb-4">
+                <Coffee className="h-5 w-5 text-cyan-500" />
+                The Science of Rest
+              </h3>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                The 5-minute breaks aren&apos;t wasted time—they&apos;re <strong className="text-foreground">productive time</strong>.
+                During rest, your brain&apos;s <strong className="text-foreground">Default Mode Network (DMN)</strong> activates.
+                This network is responsible for memory consolidation, creative insight, and preparing for future tasks.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Studies show that information learned before a break is better retained than information crammed
+                without rest. The breaks also prevent the cognitive fatigue that leads to errors and poor decisions.
+                Counterintuitively, working less intensely often means accomplishing more.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Best Practices - REDESIGNED AS PROSE + HIGHLIGHTS */}
+        <section className="mb-16">
+          <div className="text-center mb-8">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
               <Lightbulb className="h-3 w-3" />
               Pro Tips
             </span>
             <h2 className="mt-4 text-2xl md:text-3xl font-bold text-foreground">
-              Best Practices
+              Best Practices for Success
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {BEST_PRACTICES.map((practice) => {
-              const Icon = practice.icon
-              return (
-                <div
-                  key={practice.title}
-                  className="flex items-start gap-3 p-4 md:p-5 rounded-2xl bg-gradient-to-br from-violet-500/5 to-purple-500/5 border border-violet-500/10 hover:border-violet-500/20 transition-colors"
-                >
-                  <Icon className="h-5 w-5 text-violet-500 flex-shrink-0 mt-0.5" />
+          <div className="p-6 md:p-8 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50">
+            <div className="prose prose-neutral dark:prose-invert max-w-none">
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                After decades of use by millions of practitioners, certain patterns have emerged that separate
+                Pomodoro masters from beginners. Here are the practices that consistently lead to better results:
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex items-start gap-4 p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h3 className="font-medium text-foreground mb-1">{practice.title}</h3>
-                    <p className="text-sm text-muted-foreground">{practice.description}</p>
+                    <h4 className="font-semibold text-foreground mb-1">Plan Your Pomodoros Daily</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Each morning, review your tasks and estimate how many pomodoros each requires. This eliminates
+                      decision fatigue during sessions and gives you a realistic view of your day&apos;s capacity.
+                    </p>
                   </div>
                 </div>
-              )
-            })}
+
+                <div className="flex items-start gap-4 p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-1">Keep an Interruption Log</h4>
+                    <p className="text-sm text-muted-foreground">
+                      When thoughts or urges arise mid-session, jot them down quickly without breaking focus.
+                      You&apos;ll address them during breaks. This simple practice trains your brain to delay gratification.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-1">Use Physical Breaks</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Physical breaks are 50% more restorative than scrolling your phone. Stand up, stretch, walk
+                      to the window, hydrate. Your body and brain will thank you.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-1">Adjust Duration by Task Type</h4>
+                    <p className="text-sm text-muted-foreground">
+                      The 25-minute default works for most tasks, but experimentation helps. Try 45 minutes for
+                      deep technical work, 15 minutes for administrative tasks, and 20-30 for creative work.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-1">Batch Similar Tasks</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Group similar work together—all emails in one pomodoro, all coding in another. This reduces
+                      the mental switching costs that silently drain your energy throughout the day.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -396,14 +486,41 @@ export default function WhatIsPomodoroPage() {
           </div>
         </section>
 
+        {/* Related Guides */}
+        <section className="mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-xl font-semibold text-foreground">Continue Learning</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { href: "/guide/pomodoro-for-students", title: "For Students", description: "Study techniques" },
+              { href: "/guide/pomodoro-for-developers", title: "For Developers", description: "Coding productivity" },
+              { href: "/blog/science-of-focus", title: "Science of Focus", description: "Brain research" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="p-4 rounded-xl bg-card/60 dark:bg-card/40 border border-border/50 hover:border-primary/30 transition-colors group"
+              >
+                <h3 className="font-medium text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
+                  {item.title}
+                  <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </h3>
+                <p className="text-sm text-muted-foreground">{item.description}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="mb-8">
           <div className="text-center p-8 md:p-10 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
             <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">
-              Ready to Get Started?
+              Ready to Transform Your Productivity?
             </h3>
             <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-              Start your first pomodoro session right now. No signup required—your data stays private and on your device.
+              You&apos;ve learned the technique. Now experience it. Start your first real pomodoro session—no
+              signup required, your data stays private and on your device.
             </p>
             <Link
               href="/"
@@ -435,10 +552,20 @@ export default function WhatIsPomodoroPage() {
       </div>
 
       {/* JSON-LD */}
-      <script
+      <Script
+        id="article-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+        strategy="afterInteractive"
+      >
+        {JSON.stringify(articleSchema)}
+      </Script>
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+      >
+        {JSON.stringify(faqSchema)}
+      </Script>
     </main>
   )
 }

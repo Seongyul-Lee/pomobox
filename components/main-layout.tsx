@@ -74,7 +74,11 @@ export function MainLayout({
         {/* Right: Widget Area (BGM + Calendar) */}
         {rightWidget && (
           <aside
-            className="w-[570px] flex-shrink-0 flex flex-col gap-4"
+            className="flex-shrink-0 flex flex-col"
+            style={{
+              width: 'var(--dashboard-right-width)',
+              gap: 'var(--dashboard-right-gap)',
+            }}
             aria-label="Music and Calendar"
           >
             {rightWidget}

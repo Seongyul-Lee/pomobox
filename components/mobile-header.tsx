@@ -11,32 +11,14 @@ import {
   Sparkles,
   Home,
   BookOpen,
-  Newspaper,
   Info,
   Mail,
   HelpCircle,
-  ChevronRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "next-themes"
-import { SettingsDialog } from "@/components/settings-dialog"
-import { useSettingsStore, type TimerSettings } from "@/lib/store"
+import { useUIStore } from "@/lib/store"
 import { cn } from "@/lib/utils"
-
-// Guide submenu items
-const guideItems = [
-  { label: "What is Pomodoro?", href: "/guide/what-is-pomodoro" },
-  { label: "For Students", href: "/guide/pomodoro-for-students" },
-  { label: "For Developers", href: "/guide/pomodoro-for-developers" },
-  { label: "Pomodoro vs Timeboxing", href: "/guide/pomodoro-vs-timeboxing" },
-  { label: "Avoid Distractions", href: "/guide/how-to-avoid-distractions" },
-]
-
-// Blog submenu items
-const blogItems = [
-  { label: "Pomodoro History", href: "/blog/pomodoro-history" },
-  { label: "Science of Focus", href: "/blog/science-of-focus" },
-]
 
 // Animated hamburger icon component
 function HamburgerIcon({ isOpen }: { isOpen: boolean }) {
@@ -158,186 +140,14 @@ function MenuItem({ href, icon, label, isActive, accentColor = "primary", onClic
   )
 }
 
-// Expandable menu with submenu
-interface ExpandableMenuProps {
-  icon: React.ReactNode
-  label: string
-  isActive: boolean
-  isExpanded: boolean
-  onToggle: () => void
-  accentColor: string
-  children: React.ReactNode
-}
-
-function ExpandableMenu({ icon, label, isActive, isExpanded, onToggle, accentColor, children }: ExpandableMenuProps) {
-  const colorClasses = {
-    violet: {
-      bg: "bg-violet-500/12 dark:bg-violet-400/20",
-      activeBg: "bg-violet-500/18 dark:bg-violet-400/25",
-      text: "text-violet-600 dark:text-violet-400",
-      iconBg: "bg-violet-500/15 dark:bg-violet-400/25",
-      activeIconBg: "bg-violet-500/22 dark:bg-violet-400/30",
-      chevron: "text-violet-500/70 dark:text-violet-400/70",
-      line: "bg-violet-500/20 dark:bg-violet-400/30",
-    },
-    amber: {
-      bg: "bg-amber-500/12 dark:bg-amber-400/20",
-      activeBg: "bg-amber-500/18 dark:bg-amber-400/25",
-      text: "text-amber-600 dark:text-amber-400",
-      iconBg: "bg-amber-500/15 dark:bg-amber-400/25",
-      activeIconBg: "bg-amber-500/22 dark:bg-amber-400/30",
-      chevron: "text-amber-500/70 dark:text-amber-400/70",
-      line: "bg-amber-500/20 dark:bg-amber-400/30",
-    },
-  } as const
-
-  const colors = colorClasses[accentColor as keyof typeof colorClasses]
-
-  return (
-    <div>
-      {/* Parent button */}
-      <button
-        onClick={onToggle}
-        className={cn(
-          "w-full group flex items-center gap-3.5 px-3 py-3 rounded-2xl transition-all duration-200",
-          "hover:scale-[1.02] active:scale-[0.98]",
-          isActive || isExpanded
-            ? cn(colors.activeBg, colors.text)
-            : "hover:bg-muted/60"
-        )}
-        aria-expanded={isExpanded}
-      >
-        {/* Icon with background */}
-        <div
-          className={cn(
-            "flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200",
-            isActive || isExpanded
-              ? colors.activeIconBg
-              : "bg-muted/50 group-hover:bg-muted"
-          )}
-        >
-          <span className={cn(
-            "transition-colors duration-200",
-            (isActive || isExpanded) && colors.text
-          )}>
-            {icon}
-          </span>
-        </div>
-        {/* Label */}
-        <span className={cn(
-          "flex-1 text-left font-medium text-[15px] transition-colors duration-200",
-          (isActive || isExpanded) && colors.text
-        )}>
-          {label}
-        </span>
-        {/* Chevron */}
-        <ChevronRight
-          className={cn(
-            "h-4 w-4 transition-all duration-300 ease-out",
-            isExpanded && "rotate-90",
-            (isActive || isExpanded) ? colors.chevron : "text-muted-foreground/50"
-          )}
-        />
-      </button>
-
-      {/* Submenu */}
-      <div
-        className={cn(
-          "overflow-hidden transition-all duration-300 ease-out origin-top",
-          isExpanded ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
-        )}
-      >
-        <div className="relative pl-[26px] py-2">
-          {/* Vertical connecting line */}
-          <div className={cn(
-            "absolute left-[22px] top-0 bottom-2 w-[2px] rounded-full",
-            colors.line
-          )} />
-
-          <div className="space-y-0.5">
-            {children}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Submenu item
-interface SubmenuItemProps {
-  href: string
-  label: string
-  isActive: boolean
-  accentColor: string
-  onClick: () => void
-  className?: string
-}
-
-function SubmenuItem({ href, label, isActive, accentColor, onClick, className }: SubmenuItemProps) {
-  const colorClasses = {
-    violet: {
-      activeBg: "bg-violet-500/15 dark:bg-violet-400/20",
-      hoverBg: "hover:bg-violet-500/10 dark:hover:bg-violet-400/15",
-      text: "text-violet-600 dark:text-violet-400",
-      dot: "bg-violet-500 dark:bg-violet-400",
-    },
-    amber: {
-      activeBg: "bg-amber-500/15 dark:bg-amber-400/20",
-      hoverBg: "hover:bg-amber-500/10 dark:hover:bg-amber-400/15",
-      text: "text-amber-600 dark:text-amber-400",
-      dot: "bg-amber-500 dark:bg-amber-400",
-    },
-  } as const
-
-  const colors = colorClasses[accentColor as keyof typeof colorClasses]
-
-  return (
-    <Link
-      href={href}
-      onClick={onClick}
-      className={cn(
-        "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200",
-        "hover:scale-[1.01] active:scale-[0.99]",
-        isActive
-          ? cn(colors.activeBg, colors.text)
-          : cn("text-muted-foreground", colors.hoverBg, "hover:text-foreground"),
-        className
-      )}
-    >
-      {/* Connecting dot */}
-      <div className="relative flex items-center justify-center w-3">
-        <div className={cn(
-          "w-[6px] h-[6px] rounded-full transition-all duration-200",
-          isActive
-            ? cn(colors.dot, "scale-110")
-            : "bg-muted-foreground/40 group-hover:bg-muted-foreground/60"
-        )} />
-      </div>
-      <span className="transition-colors duration-200">{label}</span>
-    </Link>
-  )
-}
-
 export function MobileHeader() {
   const { theme, setTheme } = useTheme()
-  const [settingsOpen, setSettingsOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [guidesExpanded, setGuidesExpanded] = useState(false)
-  const [blogExpanded, setBlogExpanded] = useState(false)
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
-  const settingsStore = useSettingsStore()
 
-  const currentSettings: TimerSettings = {
-    focusDuration: settingsStore.focusDuration,
-    breakDuration: settingsStore.breakDuration,
-    dailyGoal: settingsStore.dailyGoal,
-    notificationsEnabled: settingsStore.notificationsEnabled,
-    soundEnabled: settingsStore.soundEnabled,
-    soundCategory: settingsStore.soundCategory,
-    soundType: settingsStore.soundType,
-    volume: settingsStore.volume,
-  }
+  // UI store for Settings Dialog
+  const setSettingsOpen = useUIStore((state) => state.setSettingsOpen)
 
   // Theme cycle: Light -> Midnight -> Dark -> Light
   const toggleTheme = () => {
@@ -369,8 +179,6 @@ export function MobileHeader() {
   // Close menu when route changes
   useEffect(() => {
     setMenuOpen(false)
-    setGuidesExpanded(false)
-    setBlogExpanded(false)
   }, [pathname])
 
   // Prevent scroll when menu is open
@@ -402,15 +210,14 @@ export function MobileHeader() {
 
   // Check if current path matches
   const isActive = (path: string) => pathname === path
-  const isGuideActive = pathname.startsWith("/guide")
-  const isBlogActive = pathname.startsWith("/blog")
+  const isLearnActive = pathname === "/learn" || pathname.startsWith("/guide") || pathname.startsWith("/blog")
 
   const closeMenu = () => setMenuOpen(false)
 
   return (
     <>
       {/* Header Bar */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-50 pt-safe h-14 px-3 flex items-center justify-between bg-background/85 backdrop-blur-2xl border-b border-border/40">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 pt-safe h-[calc(3.5rem+env(safe-area-inset-top,0px))] px-3 flex items-center justify-between bg-background/85 backdrop-blur-2xl border-b border-border/40">
         {/* Left: Hamburger + Logo */}
         <div className="flex items-center gap-1.5">
           {/* Hamburger Button */}
@@ -515,52 +322,16 @@ export function MobileHeader() {
             />
           </div>
 
-          {/* Guides with Submenu */}
+          {/* Learn */}
           <div className="mobile-menu-item">
-            <ExpandableMenu
+            <MenuItem
+              href="/learn"
               icon={<BookOpen className="h-5 w-5" />}
-              label="Guides"
-              isActive={isGuideActive}
-              isExpanded={guidesExpanded}
-              onToggle={() => setGuidesExpanded(!guidesExpanded)}
+              label="Learn"
+              isActive={isLearnActive}
               accentColor="violet"
-            >
-              {guideItems.map((item, index) => (
-                <SubmenuItem
-                  key={item.href}
-                  href={item.href}
-                  label={item.label}
-                  isActive={isActive(item.href)}
-                  accentColor="violet"
-                  onClick={closeMenu}
-                  className={guidesExpanded ? "mobile-submenu-item" : ""}
-                />
-              ))}
-            </ExpandableMenu>
-          </div>
-
-          {/* Blog with Submenu */}
-          <div className="mobile-menu-item">
-            <ExpandableMenu
-              icon={<Newspaper className="h-5 w-5" />}
-              label="Blog"
-              isActive={isBlogActive}
-              isExpanded={blogExpanded}
-              onToggle={() => setBlogExpanded(!blogExpanded)}
-              accentColor="amber"
-            >
-              {blogItems.map((item, index) => (
-                <SubmenuItem
-                  key={item.href}
-                  href={item.href}
-                  label={item.label}
-                  isActive={isActive(item.href)}
-                  accentColor="amber"
-                  onClick={closeMenu}
-                  className={blogExpanded ? "mobile-submenu-item" : ""}
-                />
-              ))}
-            </ExpandableMenu>
+              onClick={closeMenu}
+            />
           </div>
 
           {/* Separator */}
@@ -605,17 +376,6 @@ export function MobileHeader() {
           </div>
         </div>
       </nav>
-
-      {/* Settings Dialog */}
-      <SettingsDialog
-        settings={currentSettings}
-        onSettingsChange={(newSettings) => {
-          settingsStore.updateSettings(newSettings)
-        }}
-        open={settingsOpen}
-        onOpenChange={setSettingsOpen}
-        hideTrigger
-      />
     </>
   )
 }

@@ -82,12 +82,12 @@ export function Breadcrumb({ items, className = "" }: BreadcrumbProps) {
 export const BREADCRUMB_PRESETS = {
   guide: (title: string): BreadcrumbItem[] => [
     { label: "Home", href: "/" },
-    { label: "Guides", href: "/guide/what-is-pomodoro" },
+    { label: "Learn", href: "/learn" },
     { label: title },
   ],
   blog: (title: string): BreadcrumbItem[] => [
     { label: "Home", href: "/" },
-    { label: "Blog", href: "/blog/pomodoro-history" },
+    { label: "Learn", href: "/learn" },
     { label: title },
   ],
   legal: (title: string): BreadcrumbItem[] => [

@@ -3,7 +3,7 @@ import { AuthForm } from "@/components/auth-form"
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 pt-20 md:pt-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold">Welcome back</h1>

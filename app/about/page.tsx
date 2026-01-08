@@ -20,7 +20,6 @@ import {
   Users,
 } from "lucide-react"
 import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
-import { ArticleMeta } from "@/components/ui/article-meta"
 
 const siteUrl = "https://pomobox.app"
 
@@ -99,7 +98,7 @@ const DIFFERENTIATORS = [
 const FAQS = [
   {
     question: "Is Pomobox free? Will I have to pay later?",
-    answer: "Pomobox is completely free, forever. There are no premium tiers, hidden fees, or ads. We're open-source—our code is public and anyone can review it.",
+    answer: "Pomobox is completely free, forever. There are no premium tiers or hidden fees. We're open-source—our code is public and anyone can review it.",
   },
   {
     question: "Do I need an account to use Pomobox?",
@@ -111,7 +110,7 @@ const FAQS = [
   },
   {
     question: "Is my data secure?",
-    answer: "Your data never leaves your device unless you enable cloud sync. We use local IndexedDB storage. No third-party tracking, no analytics, no ads.",
+    answer: "Your data never leaves your device unless you enable cloud sync. We use local IndexedDB storage. No third-party tracking, no analytics.",
   },
   {
     question: "Can I export my data?",
@@ -165,10 +164,6 @@ export default function AboutPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Free, open-source productivity for everyone
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-05"
-            modifiedDate="2025-01-05"
-          />
         </header>
 
         {/* What Makes Pomobox Different */}
@@ -193,7 +188,7 @@ export default function AboutPage() {
                 <div className="p-4 rounded-xl bg-background/50 dark:bg-background/30 border border-border/30">
                   <div className="text-lg font-bold text-primary mb-1">Local</div>
                   <h3 className="font-medium text-foreground text-sm mb-1">Privacy-First Design</h3>
-                  <p className="text-xs text-muted-foreground">Your data stays on your device. No tracking, no analytics, no ads.</p>
+                  <p className="text-xs text-muted-foreground">Your data stays on your device. No tracking, no analytics.</p>
                 </div>
                 <div className="p-4 rounded-xl bg-background/50 dark:bg-background/30 border border-border/30">
                   <div className="text-lg font-bold text-primary mb-1">Deep</div>
@@ -287,7 +282,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-3 gap-6 md:gap-8">
               <div className="text-center">
                 <div className="text-2xl md:text-3xl font-bold text-primary mb-2">Free</div>
-                <p className="text-xs text-muted-foreground">Forever, No Ads</p>
+                <p className="text-xs text-muted-foreground">Forever</p>
               </div>
               <div className="text-center border-x border-primary/20">
                 <div className="text-2xl md:text-3xl font-bold text-primary mb-2">Open</div>

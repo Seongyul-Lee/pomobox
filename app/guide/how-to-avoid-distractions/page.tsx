@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Script from "next/script"
 import {
   ShieldOff,
   Brain,
@@ -30,6 +31,7 @@ import {
 } from "lucide-react"
 import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
 import { ArticleMeta } from "@/components/ui/article-meta"
+import { DistractionAudit } from "@/components/ui/distraction-audit"
 
 export const metadata: Metadata = {
   title: "How to Avoid Distractions: Complete Focus Guide | Pomobox",
@@ -250,8 +252,6 @@ const jsonLd = [
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-05",
-    dateModified: "2025-01-05",
     url: "https://pomobox.app/guide/how-to-avoid-distractions",
   },
   {
@@ -299,11 +299,7 @@ export default function HowToAvoidDistractionsPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Protect your focus. Eliminate interruptions. Do your best work.
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-05"
-            modifiedDate="2025-01-05"
-            readingTime="11 min"
-          />
+          <ArticleMeta readingTime="14 min" />
 
           {/* Distraction Cost Stats */}
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-lg mx-auto">
@@ -322,6 +318,24 @@ export default function HowToAvoidDistractionsPage() {
           </div>
         </header>
 
+        {/* Interactive Tool: Distraction Audit */}
+        <section className="mb-16">
+          <DistractionAudit />
+        </section>
+
+        {/* Extended Introduction - Prose */}
+        <section className="mb-16 prose prose-lg dark:prose-invert max-w-none">
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            We live in the most distraction-rich environment in human history. Your smartphone alone contains more entertainment, social connection, and information than existed in entire civilizations. And it&apos;s always within arm&apos;s reach, designed by brilliant engineers whose explicit goal is to capture and hold your attention. Every notification, every infinite scroll, every autoplay video is the result of millions of dollars in research on what makes human brains unable to look away.
+          </p>
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            But here&apos;s what the attention economy doesn&apos;t want you to know: focus is a competitive advantage. While most people fragment their attention across dozens of apps and conversations, those who can sustain deep concentration produce disproportionately better work. Cal Newport, author of &quot;Deep Work,&quot; argues that the ability to focus without distraction is becoming both rare and valuable—and those who master it will thrive.
+          </p>
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            The strategies in this guide aren&apos;t about willpower. Relying on willpower to resist distraction is like trying to hold your breath—eventually, you&apos;ll gasp. Instead, we focus on <em>environmental design</em>: structuring your physical and digital spaces so that the path of least resistance leads to focused work. When checking Twitter requires more effort than continuing to work, the battle is already won.
+          </p>
+        </section>
+
         {/* The Distraction Problem */}
         <section className="mb-16">
           <div className="p-6 md:p-8 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50">
@@ -336,10 +350,10 @@ export default function HowToAvoidDistractionsPage() {
                 <strong className="text-foreground">The modern reality:</strong> The average knowledge worker checks email <strong className="text-foreground">every 6 minutes</strong>, gets interrupted <strong className="text-foreground">every 11 minutes</strong>, and spends <strong className="text-foreground">23 minutes</strong> recovering from each interruption. Do the math—deep focus is almost impossible.
               </p>
               <p>
-                <strong className="text-foreground">The compound cost:</strong> Distractions don't just steal time—they steal your best thinking. Complex problems require sustained attention. Every interruption forces you to rebuild context from scratch.
+                <strong className="text-foreground">The compound cost:</strong> Distractions don&apos;t just steal time—they steal your best thinking. Complex problems require sustained attention. Every interruption forces you to rebuild context from scratch.
               </p>
               <p>
-                <strong className="text-foreground">The good news:</strong> Attention is a skill, and your environment is a choice. This guide covers every distraction type and provides actionable strategies. Master these, and you'll reclaim hours of high-quality work daily.
+                <strong className="text-foreground">The good news:</strong> Attention is a skill, and your environment is a choice. This guide covers every distraction type and provides actionable strategies. Master these, and you&apos;ll reclaim hours of high-quality work daily.
               </p>
             </div>
           </div>
@@ -533,6 +547,29 @@ export default function HowToAvoidDistractionsPage() {
           </div>
         </section>
 
+        {/* The Neuroscience of Distraction - Prose Section */}
+        <section className="mb-16">
+          <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-violet-500/5 to-indigo-500/5 border border-violet-500/10">
+            <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-6">
+              The Neuroscience of Distraction
+            </h2>
+            <div className="space-y-4 text-muted-foreground leading-relaxed">
+              <p>
+                Understanding why distractions are so compelling can help you resist them. Your brain has two attention systems: the &quot;bottom-up&quot; system that automatically responds to novel stimuli (a notification sound, movement in your peripheral vision), and the &quot;top-down&quot; system that deliberately directs focus (reading this paragraph). The problem? Bottom-up is faster and stronger.
+              </p>
+              <p>
+                This isn&apos;t a design flaw—it&apos;s survival programming. For our ancestors, the rustle in the bushes that might be a predator needed to override whatever task they were doing. But today, those same neural pathways fire for email pings and social media likes. Your brain literally cannot distinguish between a life-threatening alert and a marketing notification.
+              </p>
+              <p>
+                There&apos;s also the dopamine factor. Each notification triggers a small dopamine release—not because the content is rewarding, but because of <em>uncertainty</em>. Your brain craves finding out &quot;what&apos;s there,&quot; the same mechanism that makes slot machines addictive. Social media apps exploit this by making notifications unpredictable: sometimes it&apos;s exciting news, usually it&apos;s nothing, but you never know until you check.
+              </p>
+              <p>
+                The solution isn&apos;t fighting your biology—it&apos;s working with it. By removing triggers (phone in another room), creating friction (app blockers), and providing alternative dopamine sources (progress tracking, completion rewards), you can redirect these powerful neural systems toward productive ends.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Pomodoro Integration */}
         <section className="mb-16">
           <div className="text-center mb-8">
@@ -650,10 +687,27 @@ export default function HowToAvoidDistractionsPage() {
       </div>
 
       {/* JSON-LD */}
-      <script
+      <Script
+        id="article-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+        strategy="afterInteractive"
+      >
+        {JSON.stringify(jsonLd[0])}
+      </Script>
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+      >
+        {JSON.stringify(jsonLd[1])}
+      </Script>
+      <Script
+        id="howto-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+      >
+        {JSON.stringify(jsonLd[2])}
+      </Script>
     </main>
   )
 }

@@ -886,9 +886,9 @@
 
 /* 작은 모바일만 (너비 640px 이하 AND 높이 700px 이하): 컴팩트 레이아웃 */
 @media (max-width: 640px) and (max-height: 700px) {
-  /* 메인 컨테이너 상단 패딩 */
+  /* 메인 컨테이너 상단 패딩 - 헤더 높이(56px + safe-area) + 여유(16px) 고려 */
   main > div.flex-1 {
-    padding-top: 2.5rem !important;
+    padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)) !important;
   }
 
   /* 센터 섹션 상단 패딩 */

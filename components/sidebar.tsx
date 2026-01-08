@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
@@ -8,9 +7,8 @@ import { ListTodo, BarChart3, BookOpen, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
-import { SettingsDialog } from "@/components/settings-dialog"
 import { UserMenu } from "@/components/user-menu"
-import { useSettingsStore, useTaskStore, type TimerSettings } from "@/lib/store"
+import { useTaskStore, useUIStore } from "@/lib/store"
 
 interface NavItem {
   id: string
@@ -23,24 +21,13 @@ interface NavItem {
 
 export function Sidebar() {
   const pathname = usePathname()
-  const [settingsOpen, setSettingsOpen] = useState(false)
+
+  // UI store for Settings Dialog
+  const setSettingsOpen = useUIStore((state) => state.setSettingsOpen)
 
   // Task panel controls
   const toggleTaskPanel = useTaskStore((state) => state.toggleTaskPanel)
   const closeTaskPanel = useTaskStore((state) => state.closeTaskPanel)
-
-  // Settings store for SettingsDialog
-  const settingsStore = useSettingsStore()
-  const currentSettings: TimerSettings = {
-    focusDuration: settingsStore.focusDuration,
-    breakDuration: settingsStore.breakDuration,
-    dailyGoal: settingsStore.dailyGoal,
-    notificationsEnabled: settingsStore.notificationsEnabled,
-    soundEnabled: settingsStore.soundEnabled,
-    soundCategory: settingsStore.soundCategory,
-    soundType: settingsStore.soundType,
-    volume: settingsStore.volume,
-  }
 
   // Check if current path matches
   const isActive = (path: string) => {
@@ -186,24 +173,6 @@ export function Sidebar() {
             iconClassName={iconClass}
           />
         </div>
-
-        {/* Settings Dialog (controlled) */}
-        <SettingsDialog
-          settings={currentSettings}
-          onSettingsChange={(newSettings) => {
-            settingsStore.setFocusDuration(newSettings.focusDuration)
-            settingsStore.setBreakDuration(newSettings.breakDuration)
-            settingsStore.setDailyGoal(newSettings.dailyGoal)
-            settingsStore.setNotificationsEnabled(newSettings.notificationsEnabled)
-            settingsStore.setSoundEnabled(newSettings.soundEnabled)
-            settingsStore.setSoundCategory(newSettings.soundCategory)
-            settingsStore.setSoundType(newSettings.soundType)
-            settingsStore.setVolume(newSettings.volume)
-          }}
-          open={settingsOpen}
-          onOpenChange={setSettingsOpen}
-          hideTrigger
-        />
       </nav>
     </TooltipProvider>
   )

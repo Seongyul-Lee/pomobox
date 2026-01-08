@@ -9,7 +9,8 @@ import {
 } from "@tanstack/react-query"
 import { migrateFromLocalStorage } from "@/lib/storage/idb"
 import { useSyncLocalData } from "@/hooks/use-sync-local-data"
-import { initSettingsSubscription } from "@/lib/store"
+import { initSettingsSubscription, useSettingsStore, useUIStore, type TimerSettings } from "@/lib/store"
+import { SettingsDialog } from "@/components/settings-dialog"
 
 // QueryClient 생성 함수
 function makeQueryClient() {
@@ -44,6 +45,7 @@ function getQueryClient() {
  * - localStorage → IndexedDB 마이그레이션
  * - settings-store → timer-store 자동 동기화 설정
  * - 로그인 사용자의 로컬 → Supabase 마이그레이션
+ * - 전역 Settings Dialog 렌더링
  */
 function AppInitializer({ children }: { children: React.ReactNode }) {
   // localStorage → IndexedDB 마이그레이션 + settings 구독 초기화
@@ -55,7 +57,38 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
   // 로그인 사용자의 로컬 → Supabase 마이그레이션
   useSyncLocalData()
 
-  return <>{children}</>
+  // Settings store for dialog
+  const settingsStore = useSettingsStore()
+  const currentSettings: TimerSettings = {
+    focusDuration: settingsStore.focusDuration,
+    breakDuration: settingsStore.breakDuration,
+    dailyGoal: settingsStore.dailyGoal,
+    notificationsEnabled: settingsStore.notificationsEnabled,
+    soundEnabled: settingsStore.soundEnabled,
+    soundCategory: settingsStore.soundCategory,
+    soundType: settingsStore.soundType,
+    volume: settingsStore.volume,
+  }
+
+  // UI store for Settings Dialog
+  const isSettingsOpen = useUIStore((state) => state.isSettingsOpen)
+  const setSettingsOpen = useUIStore((state) => state.setSettingsOpen)
+
+  return (
+    <>
+      {children}
+      {/* Global Settings Dialog - single instance */}
+      <SettingsDialog
+        settings={currentSettings}
+        onSettingsChange={(newSettings) => {
+          settingsStore.updateSettings(newSettings)
+        }}
+        open={isSettingsOpen}
+        onOpenChange={setSettingsOpen}
+        hideTrigger
+      />
+    </>
+  )
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {

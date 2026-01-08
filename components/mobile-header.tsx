@@ -17,8 +17,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "next-themes"
-import { SettingsDialog } from "@/components/settings-dialog"
-import { useSettingsStore, type TimerSettings } from "@/lib/store"
+import { useUIStore } from "@/lib/store"
 import { cn } from "@/lib/utils"
 
 // Animated hamburger icon component
@@ -143,22 +142,12 @@ function MenuItem({ href, icon, label, isActive, accentColor = "primary", onClic
 
 export function MobileHeader() {
   const { theme, setTheme } = useTheme()
-  const [settingsOpen, setSettingsOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
-  const settingsStore = useSettingsStore()
 
-  const currentSettings: TimerSettings = {
-    focusDuration: settingsStore.focusDuration,
-    breakDuration: settingsStore.breakDuration,
-    dailyGoal: settingsStore.dailyGoal,
-    notificationsEnabled: settingsStore.notificationsEnabled,
-    soundEnabled: settingsStore.soundEnabled,
-    soundCategory: settingsStore.soundCategory,
-    soundType: settingsStore.soundType,
-    volume: settingsStore.volume,
-  }
+  // UI store for Settings Dialog
+  const setSettingsOpen = useUIStore((state) => state.setSettingsOpen)
 
   // Theme cycle: Light -> Midnight -> Dark -> Light
   const toggleTheme = () => {
@@ -387,17 +376,6 @@ export function MobileHeader() {
           </div>
         </div>
       </nav>
-
-      {/* Settings Dialog */}
-      <SettingsDialog
-        settings={currentSettings}
-        onSettingsChange={(newSettings) => {
-          settingsStore.updateSettings(newSettings)
-        }}
-        open={settingsOpen}
-        onOpenChange={setSettingsOpen}
-        hideTrigger
-      />
     </>
   )
 }

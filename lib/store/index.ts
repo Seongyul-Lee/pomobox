@@ -48,3 +48,8 @@ export {
   MAX_TASKS,
   type Task,
 } from './task-store'
+
+export {
+  useUIStore,
+  selectIsSettingsOpen,
+} from './ui-store'

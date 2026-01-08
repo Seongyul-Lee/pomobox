@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export function Footer() {
   return (
-    <footer className="w-full px-4 xl:px-8 pb-3 md:ml-16 lg:ml-20">
+    <footer className="w-full md:w-[calc(100%-4rem)] lg:w-[calc(100%-5rem)] px-4 xl:px-8 pb-3 md:ml-16 lg:ml-20">
       {/* Minimal Footer - Desktop */}
       <div className="hidden xl:block text-center text-xs text-muted-foreground py-1">
         <span>© 2025 pomobox</span>

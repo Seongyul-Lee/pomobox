@@ -403,7 +403,7 @@ export default async function LearnPage({ searchParams }: PageProps) {
                   role="tab"
                   aria-selected={isActive}
                   className={`
-                    relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                    relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl text-sm font-medium transition-all duration-200
                     ${
                       isActive
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
@@ -411,7 +411,7 @@ export default async function LearnPage({ searchParams }: PageProps) {
                     }
                   `}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4 hidden sm:block" />
                   <span>{labels[filter]}</span>
                   <span
                     className={`

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Script from "next/script"
 import Link from "next/link"
 import {
   ArrowLeft,
@@ -20,6 +21,7 @@ import {
 } from "lucide-react"
 import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
 import { ArticleMeta } from "@/components/ui/article-meta"
+import { HistoryQuiz } from "@/components/ui/history-quiz"
 
 export const metadata: Metadata = {
   title: "Pomodoro History: From Kitchen Timer to Global Movement | Pomobox",
@@ -224,7 +226,7 @@ export default function PomodoroHistoryPage() {
           <ArticleMeta
             publishedDate="2025-01-05"
             modifiedDate="2025-01-05"
-            readingTime="7 min"
+            readingTime="9 min"
           />
 
           {/* Key Stats */}
@@ -243,6 +245,26 @@ export default function PomodoroHistoryPage() {
             </div>
           </div>
         </header>
+
+        {/* Interactive Quiz */}
+        <section className="mb-16">
+          <HistoryQuiz />
+        </section>
+
+        {/* Extended Introduction */}
+        <section className="mb-16">
+          <div className="prose prose-lg dark:prose-invert max-w-none">
+            <p>
+              Every productivity system has an origin story, but few are as relatable as the Pomodoro Technique's. It didn't emerge from a corporate boardroom or an academic research lab—it came from the desperate frustration of a university student who simply couldn't focus. Francesco Cirillo's journey from distracted student to productivity guru illustrates something profound about human psychology: sometimes the simplest solutions are the most powerful, and often they're discovered not through systematic research but through personal necessity.
+            </p>
+            <p>
+              The story of Pomodoro is fundamentally a story about constraints. When Cirillo first grabbed that tomato-shaped kitchen timer, he wasn't thinking about cognitive science or attention theory. He was making a bet with himself, creating an external commitment device to overcome internal resistance. The timer represented something tangible and non-negotiable—you can argue with yourself indefinitely, but you can't negotiate with a mechanical countdown. This insight, stumbled upon rather than calculated, turns out to align perfectly with what behavioral scientists would later discover about habit formation and willpower.
+            </p>
+            <p>
+              Understanding this history isn't just trivia—it provides context for why the technique's seemingly arbitrary rules exist. The 25-minute interval wasn't chosen randomly; it emerged from months of experimentation. The strict prohibition against interrupted pomodoros wasn't dogma; it was a practical discovery about the cost of context-switching. As we trace the technique's evolution from an Italian kitchen to a global phenomenon, we'll see how each element was refined through real-world testing, making Pomodoro one of the most empirically validated (if informally so) productivity methods ever developed.
+            </p>
+          </div>
+        </section>
 
         {/* The Beginning */}
         <section className="mb-16">
@@ -385,6 +407,22 @@ export default function PomodoroHistoryPage() {
           </div>
         </section>
 
+        {/* The Cultural Impact */}
+        <section className="mb-16">
+          <div className="prose prose-lg dark:prose-invert max-w-none">
+            <h2>Why Pomodoro Became a Cultural Phenomenon</h2>
+            <p>
+              The Pomodoro Technique's rise from obscurity to ubiquity reveals something fascinating about how productivity methods spread. Unlike corporate-backed systems or academic frameworks, Pomodoro grew through word of mouth among people who actually found it useful. Writers told other writers. Developers shared it with their teams. Students passed it to classmates. This organic growth pattern meant that the technique was being pressure-tested in real-world conditions by millions of people simultaneously.
+            </p>
+            <p>
+              Several factors contributed to Pomodoro's cultural staying power. First, the name itself is memorable—"doing a pomodoro" has a playfulness that "conducting a time-boxed work interval" entirely lacks. Second, the technique is infinitely portable: you don't need software, certification, or special equipment. A phone timer works just as well as a tomato-shaped kitchen gadget. Third, it scales perfectly—whether you're a student cramming for exams or a professional managing complex projects, the fundamental unit of one focused 25-minute session remains useful.
+            </p>
+            <p>
+              Perhaps most importantly, Pomodoro offers something rare in productivity culture: immediate, tangible results. You don't need to transform your entire workflow or adopt a new mindset. You just set a timer and work for 25 minutes. The barrier to entry is essentially zero, yet the benefits are real and measurable from day one. This combination of simplicity, accessibility, and effectiveness explains why, four decades after its invention, the technique continues to find new practitioners.
+            </p>
+          </div>
+        </section>
+
         {/* Legacy */}
         <section className="mb-16">
           <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
@@ -493,10 +531,12 @@ export default function PomodoroHistoryPage() {
       </div>
 
       {/* JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <Script id="article-schema" type="application/ld+json" strategy="afterInteractive">
+        {JSON.stringify(jsonLd[0])}
+      </Script>
+      <Script id="faq-schema" type="application/ld+json" strategy="afterInteractive">
+        {JSON.stringify(jsonLd[1])}
+      </Script>
     </main>
   )
 }

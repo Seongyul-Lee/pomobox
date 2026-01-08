@@ -4,7 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { ListTodo, BarChart3, Settings } from "lucide-react"
+import { ListTodo, BarChart3, BookOpen, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
@@ -66,6 +66,13 @@ export function Sidebar() {
       icon: BarChart3,
       href: "/stats",
       isActive: isActive("/stats"),
+    },
+    {
+      id: "learn",
+      label: "Learn",
+      icon: BookOpen,
+      href: "/learn",
+      isActive: isActive("/learn"),
     },
     {
       id: "settings",

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Script from "next/script"
 import {
   GraduationCap,
   Brain,
@@ -26,6 +27,7 @@ import {
 } from "lucide-react"
 import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
 import { ArticleMeta } from "@/components/ui/article-meta"
+import { StudyPlanner } from "@/components/ui/study-planner"
 
 export const metadata: Metadata = {
   title: "Pomodoro for Students: Study Smarter, Not Harder | Pomobox",
@@ -228,8 +230,8 @@ export default function PomodoroForStudentsPage() {
           </p>
           <ArticleMeta
             publishedDate="2025-01-05"
-            modifiedDate="2025-01-05"
-            readingTime="10 min"
+            modifiedDate="2025-01-08"
+            readingTime="12 min"
           />
 
           {/* Quick Stats */}
@@ -249,6 +251,24 @@ export default function PomodoroForStudentsPage() {
           </div>
         </header>
 
+        {/* Interactive Tool: Study Planner */}
+        <section className="mb-16">
+          <StudyPlanner />
+        </section>
+
+        {/* Extended Introduction - Prose */}
+        <section className="mb-16 prose prose-lg dark:prose-invert max-w-none">
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            If you&apos;ve ever sat down to study and found yourself scrolling through social media three hours later with nothing to show for it, you&apos;re not alone. The modern student faces an unprecedented challenge: our brains evolved for a world of immediate physical threats, not abstract calculus problems. Meanwhile, our phones are specifically engineered by some of the smartest people on earth to hijack our attention. It&apos;s not a fair fight.
+          </p>
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            The Pomodoro Technique levels the playing field by working <em>with</em> your brain instead of against it. Psychologists have discovered that our attention naturally fluctuates in cycles—we can sustain intense focus for about 20-50 minutes before performance drops. The technique exploits this by structuring study into focused sprints followed by strategic recovery. The breaks aren&apos;t wasted time; they&apos;re when your brain consolidates what you&apos;ve learned.
+          </p>
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            What makes Pomodoro particularly powerful for students is its flexibility. Cramming for an exam? Use shorter 25-minute sessions to cover more topics. Writing a research paper? Extend to 45 minutes to maintain your flow of thought. Struggling with motivation? Start with just 15 minutes—once you begin, momentum takes over. The technique adapts to your needs, not the other way around.
+          </p>
+        </section>
+
         {/* Why Students Need Pomodoro */}
         <section className="mb-16">
           <div className="p-6 md:p-8 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50">
@@ -260,13 +280,13 @@ export default function PomodoroForStudentsPage() {
             </h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                <strong className="text-foreground">The modern student's problem:</strong> You sit down to study for 3 hours, but between phone checks, social media, and "just one more video," you've actually focused for maybe 45 minutes. Sound familiar?
+                <strong className="text-foreground">The modern student&apos;s problem:</strong> You sit down to study for 3 hours, but between phone checks, social media, and &quot;just one more video,&quot; you&apos;ve actually focused for maybe 45 minutes. Sound familiar?
               </p>
               <p>
                 Research shows the average student checks their phone <strong className="text-foreground">every 6 minutes</strong> while studying. Each interruption costs 23 minutes to regain deep focus. That 3-hour study session? Effectively 30 minutes of real learning.
               </p>
               <p>
-                <strong className="text-foreground">The Pomodoro solution:</strong> Instead of fighting your attention span, work with it. 25 minutes is short enough to feel manageable, long enough to make progress. The guaranteed break removes the temptation to "just check" your phone.
+                <strong className="text-foreground">The Pomodoro solution:</strong> Instead of fighting your attention span, work with it. 25 minutes is short enough to feel manageable, long enough to make progress. The guaranteed break removes the temptation to &quot;just check&quot; your phone.
               </p>
               <p>
                 Studies show students using Pomodoro retain <strong className="text-foreground">40% more information</strong> and report lower stress levels. The technique turns marathon cramming into sustainable sprint sessions.
@@ -354,6 +374,29 @@ export default function PomodoroForStudentsPage() {
                 </div>
               )
             })}
+          </div>
+        </section>
+
+        {/* The Science of Learning - Prose Section */}
+        <section className="mb-16">
+          <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-blue-500/5 to-indigo-500/5 border border-blue-500/10">
+            <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-6">
+              The Science of Learning and Memory
+            </h2>
+            <div className="space-y-4 text-muted-foreground leading-relaxed">
+              <p>
+                Understanding <em>why</em> Pomodoro works can help you use it more effectively. When you study, your brain doesn&apos;t just passively record information—it actively builds neural connections. This process, called encoding, requires focused attention. But here&apos;s the crucial part: those connections need time to strengthen, which happens during rest and sleep.
+              </p>
+              <p>
+                This is why cramming the night before an exam is so ineffective. You might load information into short-term memory, but without the consolidation phase, it fades rapidly. The Pomodoro Technique&apos;s built-in breaks provide mini-consolidation windows throughout your study session. Research shows that information learned with spaced breaks is retained <strong className="text-foreground">up to 50% longer</strong> than information crammed in one session.
+              </p>
+              <p>
+                There&apos;s also the phenomenon of &quot;diffuse thinking.&quot; When you take a break, your conscious mind rests, but your subconscious continues processing. Have you ever struggled with a problem, given up, and then suddenly understood it later? That&apos;s diffuse thinking at work. Pomodoro breaks give your brain space for these background insights to emerge.
+              </p>
+              <p>
+                Finally, consider the emotional component of learning. Stress and anxiety impair memory formation. Marathon study sessions create fatigue and frustration, both enemies of retention. The rhythm of Pomodoro—work, rest, work, rest—keeps stress manageable and maintains the positive emotional state that enhances learning.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -498,10 +541,27 @@ export default function PomodoroForStudentsPage() {
       </div>
 
       {/* JSON-LD */}
-      <script
+      <Script
+        id="article-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+        strategy="afterInteractive"
+      >
+        {JSON.stringify(jsonLd[0])}
+      </Script>
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+      >
+        {JSON.stringify(jsonLd[1])}
+      </Script>
+      <Script
+        id="howto-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+      >
+        {JSON.stringify(jsonLd[2])}
+      </Script>
     </main>
   )
 }

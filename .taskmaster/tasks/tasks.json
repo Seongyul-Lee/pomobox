@@ -365,15 +365,15 @@
       },
       {
         "id": "119",
-        "title": "성능 최적화: React Query Prefetching 적용",
-        "description": "통계 페이지 방문 전 데이터 미리 가져오기 (Hover Prefetch)",
-        "details": "1. `components/sidebar.tsx` 수정:\n   - Statistics 버튼에 onMouseEnter 이벤트 추가\n   - Prefetch 트리거:\n     ```typescript\n     const queryClient = useQueryClient()\n     \n     const handleStatisticsHover = () => {\n       if (!user) return\n       queryClient.prefetchQuery({\n         queryKey: ['recentDaysStats', user.id, 7],\n         queryFn: () => getRecentDaysStats(user.id, 7),\n       })\n       queryClient.prefetchQuery({\n         queryKey: ['lastWeekStats', user.id],\n         queryFn: () => getLastWeekStats(user.id),\n       })\n       // ... (다른 통계 쿼리도 동일)\n     }\n     ```\n\n2. Link 컴포넌트 Prefetch:\n   - Next.js Link의 prefetch prop 활용 (자동 프리페치)\n\n3. 조건:\n   - 로그인 사용자만\n   - 한 번만 프리페치 (플래그 사용)\n   - 네트워크 idle 상태에서만\n\n4. 성능 모니터링:\n   - React Query DevTools에서 프리페치 확인\n   - Network 탭에서 요청 타이밍 확인\n\n참고: React Query Prefetching, Next.js Link prefetch",
-        "testStrategy": "1. Statistics 버튼 호버 시 프리페치 요청 확인 (Network 탭)\n2. /stats 페이지 방문 시 즉시 데이터 표시 확인 (로딩 없음)\n3. React Query DevTools에서 캐시 히트 확인\n4. 비로그인 사용자: 프리페치 안 됨 확인\n5. Lighthouse Performance 점수 향상 확인",
+        "title": "[취소됨] 성능 최적화: React Query Prefetching 적용 - 로딩 애니메이션 UX가 이미 충분함",
+        "description": "[취소] 현재 스켈레톤 로딩 애니메이션이 고급스럽고 자연스러워 prefetching 불필요",
+        "details": "취소 사유: 로딩 애니메이션이 이미 좋은 UX를 제공하고 있어 prefetching으로 인한 개선 효과 미미. 불필요한 네트워크 요청과 복잡성 증가만 초래할 수 있음.",
+        "testStrategy": "",
         "priority": "low",
         "dependencies": [
           "107"
         ],
-        "status": "pending",
+        "status": "cancelled",
         "subtasks": []
       },
       {

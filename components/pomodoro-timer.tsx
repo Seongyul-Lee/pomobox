@@ -313,15 +313,15 @@ export function PomodoroTimer() {
 
   return (
     <div className="relative flex flex-col items-center gap-6 sm:gap-8">
-      <div className="text-center">
-        <p className="text-lg sm:text-xl md:text-2xl font-bold text-foreground uppercase tracking-wider mb-1 hover-title-outline">
+      <div className="text-center relative">
+        <p className="mobile-timer-title sm:text-xl md:text-2xl sm:font-bold sm:text-foreground sm:uppercase sm:tracking-wider mb-0.5 sm:mb-1 hover-title-outline">
           {getTypeLabel()}
         </p>
-        <p className="text-xs text-muted-foreground mb-2 hover-phase-label">
+        <p className="mobile-timer-subtitle sm:text-xs sm:text-muted-foreground sm:mt-0 hover-phase-label">
           {getTypeDescription()}
         </p>
         <div
-          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full transition-opacity duration-200 ${
+          className={`absolute left-1/2 -translate-x-1/2 top-full mt-1 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full transition-opacity duration-200 ${
             status === 'paused'
               ? 'bg-amber-500 opacity-100 visible animate-pulse'
               : 'opacity-0 invisible'

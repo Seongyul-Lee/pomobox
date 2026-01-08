@@ -627,19 +627,20 @@
 /* Mobile Timer Title - Refined typography for small screens */
 @media (max-width: 639px) {
   .mobile-timer-title {
-    font-size: 1.625rem;
-    line-height: 1.2;
-    letter-spacing: 0.02em;
-    font-weight: 600;
+    font-size: 1.625rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.02em !important;
+    font-weight: 600 !important;
     background: linear-gradient(
       135deg,
       oklch(0.35 0.12 270) 0%,
       oklch(0.25 0.08 265) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: none;
+    ) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: none !important;
+    color: transparent !important;
   }
 
   .dark .mobile-timer-title {
@@ -648,9 +649,11 @@
       oklch(0.88 0.12 280) 0%,
       oklch(0.78 0.16 285) 50%,
       oklch(0.88 0.12 280) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
+    ) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
     filter: drop-shadow(0 2px 8px oklch(0.72 0.17 280 / 25%));
   }
 
@@ -660,25 +663,27 @@
       oklch(0.85 0.14 275) 0%,
       oklch(0.75 0.18 285) 50%,
       oklch(0.85 0.14 275) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
+    ) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
     filter: drop-shadow(0 2px 10px oklch(0.72 0.17 280 / 35%));
   }
 
   .mobile-timer-subtitle {
-    font-size: 0.8125rem;
-    letter-spacing: 0.025em;
-    color: oklch(0.50 0.03 260);
-    margin-top: 0.375rem;
+    font-size: 0.8125rem !important;
+    letter-spacing: 0.025em !important;
+    color: oklch(0.50 0.03 260) !important;
+    margin-top: 0.375rem !important;
   }
 
   .dark .mobile-timer-subtitle {
-    color: oklch(0.65 0.06 280);
+    color: oklch(0.65 0.06 280) !important;
   }
 
   .midnight .mobile-timer-subtitle {
-    color: oklch(0.68 0.08 280);
+    color: oklch(0.68 0.08 280) !important;
   }
 }
 

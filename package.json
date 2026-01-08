@@ -69,6 +69,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "knip": "^5.78.0",
     "postcss": "^8.5",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4.1.9",
     "typescript": "^5",
     "vitest": "^4.0.16"

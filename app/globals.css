@@ -860,6 +860,16 @@
   }
 }
 
+/* 모바일 헤더 보정 (768px 미만) - Privacy, Terms, Blog 등 개별 페이지 */
+@media (max-width: 767px) {
+  /* max-w-3xl, max-w-4xl 컨테이너를 가진 페이지의 상단 패딩 */
+  main.min-h-screen > div.max-w-3xl,
+  main.min-h-screen > div.max-w-4xl,
+  main.min-h-screen > article.max-w-4xl {
+    padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
+  }
+}
+
 /* 모든 모바일 (너비 640px 이하): Sign in, 테마 토글 위치 */
 @media (max-width: 640px) {
   /* Sign in 버튼: 우측 상단 */

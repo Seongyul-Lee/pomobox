@@ -8,6 +8,7 @@ import { Sidebar } from "@/components/sidebar"
 import { TaskPanel } from "@/components/task-panel"
 import { MobileHeader } from "@/components/mobile-header"
 import { MobileNav } from "@/components/mobile-nav"
+import { Footer } from "@/components/footer"
 import { Providers } from "./providers"
 import "./globals.css"
 
@@ -211,6 +212,8 @@ export default function RootLayout({ children }: Props) {
           {/* Global Task Panel */}
           <TaskPanel />
           {children}
+          {/* Global Footer */}
+          <Footer />
           {/* Mobile Navigation (< xl) */}
           <MobileNav />
           <Analytics />

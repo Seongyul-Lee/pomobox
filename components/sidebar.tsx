@@ -93,9 +93,9 @@ export function Sidebar() {
                 <Image
                   src="/icon.svg"
                   alt="Pomobox"
-                  width={32}
-                  height={32}
-                  className="w-8 h-8 md:w-10 md:h-10"
+                  width={28}
+                  height={28}
+                  className="w-7 h-7 md:w-8 md:h-8"
                   priority
                 />
               </Link>

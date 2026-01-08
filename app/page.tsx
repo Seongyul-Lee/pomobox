@@ -7,6 +7,7 @@ import { BgmPanel } from "@/components/bgm-panel"
 import { BgmMiniPlayer } from "@/components/bgm-mini-player"
 import { MainLayout } from "@/components/main-layout"
 import { PomodoroGuideSection } from "@/components/pomodoro-guide-section"
+import { PwaInstallPrompt } from "@/components/pwa-install-prompt"
 import { AdSenseVerticalBanner } from "@/components/adsense-vertical-banner"
 import { AdSenseHorizontalBanner } from "@/components/adsense-horizontal-banner"
 
@@ -99,6 +100,13 @@ export default function Home() {
 
         {/* Pomodoro Guide Sections */}
         <PomodoroGuideSection />
+
+        {/* PWA Install Prompt */}
+        <div className="md:ml-16 lg:ml-20 py-6 md:py-8 px-4 xl:px-8">
+          <div className="max-w-4xl mx-auto">
+            <PwaInstallPrompt />
+          </div>
+        </div>
 
         {/* Ad Banner - Desktop only */}
         <div className="hidden xl:block w-full px-4 xl:px-8 md:ml-16 lg:ml-20">

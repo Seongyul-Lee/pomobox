@@ -37,9 +37,10 @@ export const metadata: Metadata = {
     icon: [
       { url: "/favicon.ico", sizes: "32x32" },
       { url: "/icon-48.png", sizes: "48x48", type: "image/png" },
-      { url: "/icon.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
-    apple: [{ url: "/icon.png", sizes: "192x192", type: "image/png" }],
+    apple: [{ url: "/apple-icon-180.png", sizes: "180x180", type: "image/png" }],
   },
   description: "A clean, distraction-free Pomodoro timer to boost your productivity. Track focus sessions, take smart breaks, and stay in flow.",
   keywords: [
@@ -189,6 +190,9 @@ export default function RootLayout({ children }: Props) {
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
+        {/* Dynamic theme-color based on system preference */}
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F9FC" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a1625" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebApp) }}

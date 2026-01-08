@@ -69,7 +69,7 @@ export function MypageContent({
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto max-w-2xl px-4 py-8">
+      <div className="container mx-auto max-w-2xl px-4 py-8 pt-20 md:pt-8">
         {/* 뒤로가기 버튼 */}
         <Link
           href="/"

@@ -183,6 +183,9 @@
   /* 기본 스타일 = QHD (2560x1440) 기준 */
   :root {
     font-size: 125%;
+    --dashboard-right-width: 570px;
+    --dashboard-right-gap: 1rem;
+    --dashboard-calendar-cell: 2.5rem;
   }
   .main-layout {
     gap: 1rem;
@@ -192,6 +195,9 @@
   @media (min-width: 1280px) and (max-width: 1920px) {
     :root {
       font-size: 94%;  /* QHD 대비 동일 시각적 비율 유지 (125% × 0.75) */
+      --dashboard-right-width: 430px;
+      --dashboard-right-gap: 0.75rem;
+      --dashboard-calendar-cell: 1.875rem;
     }
   }
 }

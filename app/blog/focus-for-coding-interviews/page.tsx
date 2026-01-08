@@ -34,8 +34,6 @@ export default function FocusForCodingInterviewsPage() {
     "@type": "Article",
     headline: "Focus Strategies for Coding Interviews: Pomodoro-Based Study Plan",
     description: "Master coding interview preparation with strategic focus techniques. Learn how to use Pomodoro sessions for effective algorithm practice and system design study.",
-    datePublished: "2025-01-08",
-    dateModified: "2025-01-08",
     author: {
       "@type": "Organization",
       name: "Pomobox",

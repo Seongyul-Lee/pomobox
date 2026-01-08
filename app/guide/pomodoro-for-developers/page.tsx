@@ -196,8 +196,6 @@ const jsonLd = [
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-05",
-    dateModified: "2025-01-05",
     url: "https://pomobox.app/guide/pomodoro-for-developers",
     mainEntityOfPage: "https://pomobox.app/guide/pomodoro-for-developers",
   },
@@ -233,11 +231,7 @@ export default function PomodoroForDevelopersPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Code smarter, ship faster. Deep work sessions for serious programmers.
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-05"
-            modifiedDate="2025-01-08"
-            readingTime="14 min"
-          />
+          <ArticleMeta readingTime="14 min" />
 
           {/* Quick Stats */}
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-md mx-auto">

@@ -178,8 +178,6 @@ const jsonLd = [
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-05",
-    dateModified: "2025-01-05",
     url: "https://pomobox.app/guide/pomodoro-for-students",
     mainEntityOfPage: "https://pomobox.app/guide/pomodoro-for-students",
   },
@@ -228,11 +226,7 @@ export default function PomodoroForStudentsPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Study smarter, not harder. Master exams, essays, and research with time-boxed focus.
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-05"
-            modifiedDate="2025-01-08"
-            readingTime="12 min"
-          />
+          <ArticleMeta readingTime="12 min" />
 
           {/* Quick Stats */}
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-md mx-auto">

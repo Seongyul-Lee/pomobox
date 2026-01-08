@@ -242,8 +242,6 @@ const jsonLd = [
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-08",
-    dateModified: "2025-01-08",
     url: "https://pomobox.app/blog/flowtime-vs-pomodoro",
     mainEntityOfPage: "https://pomobox.app/blog/flowtime-vs-pomodoro",
   },
@@ -279,11 +277,7 @@ export default function FlowtimeVsPomodoroPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Structured time-boxing or flexible flow—which fits your brain?
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-08"
-            modifiedDate="2025-01-08"
-            readingTime="9 min"
-          />
+          <ArticleMeta readingTime="9 min" />
 
           {/* Visual Comparison */}
           <div className="mt-10 grid grid-cols-2 gap-4 max-w-md mx-auto">

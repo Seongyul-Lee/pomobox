@@ -247,8 +247,6 @@ const articleSchema = {
     "name": "Pomobox",
     "logo": { "@type": "ImageObject", "url": "https://pomobox.app/logo.png" },
   },
-  "datePublished": "2026-01-07",
-  "dateModified": "2026-01-07",
   "url": "https://pomobox.app/blog/psychology-of-timer-sounds",
   "mainEntityOfPage": "https://pomobox.app/blog/psychology-of-timer-sounds",
   "keywords": ["pomodoro psychology", "timer sound dopamine", "productivity reward system"],
@@ -285,11 +283,7 @@ export default function PsychologyOfTimerSoundsPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             How timer completion sounds affect the brain&apos;s reward system and dopamine levels
           </p>
-          <ArticleMeta
-            publishedDate="2026-01-07"
-            modifiedDate="2026-01-07"
-            readingTime="14 min"
-          />
+          <ArticleMeta readingTime="14 min" />
 
           {/* Key Stats */}
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-lg mx-auto">

@@ -34,8 +34,6 @@ export default function NatureSoundsFocusPage() {
     "@type": "Article",
     headline: "The Science of Nature Sounds and Focus",
     description: "Discover the neuroscience behind why nature sounds improve focus and productivity.",
-    datePublished: "2025-01-08",
-    dateModified: "2025-01-08",
     author: {
       "@type": "Organization",
       name: "Pomobox",

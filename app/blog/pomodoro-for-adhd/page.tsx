@@ -234,8 +234,6 @@ const jsonLd = [
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-08",
-    dateModified: "2025-01-08",
     url: "https://pomobox.app/blog/pomodoro-for-adhd",
     mainEntityOfPage: "https://pomobox.app/blog/pomodoro-for-adhd",
   },
@@ -271,11 +269,7 @@ export default function PomodoroForADHDPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             How external timers help manage time blindness and hyperfocus
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-08"
-            modifiedDate="2025-01-08"
-            readingTime="12 min"
-          />
+          <ArticleMeta readingTime="12 min" />
 
           {/* Key Stats */}
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-lg mx-auto">

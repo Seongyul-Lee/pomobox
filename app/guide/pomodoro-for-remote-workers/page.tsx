@@ -186,8 +186,6 @@ const articleSchema = {
     name: "Pomobox",
     logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
   },
-  datePublished: "2026-01-08",
-  dateModified: "2026-01-08",
   url: "https://pomobox.app/guide/pomodoro-for-remote-workers",
   mainEntityOfPage: "https://pomobox.app/guide/pomodoro-for-remote-workers",
 }
@@ -228,11 +226,7 @@ export default function PomodoroForRemoteWorkersPage() {
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
                 Master focus in your home office. Proven strategies from successful remote professionals.
               </p>
-              <ArticleMeta
-                publishedDate="2026-01-08"
-                modifiedDate="2026-01-08"
-                readingTime="10 min"
-              />
+              <ArticleMeta readingTime="10 min" />
 
               <div className="mt-10 grid grid-cols-3 gap-4 max-w-md mx-auto">
                 <div className="p-4 rounded-2xl bg-card/60 dark:bg-card/40 border border-border/50">

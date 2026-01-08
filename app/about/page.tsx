@@ -20,7 +20,6 @@ import {
   Users,
 } from "lucide-react"
 import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
-import { ArticleMeta } from "@/components/ui/article-meta"
 
 const siteUrl = "https://pomobox.app"
 
@@ -165,10 +164,6 @@ export default function AboutPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Free, open-source productivity for everyone
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-05"
-            modifiedDate="2025-01-05"
-          />
         </header>
 
         {/* What Makes Pomobox Different */}

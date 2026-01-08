@@ -235,8 +235,6 @@ const jsonLd = [
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-05",
-    dateModified: "2025-01-05",
     url: "https://pomobox.app/guide/pomodoro-vs-timeboxing",
   },
   {
@@ -271,11 +269,7 @@ export default function PomodoroVsTimeboxingPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Two powerful time management techniques. Which one fits your workflow?
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-05"
-            modifiedDate="2025-01-08"
-            readingTime="12 min"
-          />
+          <ArticleMeta readingTime="12 min" />
 
           {/* Quick Comparison Visual */}
           <div className="mt-10 grid grid-cols-2 gap-4 max-w-lg mx-auto">

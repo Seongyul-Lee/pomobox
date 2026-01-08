@@ -242,8 +242,6 @@ const jsonLd = [
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-05",
-    dateModified: "2025-01-05",
     url: "https://pomobox.app/blog/science-of-focus",
     mainEntityOfPage: "https://pomobox.app/blog/science-of-focus",
   },
@@ -279,11 +277,7 @@ export default function ScienceOfFocusPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Brain science explaining why time-boxed focus sessions work
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-05"
-            modifiedDate="2025-01-05"
-            readingTime="12 min"
-          />
+          <ArticleMeta readingTime="12 min" />
 
           {/* Key Stats */}
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-lg mx-auto">

@@ -208,8 +208,6 @@ const jsonLd = [
       name: "Pomobox",
       logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
     },
-    datePublished: "2025-01-08",
-    dateModified: "2025-01-08",
     url: "https://pomobox.app/blog/cost-of-task-switching",
     mainEntityOfPage: "https://pomobox.app/blog/cost-of-task-switching",
   },
@@ -245,11 +243,7 @@ export default function CostOfTaskSwitchingPage() {
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Why every interruption costs you 23 minutes of productive time
           </p>
-          <ArticleMeta
-            publishedDate="2025-01-08"
-            modifiedDate="2025-01-08"
-            readingTime="10 min"
-          />
+          <ArticleMeta readingTime="10 min" />
 
           {/* Key Stats */}
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-lg mx-auto">

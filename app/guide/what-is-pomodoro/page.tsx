@@ -92,8 +92,6 @@ const articleSchema = {
     name: "Pomobox",
     logo: { "@type": "ImageObject", url: "https://pomobox.app/logo.png" },
   },
-  datePublished: "2025-01-05",
-  dateModified: "2026-01-08",
   url: "https://pomobox.app/guide/what-is-pomodoro",
 }
 
@@ -130,8 +128,6 @@ export default function WhatIsPomodoroPage() {
             Master time-boxed productivity and transform how you work
           </p>
           <ArticleMeta
-            publishedDate="2025-01-05"
-            modifiedDate="2026-01-08"
             readingTime="10 min"
           />
 

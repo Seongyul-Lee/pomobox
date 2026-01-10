@@ -202,6 +202,13 @@ export function useIncrementMinutes() {
       queryClient.invalidateQueries({
         queryKey: statsKeys.recentDays(variables.userId, 7),
       })
+      // Weekly/Monthly 차트 캐시도 무효화 (실시간 업데이트)
+      queryClient.invalidateQueries({
+        queryKey: statsKeys.currentWeek(variables.userId),
+      })
+      queryClient.invalidateQueries({
+        queryKey: statsKeys.rolling4Week(variables.userId),
+      })
     },
   })
 }

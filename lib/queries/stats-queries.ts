@@ -10,9 +10,13 @@ import {
   getFocusDistributionByHour,
   incrementDailyMinutes,
   recordSessionComplete,
+  getCurrentWeekStats,
+  getLastWeekStatsMonday,
+  getRolling4WeekStats,
   type DailyStats,
   type DayRecord,
   type HourlyDistribution,
+  type Rolling4WeekData,
 } from "@/lib/supabase/stats"
 
 // ============================================
@@ -31,6 +35,9 @@ export const statsKeys = {
   total: (userId: string) => [...statsKeys.all, "total", userId] as const,
   focusDistribution: (userId: string, startDate: string, endDate: string) =>
     [...statsKeys.all, "focusDistribution", userId, startDate, endDate] as const,
+  currentWeek: (userId: string) => [...statsKeys.all, "currentWeek", userId] as const,
+  lastWeekMonday: (userId: string) => [...statsKeys.all, "lastWeekMonday", userId] as const,
+  rolling4Week: (userId: string) => [...statsKeys.all, "rolling4Week", userId] as const,
 }
 
 // ============================================
@@ -133,6 +140,39 @@ export function useFocusDistributionQuery(
   })
 }
 
+/**
+ * 이번 주 통계 조회 (월요일 ~ 일요일)
+ */
+export function useCurrentWeekStats(userId: string | null) {
+  return useQuery({
+    queryKey: statsKeys.currentWeek(userId ?? ""),
+    queryFn: () => getCurrentWeekStats(userId!),
+    enabled: !!userId,
+  })
+}
+
+/**
+ * 지난주 통계 조회 (월요일 ~ 일요일)
+ */
+export function useLastWeekStatsMonday(userId: string | null) {
+  return useQuery({
+    queryKey: statsKeys.lastWeekMonday(userId ?? ""),
+    queryFn: () => getLastWeekStatsMonday(userId!),
+    enabled: !!userId,
+  })
+}
+
+/**
+ * 최근 4주간 통계 조회 (월요일 기준)
+ */
+export function useRolling4WeekStatsQuery(userId: string | null) {
+  return useQuery({
+    queryKey: statsKeys.rolling4Week(userId ?? ""),
+    queryFn: () => getRolling4WeekStats(userId!),
+    enabled: !!userId,
+  })
+}
+
 // ============================================
 // Mutation Hooks (데이터 변경)
 // ============================================
@@ -194,4 +234,4 @@ export function useRecordSession() {
 // ============================================
 // 타입 재export
 // ============================================
-export type { DailyStats, DayRecord, HourlyDistribution }
+export type { DailyStats, DayRecord, HourlyDistribution, Rolling4WeekData }

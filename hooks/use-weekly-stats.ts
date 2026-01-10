@@ -1,8 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 
 import { getAllHistory, type HistoryRecord } from "@/lib/storage/idb"
+import { useUser } from "@/hooks/use-user"
+import { useCurrentWeekStats, type DayRecord } from "@/lib/queries/stats-queries"
 
 export interface WeeklyStatsData {
   date: string // YYYY-MM-DD
@@ -22,26 +24,37 @@ interface UseWeeklyStatsReturn {
 
 /**
  * 이번 주 (월요일 ~ 일요일) 통계 데이터를 조회하는 훅
+ * - 로그인: Supabase 데이터 사용
+ * - 비로그인: IndexedDB 데이터 사용
  */
 export function useWeeklyStats(): UseWeeklyStatsReturn {
-  const [data, setData] = useState<WeeklyStatsData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
+  const { user } = useUser()
+
+  // Supabase 쿼리 (로그인 시에만 활성화)
+  const {
+    data: supabaseData,
+    isLoading: supabaseLoading,
+    error: supabaseError,
+    refetch: supabaseRefetch,
+  } = useCurrentWeekStats(user?.id ?? null)
+
+  // 비로그인: IndexedDB 상태
+  const [localData, setLocalData] = useState<WeeklyStatsData[]>([])
+  const [localLoading, setLocalLoading] = useState(false)
+  const [localError, setLocalError] = useState<Error | null>(null)
   const [refetchTrigger, setRefetchTrigger] = useState(0)
 
-  const refetch = () => setRefetchTrigger((prev) => prev + 1)
-
+  // 비로그인: IndexedDB에서 데이터 조회
   useEffect(() => {
-    async function fetchWeeklyStats() {
-      setIsLoading(true)
-      setError(null)
+    if (user) return // 로그인 상태면 스킵
+
+    async function fetchLocalData() {
+      setLocalLoading(true)
+      setLocalError(null)
 
       try {
-        // 오늘 날짜
         const today = new Date()
         const todayStr = formatDate(today)
-
-        // 이번 주 월요일 계산
         const monday = getMonday(today)
 
         // 이번 주 7일 날짜 생성 (월~일)
@@ -52,16 +65,12 @@ export function useWeeklyStats(): UseWeeklyStatsReturn {
           weekDates.push(formatDate(d))
         }
 
-        // IndexedDB에서 전체 히스토리 조회
         const history = await getAllHistory()
-
-        // 날짜별 Map 생성
         const historyMap = new Map<string, HistoryRecord>()
         for (const record of history) {
           historyMap.set(record.date, record)
         }
 
-        // 주간 데이터 생성
         const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         const weeklyData: WeeklyStatsData[] = weekDates.map((date, index) => {
           const record = historyMap.get(date)
@@ -75,23 +84,57 @@ export function useWeeklyStats(): UseWeeklyStatsReturn {
           }
         })
 
-        setData(weeklyData)
+        setLocalData(weeklyData)
       } catch (err) {
-        setError(err instanceof Error ? err : new Error("Failed to fetch weekly stats"))
+        setLocalError(err instanceof Error ? err : new Error("Failed to fetch weekly stats"))
       } finally {
-        setIsLoading(false)
+        setLocalLoading(false)
       }
     }
 
-    fetchWeeklyStats()
-  }, [refetchTrigger])
+    fetchLocalData()
+  }, [user, refetchTrigger])
 
-  return { data, isLoading, error, refetch }
+  // Supabase 데이터를 WeeklyStatsData[]로 변환
+  const transformedSupabaseData = useMemo<WeeklyStatsData[]>(() => {
+    if (!user || !supabaseData) return []
+
+    const today = new Date()
+    const todayStr = formatDate(today)
+    const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+    return supabaseData.map((record: DayRecord, index: number) => ({
+      date: record.date,
+      dayOfWeek: (index + 1) % 7, // 월=1, 화=2, ..., 일=0
+      dayName: dayNames[index],
+      totalMinutes: record.totalMinutes,
+      totalSessions: record.totalSessions,
+      isToday: record.date === todayStr,
+    }))
+  }, [user, supabaseData])
+
+  // 로그인 여부에 따라 반환값 결정
+  if (user) {
+    return {
+      data: transformedSupabaseData,
+      isLoading: supabaseLoading,
+      error: supabaseError || null,
+      refetch: supabaseRefetch,
+    }
+  }
+
+  return {
+    data: localData,
+    isLoading: localLoading,
+    error: localError,
+    refetch: () => setRefetchTrigger((prev) => prev + 1),
+  }
 }
 
-/**
- * 날짜를 YYYY-MM-DD 형식으로 변환
- */
+// ============================================
+// 헬퍼 함수
+// ============================================
+
 function formatDate(date: Date): string {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, "0")
@@ -99,9 +142,6 @@ function formatDate(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
-/**
- * 주어진 날짜가 속한 주의 월요일을 반환
- */
 function getMonday(date: Date): Date {
   const d = new Date(date)
   const day = d.getDay()

@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react"
 
 import { getAllHistory, type HistoryRecord } from "@/lib/storage/idb"
+import { useUser } from "@/hooks/use-user"
+import {
+  useRolling4WeekStatsQuery,
+  type Rolling4WeekData,
+} from "@/lib/queries/stats-queries"
 
 export interface RollingWeekData {
   weekLabel: string // "This Week", "W-1", "W-2", "W-3"
@@ -23,20 +28,34 @@ interface UseRolling4WeekStatsReturn {
 
 /**
  * 최근 4주간 (월요일 기준) 통계 데이터를 조회하는 훅
+ * - 로그인: Supabase 데이터 사용
+ * - 비로그인: IndexedDB 데이터 사용
  * ISO-8601 준수: 월요일 시작
  */
 export function useRolling4WeekStats(): UseRolling4WeekStatsReturn {
-  const [data, setData] = useState<RollingWeekData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
+  const { user } = useUser()
+
+  // Supabase 쿼리 (로그인 시에만 활성화)
+  const {
+    data: supabaseData,
+    isLoading: supabaseLoading,
+    error: supabaseError,
+    refetch: supabaseRefetch,
+  } = useRolling4WeekStatsQuery(user?.id ?? null)
+
+  // 비로그인: IndexedDB 상태
+  const [localData, setLocalData] = useState<RollingWeekData[]>([])
+  const [localLoading, setLocalLoading] = useState(false)
+  const [localError, setLocalError] = useState<Error | null>(null)
   const [refetchTrigger, setRefetchTrigger] = useState(0)
 
-  const refetch = () => setRefetchTrigger((prev) => prev + 1)
-
+  // 비로그인: IndexedDB에서 데이터 조회
   useEffect(() => {
-    async function fetchRolling4WeekStats() {
-      setIsLoading(true)
-      setError(null)
+    if (user) return // 로그인 상태면 스킵
+
+    async function fetchLocalData() {
+      setLocalLoading(true)
+      setLocalError(null)
 
       try {
         const today = new Date()
@@ -63,10 +82,7 @@ export function useRolling4WeekStats(): UseRolling4WeekStatsReturn {
           })
         }
 
-        // IndexedDB에서 전체 히스토리 조회
         const history = await getAllHistory()
-
-        // 날짜별 Map 생성
         const historyMap = new Map<string, HistoryRecord>()
         for (const record of history) {
           historyMap.set(record.date, record)
@@ -89,23 +105,52 @@ export function useRolling4WeekStats(): UseRolling4WeekStatsReturn {
           }
         }
 
-        setData(weeks)
+        setLocalData(weeks)
       } catch (err) {
-        setError(err instanceof Error ? err : new Error("Failed to fetch rolling 4-week stats"))
+        setLocalError(err instanceof Error ? err : new Error("Failed to fetch rolling 4-week stats"))
       } finally {
-        setIsLoading(false)
+        setLocalLoading(false)
       }
     }
 
-    fetchRolling4WeekStats()
-  }, [refetchTrigger])
+    fetchLocalData()
+  }, [user, refetchTrigger])
 
-  return { data, isLoading, error, refetch }
+  // Supabase 데이터를 RollingWeekData[]로 변환 (타입 호환)
+  const transformedSupabaseData: RollingWeekData[] = supabaseData
+    ? supabaseData.map((item: Rolling4WeekData) => ({
+        weekLabel: item.weekLabel,
+        weekIndex: item.weekIndex,
+        startDate: item.startDate,
+        endDate: item.endDate,
+        totalMinutes: item.totalMinutes,
+        totalSessions: item.totalSessions,
+        isCurrentWeek: item.isCurrentWeek,
+      }))
+    : []
+
+  // 로그인 여부에 따라 반환값 결정
+  if (user) {
+    return {
+      data: transformedSupabaseData,
+      isLoading: supabaseLoading,
+      error: supabaseError || null,
+      refetch: supabaseRefetch,
+    }
+  }
+
+  return {
+    data: localData,
+    isLoading: localLoading,
+    error: localError,
+    refetch: () => setRefetchTrigger((prev) => prev + 1),
+  }
 }
 
-/**
- * 날짜를 YYYY-MM-DD 형식으로 변환
- */
+// ============================================
+// 헬퍼 함수
+// ============================================
+
 function formatDate(date: Date): string {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, "0")
@@ -113,9 +158,6 @@ function formatDate(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
-/**
- * 주어진 날짜가 속한 주의 월요일을 반환 (ISO-8601)
- */
 function getMonday(date: Date): Date {
   const d = new Date(date)
   const day = d.getDay()

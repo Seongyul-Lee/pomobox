@@ -434,6 +434,201 @@ export async function getFocusDistributionByHour(
   return data || []
 }
 
+// ============================================
+// 주간 통계 (월요일 기준)
+// ============================================
+
+/**
+ * 주어진 날짜가 속한 주의 월요일을 반환 (ISO-8601)
+ */
+function getMonday(date: Date): Date {
+  const d = new Date(date)
+  const day = d.getDay()
+  // 일요일(0)이면 -6, 월요일(1)이면 0, 화요일(2)이면 -1, ...
+  const diff = day === 0 ? -6 : 1 - day
+  d.setDate(d.getDate() + diff)
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
+/**
+ * 이번 주 통계 조회 (월요일 ~ 일요일)
+ */
+export async function getCurrentWeekStats(userId: string): Promise<DayRecord[]> {
+  const supabase = createClient()
+  const today = new Date()
+  const monday = getMonday(today)
+  const sunday = new Date(monday)
+  sunday.setDate(monday.getDate() + 6)
+
+  const mondayStr = getLocalDate(monday)
+  const sundayStr = getLocalDate(sunday)
+
+  const { data, error } = await supabase
+    .from("daily_stats")
+    .select("date, total_minutes, total_sessions")
+    .eq("user_id", userId)
+    .gte("date", mondayStr)
+    .lte("date", sundayStr)
+    .order("date", { ascending: true })
+
+  if (error) {
+    console.error("Failed to get current week stats:", error)
+    return []
+  }
+
+  // 빈 날짜 채우기 (월~일 7일)
+  const result: DayRecord[] = []
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(monday)
+    date.setDate(monday.getDate() + i)
+    const dateStr = getLocalDate(date)
+
+    const existing = data?.find((d) => d.date === dateStr)
+    result.push({
+      date: dateStr,
+      totalMinutes: existing?.total_minutes || 0,
+      totalSessions: existing?.total_sessions || 0,
+    })
+  }
+
+  return result
+}
+
+/**
+ * 지난주 통계 조회 (월요일 ~ 일요일)
+ */
+export async function getLastWeekStatsMonday(userId: string): Promise<DayRecord[]> {
+  const supabase = createClient()
+  const today = new Date()
+  const thisMonday = getMonday(today)
+  const lastMonday = new Date(thisMonday)
+  lastMonday.setDate(thisMonday.getDate() - 7)
+  const lastSunday = new Date(lastMonday)
+  lastSunday.setDate(lastMonday.getDate() + 6)
+
+  const lastMondayStr = getLocalDate(lastMonday)
+  const lastSundayStr = getLocalDate(lastSunday)
+
+  const { data, error } = await supabase
+    .from("daily_stats")
+    .select("date, total_minutes, total_sessions")
+    .eq("user_id", userId)
+    .gte("date", lastMondayStr)
+    .lte("date", lastSundayStr)
+    .order("date", { ascending: true })
+
+  if (error) {
+    console.error("Failed to get last week stats:", error)
+    return []
+  }
+
+  // 빈 날짜 채우기 (월~일 7일)
+  const result: DayRecord[] = []
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(lastMonday)
+    date.setDate(lastMonday.getDate() + i)
+    const dateStr = getLocalDate(date)
+
+    const existing = data?.find((d) => d.date === dateStr)
+    result.push({
+      date: dateStr,
+      totalMinutes: existing?.total_minutes || 0,
+      totalSessions: existing?.total_sessions || 0,
+    })
+  }
+
+  return result
+}
+
+export interface Rolling4WeekData {
+  weekLabel: string // "This Week", "W-1", "W-2", "W-3"
+  weekIndex: number // 0 = This Week, 1 = W-1, ...
+  startDate: string // YYYY-MM-DD (Monday)
+  endDate: string // YYYY-MM-DD (Sunday)
+  totalMinutes: number
+  totalSessions: number
+  isCurrentWeek: boolean
+}
+
+/**
+ * 최근 4주간 통계 조회 (월요일 기준)
+ */
+export async function getRolling4WeekStats(userId: string): Promise<Rolling4WeekData[]> {
+  const supabase = createClient()
+  const today = new Date()
+  const thisMonday = getMonday(today)
+
+  // 4주 전 월요일부터 이번 주 일요일까지 범위
+  const startMonday = new Date(thisMonday)
+  startMonday.setDate(thisMonday.getDate() - 21) // 3주 전 월요일
+  const endSunday = new Date(thisMonday)
+  endSunday.setDate(thisMonday.getDate() + 6)
+
+  const startStr = getLocalDate(startMonday)
+  const endStr = getLocalDate(endSunday)
+
+  const { data, error } = await supabase
+    .from("daily_stats")
+    .select("date, total_minutes, total_sessions")
+    .eq("user_id", userId)
+    .gte("date", startStr)
+    .lte("date", endStr)
+    .order("date", { ascending: true })
+
+  if (error) {
+    console.error("Failed to get rolling 4-week stats:", error)
+    return []
+  }
+
+  // 날짜별 Map 생성
+  const dataMap = new Map<string, { total_minutes: number; total_sessions: number }>()
+  for (const record of data || []) {
+    dataMap.set(record.date, {
+      total_minutes: record.total_minutes,
+      total_sessions: record.total_sessions,
+    })
+  }
+
+  // 4주간의 주차 정보 생성 (W-3, W-2, W-1, This Week 순서)
+  const weeks: Rolling4WeekData[] = []
+
+  for (let i = 3; i >= 0; i--) {
+    const weekMonday = new Date(thisMonday)
+    weekMonday.setDate(thisMonday.getDate() - i * 7)
+    const weekSunday = new Date(weekMonday)
+    weekSunday.setDate(weekMonday.getDate() + 6)
+
+    let totalMinutes = 0
+    let totalSessions = 0
+
+    // 해당 주의 7일 데이터 집계
+    for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
+      const currentDate = new Date(weekMonday)
+      currentDate.setDate(weekMonday.getDate() + dayOffset)
+      const dateStr = getLocalDate(currentDate)
+
+      const record = dataMap.get(dateStr)
+      if (record) {
+        totalMinutes += record.total_minutes
+        totalSessions += record.total_sessions
+      }
+    }
+
+    weeks.push({
+      weekLabel: i === 0 ? "This Week" : `W-${i}`,
+      weekIndex: i,
+      startDate: getLocalDate(weekMonday),
+      endDate: getLocalDate(weekSunday),
+      totalMinutes,
+      totalSessions,
+      isCurrentWeek: i === 0,
+    })
+  }
+
+  return weeks
+}
+
 /**
  * 전체 통계 (연속 출석 일수 포함)
  */

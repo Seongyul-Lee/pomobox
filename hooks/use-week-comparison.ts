@@ -1,8 +1,14 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 
 import { getAllHistory, type HistoryRecord } from "@/lib/storage/idb"
+import { useUser } from "@/hooks/use-user"
+import {
+  useCurrentWeekStats,
+  useLastWeekStatsMonday,
+  type DayRecord,
+} from "@/lib/queries/stats-queries"
 
 export interface WeekComparisonData {
   thisWeek: {
@@ -43,54 +49,59 @@ interface UseWeekComparisonReturn {
 
 /**
  * 이번 주와 지난주 통계를 비교하는 훅
- * - 이번 주: 월요일 ~ 오늘
- * - 지난주: 7일 전 ~ 13일 전
+ * - 로그인: Supabase 데이터 사용
+ * - 비로그인: IndexedDB 데이터 사용
  */
 export function useWeekComparison(): UseWeekComparisonReturn {
-  const [data, setData] = useState<WeekComparisonData | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
+  const { user } = useUser()
+
+  // Supabase 쿼리 (로그인 시에만 활성화)
+  const {
+    data: supabaseThisWeek,
+    isLoading: isLoadingThisWeek,
+    error: errorThisWeek,
+    refetch: refetchThisWeek,
+  } = useCurrentWeekStats(user?.id ?? null)
+
+  const {
+    data: supabaseLastWeek,
+    isLoading: isLoadingLastWeek,
+    error: errorLastWeek,
+    refetch: refetchLastWeek,
+  } = useLastWeekStatsMonday(user?.id ?? null)
+
+  // 비로그인: IndexedDB 상태
+  const [localData, setLocalData] = useState<WeekComparisonData | null>(null)
+  const [localLoading, setLocalLoading] = useState(false)
+  const [localError, setLocalError] = useState<Error | null>(null)
   const [refetchTrigger, setRefetchTrigger] = useState(0)
 
-  const refetch = () => setRefetchTrigger((prev) => prev + 1)
-
+  // 비로그인: IndexedDB에서 데이터 조회
   useEffect(() => {
-    async function fetchComparisonStats() {
-      setIsLoading(true)
-      setError(null)
+    if (user) return // 로그인 상태면 스킵
+
+    async function fetchLocalData() {
+      setLocalLoading(true)
+      setLocalError(null)
 
       try {
         const today = new Date()
-
-        // 이번 주 월요일
         const thisMonday = getMonday(today)
-
-        // 지난주 월요일 (이번 주 월요일 - 7일)
         const lastMonday = new Date(thisMonday)
         lastMonday.setDate(thisMonday.getDate() - 7)
 
-        // 이번 주 날짜 목록 (월요일 ~ 일요일)
         const thisWeekDates = getWeekDates(thisMonday)
-
-        // 지난주 날짜 목록 (월요일 ~ 일요일)
         const lastWeekDates = getWeekDates(lastMonday)
 
-        // IndexedDB에서 전체 히스토리 조회
         const history = await getAllHistory()
-
-        // 날짜별 Map 생성
         const historyMap = new Map<string, HistoryRecord>()
         for (const record of history) {
           historyMap.set(record.date, record)
         }
 
-        // 이번 주 통계 계산
         const thisWeekStats = calculateWeekStats(thisWeekDates, historyMap)
-
-        // 지난주 통계 계산
         const lastWeekStats = calculateWeekStats(lastWeekDates, historyMap)
 
-        // 비교 계산
         const comparison = {
           totalMinutes: calculateComparison(
             thisWeekStats.totalMinutes,
@@ -106,29 +117,77 @@ export function useWeekComparison(): UseWeekComparisonReturn {
           ),
         }
 
-        setData({
+        setLocalData({
           thisWeek: thisWeekStats,
           lastWeek: lastWeekStats,
           comparison,
         })
       } catch (err) {
-        setError(
+        setLocalError(
           err instanceof Error ? err : new Error("Failed to fetch comparison stats")
         )
       } finally {
-        setIsLoading(false)
+        setLocalLoading(false)
       }
     }
 
-    fetchComparisonStats()
-  }, [refetchTrigger])
+    fetchLocalData()
+  }, [user, refetchTrigger])
 
-  return { data, isLoading, error, refetch }
+  // Supabase 데이터를 WeekComparisonData로 변환
+  const supabaseData = useMemo<WeekComparisonData | null>(() => {
+    if (!user || !supabaseThisWeek || !supabaseLastWeek) return null
+
+    const thisWeekStats = calculateWeekStatsFromDayRecords(supabaseThisWeek)
+    const lastWeekStats = calculateWeekStatsFromDayRecords(supabaseLastWeek)
+
+    const comparison = {
+      totalMinutes: calculateComparison(
+        thisWeekStats.totalMinutes,
+        lastWeekStats.totalMinutes
+      ),
+      totalSessions: calculateComparison(
+        thisWeekStats.totalSessions,
+        lastWeekStats.totalSessions
+      ),
+      avgMinutesPerDay: calculateComparison(
+        thisWeekStats.avgMinutesPerDay,
+        lastWeekStats.avgMinutesPerDay
+      ),
+    }
+
+    return {
+      thisWeek: thisWeekStats,
+      lastWeek: lastWeekStats,
+      comparison,
+    }
+  }, [user, supabaseThisWeek, supabaseLastWeek])
+
+  // 로그인 여부에 따라 반환값 결정
+  if (user) {
+    return {
+      data: supabaseData,
+      isLoading: isLoadingThisWeek || isLoadingLastWeek,
+      error: errorThisWeek || errorLastWeek || null,
+      refetch: () => {
+        refetchThisWeek()
+        refetchLastWeek()
+      },
+    }
+  }
+
+  return {
+    data: localData,
+    isLoading: localLoading,
+    error: localError,
+    refetch: () => setRefetchTrigger((prev) => prev + 1),
+  }
 }
 
-/**
- * 날짜를 YYYY-MM-DD 형식으로 변환
- */
+// ============================================
+// 헬퍼 함수
+// ============================================
+
 function formatDate(date: Date): string {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, "0")
@@ -136,9 +195,6 @@ function formatDate(date: Date): string {
   return `${year}-${month}-${day}`
 }
 
-/**
- * 주어진 날짜가 속한 주의 월요일을 반환
- */
 function getMonday(date: Date): Date {
   const d = new Date(date)
   const day = d.getDay()
@@ -148,9 +204,6 @@ function getMonday(date: Date): Date {
   return d
 }
 
-/**
- * 주어진 월요일부터 7일간의 날짜 목록 반환
- */
 function getWeekDates(monday: Date): string[] {
   const dates: string[] = []
   for (let i = 0; i < 7; i++) {
@@ -161,9 +214,6 @@ function getWeekDates(monday: Date): string[] {
   return dates
 }
 
-/**
- * 주간 통계 계산
- */
 function calculateWeekStats(
   dates: string[],
   historyMap: Map<string, HistoryRecord>
@@ -190,9 +240,28 @@ function calculateWeekStats(
   }
 }
 
-/**
- * 증감 비교 계산
- */
+function calculateWeekStatsFromDayRecords(
+  records: DayRecord[]
+): {
+  totalMinutes: number
+  totalSessions: number
+  avgMinutesPerDay: number
+} {
+  let totalMinutes = 0
+  let totalSessions = 0
+
+  for (const record of records) {
+    totalMinutes += record.totalMinutes
+    totalSessions += record.totalSessions
+  }
+
+  return {
+    totalMinutes,
+    totalSessions,
+    avgMinutesPerDay: Math.round(totalMinutes / 7),
+  }
+}
+
 function calculateComparison(
   current: number,
   previous: number

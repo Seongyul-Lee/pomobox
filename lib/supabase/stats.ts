@@ -1,12 +1,8 @@
 import { createClient } from "./client"
+import { formatDate, getMonday } from "@/lib/date-utils"
 
-/**
- * 로컬 시간 기준 날짜 (YYYY-MM-DD)
- * 타임존 문제 방지를 위해 toISOString 대신 로컬 날짜 사용
- */
-function getLocalDate(date: Date = new Date()): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
-}
+// formatDate를 getLocalDate alias로 사용 (기존 호출부 호환)
+const getLocalDate = formatDate
 
 export interface FocusSession {
   id?: string
@@ -437,19 +433,6 @@ export async function getFocusDistributionByHour(
 // ============================================
 // 주간 통계 (월요일 기준)
 // ============================================
-
-/**
- * 주어진 날짜가 속한 주의 월요일을 반환 (ISO-8601)
- */
-function getMonday(date: Date): Date {
-  const d = new Date(date)
-  const day = d.getDay()
-  // 일요일(0)이면 -6, 월요일(1)이면 0, 화요일(2)이면 -1, ...
-  const diff = day === 0 ? -6 : 1 - day
-  d.setDate(d.getDate() + diff)
-  d.setHours(0, 0, 0, 0)
-  return d
-}
 
 /**
  * 이번 주 통계 조회 (월요일 ~ 일요일)

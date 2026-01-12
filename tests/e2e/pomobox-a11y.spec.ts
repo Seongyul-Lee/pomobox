@@ -45,7 +45,7 @@ test.describe('Accessibility (A11y) Tests', () => {
 
     // Start and pause timer
     await page.getByRole('button', { name: 'Start', exact: true }).click();
-    await page.waitForTimeout(1000);
+    await expect(page.getByRole('button', { name: /pause/i })).toBeVisible();
     await page.getByRole('button', { name: /pause/i }).click();
 
     // Verify paused state
@@ -188,10 +188,7 @@ test.describe('Accessibility (A11y) Tests', () => {
     const tasksButton = page.getByRole('button', { name: /tasks/i });
     await tasksButton.click();
 
-    // Wait for panel to be visible
-    await page.waitForTimeout(500);
-
-    // Check for complementary role
+    // Check for complementary role (wait for panel to be visible)
     const taskPanel = page.locator('aside[role="complementary"]');
     await expect(taskPanel).toBeVisible();
 

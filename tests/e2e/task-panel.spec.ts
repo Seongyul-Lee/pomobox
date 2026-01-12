@@ -244,22 +244,23 @@ test.describe("Task Panel - Limit Warning", () => {
     }, storeData)
 
     await page.goto("/")
-    await page.waitForTimeout(1000) // Wait for zustand hydration
+
+    // Wait for page to be ready
+    await expect(page.getByRole("button", { name: 'Start', exact: true })).toBeVisible()
 
     // Open task panel
     await page.getByRole("button", { name: /tasks/i }).click()
     await expect(page.locator('[role="complementary"]')).toBeVisible()
 
-    // Verify 29/30 (with extended timeout for hydration)
+    // Verify 29/30 (with extended timeout for zustand hydration)
     await expect(page.locator("text=29/30")).toBeVisible({ timeout: 10000 })
 
     // Add 30th task
     const input = page.getByPlaceholder("Add a new task...")
     await input.fill("Task 30")
     await input.press("Enter")
-    await page.waitForTimeout(500)
 
-    // Verify 30/30
+    // Verify 30/30 (confirms task was added)
     await expect(page.locator("text=30/30")).toBeVisible({ timeout: 5000 })
 
     // Try to add 31st task

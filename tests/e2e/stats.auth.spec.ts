@@ -93,9 +93,7 @@ test.describe('Statistics Dashboard (Authenticated)', () => {
 
       if (await todayButton.isVisible()) {
         await todayButton.click();
-
-        // 상세 정보 패널이 나타나는지 확인 (optional - 구현에 따라 다름)
-        await page.waitForTimeout(300);
+        // Note: 상세 정보 패널 구현에 따라 추가 assertion 필요
       }
     });
   });
@@ -115,7 +113,6 @@ test.describe('Statistics Dashboard (Authenticated)', () => {
       // 모바일에서 대시보드가 타이머 아래에 스택으로 배치됨
       // 스크롤해서 대시보드 영역 확인
       await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-      await page.waitForTimeout(500);
 
       // 스크롤 후 페이지 하단 요소 확인 (BGM 또는 통계)
       // 모바일 레이아웃이 정상 작동하면 통과

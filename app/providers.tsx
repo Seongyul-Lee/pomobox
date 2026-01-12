@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-query"
 import { migrateFromLocalStorage } from "@/lib/storage/idb"
 import { useSyncLocalData } from "@/hooks/use-sync-local-data"
-import { initSettingsSubscription, useSettingsStore, useUIStore, type TimerSettings } from "@/lib/store"
+import { initSettingsSubscription, useSettingsStore, useUIStore, useTimerStore, selectIsRunning, type TimerSettings } from "@/lib/store"
 import { SettingsDialog } from "@/components/settings-dialog"
 
 // QueryClient 생성 함수
@@ -74,6 +74,9 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
   const isSettingsOpen = useUIStore((state) => state.isSettingsOpen)
   const setSettingsOpen = useUIStore((state) => state.setSettingsOpen)
 
+  // Timer store - check if timer is running (to disable duration changes)
+  const isTimerRunning = useTimerStore(selectIsRunning)
+
   return (
     <>
       {children}
@@ -86,6 +89,7 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
         open={isSettingsOpen}
         onOpenChange={setSettingsOpen}
         hideTrigger
+        isRunning={isTimerRunning}
       />
     </>
   )

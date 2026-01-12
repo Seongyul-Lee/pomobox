@@ -71,3 +71,10 @@ Run pnpm e2e.txt
 
 # Playwright auth state
 tests/e2e/.auth/
+
+# Local documentation (not tracked)
+SUPERCLAUDE.md
+
+# Claude Code temp files
+tmpclaude-*
+nul

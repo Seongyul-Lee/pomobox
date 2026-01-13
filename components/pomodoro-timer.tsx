@@ -11,6 +11,7 @@ import { getLocalTodayStats } from "@/lib/storage/local-stats"
 import { GoalProgress } from "./goal-progress"
 import { LoginPromptDialog } from "./login-prompt-dialog"
 import { useTimerStore, useSettingsStore, useUIStore } from "@/lib/store"
+import { useToast } from "@/hooks/use-toast"
 
 const LOGIN_PROMPT_KEY = "hasShownLoginPrompt"
 
@@ -21,6 +22,7 @@ const TIMER_CIRCUMFERENCE = 2 * Math.PI * TIMER_RADIUS
 export function PomodoroTimer() {
   const searchParams = useSearchParams()
   const { user } = useUser()
+  const { toast } = useToast()
 
   // Zustand stores
   const timerStore = useTimerStore()
@@ -175,7 +177,16 @@ export function PomodoroTimer() {
 
         // Supabase 저장 (로그인 사용자만)
         if (user && currentPhase === 'break') {
-          recordSessionComplete(user.id, focusDuration, dailyGoal)
+          recordSessionComplete(user.id, focusDuration, dailyGoal).then((result) => {
+            if (!result.success) {
+              console.error("[pomodoro-timer] Session save failed:", result.error)
+              toast({
+                title: "Session save failed",
+                description: "Your session was completed but could not be saved to the cloud.",
+                variant: "destructive",
+              })
+            }
+          })
         }
 
         // 비로그인 사용자: 첫 세션 완료 시 로그인 유도

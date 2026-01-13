@@ -24,16 +24,29 @@ export interface DayRecord {
 }
 
 /**
- * IndexedDB에서 히스토리 데이터 전체 조회 (async)
+ * 히스토리 조회 결과 타입
+ * - data: 조회된 데이터 (에러 시 빈 배열/기본값)
+ * - error: 에러 발생 시 에러 메시지
  */
-export async function getLocalHistoryAsync(): Promise<DayRecord[]> {
-  if (typeof window === "undefined") return []
+export interface HistoryResult<T> {
+  data: T
+  error?: string
+}
+
+/**
+ * IndexedDB에서 히스토리 데이터 전체 조회 (async)
+ * @returns { data, error? } - 에러 시 data는 빈 배열, error에 메시지
+ */
+export async function getLocalHistoryAsync(): Promise<HistoryResult<DayRecord[]>> {
+  if (typeof window === "undefined") return { data: [] }
 
   try {
     const records = await getAllHistory()
-    return records as DayRecord[]
-  } catch {
-    return []
+    return { data: records as DayRecord[] }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown IndexedDB error"
+    console.error("[local-history] Failed to get history from IndexedDB:", error)
+    return { data: [], error: errorMessage }
   }
 }
 
@@ -47,7 +60,8 @@ export function getLocalHistory(): DayRecord[] {
     const stored = localStorage.getItem(LEGACY_HISTORY_KEY)
     if (!stored) return []
     return JSON.parse(stored) as DayRecord[]
-  } catch {
+  } catch (error) {
+    console.error("[local-history] Failed to get history from localStorage:", error)
     return []
   }
 }
@@ -217,9 +231,10 @@ export function getRecentDays(days: number): DayRecord[] {
 
 /**
  * 최근 N일 데이터 조회 (async)
+ * @returns { data, error? } - 에러 시 data는 기본값으로 채워진 배열
  */
-export async function getRecentDaysAsync(days: number): Promise<DayRecord[]> {
-  const history = await getLocalHistoryAsync()
+export async function getRecentDaysAsync(days: number): Promise<HistoryResult<DayRecord[]>> {
+  const { data: history, error } = await getLocalHistoryAsync()
   const result: DayRecord[] = []
   const today = new Date()
 
@@ -238,7 +253,7 @@ export async function getRecentDaysAsync(days: number): Promise<DayRecord[]> {
     )
   }
 
-  return result
+  return { data: result, error }
 }
 
 /**
@@ -360,16 +375,20 @@ export function getTotalStats(): {
   return { totalMinutes, totalSessions, totalDays, streakDays }
 }
 
-/**
- * 전체 통계 요약 (async)
- */
-export async function getTotalStatsAsync(): Promise<{
+/** 통계 요약 타입 */
+export interface TotalStats {
   totalMinutes: number
   totalSessions: number
   totalDays: number
   streakDays: number
-}> {
-  const history = await getLocalHistoryAsync()
+}
+
+/**
+ * 전체 통계 요약 (async)
+ * @returns { data, error? } - 에러 시 data는 모두 0인 기본값
+ */
+export async function getTotalStatsAsync(): Promise<HistoryResult<TotalStats>> {
+  const { data: history, error } = await getLocalHistoryAsync()
 
   const totalMinutes = history.reduce((sum, r) => sum + r.totalMinutes, 0)
   const totalSessions = history.reduce((sum, r) => sum + r.totalSessions, 0)
@@ -392,5 +411,5 @@ export async function getTotalStatsAsync(): Promise<{
     }
   }
 
-  return { totalMinutes, totalSessions, totalDays, streakDays }
+  return { data: { totalMinutes, totalSessions, totalDays, streakDays }, error }
 }

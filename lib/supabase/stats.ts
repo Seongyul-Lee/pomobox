@@ -195,24 +195,35 @@ export async function incrementDailyMinutes(
 }
 
 /**
+ * 세션 완료 결과 타입
+ */
+export interface RecordSessionResult {
+  success: boolean
+  error?: string
+}
+
+/**
  * 세션 완료 시 호출 (focus_sessions 저장 + 세션 카운트 증가)
  * @param userId - 사용자 ID
  * @param durationMinutes - 세션 집중 시간 (focus_sessions 테이블용)
  * @param dailyGoalMinutes - 일일 목표 (goal_achieved 계산용)
+ * @returns 성공/실패 결과 - 호출부에서 에러 핸들링 가능
  */
 export async function recordSessionComplete(
   userId: string,
   durationMinutes: number,
   dailyGoalMinutes: number = 120
-) {
+): Promise<RecordSessionResult> {
   try {
     // focus_sessions에 실제 집중 시간 저장 (시간대별 분포 차트용)
     await saveSession(userId, durationMinutes, "focus")
     // daily_stats 세션 카운트만 증가 (분은 incrementDailyMinutes에서 처리)
     await updateDailyStats(userId, dailyGoalMinutes)
+    return { success: true }
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error"
     console.error("Failed to record session:", error)
-    // 에러가 발생해도 로컬 상태는 유지됨
+    return { success: false, error: errorMessage }
   }
 }
 
@@ -245,7 +256,7 @@ export async function getRecentDaysStats(userId: string, days: number): Promise<
 
   if (error) {
     console.error("Failed to get recent days stats:", error)
-    return []
+    throw error
   }
 
   // 빈 날짜 채우기
@@ -290,7 +301,7 @@ export async function getLastWeekStats(userId: string): Promise<DayRecord[]> {
 
   if (error) {
     console.error("Failed to get last week stats:", error)
-    return []
+    throw error
   }
 
   // 빈 날짜 채우기
@@ -333,7 +344,7 @@ export async function getMonthlyStats(userId: string): Promise<DayRecord[]> {
 
   if (error) {
     console.error("Failed to get monthly stats:", error)
-    return []
+    throw error
   }
 
   // 빈 날짜 채우기
@@ -375,7 +386,7 @@ export async function getPreviousMonthStats(userId: string): Promise<DayRecord[]
 
   if (error) {
     console.error("Failed to get previous month stats:", error)
-    return []
+    throw error
   }
 
   // 빈 날짜 채우기
@@ -457,7 +468,7 @@ export async function getCurrentWeekStats(userId: string): Promise<DayRecord[]> 
 
   if (error) {
     console.error("Failed to get current week stats:", error)
-    return []
+    throw error
   }
 
   // 빈 날짜 채우기 (월~일 7일)
@@ -503,7 +514,7 @@ export async function getLastWeekStatsMonday(userId: string): Promise<DayRecord[
 
   if (error) {
     console.error("Failed to get last week stats:", error)
-    return []
+    throw error
   }
 
   // 빈 날짜 채우기 (월~일 7일)
@@ -561,7 +572,7 @@ export async function getRolling4WeekStats(userId: string): Promise<Rolling4Week
 
   if (error) {
     console.error("Failed to get rolling 4-week stats:", error)
-    return []
+    throw error
   }
 
   // 날짜별 Map 생성
@@ -632,7 +643,7 @@ export async function getTotalStatsFromDB(userId: string): Promise<{
 
   if (error) {
     console.error("Failed to get total stats:", error)
-    return { totalMinutes: 0, totalSessions: 0, totalDays: 0, streakDays: 0 }
+    throw error
   }
 
   const totalMinutes = data?.reduce((sum, r) => sum + (r.total_minutes || 0), 0) || 0

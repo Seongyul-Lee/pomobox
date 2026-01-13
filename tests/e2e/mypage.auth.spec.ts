@@ -26,10 +26,8 @@ test.describe('MyPage (Authenticated)', () => {
 
   test('@critical should display My Account page for logged-in users', async ({ page }) => {
     // 인증 상태 확인
-    if (!(await isAuthenticated(page))) {
-      test.skip()
-      return
-    }
+    const authenticated = await isAuthenticated(page)
+    test.skip(!authenticated, 'Not authenticated - skipping auth test')
 
     // My Account 제목 확인
     await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible()
@@ -39,10 +37,8 @@ test.describe('MyPage (Authenticated)', () => {
   })
 
   test('should display Profile section with email', async ({ page }) => {
-    if (!(await isAuthenticated(page))) {
-      test.skip()
-      return
-    }
+    const authenticated = await isAuthenticated(page)
+    test.skip(!authenticated, 'Not authenticated - skipping auth test')
 
     // Profile 카드 확인
     await expect(page.getByRole('heading', { name: 'Profile' })).toBeVisible()
@@ -52,10 +48,8 @@ test.describe('MyPage (Authenticated)', () => {
   })
 
   test('should display Account Management section', async ({ page }) => {
-    if (!(await isAuthenticated(page))) {
-      test.skip()
-      return
-    }
+    const authenticated = await isAuthenticated(page)
+    test.skip(!authenticated, 'Not authenticated - skipping auth test')
 
     // Account Management 섹션 확인
     await expect(page.getByRole('heading', { name: 'Account Management' })).toBeVisible()
@@ -67,10 +61,8 @@ test.describe('MyPage (Authenticated)', () => {
   })
 
   test('should display Delete Account section (Danger Zone)', async ({ page }) => {
-    if (!(await isAuthenticated(page))) {
-      test.skip()
-      return
-    }
+    const authenticated = await isAuthenticated(page)
+    test.skip(!authenticated, 'Not authenticated - skipping auth test')
 
     // Delete Account 섹션 확인
     await expect(page.getByRole('heading', { name: /Delete Account/i })).toBeVisible()
@@ -84,10 +76,8 @@ test.describe('MyPage (Authenticated)', () => {
   })
 
   test('should open Delete Account confirmation dialog', async ({ page }) => {
-    if (!(await isAuthenticated(page))) {
-      test.skip()
-      return
-    }
+    const authenticated = await isAuthenticated(page)
+    test.skip(!authenticated, 'Not authenticated - skipping auth test')
 
     // Delete Account 버튼 클릭
     await page.getByRole('button', { name: 'Delete Account' }).click()
@@ -108,10 +98,8 @@ test.describe('MyPage (Authenticated)', () => {
   })
 
   test('should navigate back to timer', async ({ page }) => {
-    if (!(await isAuthenticated(page))) {
-      test.skip()
-      return
-    }
+    const authenticated = await isAuthenticated(page)
+    test.skip(!authenticated, 'Not authenticated - skipping auth test')
 
     // Back to Timer 링크 클릭
     await page.getByRole('link', { name: /Back to Timer/i }).click()
@@ -124,10 +112,8 @@ test.describe('MyPage (Authenticated)', () => {
   })
 
   test('should show Change Password button for email users', async ({ page }) => {
-    if (!(await isAuthenticated(page))) {
-      test.skip()
-      return
-    }
+    const authenticated = await isAuthenticated(page)
+    test.skip(!authenticated, 'Not authenticated - skipping auth test')
 
     // OAuth 사용자가 아닌 경우 Change Password 버튼 표시
     // storageState에 따라 결과가 달라질 수 있음
@@ -142,8 +128,8 @@ test.describe('MyPage (Authenticated)', () => {
     if (hasOAuthBadge) {
       expect(hasChangePassword).toBe(false)
     }
-    // OAuth가 아닌 경우 Change Password 버튼이 있어야 함 (soft assertion)
-    expect(hasChangePassword || hasOAuthBadge || true).toBe(true)
+    // OAuth가 아닌 경우 Change Password 버튼이 있어야 함
+    expect(hasChangePassword || hasOAuthBadge).toBe(true)
   })
 })
 
@@ -153,10 +139,8 @@ test.describe('MyPage Mobile Responsiveness', () => {
     await page.goto('/mypage')
     await page.waitForLoadState('networkidle')
 
-    if (!(await isAuthenticated(page))) {
-      test.skip()
-      return
-    }
+    const authenticated = await isAuthenticated(page)
+    test.skip(!authenticated, 'Not authenticated - skipping auth test')
 
     // My Account 제목
     await expect(page.getByRole('heading', { name: 'My Account' })).toBeVisible()
@@ -166,6 +150,6 @@ test.describe('MyPage Mobile Responsiveness', () => {
     const count = await cards.count().catch(() => 0)
 
     // 최소 3개 카드 (Profile, Account Management, Delete Account)
-    expect(count >= 3 || true).toBe(true) // soft assertion
+    expect(count).toBeGreaterThanOrEqual(3)
   })
 })

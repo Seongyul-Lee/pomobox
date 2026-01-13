@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback, useMemo } from "react"
 import { getDailyStats, getHistoryByDate, type DailyStats } from "@/lib/storage/idb"
 import { useUser } from "@/hooks/use-user"
 import { useTodayStats as useTodayStatsQuery } from "@/lib/queries/stats-queries"
+import { formatMinutes, getTodayDateStr } from "@/lib/date-utils"
 
 export interface TodayStatsData {
   date: string
@@ -20,33 +21,6 @@ interface UseTodayStatsReturn {
   isLoading: boolean
   error: Error | null
   refetch: () => void
-}
-
-/**
- * Format today's date as YYYY-MM-DD
- */
-function getTodayDateStr(): string {
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = String(today.getMonth() + 1).padStart(2, "0")
-  const day = String(today.getDate()).padStart(2, "0")
-  return `${year}-${month}-${day}`
-}
-
-/**
- * Format minutes to "Xh Ym" or "Xm"
- */
-function formatMinutes(minutes: number): string {
-  const hours = Math.floor(minutes / 60)
-  const mins = minutes % 60
-
-  if (hours > 0 && mins > 0) {
-    return `${hours}h ${mins}m`
-  } else if (hours > 0) {
-    return `${hours}h`
-  } else {
-    return `${mins}m`
-  }
 }
 
 /**

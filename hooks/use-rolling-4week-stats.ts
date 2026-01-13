@@ -8,6 +8,7 @@ import {
   useRolling4WeekStatsQuery,
   type Rolling4WeekData,
 } from "@/lib/queries/stats-queries"
+import { formatDate, getMonday } from "@/lib/date-utils"
 
 export interface RollingWeekData {
   weekLabel: string // "This Week", "W-1", "W-2", "W-3"
@@ -147,23 +148,3 @@ export function useRolling4WeekStats(): UseRolling4WeekStatsReturn {
   }
 }
 
-// ============================================
-// 헬퍼 함수
-// ============================================
-
-function formatDate(date: Date): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, "0")
-  const day = String(date.getDate()).padStart(2, "0")
-  return `${year}-${month}-${day}`
-}
-
-function getMonday(date: Date): Date {
-  const d = new Date(date)
-  const day = d.getDay()
-  // 일요일(0)이면 -6, 월요일(1)이면 0, 화요일(2)이면 -1, ...
-  const diff = day === 0 ? -6 : 1 - day
-  d.setDate(d.getDate() + diff)
-  d.setHours(0, 0, 0, 0)
-  return d
-}

@@ -8,95 +8,83 @@ test.describe('Timer Operations', () => {
 
   test('should start, pause, and resume timer', async ({ page }) => {
     // Get initial timer display
-    const timerDisplay = page.locator('text=/\\d{2}:\\d{2}/').first();
+    const timerDisplay = page.locator('.hover-timer-display').first();
     const initialTime = await timerDisplay.textContent();
 
     // Start timer
     await page.getByRole('button', { name: 'Start', exact: true }).click();
 
-    // Wait for timer to tick (at least 1 second)
-    await page.waitForTimeout(2000);
+    // Wait for Pause button to appear (confirms timer started)
+    const pauseButton = page.getByRole('button', { name: /pause/i });
+    await expect(pauseButton).toBeVisible();
+
+    // Wait for timer to tick (timer value should change from initial)
+    await expect(async () => {
+      const currentTime = await timerDisplay.textContent();
+      expect(currentTime).not.toBe(initialTime);
+    }).toPass({ timeout: 5000 });
 
     // Pause timer
-    await page.getByRole('button', { name: /pause/i }).click();
+    await pauseButton.click();
 
-    // Get paused time
+    // Get paused time and verify Resume button is visible
+    const resumeButton = page.getByRole('button', { name: /resume/i });
+    await expect(resumeButton).toBeVisible();
     const pausedTime = await timerDisplay.textContent();
     expect(pausedTime).not.toBe(initialTime);
 
-    // Wait a bit and verify time doesn't change (paused)
-    await page.waitForTimeout(2000);
+    // Verify time doesn't change while paused (check twice with small interval)
+    const timeAfterPause = await timerDisplay.textContent();
+    await page.waitForTimeout(1500); // Minimal wait to verify pause
     const stillPausedTime = await timerDisplay.textContent();
-    expect(stillPausedTime).toBe(pausedTime);
+    expect(stillPausedTime).toBe(timeAfterPause);
 
     // Resume timer
-    await page.getByRole('button', { name: /resume/i }).click();
+    await resumeButton.click();
+
+    // Wait for Pause button to reappear (confirms timer resumed)
+    await expect(pauseButton).toBeVisible();
 
     // Wait for timer to tick again
-    await page.waitForTimeout(2000);
-
-    // Get resumed time
-    const resumedTime = await timerDisplay.textContent();
-    expect(resumedTime).not.toBe(pausedTime);
+    await expect(async () => {
+      const resumedTime = await timerDisplay.textContent();
+      expect(resumedTime).not.toBe(pausedTime);
+    }).toPass({ timeout: 5000 });
   });
 
   test.skip('should trigger Long Break after 4 completed Focus sessions', async ({ page }) => {
-    // This test simulates 3 completed sessions, then skips 4th to trigger Long Break
-    // Note: Skip increments completedSessions, so 4th skip will trigger Long Break
-
-    // Skip 3 Focus sessions to get completedSessions=3
-    for (let i = 0; i < 3; i++) {
-      await page.getByRole('button', { name: 'Start', exact: true }).click();
-      await page.waitForTimeout(500);
-      await page.getByRole('button').filter({ hasText: /skip to break/i }).click();
-      await page.waitForTimeout(1000); // Wait for state update
-      // Skip break too to return to Focus
-      await page.getByRole('button').filter({ hasText: /back to focus/i }).click();
-      await page.waitForTimeout(1000); // Wait for state update
-    }
-
-    // 4th Focus session - Skip this will trigger Long Break (completedSessions=4)
-    await page.getByRole('button', { name: 'Start', exact: true }).click();
-    await page.waitForTimeout(500);
-    await page.getByRole('button').filter({ hasText: /skip to break/i }).click();
-    await page.waitForTimeout(1500); // Wait for Long Break transition
-
-    // Verify we're in Long Break phase
-    await expect(page.locator('text=/Long Break/i')).toBeVisible();
-    await expect(page.locator('text=/Take a longer break/i')).toBeVisible();
-
-    // Verify timer shows 15:00 (Long Break duration)
-    const timerDisplay = page.locator('text=/\\d{2}:\\d{2}/').first();
-    const timerTime = await timerDisplay.textContent();
-    expect(timerTime).toBe('15:00');
-
-    // Verify longBreakCount incremented in localStorage
-    await page.waitForTimeout(500);
-    const longBreakCount = await page.evaluate(() =>
-      localStorage.getItem('pomodoro-long-break-count')
-    );
-    expect(longBreakCount).toBe('1');
+    // SKIPPED: Skip으로는 Long Break가 트리거되지 않음 (state-machine.ts line 184)
+    // Long Break는 TIME_UP (실제 25분 완료) 시에만 트리거됨
+    // 실제 타이머 완료는 25분이 필요하므로 E2E 테스트로 검증 불가능
+    // 이 동작은 수동 테스트와 코드 리뷰로 검증됨
   });
 
   test('should restore paused timer after page refresh (Persistence)', async ({ page }) => {
+    const timerDisplay = page.locator('.hover-timer-display').first();
+    const initialTime = await timerDisplay.textContent();
+
     // Start timer
     await page.getByRole('button', { name: 'Start', exact: true }).click();
 
-    // Wait for timer to tick
-    await page.waitForTimeout(3000);
+    // Wait for Pause button and timer to tick
+    const pauseButton = page.getByRole('button', { name: /pause/i });
+    await expect(pauseButton).toBeVisible();
+
+    // Wait for timer to change from initial value
+    await expect(async () => {
+      const currentTime = await timerDisplay.textContent();
+      expect(currentTime).not.toBe(initialTime);
+    }).toPass({ timeout: 5000 });
 
     // Pause timer
-    await page.getByRole('button', { name: /pause/i }).click();
+    await pauseButton.click();
 
-    // Get paused time
-    const timerDisplay = page.locator('text=/\\d{2}:\\d{2}/').first();
+    // Verify paused state
+    await expect(page.getByRole('button', { name: /resume/i })).toBeVisible();
     const pausedTime = await timerDisplay.textContent();
 
     // Reload page
     await page.reload();
-
-    // Wait for hydration
-    await page.waitForTimeout(500);
 
     // Verify timer is restored in paused state (Persistence policy)
     await expect(page.getByRole('button', { name: /resume/i })).toBeVisible();
@@ -220,8 +208,11 @@ test.describe('Statistics Regression Tests', () => {
   test('should not change stats when skipping Break', async ({ page }) => {
     // Complete one Focus session by skipping
     await page.getByRole('button', { name: 'Start', exact: true }).click();
-    await page.waitForTimeout(500);
-    await page.getByRole('button').filter({ hasText: /skip to break/i }).click();
+
+    // Wait for Skip button to appear
+    const skipButton = page.getByRole('button').filter({ hasText: /skip to break/i });
+    await expect(skipButton).toBeVisible();
+    await skipButton.click();
 
     // Verify we're in Break phase
     await expect(page.locator('text=/Break Time/i').first()).toBeVisible();
@@ -230,7 +221,9 @@ test.describe('Statistics Regression Tests', () => {
     const initialStats = await page.locator('text=/Today:.*sessions/').first().textContent();
 
     // Skip Break (button text is "Back to Focus" in Break phase)
-    await page.getByRole('button').filter({ hasText: /back to focus/i }).click();
+    const backToFocusButton = page.getByRole('button').filter({ hasText: /back to focus/i });
+    await expect(backToFocusButton).toBeVisible();
+    await backToFocusButton.click();
 
     // Verify we're back to Focus
     await expect(page.locator('text=/Focus Session/i').first()).toBeVisible();
@@ -294,12 +287,20 @@ test.describe('Statistics Regression Tests', () => {
   test('should not change stats when resetting timer', async ({ page }) => {
     // Complete one Focus session by skipping
     await page.getByRole('button', { name: 'Start', exact: true }).click();
-    await page.waitForTimeout(500);
-    await page.getByRole('button').filter({ hasText: /skip to break/i }).click();
 
-    // Skip break to return to Focus (button text is "Back to Focus" in Break phase)
-    await page.waitForTimeout(500);
-    await page.getByRole('button').filter({ hasText: /back to focus/i }).click();
+    // Wait for Skip button and click
+    const skipButton = page.getByRole('button').filter({ hasText: /skip to break/i });
+    await expect(skipButton).toBeVisible();
+    await skipButton.click();
+
+    // Wait for Break phase and Back to Focus button
+    await expect(page.locator('text=/Break Time/i').first()).toBeVisible();
+    const backToFocusButton = page.getByRole('button').filter({ hasText: /back to focus/i });
+    await expect(backToFocusButton).toBeVisible();
+    await backToFocusButton.click();
+
+    // Wait for Focus Session to appear
+    await expect(page.locator('text=/Focus Session/i').first()).toBeVisible();
 
     // Get current stats (use first() to avoid strict mode violation)
     const initialStats = await page.locator('text=/Today:.*sessions/').first().textContent();
@@ -307,7 +308,8 @@ test.describe('Statistics Regression Tests', () => {
     // Start timer
     await page.getByRole('button', { name: 'Start', exact: true }).click();
 
-    await page.waitForTimeout(1000);
+    // Wait for Pause button (timer is running)
+    await expect(page.getByRole('button', { name: /pause/i })).toBeVisible();
 
     // Reset timer
     await page.getByRole('button', { name: /reset/i }).click();

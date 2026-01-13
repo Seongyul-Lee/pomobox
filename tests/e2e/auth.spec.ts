@@ -102,9 +102,9 @@ test.describe('Authentication Pages', () => {
       // 폼 제출 시작
       await loginButton.click();
 
-      // 로딩 중 버튼 비활성화 확인 (빠르게 변경될 수 있음)
-      // Note: 실제 API 호출이 발생하므로 에러 토스트가 나타날 수 있음
-      await page.waitForTimeout(500);
+      // 로딩 상태 후 결과 확인 (에러 토스트 또는 페이지 유지)
+      // Note: 실제 API 호출이 발생하므로 에러 응답 대기
+      await expect(page).toHaveURL(/\/auth\/login/);
     });
   });
 

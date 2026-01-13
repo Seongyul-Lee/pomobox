@@ -514,7 +514,7 @@ export const selectTimerPhase = (state: TimerStore) => state.phase
 export const selectTimeLeft = (state: TimerStore) => state.timeLeft
 export const selectSessions = (state: TimerStore) => state.sessions
 export const selectTotalFocusMinutes = (state: TimerStore) => state.totalFocusMinutes
-export const selectIsRunning = (state: TimerStore) => state.dashboardIsRunning
+export const selectIsRunning = (state: TimerStore) => state.status === 'running'
 export const selectIsFocusPhase = (state: TimerStore) => state.dashboardIsFocusPhase
 export const selectSessionStartTime = (state: TimerStore) => state.focusSessionStartMs
 export const selectHasHydrated = (state: TimerStore) => state._hasHydrated

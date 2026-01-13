@@ -68,14 +68,25 @@ test.describe('Timer Persistence', () => {
   test('should restore paused timer after page refresh', async ({ page }) => {
     await page.goto('/?testDuration=60')
 
+    // Wait for hydration
+    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible()
+    const initialTime = await getTimerDisplay(page).textContent()
+
     // Start timer
     await page.getByRole('button', { name: 'Start', exact: true }).click()
 
-    // Wait for a few seconds
-    await page.waitForTimeout(3000)
+    // Wait for Pause button and timer to tick
+    const pauseButton = page.getByRole('button', { name: /pause/i })
+    await expect(pauseButton).toBeVisible()
+
+    // Wait for timer to change from initial value
+    await expect(async () => {
+      const currentTime = await getTimerDisplay(page).textContent()
+      expect(currentTime).not.toBe(initialTime)
+    }).toPass({ timeout: 5000 })
 
     // Pause timer
-    await page.getByRole('button', { name: /pause/i }).click()
+    await pauseButton.click()
     await expect(page.getByRole('button', { name: /resume/i })).toBeVisible()
 
     // Get paused time
@@ -83,9 +94,6 @@ test.describe('Timer Persistence', () => {
 
     // Reload page
     await page.reload()
-
-    // Wait for hydration
-    await page.waitForTimeout(500)
 
     // Timer should be restored in paused state
     await expect(page.getByRole('button', { name: /resume/i })).toBeVisible()
@@ -206,9 +214,6 @@ test.describe('Timer Persistence', () => {
     // Reload to trigger restoration
     await page.reload()
 
-    // Wait for hydration
-    await page.waitForTimeout(500)
-
     // Timer should reset to initial state (date changed)
     await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible()
     await expect(page.locator('text=/Focus Session/i').first()).toBeVisible()
@@ -277,8 +282,8 @@ test.describe('Timer Persistence - Skip/Reset Policy', () => {
     // Skip the session
     await page.getByRole('button').filter({ hasText: /skip to break/i }).click()
 
-    // Wait for state update
-    await page.waitForTimeout(500)
+    // Wait for Break phase (confirms state update)
+    await expect(page.locator('text=/Break Time/i').first()).toBeVisible()
 
     // Stats should NOT include the remaining 30 seconds (0.5 min)
     // Only the 1 minute that was auto-saved should count
@@ -316,8 +321,8 @@ test.describe('Timer Persistence - Skip/Reset Policy', () => {
     // Reset the timer
     await page.getByRole('button', { name: /reset/i }).click()
 
-    // Wait for state update
-    await page.waitForTimeout(500)
+    // Wait for Start button (confirms reset complete)
+    await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible()
 
     // Stats should be unchanged (Reset doesn't save anything)
     const finalStats = await page

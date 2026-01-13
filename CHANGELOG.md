@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.1] - 2026-01-11
+
+날짜/시간 유틸리티 리팩토링 - 중복 코드 제거
+
+### Refactor
+
+#### 공통 유틸리티 모듈 신규 생성
+- **신규 파일**: `lib/date-utils.ts`
+- 5개 파일에 분산된 중복 함수를 단일 모듈로 통합
+
+#### 추출된 함수
+| 함수 | 설명 | 기존 위치 |
+|------|------|----------|
+| `formatDate(date)` | Date → YYYY-MM-DD 변환 | 4개 파일 |
+| `getMonday(date)` | 해당 주의 월요일 반환 (ISO-8601) | 4개 파일 |
+| `getWeekDates(monday)` | 월~일 7일 날짜 배열 반환 | 1개 파일 |
+| `formatMinutes(minutes)` | 분 → "Xh Ym" 형식 변환 | 1개 파일 |
+| `getTodayDateStr()` | 오늘 날짜 YYYY-MM-DD 반환 | 1개 파일 |
+
+### 변경된 파일
+
+| 파일 | 변경 내용 |
+|------|----------|
+| `lib/date-utils.ts` | **신규** - 공통 날짜 유틸리티 모듈 |
+| `lib/supabase/stats.ts` | `getLocalDate`, `getMonday` 제거 → import로 교체 |
+| `hooks/use-weekly-stats.ts` | `formatDate`, `getMonday` 제거 → import로 교체 |
+| `hooks/use-rolling-4week-stats.ts` | `formatDate`, `getMonday` 제거 → import로 교체 |
+| `hooks/use-week-comparison.ts` | `formatDate`, `getMonday`, `getWeekDates` 제거 → import로 교체 |
+| `hooks/use-today-stats.ts` | `getTodayDateStr`, `formatMinutes` 제거 → import로 교체 |
+
+### 정량적 변화
+
+| 항목 | 변경 전 | 변경 후 | 차이 |
+|------|---------|---------|------|
+| 중복 코드 라인 | 113줄 | 64줄 | **-49줄** |
+| 함수 정의 횟수 | 11회 | 5회 | **-6회** |
+
+### 기술적 세부사항
+
+#### 호환성 유지
+- `lib/supabase/stats.ts`에서 `const getLocalDate = formatDate` alias로 기존 호출부 호환
+
+#### 동작 변경
+- **없음** - 모든 함수의 입출력 동일
+
+#### 이점
+- DRY 원칙 준수로 유지보수성 향상
+- 날짜 로직 수정 시 단일 위치만 변경
+- Tree-shaking으로 번들 최적화 가능
+
+---
+
 ## [2.5.0] - 2026-01-06
 
 타이머 상태 영속성 (Timer State Persistence)

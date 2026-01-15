@@ -17,6 +17,11 @@ const guidePages = [
   { url: "/guide/pomodoro-vs-timeboxing", priority: 0.8, changeFrequency: "weekly" as const },
   { url: "/guide/how-to-avoid-distractions", priority: 0.8, changeFrequency: "weekly" as const },
   { url: "/guide/pomodoro-for-remote-workers", priority: 0.8, changeFrequency: "weekly" as const },
+  { url: "/guide/pomodoro-for-writers", priority: 0.8, changeFrequency: "weekly" as const },
+  { url: "/guide/pomodoro-for-designers", priority: 0.8, changeFrequency: "weekly" as const },
+  { url: "/guide/pomodoro-for-managers", priority: 0.8, changeFrequency: "weekly" as const },
+  { url: "/guide/pomodoro-for-freelancers", priority: 0.8, changeFrequency: "weekly" as const },
+  { url: "/guide/pomodoro-for-entrepreneurs", priority: 0.8, changeFrequency: "weekly" as const },
 ]
 
 // Blog pages
@@ -34,6 +39,15 @@ const blogPages = [
   { url: "/blog/nature-sounds-focus", priority: 0.7, changeFrequency: "monthly" as const },
   { url: "/blog/pomodoro-for-adhd", priority: 0.7, changeFrequency: "monthly" as const },
   { url: "/blog/ultradian-rhythms", priority: 0.7, changeFrequency: "monthly" as const },
+  { url: "/blog/habit-stacking", priority: 0.7, changeFrequency: "monthly" as const },
+  { url: "/blog/social-media-brain", priority: 0.7, changeFrequency: "monthly" as const },
+  { url: "/blog/productive-procrastination", priority: 0.7, changeFrequency: "monthly" as const },
+  { url: "/blog/science-of-breaks", priority: 0.7, changeFrequency: "monthly" as const },
+  { url: "/blog/weekly-review-habit", priority: 0.7, changeFrequency: "monthly" as const },
+  { url: "/blog/sleep-and-productivity", priority: 0.7, changeFrequency: "monthly" as const },
+  { url: "/blog/batching-tasks", priority: 0.7, changeFrequency: "monthly" as const },
+  { url: "/blog/energy-management-not-time", priority: 0.7, changeFrequency: "monthly" as const },
+  { url: "/blog/ergonomics-for-focus", priority: 0.7, changeFrequency: "monthly" as const },
 ]
 
 // Informational pages

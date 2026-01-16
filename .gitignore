@@ -78,3 +78,5 @@ SUPERCLAUDE.md
 # Claude Code temp files
 tmpclaude-*
 nul
+
+tmpclaude-*-cwd*

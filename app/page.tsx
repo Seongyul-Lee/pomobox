@@ -1,15 +1,20 @@
 import { Suspense } from "react"
-import Link from "next/link"
+import dynamic from "next/dynamic"
 import { PomodoroTimer } from "@/components/pomodoro-timer"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { DashboardRight } from "@/components/dashboard-right"
 import { BgmPanel } from "@/components/bgm-panel"
 import { BgmMiniPlayer } from "@/components/bgm-mini-player"
 import { MainLayout } from "@/components/main-layout"
-import { PomodoroGuideSection } from "@/components/pomodoro-guide-section"
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt"
 import { AdSenseVerticalBanner } from "@/components/adsense-vertical-banner"
 import { AdSenseHorizontalBanner } from "@/components/adsense-horizontal-banner"
+
+// Dynamic import for below-the-fold content (improves LCP)
+const PomodoroGuideSection = dynamic(
+  () => import("@/components/pomodoro-guide-section").then(m => ({ default: m.PomodoroGuideSection })),
+  { ssr: true }
+)
 
 // Static timer skeleton for fast LCP - shows default 25:00
 function TimerFallback() {

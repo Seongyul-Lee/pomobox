@@ -46,7 +46,7 @@ const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 const FULL_DAY_LABELS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 export function DashboardRight() {
-  const { user } = useUser()
+  const { user, loading: userLoading } = useUser()
   const realtimeMinutes = useRealtimeFocusMinutes()
   const [monthlyData, setMonthlyData] = useState<DayRecord[]>([])
   const [attendance, setAttendance] = useState<string[]>([])
@@ -130,6 +130,9 @@ export function DashboardRight() {
 
   // user 변경 시 (로그인/로그아웃) 상태 초기화 후 데이터 로드
   useEffect(() => {
+    // 사용자 로딩 중이면 대기 (비로그인 사용자를 빠르게 처리하기 위함)
+    if (userLoading) return
+
     // 상태 초기화 (isCheckedIn은 null로 설정하여 로딩 상태 표시)
     setAttendance([])
     setIsCheckedIn(null)
@@ -140,14 +143,20 @@ export function DashboardRight() {
 
     // 새 데이터 로드
     loadData()
-  }, [loadData])
+  }, [user, userLoading, loadData])
 
   // 세션 종료 시 (realtimeMinutes가 양수 → 0) 데이터 다시 로드
   const prevRealtimeMinutes = useRef(realtimeMinutes)
+  const lastRefetchTime = useRef(0)
   useEffect(() => {
     // realtimeMinutes가 0보다 큰 값에서 0으로 변경되면 세션 종료로 간주
     if (prevRealtimeMinutes.current > 0 && realtimeMinutes === 0) {
-      loadData()
+      // 5초 이내 중복 리페치 방지 (debounce)
+      const now = Date.now()
+      if (now - lastRefetchTime.current > 5000) {
+        lastRefetchTime.current = now
+        loadData()
+      }
     }
     prevRealtimeMinutes.current = realtimeMinutes
   }, [realtimeMinutes, loadData])

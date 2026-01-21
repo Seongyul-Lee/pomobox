@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import dynamic from "next/dynamic"
 import { PomodoroTimer } from "@/components/pomodoro-timer"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { DashboardRight } from "@/components/dashboard-right"
@@ -9,12 +8,61 @@ import { MainLayout } from "@/components/main-layout"
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt"
 import { AdSenseVerticalBanner } from "@/components/adsense-vertical-banner"
 import { AdSenseHorizontalBanner } from "@/components/adsense-horizontal-banner"
+import { LazyGuideSection } from "@/components/lazy-guide-section"
 
-// Dynamic import for below-the-fold content (improves LCP)
-const PomodoroGuideSection = dynamic(
-  () => import("@/components/pomodoro-guide-section").then(m => ({ default: m.PomodoroGuideSection })),
-  { ssr: true }
-)
+// Skeleton for DashboardRight (Activity Calendar)
+function DashboardRightSkeleton() {
+  return (
+    <div className="glass-card border-0 flex flex-col flex-1 rounded-xl p-4 xl:p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className="h-5 w-5 xl:h-6 xl:w-6 rounded bg-muted/30 animate-pulse" />
+          <div className="h-5 w-32 rounded bg-muted/20 animate-pulse" />
+        </div>
+        <div className="h-4 w-20 rounded bg-muted/30 animate-pulse" />
+      </div>
+      <div className="p-3 xl:p-4 rounded-xl bg-muted/10 mb-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-muted/20 animate-pulse" />
+            <div className="space-y-1.5">
+              <div className="h-4 w-20 rounded bg-muted/20 animate-pulse" />
+              <div className="h-3 w-16 rounded bg-muted/30 animate-pulse" />
+            </div>
+          </div>
+          <div className="h-8 w-20 rounded bg-muted/20 animate-pulse" />
+        </div>
+      </div>
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex flex-col items-center p-2 rounded-xl bg-muted/10">
+            <div className="h-6 w-6 rounded bg-muted/20 animate-pulse mb-1" />
+            <div className="h-5 w-8 rounded bg-muted/20 animate-pulse" />
+            <div className="h-3 w-12 rounded bg-muted/30 animate-pulse mt-1" />
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-7 gap-1 mb-2">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <div key={`label-${i}`} className="h-4 rounded bg-muted/30 animate-pulse" />
+        ))}
+      </div>
+      <div className="grid grid-cols-7 gap-1.5 xl:gap-2.5 flex-1 content-start">
+        {Array.from({ length: 35 }).map((_, i) => (
+          <div key={`day-${i}`} className="aspect-square rounded-md xl:rounded-lg bg-muted/20 animate-pulse" />
+        ))}
+      </div>
+      <div className="flex items-center justify-between pt-2 mt-auto">
+        <div className="h-3 w-20 rounded bg-muted/30 animate-pulse" />
+        <div className="flex gap-1">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="h-3 w-3 rounded bg-muted/20 animate-pulse" />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 // Static timer skeleton for fast LCP - shows default 25:00
 function TimerFallback() {
@@ -74,7 +122,7 @@ export default function Home() {
           rightWidget={
             <>
               <BgmPanel />
-              <Suspense fallback={null}>
+              <Suspense fallback={<DashboardRightSkeleton />}>
                 <DashboardRight />
               </Suspense>
             </>
@@ -82,7 +130,7 @@ export default function Home() {
           mobileContent={
             <>
               <BgmMiniPlayer />
-              <Suspense fallback={null}>
+              <Suspense fallback={<DashboardRightSkeleton />}>
                 <DashboardRight />
               </Suspense>
             </>
@@ -103,8 +151,8 @@ export default function Home() {
           </section>
         </MainLayout>
 
-        {/* Pomodoro Guide Sections */}
-        <PomodoroGuideSection />
+        {/* Pomodoro Guide Sections - Lazy loaded for faster initial page load */}
+        <LazyGuideSection />
 
         {/* PWA Install Prompt */}
         <div className="md:ml-16 lg:ml-20 py-6 md:py-8 px-4 xl:px-8">

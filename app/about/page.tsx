@@ -76,7 +76,7 @@ const DIFFERENTIATORS = [
   {
     icon: Shield,
     title: "Open Source & Privacy First",
-    description: "Your data stays yours. No tracking, no paywalls, no premium tiers. Our code is public—anyone can review it.",
+    description: "Your data stays yours. No paywalls, no premium tiers. Our code is public—anyone can review it.",
   },
   {
     icon: BarChart3,
@@ -110,7 +110,7 @@ const FAQS = [
   },
   {
     question: "Is my data secure?",
-    answer: "Your data never leaves your device unless you enable cloud sync. We use local IndexedDB storage. No third-party tracking, no analytics.",
+    answer: "Your data never leaves your device unless you enable cloud sync. We use local IndexedDB storage by default.",
   },
   {
     question: "Can I export my data?",
@@ -188,7 +188,7 @@ export default function AboutPage() {
                 <div className="p-4 rounded-xl bg-background/50 dark:bg-background/30 border border-border/30">
                   <div className="text-lg font-bold text-primary mb-1">Local</div>
                   <h3 className="font-medium text-foreground text-sm mb-1">Privacy-First Design</h3>
-                  <p className="text-xs text-muted-foreground">Your data stays on your device. No tracking, no analytics.</p>
+                  <p className="text-xs text-muted-foreground">Your data stays on your device. Local-first storage.</p>
                 </div>
                 <div className="p-4 rounded-xl bg-background/50 dark:bg-background/30 border border-border/30">
                   <div className="text-lg font-bold text-primary mb-1">Deep</div>
@@ -298,7 +298,7 @@ export default function AboutPage() {
             <div className="mt-8 flex flex-wrap justify-center gap-4 md:gap-6">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Eye className="h-4 w-4 text-emerald-500" />
-                <span>No Tracking</span>
+                <span>Local-First</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Shield className="h-4 w-4 text-emerald-500" />

@@ -7,6 +7,7 @@ import {
   MessageCircle,
   Clock,
 } from "lucide-react"
+import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
 
 const siteUrl = "https://pomobox.app"
 
@@ -72,18 +73,35 @@ function ContactCard({
   )
 }
 
+// JSON-LD Schema for ContactPage
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact Pomobox",
+  description: "Contact the Pomobox team for support, feedback & feature requests.",
+  url: `${siteUrl}/contact`,
+  mainEntity: {
+    "@type": "Organization",
+    name: "Pomobox",
+    url: siteUrl,
+    email: "pomoboxapp@gmail.com",
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      email: "pomoboxapp@gmail.com",
+      availableLanguage: ["English", "Korean"],
+    },
+  },
+}
+
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="max-w-2xl mx-auto py-12 pt-20 md:pt-12 px-4 sm:px-6">
-        {/* Back Navigation */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8 group"
-        >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          Back to Pomobox
-        </Link>
+        <Breadcrumb
+          items={BREADCRUMB_PRESETS.legal("Contact")}
+          className="mb-8"
+        />
 
         {/* Main Content Card */}
         <div className="glass-card rounded-2xl p-6 sm:p-8">
@@ -136,6 +154,12 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+
+      {/* JSON-LD Schema - static data, safe to render */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </main>
   )
 }

@@ -100,7 +100,7 @@ const FAQ_CATEGORIES = [
       },
       {
         question: "Is my data private?",
-        answer: "Absolutely. Local-only mode means zero data leaves your device. We don't track your sessions, focus time, or any personal information. If you enable sync, data is encrypted and only you can access it.",
+        answer: "Absolutely. Local-only mode means zero data leaves your device. Your session data is stored locally by default. If you enable sync, data is encrypted and only you can access it.",
       },
       {
         question: "Which browsers are supported?",
@@ -172,7 +172,7 @@ const FAQ_CATEGORIES = [
       },
       {
         question: "Is Pomobox really free?",
-        answer: "Yes, 100% free with all features included. No premium tiers, no feature locks, no ads. We believe productivity tools should be accessible to everyone. The project is open source.",
+        answer: "Yes, 100% free with all features included. No premium tiers, no feature locks. We believe productivity tools should be accessible to everyone. The project is open source.",
       },
       {
         question: "Is Pomobox open source?",

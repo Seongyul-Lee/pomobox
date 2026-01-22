@@ -13,6 +13,7 @@ import {
   Globe,
   Mail,
 } from "lucide-react"
+import { Breadcrumb, BREADCRUMB_PRESETS } from "@/components/ui/breadcrumb"
 
 const siteUrl = "https://pomobox.app"
 
@@ -63,18 +64,29 @@ function List({ items }: { items: string[] }) {
   )
 }
 
+// JSON-LD Schema for Terms page
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Terms of Service",
+  description: "Pomobox Terms of Service: Free forever, no premium tiers. Understand usage rights, acceptable conduct, and your data ownership.",
+  url: `${siteUrl}/terms`,
+  dateModified: "2026-01-22",
+  publisher: {
+    "@type": "Organization",
+    name: "Pomobox",
+    url: siteUrl,
+  },
+}
+
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6">
-        {/* Back Navigation */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8 group"
-        >
-          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          Back to Pomobox
-        </Link>
+        <Breadcrumb
+          items={BREADCRUMB_PRESETS.legal("Terms")}
+          className="mb-8"
+        />
 
         {/* Main Content Card */}
         <div className="glass-card rounded-2xl p-6 sm:p-8">
@@ -84,7 +96,7 @@ export default function TermsPage() {
               <FileText className="h-8 w-8 text-primary" />
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-2">Terms of Service</h1>
-            <p className="text-muted-foreground">Last updated: January 1, 2026</p>
+            <p className="text-muted-foreground">Last updated: January 22, 2026</p>
           </div>
 
           {/* Content */}
@@ -170,6 +182,12 @@ export default function TermsPage() {
           </div>
         </div>
       </div>
+
+      {/* JSON-LD Schema - static constant data, XSS-safe */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </main>
   )
 }

@@ -1,12 +1,14 @@
 import { Suspense } from "react"
 import dynamic from "next/dynamic"
-import { PomodoroTimer } from "@/components/pomodoro-timer"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { MainLayout } from "@/components/main-layout"
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt"
 import { AdSenseVerticalBanner } from "@/components/adsense-vertical-banner"
 import { AdSenseHorizontalBanner } from "@/components/adsense-horizontal-banner"
 import { LazyGuideSection } from "@/components/lazy-guide-section"
+
+// ============================================
+// Skeleton Components (must be defined before dynamic imports)
+// ============================================
 
 // Skeleton for DashboardRight (Activity Calendar)
 function DashboardRightSkeleton() {
@@ -122,9 +124,23 @@ function TimerFallback() {
   )
 }
 
-// Dynamic imports for non-critical components (improves FCP)
-// Note: In Next.js 16 Server Components, ssr: false is not allowed
-// Using loading option instead for skeleton fallback
+// ============================================
+// Dynamic Imports (improves FCP by code splitting)
+// ============================================
+
+// Core timer component - heavy client component with many dependencies
+const PomodoroTimer = dynamic(
+  () => import("@/components/pomodoro-timer").then((m) => m.PomodoroTimer),
+  { loading: () => <TimerFallback />, ssr: true }
+)
+
+// Theme toggle - desktop only, can be deferred
+const ThemeToggle = dynamic(
+  () => import("@/components/theme-toggle").then((m) => m.ThemeToggle),
+  { ssr: true }
+)
+
+// Dashboard widgets - non-critical for initial render
 const DashboardRight = dynamic(
   () => import("@/components/dashboard-right").then((m) => m.DashboardRight),
   { loading: () => <DashboardRightSkeleton /> }
@@ -139,6 +155,10 @@ const BgmMiniPlayer = dynamic(
   () => import("@/components/bgm-mini-player").then((m) => m.BgmMiniPlayer),
   { loading: () => <BgmMiniPlayerSkeleton /> }
 )
+
+// ============================================
+// Page Component
+// ============================================
 
 const siteDescription = "A clean, distraction-free Pomodoro timer to boost your productivity. Track focus sessions, take smart breaks, and stay in flow."
 

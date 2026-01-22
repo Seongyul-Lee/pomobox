@@ -1,17 +1,35 @@
 import type React from "react"
 import type { Metadata } from "next"
+import dynamic from "next/dynamic"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "@/components/ui/toaster"
 import { AdSenseScript } from "@/components/adsense-script"
-import { Sidebar } from "@/components/sidebar"
-import { TaskPanel } from "@/components/task-panel"
-import { MobileHeader } from "@/components/mobile-header"
-import { MobileNav } from "@/components/mobile-nav"
 import { Footer } from "@/components/footer"
 import { Providers } from "./providers"
 import "./globals.css"
+
+// Dynamic imports for global UI components (improves FCP)
+const Sidebar = dynamic(
+  () => import("@/components/sidebar").then((m) => m.Sidebar),
+  { ssr: true }
+)
+
+const TaskPanel = dynamic(
+  () => import("@/components/task-panel").then((m) => m.TaskPanel),
+  { ssr: true }
+)
+
+const MobileHeader = dynamic(
+  () => import("@/components/mobile-header").then((m) => m.MobileHeader),
+  { ssr: true }
+)
+
+const MobileNav = dynamic(
+  () => import("@/components/mobile-nav").then((m) => m.MobileNav),
+  { ssr: true }
+)
 
 const geist = Geist({
   subsets: ["latin"],

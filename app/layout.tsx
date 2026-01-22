@@ -121,7 +121,7 @@ const jsonLdOrganization = {
   "@type": "Organization",
   name: "Pomobox",
   url: siteUrl,
-  logo: `${siteUrl}/logo.png`,
+  logo: `${siteUrl}/icon-512.png`,
   description: "Pomobox creates minimal, distraction-free productivity tools. Our flagship product is a Pomodoro timer designed for focused work.",
   sameAs: [
     "https://github.com/pomobox",

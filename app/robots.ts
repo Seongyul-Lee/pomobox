@@ -5,15 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: [
-        "/mypage/",
-        "/update-password/",
-        "/api/auth/",
-        "/ko/",
-        "/ja/",
-        "/zh-CN/",
-        "/en/",
-      ],
+      disallow: ["/mypage/", "/update-password/", "/api/auth/"],
     },
     sitemap: "https://pomobox.app/sitemap.xml",
   }

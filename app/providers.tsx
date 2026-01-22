@@ -105,6 +105,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         defaultTheme="midnight"
         themes={["light", "dark", "midnight"]}
         enableSystem={false}
+        disableTransitionOnChange
       >
         <AppInitializer>{children}</AppInitializer>
       </ThemeProvider>

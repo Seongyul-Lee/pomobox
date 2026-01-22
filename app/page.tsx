@@ -1,9 +1,7 @@
 import { Suspense } from "react"
+import dynamic from "next/dynamic"
 import { PomodoroTimer } from "@/components/pomodoro-timer"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { DashboardRight } from "@/components/dashboard-right"
-import { BgmPanel } from "@/components/bgm-panel"
-import { BgmMiniPlayer } from "@/components/bgm-mini-player"
 import { MainLayout } from "@/components/main-layout"
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt"
 import { AdSenseVerticalBanner } from "@/components/adsense-vertical-banner"
@@ -64,6 +62,40 @@ function DashboardRightSkeleton() {
   )
 }
 
+// Skeleton for BgmPanel
+function BgmPanelSkeleton() {
+  return (
+    <div className="glass-card border-0 rounded-xl p-4 xl:p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="h-5 w-5 rounded bg-muted/30 animate-pulse" />
+        <div className="h-5 w-24 rounded bg-muted/20 animate-pulse" />
+      </div>
+      <div className="flex items-center gap-3">
+        <div className="h-10 w-10 rounded-full bg-muted/20 animate-pulse" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 w-32 rounded bg-muted/20 animate-pulse" />
+          <div className="h-2 w-full rounded bg-muted/10 animate-pulse" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Skeleton for BgmMiniPlayer (mobile)
+function BgmMiniPlayerSkeleton() {
+  return (
+    <div className="glass-card border-0 rounded-xl p-3">
+      <div className="flex items-center gap-3">
+        <div className="h-8 w-8 rounded-full bg-muted/20 animate-pulse" />
+        <div className="flex-1">
+          <div className="h-3 w-24 rounded bg-muted/20 animate-pulse" />
+        </div>
+        <div className="h-6 w-12 rounded bg-muted/20 animate-pulse" />
+      </div>
+    </div>
+  )
+}
+
 // Static timer skeleton for fast LCP - shows default 25:00
 function TimerFallback() {
   return (
@@ -90,10 +122,28 @@ function TimerFallback() {
   )
 }
 
+// Dynamic imports for non-critical components (improves FCP)
+// Note: In Next.js 16 Server Components, ssr: false is not allowed
+// Using loading option instead for skeleton fallback
+const DashboardRight = dynamic(
+  () => import("@/components/dashboard-right").then((m) => m.DashboardRight),
+  { loading: () => <DashboardRightSkeleton /> }
+)
+
+const BgmPanel = dynamic(
+  () => import("@/components/bgm-panel").then((m) => m.BgmPanel),
+  { loading: () => <BgmPanelSkeleton /> }
+)
+
+const BgmMiniPlayer = dynamic(
+  () => import("@/components/bgm-mini-player").then((m) => m.BgmMiniPlayer),
+  { loading: () => <BgmMiniPlayerSkeleton /> }
+)
+
 const siteDescription = "A clean, distraction-free Pomodoro timer to boost your productivity. Track focus sessions, take smart breaks, and stay in flow."
 
 export default function Home() {
-  // JSON-LD 구조화 데이터: WebApplication
+  // JSON-LD structured data: WebApplication (static, safe to use)
   const webApplicationJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -121,7 +171,9 @@ export default function Home() {
         <MainLayout
           rightWidget={
             <>
-              <BgmPanel />
+              <Suspense fallback={<BgmPanelSkeleton />}>
+                <BgmPanel />
+              </Suspense>
               <Suspense fallback={<DashboardRightSkeleton />}>
                 <DashboardRight />
               </Suspense>
@@ -129,7 +181,9 @@ export default function Home() {
           }
           mobileContent={
             <>
-              <BgmMiniPlayer />
+              <Suspense fallback={<BgmMiniPlayerSkeleton />}>
+                <BgmMiniPlayer />
+              </Suspense>
               <Suspense fallback={<DashboardRightSkeleton />}>
                 <DashboardRight />
               </Suspense>
@@ -166,7 +220,7 @@ export default function Home() {
           <AdSenseHorizontalBanner />
         </div>
 
-        {/* JSON-LD 구조화 데이터 */}
+        {/* JSON-LD structured data - static content, XSS-safe */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

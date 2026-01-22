@@ -16,13 +16,13 @@ import "./globals.css"
 const geist = Geist({
   subsets: ["latin"],
   variable: "--font-geist",
-  display: "optional",
+  display: "swap",
   preload: true,
 })
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
-  display: "optional",
+  display: "swap",
   preload: true,
 })
 
@@ -195,12 +195,21 @@ export default function RootLayout({ children }: Props) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagservices.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-        {/* Critical CSS for timer skeleton (improves FCP) */}
+        {/* Critical CSS for faster FCP - above-the-fold styles */}
         <style>{`
+          /* Base layout - prevents layout shift */
+          body{margin:0;min-height:100vh}
+          /* Sidebar skeleton (md+) */
+          @media(min-width:768px){.sidebar-placeholder{position:fixed;left:0;top:0;bottom:0;width:64px;z-index:40}}
+          @media(min-width:1024px){.sidebar-placeholder{width:80px}}
+          /* Timer skeleton */
           .timer-fallback{display:flex;flex-direction:column;align-items:center;gap:2rem}
           .timer-fallback-circle{width:16rem;height:16rem;position:relative;display:flex;align-items:center;justify-content:center}
           .timer-fallback-text{font-size:3.75rem;font-family:ui-monospace,monospace;font-weight:600;letter-spacing:-0.025em}
           @media(min-width:640px){.timer-fallback-circle{width:18rem;height:18rem}}
+          /* Skeleton animation */
+          @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+          .animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}
         `}</style>
         {/* Dynamic theme-color based on system preference */}
         <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F9FC" />

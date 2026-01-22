@@ -25,7 +25,7 @@ const siteUrl = "https://pomobox.app"
 
 export const metadata: Metadata = {
   title: "About Pomobox - Free Open-Source Pomodoro Timer",
-  description: "Pomobox: Free, open-source Pomodoro timer with statistics, focus music & activity tracking. Built for developers, students & professionals. No paywalls, no tracking.",
+  description: "Pomobox: Free, open-source Pomodoro timer with statistics, focus music & activity tracking. Built for developers, students & professionals. No paywalls, privacy-first.",
   openGraph: {
     type: "website",
     locale: "en_US",

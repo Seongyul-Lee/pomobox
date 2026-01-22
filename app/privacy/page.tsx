@@ -20,20 +20,20 @@ const siteUrl = "https://pomobox.app"
 
 export const metadata: Metadata = {
   title: "Privacy Policy: Data Security & Your Rights | Pomobox",
-  description: "Learn how Pomobox protects your privacy. Local-first data storage, no tracking, no ads. GDPR & CCPA compliant. Your focus data stays yours. Read our transparent privacy practices.",
-  keywords: ["pomobox privacy", "data protection", "GDPR compliant", "privacy policy", "no tracking"],
+  description: "Learn how Pomobox protects your privacy. Local-first data storage, minimal analytics, GDPR & CCPA compliant. Your focus data stays yours. Read our transparent privacy practices.",
+  keywords: ["pomobox privacy", "data protection", "GDPR compliant", "privacy policy", "local-first"],
   openGraph: {
     type: "article",
     locale: "en_US",
     url: `${siteUrl}/privacy`,
     siteName: "Pomobox",
     title: "Pomobox Privacy Policy: Your Data, Your Control",
-    description: "Privacy-first Pomodoro timer. Local data storage, no tracking, GDPR & CCPA compliant. Learn how we protect your data.",
+    description: "Privacy-first Pomodoro timer. Local data storage, minimal analytics, GDPR & CCPA compliant. Learn how we protect your data.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Privacy Policy | Pomobox",
-    description: "How Pomobox protects your data. Local-first storage, no tracking, GDPR compliant.",
+    description: "How Pomobox protects your data. Local-first storage, minimal analytics, GDPR compliant.",
   },
   alternates: {
     canonical: `${siteUrl}/privacy`,
@@ -141,7 +141,7 @@ export default function PrivacyPage() {
             ]} />
 
             <SubSection>2.3 Local Storage (All Users)</SubSection>
-            <Paragraph>For users who are not logged in, we store data locally in your browser using localStorage. This data includes:</Paragraph>
+            <Paragraph>For users who are not logged in, we store data locally in your browser using IndexedDB. This data includes:</Paragraph>
             <List items={[
               "Timer settings and preferences",
               "Session history",
@@ -217,7 +217,7 @@ export default function PrivacyPage() {
             <Paragraph>Your account and activity data is stored on Supabase servers. We retain your data for as long as your account is active. If you delete your account, your data will be permanently deleted immediately.</Paragraph>
 
             <SubSection>5.2 Non-Registered Users</SubSection>
-            <Paragraph>If you use Pomobox without an account, all your data is stored locally in your browser (localStorage). This data is not transmitted to our servers and remains on your device until you clear your browser data.</Paragraph>
+            <Paragraph>If you use Pomobox without an account, all your data is stored locally in your browser (IndexedDB). This data is not transmitted to our servers and remains on your device until you clear your browser data.</Paragraph>
 
             {/* 6. Data Security */}
             <SectionTitle icon={Lock}>6. Data Security</SectionTitle>
@@ -265,7 +265,7 @@ export default function PrivacyPage() {
               "Navigate to Privacy or Site Settings",
               "Find and clear site data for pomobox.app"
             ]} />
-            <Paragraph>Alternatively, you can clear all browsing data or use your browser's developer tools to clear localStorage.</Paragraph>
+            <Paragraph>Alternatively, you can clear all browsing data or use your browser's developer tools to clear site data.</Paragraph>
 
             {/* 10. Children */}
             <SectionTitle icon={Baby}>10. Children's Privacy</SectionTitle>

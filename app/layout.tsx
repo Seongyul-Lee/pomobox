@@ -146,9 +146,9 @@ const jsonLdOrganization = {
   ],
   contactPoint: {
     "@type": "ContactPoint",
-    email: "help.pomobox@gmail.com",
+    email: "pomoboxapp@gmail.com",
     contactType: "customer support",
-    availableLanguage: ["English"],
+    availableLanguage: ["English", "Korean"],
   },
 }
 

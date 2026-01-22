@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="w-full md:w-[calc(100%-4rem)] lg:w-[calc(100%-5rem)] px-4 xl:px-8 pb-3 md:ml-16 lg:ml-20">
       {/* Minimal Footer - Desktop */}
       <div className="hidden xl:block text-center text-xs text-muted-foreground py-1">
-        <span>© 2025 pomobox</span>
+        <span>© 2026 pomobox</span>
         <span className="mx-2">·</span>
         <Link href="/about" className="hover:text-foreground hover:underline">
           About
@@ -48,7 +48,7 @@ export function Footer() {
           </Link>
         </div>
         <div className="mt-2 text-muted-foreground/60">
-          © 2025 pomobox
+          © 2026 pomobox
         </div>
       </div>
     </footer>

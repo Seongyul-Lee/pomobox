@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
+import dynamic from "next/dynamic"
 import { ThemeProvider } from "next-themes"
 import {
   isServer,
@@ -10,7 +11,12 @@ import {
 import { migrateFromLocalStorage } from "@/lib/storage/idb"
 import { useSyncLocalData } from "@/hooks/use-sync-local-data"
 import { initSettingsSubscription, useSettingsStore, useUIStore, useTimerStore, selectIsRunning, type TimerSettings } from "@/lib/store"
-import { SettingsDialog } from "@/components/settings-dialog"
+
+// SettingsDialog를 동적 import (초기 번들에서 제외)
+const SettingsDialog = dynamic(
+  () => import("@/components/settings-dialog").then((m) => m.SettingsDialog),
+  { ssr: false }
+)
 
 // QueryClient 생성 함수
 function makeQueryClient() {
@@ -80,17 +86,19 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
   return (
     <>
       {children}
-      {/* Global Settings Dialog - single instance */}
-      <SettingsDialog
-        settings={currentSettings}
-        onSettingsChange={(newSettings) => {
-          settingsStore.updateSettings(newSettings)
-        }}
-        open={isSettingsOpen}
-        onOpenChange={setSettingsOpen}
-        hideTrigger
-        isRunning={isTimerRunning}
-      />
+      {/* Global Settings Dialog - single instance, lazy loaded */}
+      {isSettingsOpen && (
+        <SettingsDialog
+          settings={currentSettings}
+          onSettingsChange={(newSettings) => {
+            settingsStore.updateSettings(newSettings)
+          }}
+          open={isSettingsOpen}
+          onOpenChange={setSettingsOpen}
+          hideTrigger
+          isRunning={isTimerRunning}
+        />
+      )}
     </>
   )
 }

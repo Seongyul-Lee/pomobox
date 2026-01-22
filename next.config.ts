@@ -34,7 +34,16 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     // 패키지 import 최적화 (tree-shaking 개선)
-    optimizePackageImports: ['lucide-react', 'recharts', '@radix-ui/react-dialog', '@radix-ui/react-popover'],
+    optimizePackageImports: [
+      'lucide-react',
+      'recharts',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-popover',
+      '@supabase/ssr',
+      '@supabase/supabase-js',
+      '@tanstack/react-query',
+      'zustand',
+    ],
   },
 };
 

@@ -54,8 +54,9 @@ node_modules/
 # tasks.json
 # tasks/ 
 
-# Claude Code per-machine settings
-.claude/settings.local.json
+# Claude Code / OMC (local config, not tracked)
+.claude/
+.omc/
 
 # Playwright
 /test-results/

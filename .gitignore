@@ -58,6 +58,9 @@ node_modules/
 .claude/
 .omc/
 
+# Supabase CLI local state
+supabase/.temp/
+
 # Playwright
 /test-results/
 /playwright-report/

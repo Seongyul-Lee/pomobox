@@ -29,5 +29,5 @@ module.exports = {
     ],
     'simple-import-sort/exports': 'error',
   },
-  ignorePatterns: ['node_modules/', '.next/', 'out/', 'ccseva/'],
+  ignorePatterns: ['node_modules/', '.next/', 'out/'],
 }

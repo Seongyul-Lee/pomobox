@@ -3,24 +3,24 @@
 /.pnp
 .pnp.*
 
-# testing
-/coverage
-
 # next.js
 /.next/
 /out/
-
-# production
 /build
 
-# misc
-.DS_Store
-*.pem
+# typescript
+*.tsbuildinfo
+next-env.d.ts
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# testing
+/coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+/.playwright-mcp/
+tests/e2e/.auth/
 
 # env files
 .env*
@@ -28,19 +28,12 @@ yarn-error.log*
 # vercel
 .vercel
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# Logs
+# logs
 logs
 *.log
-dev-debug.log
-# Dependency directories
-node_modules/
-# Environment variables
-.env
-# Editor directories and files
+
+# editor / OS
+.DS_Store
 .idea
 .vscode
 *.suo
@@ -48,38 +41,15 @@ node_modules/
 *.njsproj
 *.sln
 *.sw?
-# OS specific
 
-# Task files
-# tasks.json
-# tasks/ 
+# misc
+*.pem
 
 # Claude Code / OMC (local config, not tracked)
 .claude/
 .omc/
-
-# Playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/playwright/.auth/
-/.playwright-mcp/
-
-# CI log files
-E2E.txt
-Run pnpm e2e.txt
-
-# Playwright auth state
-tests/e2e/.auth/
-
-# Local documentation (not tracked)
-SUPERCLAUDE.md
-
-# Claude Code temp files
 tmpclaude-*
 nul
 
-tmpclaude-*-cwd*
-.vercel
-.env*.local
+# Supabase CLI local state
+supabase/.temp/
